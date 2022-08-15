@@ -7,7 +7,7 @@ namespace cards{
     public class Bash : Card
     {
         public int cost = 1;
-        Targeting target = Targeting.Enemy                                                      ;
+        [SerializeField] Targeting target = Targeting.Friendly;
         bool manaCharged = false;
 
         public override void Play()

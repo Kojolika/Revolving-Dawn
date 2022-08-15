@@ -51,8 +51,7 @@ namespace fight
                 {
                     if (!resetRequired)
                     {
-                        currentCard = null;
-                        previousCard = null;
+                        currentCard = previousCard = null;
                         ResetHand();
                         resetRequired = true;
                     }
