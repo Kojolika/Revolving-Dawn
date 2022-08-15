@@ -1028,7 +1028,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed69531454f23a74795730c108f89379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DrawAmount: 5
+  DrawAmount: 1
 --- !u!65 &1613743585
 BoxCollider:
   m_ObjectHideFlags: 0
