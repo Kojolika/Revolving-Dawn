@@ -100,7 +100,7 @@ namespace fight
                 if (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse1))
                 {
                     MoveCardToCorrectHandPosition();
-                    _cardHandManager.UpdateHand();
+                    _cardHandManager.MoveCardsToHandCurve();
                     _hoverManager.Enable(true);
                     ResetFlags();
                     ResetCardScale();
