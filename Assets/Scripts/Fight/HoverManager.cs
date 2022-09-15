@@ -10,23 +10,33 @@ namespace fight
         CardHandManager _cardHandManager;
 
         static Vector3 CARD_SCALE;
+        const float MOVE_SPEED = 8f;
         bool resetRequired = false;
         bool isEnabled = false;
-        const float MOVE_SPEED = 8f;
+        bool IsHandUpdating;
 
         void Start()
         {
             CARD_SCALE = new Vector3(0.2f, 1, 0.3f);
             _cardHandManager = this.gameObject.GetComponent<CardHandManager>();
+
+            _cardHandManager.TriggerIsHandUpdating += HandUpdateEventHandler;
         }
+
         public void Enable(bool value)
         {
             isEnabled = value;
         }
+
+        public void HandUpdateEventHandler(bool isUpdating){
+            IsHandUpdating = isUpdating;
+        }
+
         private void Update()
         {
+            if(IsHandUpdating) return;
             if (!isEnabled) return;
-
+            
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 100))
@@ -57,6 +67,7 @@ namespace fight
                 }
             }
         }
+
         private void HoverCardEffects(Card card)
         {
             int cardposition = _cardHandManager.hand.IndexOf(card);

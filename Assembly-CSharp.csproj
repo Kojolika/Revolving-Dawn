@@ -38,13 +38,16 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\utils\Computations.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
+     <Compile Include="Assets\Scripts\Characters\Player\PlayerCardDecks.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
      <Compile Include="Assets\Scripts\utils\BezierCurve.cs" />
+     <Compile Include="Assets\Scripts\Fight\CardHandUtils.cs" />
      <Compile Include="Assets\Scripts\Fight\FightManager.cs" />
      <Compile Include="Assets\Scripts\Fight\PlayCardManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\Player.cs" />
      <Compile Include="Assets\Scripts\Fight\CardMover.cs" />
      <Compile Include="Assets\Scripts\utils\Bezier.cs" />
+     <Compile Include="Assets\Scripts\Characters\Player\TestDeck.cs" />
      <Compile Include="Assets\Scripts\Characters\Health.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Test_Enemy1.cs" />
      <Compile Include="Assets\Scripts\Cards\Card.cs" />
@@ -52,7 +55,6 @@
      <Compile Include="Assets\Scripts\Fight\HoverManager.cs" />
      <Compile Include="Assets\Scripts\Cards\Bash.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy.cs" />
-     <Compile Include="Assets\Scripts\Fight\CardHandUtils.cs" />
      <None Include="Assets\Shaders\GameArea.shader" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/2020.3.3f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

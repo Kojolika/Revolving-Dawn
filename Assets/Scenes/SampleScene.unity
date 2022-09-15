@@ -349,18 +349,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentPlayer: {fileID: 1613743584}
-  drawPile:
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
-  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
   curve: {fileID: 1280994762}
   cardSpawner: {fileID: 1166289618}
   cardDiscarder: {fileID: 844231613}
@@ -1009,6 +997,7 @@ GameObject:
   - component: {fileID: 1613743586}
   - component: {fileID: 1613743585}
   - component: {fileID: 1613743584}
+  - component: {fileID: 1613743589}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1028,7 +1017,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed69531454f23a74795730c108f89379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DrawAmount: 1
+  DrawAmount: 5
 --- !u!65 &1613743585
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1105,6 +1094,30 @@ Transform:
   m_Father: {fileID: 2139908748}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1613743589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613743583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d02a8f2ae6bce5438473b4b8db156ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deck:
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
+  - {fileID: 6079624067385678848, guid: e00736d5c4cf7ba4faf32fc66794a042, type: 3}
 --- !u!1 &2139908747
 GameObject:
   m_ObjectHideFlags: 0
