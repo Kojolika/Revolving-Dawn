@@ -6,6 +6,7 @@ namespace fight
     {
         public static float ReturnCardRotation(int handSize, int cardPosition)
         {
+
             //Returns the amount of rotation on the x axis on which the card will rotate
             float maxAngle = 2.5f * handSize;
             float minAngle = 1f;

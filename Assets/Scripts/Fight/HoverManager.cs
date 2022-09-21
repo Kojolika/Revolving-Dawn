@@ -21,6 +21,7 @@ namespace fight
             _cardHandManager = this.gameObject.GetComponent<CardHandManager>();
 
             _cardHandManager.TriggerIsHandUpdating += HandUpdateEventHandler;
+
         }
 
         public void Enable(bool value)
@@ -70,21 +71,22 @@ namespace fight
 
         private void HoverCardEffects(Card card)
         {
-            int cardposition = _cardHandManager.hand.IndexOf(card);
+            var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
+            int cardposition = hand.IndexOf(card);
             float moveAmount;
             int positionDifference;
             const float SCALE_AMOUNT = 1.5f;
 
 
-            for (int i = 0; i < _cardHandManager.hand.Count; i++)
+            for (int i = 0; i < hand.Count; i++)
             {
                 if (i == cardposition)
                 {
                     //Selected card will be centered
                     card.transform.rotation  = Quaternion.Euler(new Vector3(90f, 90f, -90f));
                     Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0, Camera.main.nearClipPlane));
-                    StartCoroutine(_cardHandManager.MoveCardCoroutine(card,
-                        new Vector3(_cardHandManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(_cardHandManager.hand.Count, cardposition + 1)).x, p.y - 2f, card.transform.position.z - .1f),
+                    StartCoroutine(_cardHandManager.MoveCardCoroutine(i,
+                        new Vector3(_cardHandManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y - 2f, card.transform.position.z - .1f),
                         0,
                         50f));
                     card.transform.localScale = new Vector3(0.2f, 1, 0.3f) * SCALE_AMOUNT;
@@ -92,14 +94,14 @@ namespace fight
                 }
 
 
-                if (_cardHandManager.hand[i].GetComponent<CardMover>() != null)
-                    Destroy(_cardHandManager.hand[i].GetComponent<CardMover>());
+                if (hand[i].GetComponent<CardMover>() != null)
+                    Destroy(hand[i].GetComponent<CardMover>());
 
                 //Move Cards relative to their position of the selected card
                 //i.e. cards closer more farther away
                 if (i - cardposition == 0) positionDifference = 0;
                 else positionDifference = 2 / (i - cardposition);
-                moveAmount = CardHandUtils.ReturnCardPosition(_cardHandManager.hand.Count, i + 1) + positionDifference * .03f;
+                moveAmount = CardHandUtils.ReturnCardPosition(hand.Count, i + 1) + positionDifference * .03f;
 
                 //turn curve point into vector space
                 Vector3 NewPosition = _cardHandManager.curve.GetPoint(moveAmount);
@@ -108,28 +110,22 @@ namespace fight
                 //Gives a sense of realism to the card hand
                 NewPosition.z -= (float)i / 100f;
 
-                StartCoroutine(_cardHandManager.MoveCardCoroutine(_cardHandManager.hand[i],
+                StartCoroutine(_cardHandManager.MoveCardCoroutine(i,
                     NewPosition,
-                    CardHandUtils.ReturnCardRotation(_cardHandManager.hand.Count, i + 1),
+                    CardHandUtils.ReturnCardRotation(hand.Count, i + 1),
                     MOVE_SPEED));
             }
 
         }
         private void ResetHand()
         {
-            //if(previousCard) previousCard.transform.localScale = new Vector3(0.2f, 1, 0.3f);
-            //if(currentCard) currentCard.transform.localScale = new Vector3(0.2f, 1, 0.3f);
-            StartCoroutine(_cardHandManager.MoveCardsToHandCurve());
-            for (int i = 0; i < _cardHandManager.hand.Count; i++)
+            var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
+            StartCoroutine(_cardHandManager.CreateHandCurve());
+
+            for (int i = 0; i < hand.Count; i++)
             {
-                
                 //Reset Scale
-                _cardHandManager.hand[i].transform.localScale = new Vector3(0.2f, 1, 0.3f);
-                 /*
-                Vector3 NewPosition = _cardHandManager.curve.GetPoint(_cardHandManager.ReturnCardPositions(_cardHandManager.hand.Count, i+1));
-                NewPosition.z -= (float)i / 100f;
-                _cardHandManager.MoveCard(_cardHandManager.hand[i], NewPosition, _cardHandManager.ReturnCardRotation(_cardHandManager.hand.Count, i+1), moveSpeed);
-                 */
+                hand[i].transform.localScale = new Vector3(0.2f, 1, 0.3f);
             }
         }
     }

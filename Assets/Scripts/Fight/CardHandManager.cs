@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using cards;
@@ -10,7 +10,6 @@ namespace fight
 {
     public class CardHandManager : MonoBehaviour
     {
-        internal List<Card> hand;
         internal BezierCurve curve;
         GameObject cardSpawner;
         GameObject cardDiscarder;
@@ -24,8 +23,6 @@ namespace fight
         {
             _player = this.GetComponent<FightManager>().GetPlayer();
             this.GetComponent<FightManager>().TriggerCardsDrawn += DrawCards;
-
-            hand = _player._playerCardDecks.Hand;
         }
         public void Initialize(BezierCurve curve, GameObject cardspawner, GameObject carddiscarder)
         {
@@ -42,11 +39,9 @@ namespace fight
         }
         public void DrawCards(int amount){
 
-            Debug.Log("drawing cards");
-
             var drawPile = _player._playerCardDecks.DrawPile;
-
             var discardPile = _player._playerCardDecks.Discard;
+            var hand = _player._playerCardDecks.Hand;
             
             Debug.Log("Drawn amount: " + amount);
 
@@ -77,20 +72,18 @@ namespace fight
                     amount--;
                 }
                 else{
-                    Debug.Log("Draw One");
-                    //add card to hand otherwise
-                    hand.Add(cardDrawn);
-
                     //instantiate the card into the scene
-                    Instantiate(cardDrawn,
+                    cardDrawn = Instantiate(cardDrawn,
                         cardSpawner.transform.position,
                         cardDrawn.transform.rotation);
-                    
-                    //update hand in the players class
-                    _player._playerCardDecks.Hand = hand;
+
+                    hand.Add(cardDrawn);
                 }
             }
-            StartCoroutine(MoveCardsToHandCurve());
+
+            //update hand in the players class
+            _player._playerCardDecks.Hand = hand;
+            StartCoroutine(CreateHandCurve());
         }
         
         List<Card> Shuffle(List<Card> DeckToShuffle)
@@ -99,12 +92,11 @@ namespace fight
             var shuffledcards = DeckToShuffle.OrderBy(a => rng.Next()).ToList();
             return shuffledcards;
         }
-        internal IEnumerator MoveCardsToHandCurve()
+        internal IEnumerator CreateHandCurve()
         {
+            var hand = _player._playerCardDecks.Hand;
             //failsale
             if (hand.Count < 1) yield return null;
-            
-            Debug.Log("starting movecardsscript");
 
             //Send event that the hand is being updated
             IsUpdating(true);
@@ -112,11 +104,11 @@ namespace fight
             Coroutine[] tasks = new Coroutine[hand.Count]; 
             for (int i = 1; i <= hand.Count; i++)
             {
-                Debug.Log("moving?");
-                Vector3 NewPosition = curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, i));
-                NewPosition.z -= (float)i/100f;
-                tasks[i - 1] = StartCoroutine(MoveCardCoroutine(hand[i - 1],
-                    NewPosition,
+                Vector3 newPosition = curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, i));
+
+                newPosition.z -= (float)i/100f;
+                tasks[i - 1] = StartCoroutine(MoveCardCoroutine(i-1,
+                    newPosition,
                     CardHandUtils.ReturnCardRotation(hand.Count, i),
                     cardMoveSpeed));
             }
@@ -126,10 +118,13 @@ namespace fight
 
             //Send event that the hand is no longer being updated
             IsUpdating(false);
-
+            Debug.Log("done moving");
         }
-        public IEnumerator MoveCardCoroutine(Card card, Vector3 newPosition, float cardRotation, float speed)
+        public IEnumerator MoveCardCoroutine(int cardIndex, Vector3 newPosition, float cardRotation, float speed)
         {
+            var hand = _player._playerCardDecks.Hand;
+            var card = hand[cardIndex];
+            
             card.transform.rotation = Quaternion.Euler(new Vector3(90f + cardRotation, 90f, -90f));
             while(card.transform.position != newPosition)
             {

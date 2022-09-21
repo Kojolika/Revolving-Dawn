@@ -33,7 +33,7 @@ namespace fight{
             _cardHandManager.Initialize(curve, cardSpawner, cardDiscarder);
 
             _hoverManager = gameObject.AddComponent<HoverManager>();
-            _hoverManager.Enable(false);
+            _hoverManager.Enable(true);
 
             _playCardManager = gameObject.AddComponent<PlayCardManager>();
             _playCardManager.Enable(true);
