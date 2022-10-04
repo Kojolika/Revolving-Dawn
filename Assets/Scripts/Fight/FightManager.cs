@@ -19,7 +19,7 @@ namespace fight{
         [SerializeField] GameObject cardSpawner;
         [SerializeField] GameObject cardDiscarder;
 
-        CardHandManager _cardHandManager;
+        CardHandMovementManager _cardHandMovementManager;
         HoverManager _hoverManager;
         PlayCardManager _playCardManager;
 
@@ -29,14 +29,14 @@ namespace fight{
         // Start is called before the first frame update
         void Start()
         {
-            _cardHandManager = gameObject.AddComponent<CardHandManager>();
-            _cardHandManager.Initialize(curve, cardSpawner, cardDiscarder);
+            _cardHandMovementManager = gameObject.AddComponent<CardHandMovementManager>();
+            _cardHandMovementManager.Initialize(curve, cardSpawner, cardDiscarder);
 
             _hoverManager = gameObject.AddComponent<HoverManager>();
             _hoverManager.Enable(true);
 
             _playCardManager = gameObject.AddComponent<PlayCardManager>();
-            _playCardManager.Enable(true);
+            _playCardManager.Enable(false);
         }
 
         // Update is called once per frame

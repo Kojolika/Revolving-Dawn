@@ -10,13 +10,15 @@ namespace fight
         [SerializeField] static float SCALE_CARD_SIZE_BY = 0.6f;
 
         HoverManager _hoverManager;
-        CardHandManager _cardHandManager;
+        CardHandMovementManager _cardHandMovementManager;
         TargetingArrow _targetingArrow;
 
         bool isEnabled = false;
         bool dragging = false;
         bool cardTargeting = false;
         bool centering = false;
+
+        bool isHandUpdating = false;
 
         Card currentCard;
         Vector3 currentCardOriginalPosition;
@@ -26,9 +28,11 @@ namespace fight
         void Start()
         {
             _hoverManager = this.gameObject.GetComponent<HoverManager>();
-            _cardHandManager = this.gameObject.GetComponent<CardHandManager>();
+            _cardHandMovementManager = this.gameObject.GetComponent<CardHandMovementManager>();
 
             CAMERA_DISTANCE = Camera.main.nearClipPlane + 7;
+
+            _cardHandMovementManager.TriggerIsHandUpdating += HandUpdateEventHandler;
         }
 
         public void Enable(bool value)
@@ -36,6 +40,9 @@ namespace fight
             isEnabled = value;
         }
 
+        public void HandUpdateEventHandler(bool isUpdating){
+            isHandUpdating = isUpdating;
+        }
         public bool CardInPlayArea()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -55,7 +62,6 @@ namespace fight
         public void ActivateCardTargeting()
         {
             //Play small effect for entering playable area
-
             //Then check if card requires targeting arrow
             if (currentCard.GetTarget() == (int)Targeting.Enemy)
             {
@@ -100,7 +106,6 @@ namespace fight
                 if (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse1))
                 {
                     MoveCardToCorrectHandPosition();
-                    _cardHandManager.CreateHandCurve();
                     _hoverManager.Enable(true);
                     ResetFlags();
                     ResetCardScale();
@@ -122,8 +127,7 @@ namespace fight
 
         void MoveCardToCorrectHandPosition()
         {
-            CardMover _CardMover = currentCard.gameObject.AddComponent<CardMover>();
-            _CardMover.Initialize(currentCard, currentCardOriginalPosition, 0f, 50f);
+            currentCard.transform.position = currentCardOriginalPosition;
         }
         void ResetFlags() => dragging = cardTargeting = centering = false;
         void ResetCardScale() => currentCard.transform.localScale = currentCardOriginalScale;

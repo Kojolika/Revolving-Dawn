@@ -51,7 +51,7 @@
      <Compile Include="Assets\Scripts\Characters\Health.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Test_Enemy1.cs" />
      <Compile Include="Assets\Scripts\Cards\Card.cs" />
-     <Compile Include="Assets\Scripts\Fight\CardHandManager.cs" />
+     <Compile Include="Assets\Scripts\Fight\CardHandMovementManager.cs" />
      <Compile Include="Assets\Scripts\Fight\HoverManager.cs" />
      <Compile Include="Assets\Scripts\Cards\Bash.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy.cs" />
