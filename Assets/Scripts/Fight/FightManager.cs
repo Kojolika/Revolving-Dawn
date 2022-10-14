@@ -18,10 +18,12 @@ namespace fight{
         [SerializeField] BezierCurve curve;
         [SerializeField] GameObject cardSpawner;
         [SerializeField] GameObject cardDiscarder;
+        [SerializeField]Camera CardTargeting;
 
         CardHandMovementManager _cardHandMovementManager;
         HoverManager _hoverManager;
         PlayCardManager _playCardManager;
+        
 
         public delegate void CardsDrawn(int amount);
         public event CardsDrawn TriggerCardsDrawn;
@@ -36,7 +38,9 @@ namespace fight{
             _hoverManager.Enable(true);
 
             _playCardManager = gameObject.AddComponent<PlayCardManager>();
-            _playCardManager.Enable(false);
+            _playCardManager.Enable(true);
+            
+            
         }
 
         // Update is called once per frame

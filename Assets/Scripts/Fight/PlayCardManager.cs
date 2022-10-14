@@ -7,7 +7,7 @@ namespace fight
     {
 
         [SerializeField] static float CAMERA_DISTANCE;
-        [SerializeField] static float SCALE_CARD_SIZE_BY = 0.6f;
+        [SerializeField] static float SCALE_CARD_SIZE_BY = 0.8f;
 
         HoverManager _hoverManager;
         CardHandMovementManager _cardHandMovementManager;
@@ -23,7 +23,7 @@ namespace fight
         Card currentCard;
         Vector3 currentCardOriginalPosition;
         Vector3 currentCardOriginalScale;
-
+        Camera CardArrowCam;
 
         void Start()
         {
@@ -76,13 +76,12 @@ namespace fight
                     _CardMover.Initialize(currentCard, cardCenterPosition, 0f, 40f);
                     centering = true;
                 }
-                currentCard.transform.localScale = currentCardOriginalScale * SCALE_CARD_SIZE_BY;
+                currentCard.transform.localScale = CardInfo.DEFAULT_SCALE * SCALE_CARD_SIZE_BY;
 
                 //draw arrow for targeting
                 if (!this.gameObject.GetComponent<TargetingArrow>())
                 {
                     _targetingArrow = this.gameObject.AddComponent<TargetingArrow>();
-                    _targetingArrow.Initialize(cardCenterPosition);
                 }
             }
         }
@@ -121,7 +120,7 @@ namespace fight
                 currentCard = _hoverManager.currentCard;
 
                 currentCardOriginalPosition = currentCard.transform.position;
-                currentCardOriginalScale = currentCard.transform.localScale;
+                currentCardOriginalScale = CardInfo.DEFAULT_SCALE;
             }
         }
 

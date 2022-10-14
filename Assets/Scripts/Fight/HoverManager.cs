@@ -9,18 +9,16 @@ namespace fight
         Card previousCard;
         CardHandMovementManager _cardHandMovementManager;
 
-        static float SCALE_AMOUNT = 1.5f;
-        static Vector3 CARD_SCALE;
+        const float SCALE_AMOUNT = 1.5f;
         const float MOVE_SPEED = 8f;
+
         bool resetRequired = false;
         bool isEnabled = false;
         bool IsHandUpdating;
 
         void Start()
         {
-            CARD_SCALE = new Vector3(0.2f, 1, 0.3f);
             _cardHandMovementManager = this.gameObject.GetComponent<CardHandMovementManager>();
-
             _cardHandMovementManager.TriggerIsHandUpdating += HandUpdateEventHandler;
         }
 
@@ -37,6 +35,8 @@ namespace fight
         {
             if (!isEnabled) return;
             if(IsHandUpdating) return;
+
+            Debug.Log("Searching for card...");
             
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -83,14 +83,16 @@ namespace fight
             {
                 if (i == cardposition)
                 {
-                    //Selected card will be centered
-                    card.transform.rotation  = Quaternion.Euler(new Vector3(90f, 90f, -90f));
+                    //Selected card will perfectly straight, moved so the text is in view of the screen clear,
+                    //and scaled up for better visability
+                    card.transform.rotation  = Quaternion.Euler(CardInfo.DEFAULT_CARD_ROTATION);
                     Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0, Camera.main.nearClipPlane));
                     StartCoroutine(_cardHandMovementManager.MoveCardCoroutine(card,
                         new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y - 2f, card.transform.position.z - .1f),
-                        0,
-                        50f));
-                    card.transform.localScale = new Vector3(0.2f, 1, 0.3f) * SCALE_AMOUNT;
+                        0f,
+                        50f
+                    ));
+                    card.transform.localScale = CardInfo.DEFAULT_SCALE * SCALE_AMOUNT;
                     continue;
                 }
 
@@ -110,7 +112,8 @@ namespace fight
                 StartCoroutine(_cardHandMovementManager.MoveCardCoroutine(hand[i],
                     NewPosition,
                     CardHandUtils.ReturnCardRotation(hand.Count, i + 1),
-                    MOVE_SPEED));
+                    MOVE_SPEED
+                ));
             }
 
         }
@@ -132,7 +135,7 @@ namespace fight
 
             for (int i = 0; i < hand.Count; i++)
             {
-                hand[i].transform.localScale = CARD_SCALE; 
+                hand[i].transform.localScale = CardInfo.DEFAULT_SCALE;
             }
         }
     }

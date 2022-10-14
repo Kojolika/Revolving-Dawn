@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e5dd339edc358043952fc5500a9e259, type: 3}
+  m_Name: Heal
+  m_EditorClassIdentifier: 
+  name: Heal
+  description: Heal everything everywhere.
+  artwork: {fileID: 2100000, guid: 133c92c97174a5648ac03abaa069563c, type: 2}
+  border: {fileID: 2100000, guid: 8206bfe5249b0384f8a9282185bcc3f0, type: 2}

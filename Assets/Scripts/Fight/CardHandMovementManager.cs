@@ -19,6 +19,7 @@ namespace fight
         public delegate void IsHandUpdating(bool isUpdating);
         public event IsHandUpdating TriggerIsHandUpdating;
 
+
         void Start()
         {
             _player = this.GetComponent<FightManager>().GetPlayer();
@@ -69,9 +70,11 @@ namespace fight
                 }
                 else{
                     //instantiate the card into the scene
+                    //Quaternion q = Quaternion.Euler(0f,0f,0f);
                     cardDrawn = Instantiate(cardDrawn,
                         cardSpawner.transform.position,
-                        cardDrawn.transform.rotation);
+                        cardDrawn.transform.rotation
+                    );
 
                     hand.Add(cardDrawn);
                 }
@@ -118,8 +121,11 @@ namespace fight
         public IEnumerator MoveCardCoroutine(Card card, Vector3 newPosition, float cardRotation, float speed)
         {
             var hand = _player._playerCardDecks.Hand;
+
+            var rotation = CardInfo.DEFAULT_CARD_ROTATION;
+            rotation.x += cardRotation;
+            card.transform.rotation = Quaternion.Euler(rotation);
             
-            card.transform.rotation = Quaternion.Euler(new Vector3(90f + cardRotation, 90f, -90f));
             while(card.transform.position != newPosition)
             {
                 card.transform.position = Vector3.MoveTowards(card.transform.position, newPosition, speed * Time.deltaTime);

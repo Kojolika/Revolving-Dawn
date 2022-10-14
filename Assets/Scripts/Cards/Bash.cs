@@ -1,9 +1,17 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 namespace cards{
     public class Bash : Card
     {
-        public int cost = 1;
+        [SerializeField] CardScriptableObject cardSO;
+        [SerializeField] TextMeshPro nameText;
+        [SerializeField] TextMeshPro description;
+        [SerializeField] GameObject artwork;
+        [SerializeField] GameObject border;
+
+
         [SerializeField] Targeting target = Targeting.Enemy;
         bool manaCharged = false;
 
@@ -32,6 +40,16 @@ namespace cards{
         public override bool IsManaCharged()
         {
             return manaCharged;
+        }
+
+        public override void LoadInfo(CardScriptableObject cardSO){
+            artwork.GetComponent<MeshRenderer>().material = cardSO.artwork;
+            border.GetComponent<MeshRenderer>().material = cardSO.border;
+            nameText.text = cardSO.name;
+            description.text = cardSO.description;
+        }
+        void Start() {
+            LoadInfo(cardSO);
         }
     }
 }

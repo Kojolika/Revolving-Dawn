@@ -9,23 +9,20 @@ namespace fight
     {
         BezierCurve arrowCurve;
 
-        float zDistance;
+        const float Z_DISTANCE = 15f;
 
         GameObject arrowHead;
         List<GameObject> arrowLinePieces;
         GameObject arrowCurveParent;
-        Vector3 currentCardPosition;
         Vector3 curveStartingPosition;
 
+        Camera CardTargetingCam;
 
-        static int NUM_OF_ARROW_PIECES = 20;
+
+        const int NUM_OF_ARROW_PIECES = 15;
         float t = 0f;
         float pieceSize;
 
-        public void Initialize(Vector3 position)
-        {
-            currentCardPosition = position;
-        }
         void Start()
         {
             //Create Empty Gameobject for curve
@@ -34,10 +31,11 @@ namespace fight
             arrowCurveParent.transform.position = new Vector3(0f, 0f, 0f);
 
             arrowCurve = arrowCurveParent.AddComponent<BezierCurve>();
-            arrowCurve.transform.position = currentCardPosition;
+            
+            CardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"),new Vector3(80f,0f,0f),Quaternion.identity);
+        
+            curveStartingPosition = CardTargetingCam.ViewportToWorldPoint(new Vector3(0.5f, 0.3f, Z_DISTANCE));
 
-            zDistance = 15f;
-            curveStartingPosition = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.3f, zDistance));
             arrowCurve.Reset();
             arrowCurve.SetPoint(1, curveStartingPosition);
 
@@ -54,10 +52,10 @@ namespace fight
         }
         void Update()
         {
-            Vector3 MousePositionInWorldSpace = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zDistance));
+            Vector3 MousePositionInWorldSpace = CardTargetingCam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Z_DISTANCE));
             //MousePositionInWorldSpace = new Vector3(MousePositionInWorldSpace.x / Camera.main.scaledPixelWidth, MousePositionInWorldSpace.y / Camera.main.scaledPixelHeight, MousePositionInWorldSpace.z);
             arrowCurve.SetPoint(2, new Vector3(curveStartingPosition.x, MousePositionInWorldSpace.y, MousePositionInWorldSpace.z));
-            arrowCurve.SetPoint(3, new Vector3(curveStartingPosition.x, MousePositionInWorldSpace.y, MousePositionInWorldSpace.z));
+            arrowCurve.SetPoint(3, new Vector3(curveStartingPosition.x, MousePositionInWorldSpace.y + 2f, MousePositionInWorldSpace.z));
             arrowCurve.SetPoint(4, MousePositionInWorldSpace);
 
             t = pieceSize;
