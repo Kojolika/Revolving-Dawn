@@ -19,7 +19,7 @@ namespace fight
         Camera CardTargetingCam;
 
 
-        const int NUM_OF_ARROW_PIECES = 15;
+        const int NUM_OF_ARROW_PIECES = 20;
         float t = 0f;
         float pieceSize;
 
@@ -32,7 +32,7 @@ namespace fight
 
             arrowCurve = arrowCurveParent.AddComponent<BezierCurve>();
             
-            CardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"),new Vector3(80f,0f,0f),Quaternion.identity);
+            CardTargetingCam = GameObject.Find("CardsTargetingCamera(Clone)").GetComponent<Camera>();
         
             curveStartingPosition = CardTargetingCam.ViewportToWorldPoint(new Vector3(0.5f, 0.3f, Z_DISTANCE));
 
@@ -52,18 +52,21 @@ namespace fight
         }
         void Update()
         {
+            //Set curve based on mouse position
             Vector3 MousePositionInWorldSpace = CardTargetingCam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Z_DISTANCE));
-            //MousePositionInWorldSpace = new Vector3(MousePositionInWorldSpace.x / Camera.main.scaledPixelWidth, MousePositionInWorldSpace.y / Camera.main.scaledPixelHeight, MousePositionInWorldSpace.z);
             arrowCurve.SetPoint(2, new Vector3(curveStartingPosition.x, MousePositionInWorldSpace.y, MousePositionInWorldSpace.z));
             arrowCurve.SetPoint(3, new Vector3(curveStartingPosition.x, MousePositionInWorldSpace.y + 2f, MousePositionInWorldSpace.z));
             arrowCurve.SetPoint(4, MousePositionInWorldSpace);
 
+            utils.Computations comp = new Computations();
             t = pieceSize;
             for (int i = 0; i < NUM_OF_ARROW_PIECES; i++)
             {
+                //set position of pieces on curve
                 arrowLinePieces[i].transform.position = arrowCurve.GetPoint(t);
                 Vector3 ArrowRotation = arrowCurve.GetDirection(t);
-                arrowLinePieces[i].transform.rotation = Quaternion.Euler(0f, 0f, -ArrowRotation.x * 100f);
+                //change rotation of pieces on curve so they follow the curve
+                arrowLinePieces[i].transform.rotation = Quaternion.Euler(0f, 0f, -ArrowRotation.x * comp.Normalize(i,0,NUM_OF_ARROW_PIECES,1,175f));
                 t += pieceSize;
             }
         }

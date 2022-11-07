@@ -12,17 +12,16 @@ namespace fight{
         static int HAND_SIZE = 10;
         bool playerTurn = true;
         [SerializeField] Player currentPlayer;
-
-
-        //Used to intialize the cardhandmanager which isnt a monobehavior
         [SerializeField] BezierCurve curve;
         [SerializeField] GameObject cardSpawner;
         [SerializeField] GameObject cardDiscarder;
-        [SerializeField]Camera CardTargeting;
+        [SerializeField] Camera cardTargetingCam;
+        public List<Enemy> enemies = new List<Enemy>();
 
         CardHandMovementManager _cardHandMovementManager;
         HoverManager _hoverManager;
         PlayCardManager _playCardManager;
+        
         
 
         public delegate void CardsDrawn(int amount);
@@ -39,8 +38,9 @@ namespace fight{
 
             _playCardManager = gameObject.AddComponent<PlayCardManager>();
             _playCardManager.Enable(true);
+
             
-            
+            cardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"),new Vector3(80f,0f,0f),Quaternion.identity);
         }
 
         // Update is called once per frame

@@ -48,6 +48,7 @@
      <Compile Include="Assets\Scripts\Characters\Player\Player.cs" />
      <Compile Include="Assets\Scripts\Fight\CardMover.cs" />
      <Compile Include="Assets\Scripts\utils\Bezier.cs" />
+     <Compile Include="Assets\Scripts\Fight\PlayerTurnInputManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\TestDeck.cs" />
      <Compile Include="Assets\Scripts\Characters\Health.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Test_Enemy1.cs" />
@@ -56,6 +57,9 @@
      <Compile Include="Assets\Scripts\Fight\HoverManager.cs" />
      <Compile Include="Assets\Scripts\Cards\Bash.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy.cs" />
+     <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
+     <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
+     <Compile Include="Assets\Scripts\Fight\PlayerState.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
@@ -78,6 +82,7 @@
      <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+     <None Include="Assets\Hero Knight - Pixel Art\ColorSwap\Sprites-ColorSwap.shader" />
     <Reference Include="UnityEngine">
         <HintPath>C:/Program Files/2020.3.3f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

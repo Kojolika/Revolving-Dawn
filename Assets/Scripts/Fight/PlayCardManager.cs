@@ -173,7 +173,8 @@ namespace fight
         void FixedUpdate()
         {
             if (!isEnabled) return;
-
+            if(isHandUpdating) return;
+            
             //if current card is selected
             if (dragging)
             {
@@ -226,7 +227,7 @@ namespace fight
             DestroyTargetingArrow();
             ClearTargets();
 
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.1f);
             _hoverManager.Enable(true);
         }
         void ResetCardPosition() => currentCard.transform.position = currentCardOriginalPosition;
