@@ -35,8 +35,6 @@ namespace fight
         {
             if (!isEnabled) return;
             if(IsHandUpdating) return;
-
-            Debug.Log("Searching for card...");
             
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -50,7 +48,6 @@ namespace fight
                     //if the previous card is not the one currently mousing over, reset the hand to its normal positions
                     if (currentCard != previousCard)
                     {
-                        //ResetHand();
                         ResetScale();
                         HoverCardEffects(currentCard);
                         resetRequired = true;
@@ -58,14 +55,13 @@ namespace fight
                     previousCard = currentCard;
                 }
                 //if not mousing over a card, reset the hand
-                else
+                else if (resetRequired)
                 {
-                    if (resetRequired)
-                    {
-                        currentCard = previousCard = null;
-                        ResetHand();
-                        resetRequired = false;
-                    }
+                    //resetRequired flag ensures the hand is only reset once when the mouse is not mousing over a card
+                    //and not every update frame
+                    currentCard = previousCard = null;
+                    ResetHand();
+                    resetRequired = false;
                 }
             }
         }
@@ -87,11 +83,7 @@ namespace fight
                     //and scaled up for better visability
                     card.transform.rotation  = Quaternion.Euler(CardInfo.DEFAULT_CARD_ROTATION);
                     Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0, Camera.main.nearClipPlane));
-                    StartCoroutine(_cardHandMovementManager.MoveCardCoroutine(card,
-                        new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y - 2f, card.transform.position.z - .1f),
-                        0f,
-                        50f
-                    ));
+                    card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y - 2f, card.transform.position.z - .1f);
                     card.transform.localScale = CardInfo.DEFAULT_SCALE * SCALE_AMOUNT;
                     continue;
                 }
