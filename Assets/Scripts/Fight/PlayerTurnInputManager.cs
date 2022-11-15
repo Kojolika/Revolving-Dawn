@@ -3,9 +3,10 @@ using cards;
 
 namespace fight
 {
-    public class PlayerTurnInputManager
+    public class PlayerTurnInputManager : MonoBehaviour
     {
-        PlayerState state;
+        public PlayerInputState state;
+        bool isEnabled;
 
         public delegate void MouseEnterPlayArea();
         public event MouseEnterPlayArea TriggerMouseEnterPlayArea;
@@ -15,6 +16,8 @@ namespace fight
 
         public delegate void CardMouseOver(Card card);
         public event CardMouseOver TriggerCardMouseOver;
+        public delegate void NoCardMouseOver();
+        public event NoCardMouseOver TriggerNoCardMouseOver;
 
         public delegate void LeftClicked();
         public event LeftClicked TriggerLeftClicked;
@@ -22,42 +25,114 @@ namespace fight
         public delegate void RightClicked();
         public event RightClicked TriggerRightClicked;
 
-        void OnMouseEnterPlayArea(){
+        void OnMouseEnterPlayArea()
+        {
+            //Debug.Log("Mouse entered play area");
             //Condition checks if any methods are subscribed to this event
-            if(TriggerMouseEnterPlayArea != null){
+            if (TriggerMouseEnterPlayArea != null)
+            {
                 TriggerMouseEnterPlayArea();
             }
         }
-        void OnMouseEnterCardArea(){
+        void OnMouseEnterCardArea()
+        {
+            //Debug.Log("Mouse entered card area");
             //Condition checks if any methods are subscribed to this event
-            if(TriggerMouseEnterCardArea != null){
+            if (TriggerMouseEnterCardArea != null)
+            {
                 TriggerMouseEnterCardArea();
             }
         }
-        void IsCardMouseOver(Card card){
+        void IsCardMouseOver(Card card)
+        {
+            //Debug.Log("Mouse over card: " + card);
             //Condition checks if any methods are subscribed to this event
-            if(TriggerCardMouseOver != null){
+            if (TriggerCardMouseOver != null)
+            {
                 TriggerCardMouseOver(card);
             }
         }
-        void IsLeftClicked(){
+
+        void OnNoCardMouseOver()
+        {
+            //Debug.Log("No mouse over card");
             //Condition checks if any methods are subscribed to this event
-            if(TriggerLeftClicked!= null){
+            if (TriggerNoCardMouseOver != null)
+            {
+                TriggerNoCardMouseOver();
+            }
+        }    
+        void IsLeftClicked()
+        {
+            //Debug.Log("Left Clicked");
+            //Condition checks if any methods are subscribed to this event
+            if (TriggerLeftClicked != null)
+            {
                 TriggerLeftClicked();
             }
         }
-        void IsRightClicked(){
+        void IsRightClicked()
+        {
+            //Debug.Log("Right Clicked");
             //Condition checks if any methods are subscribed to this event
-            if(TriggerRightClicked!= null){
+            if (TriggerRightClicked != null)
+            {
                 TriggerRightClicked();
             }
         }
-        void Start() {
-            state = new DefaultState();
-        }
 
-        void Update() {
-            
+        void MouseOver()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(ray, 100.0F);
+            Card currentCard = null;
+            for (int i = 0; i < hits.Length; i++)
+            {
+                RaycastHit hit = hits[i];
+
+                if (hit.transform.gameObject.GetComponent(typeof(Card)) && currentCard == null)
+                {
+                    currentCard = hit.transform.gameObject.GetComponent(typeof(Card)) as Card;
+                    IsCardMouseOver(currentCard);
+                }
+                if (hit.transform.gameObject.name == "CardHandArea")
+                {
+                    OnMouseEnterCardArea();
+                }
+                else if (hit.transform.gameObject.name == "CardPlayingArea")
+                {
+                    OnMouseEnterPlayArea();
+                }
+            }
+
+            if(currentCard == null)
+            {
+                OnNoCardMouseOver();
+            }
+
+
+        }
+        void MouseInput(){
+
+            if(Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse1))
+            {
+                IsRightClicked();
+            }
+            if(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse0))
+            {
+                IsLeftClicked();
+            }
+        }
+        public void Enable(bool value){
+            isEnabled = value;
+        }
+        void Update()
+        {
+            if(!isEnabled) return;
+
+            MouseOver();
+            MouseInput();
         }
     }
 }

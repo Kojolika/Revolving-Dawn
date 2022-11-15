@@ -205,7 +205,7 @@ namespace fight
             //if there is no selected card, allows the player the ability to select one with left click
             else if (_hoverManager.currentCard && (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse0)))
             {
-                _hoverManager.Enable(false);
+                //_hoverManager.Enable(false);
                 dragging = true;
                 currentCard = _hoverManager.currentCard;
 
@@ -228,7 +228,7 @@ namespace fight
             ClearTargets();
 
             yield return new WaitForSeconds(0.1f);
-            _hoverManager.Enable(true);
+            //_hoverManager.Enable(true);
         }
         void ResetCardPosition() => currentCard.transform.position = currentCardOriginalPosition;
         void ResetCardRotation() => currentCard.transform.rotation = Quaternion.Euler(currentCardOriginalRotation);

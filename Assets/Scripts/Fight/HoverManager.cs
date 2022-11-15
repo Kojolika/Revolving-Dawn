@@ -13,29 +13,14 @@ namespace fight
         const float MOVE_SPEED = 8f;
 
         bool resetRequired = false;
-        bool isEnabled = false;
-        bool IsHandUpdating;
 
-        void Start()
-        {
-            _cardHandMovementManager = this.gameObject.GetComponent<CardHandMovementManager>();
-            _cardHandMovementManager.TriggerIsHandUpdating += HandUpdateEventHandler;
+        public void Initialize(CardHandMovementManager CHMM, Card card){
+            currentCard = card;
+            _cardHandMovementManager = CHMM;
         }
-
-        public void Enable(bool value)
-        {
-            isEnabled = value;
-        }
-
-        public void HandUpdateEventHandler(bool isUpdating){
-            IsHandUpdating = isUpdating;
-        }
-
         private void Update()
         {
-            if (!isEnabled) return;
-            if(IsHandUpdating) return;
-            
+            /*
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 100))
@@ -64,11 +49,13 @@ namespace fight
                     resetRequired = false;
                 }
             }
+            */
         }
 
-        private void HoverCardEffects(Card card)
+        public void HoverCardEffects()
         {
-            var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
+            var card = currentCard;
+            var hand = _cardHandMovementManager.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
             int cardposition = hand.IndexOf(card);
             float moveAmount;
             int positionDifference;
@@ -107,9 +94,8 @@ namespace fight
                     MOVE_SPEED
                 ));
             }
-
         }
-        void ResetHand()
+        public void ResetHand()
         {
             var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
 
@@ -129,6 +115,11 @@ namespace fight
             {
                 hand[i].transform.localScale = CardInfo.DEFAULT_SCALE;
             }
+        }
+
+        void OnDestroy() {
+            //ResetHand();
+            //ResetScale();
         }
     }
 }

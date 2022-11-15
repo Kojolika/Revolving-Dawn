@@ -19,8 +19,9 @@ namespace fight{
         public List<Enemy> enemies = new List<Enemy>();
 
         CardHandMovementManager _cardHandMovementManager;
-        HoverManager _hoverManager;
         PlayCardManager _playCardManager;
+        PlayerTurnInputManager _playerTurnInputManager;
+        PlayerInputState state;
         
         
 
@@ -33,12 +34,17 @@ namespace fight{
             _cardHandMovementManager = gameObject.AddComponent<CardHandMovementManager>();
             _cardHandMovementManager.Initialize(curve, cardSpawner, cardDiscarder);
 
-            _hoverManager = gameObject.AddComponent<HoverManager>();
-            _hoverManager.Enable(true);
-
             _playCardManager = gameObject.AddComponent<PlayCardManager>();
-            _playCardManager.Enable(true);
+            _playCardManager.Enable(false);
 
+            
+            _playerTurnInputManager = gameObject.AddComponent<PlayerTurnInputManager>();
+            state = new PlayerInputState();
+            state.Initialize(_playerTurnInputManager);
+            _playerTurnInputManager.state = state;
+            currentPlayer.GetInputState(_playerTurnInputManager.state);
+            _playerTurnInputManager.Enable(true);
+            
             
             cardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"),new Vector3(80f,0f,0f),Quaternion.identity);
         }
@@ -53,8 +59,6 @@ namespace fight{
                     DrawCards(currentPlayer.DrawAmount);
                 }
             }
-            if (Input.GetKey("a")) _hoverManager.Enable(true);
-            if (Input.GetKey("d")) _hoverManager.Enable(false);
 
         }
 
