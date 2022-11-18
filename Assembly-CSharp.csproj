@@ -44,9 +44,9 @@
      <Compile Include="Assets\Scripts\utils\BezierCurve.cs" />
      <Compile Include="Assets\Scripts\Fight\CardHandUtils.cs" />
      <Compile Include="Assets\Scripts\Fight\FightManager.cs" />
-     <Compile Include="Assets\Scripts\Fight\PlayCardManager.cs" />
+     <Compile Include="Assets\Scripts\Fight\Dragger.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\Player.cs" />
-     <Compile Include="Assets\Scripts\Fight\CardMover.cs" />
+     <Compile Include="Assets\Scripts\Fight\Mover.cs" />
      <Compile Include="Assets\Scripts\utils\Bezier.cs" />
      <Compile Include="Assets\Scripts\Fight\PlayerTurnInputManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\TestDeck.cs" />
@@ -60,7 +60,6 @@
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
-     <Compile Include="Assets\Scripts\Fight\Dragger.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

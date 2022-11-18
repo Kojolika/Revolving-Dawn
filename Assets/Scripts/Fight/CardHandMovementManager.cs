@@ -82,9 +82,12 @@ namespace fight
 
             //update hand in the players class
             _player._playerCardDecks.Hand = hand;
+            CreateHand();
+        }
+        internal void CreateHand()
+        {
             StartCoroutine(CreateHandCurve());
         }
-        
         List<Card> Shuffle(List<Card> DeckToShuffle)
         {
             var rng = new System.Random();

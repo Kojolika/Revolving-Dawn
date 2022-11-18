@@ -6,7 +6,6 @@ namespace fight
     internal class HoverManager : MonoBehaviour
     {
         public Card currentCard;
-        Card previousCard;
         CardHandMovementManager _cardHandMovementManager;
 
         const float SCALE_AMOUNT = 1.5f;
@@ -18,40 +17,6 @@ namespace fight
             currentCard = card;
             _cardHandMovementManager = CHMM;
         }
-        private void Update()
-        {
-            /*
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100))
-            {
-                //if mousing over a card set that as the current card
-                if (hit.transform.gameObject.GetComponent(typeof(Card)))
-                {
-                    currentCard = hit.transform.gameObject.GetComponent(typeof(Card)) as Card;
-
-                    //if the previous card is not the one currently mousing over, reset the hand to its normal positions
-                    if (currentCard != previousCard)
-                    {
-                        ResetScale();
-                        HoverCardEffects(currentCard);
-                        resetRequired = true;
-                    }
-                    previousCard = currentCard;
-                }
-                //if not mousing over a card, reset the hand
-                else if (resetRequired)
-                {
-                    //resetRequired flag ensures the hand is only reset once when the mouse is not mousing over a card
-                    //and not every update frame
-                    currentCard = previousCard = null;
-                    ResetHand();
-                    resetRequired = false;
-                }
-            }
-            */
-        }
-
         public void HoverCardEffects()
         {
             var card = currentCard;
@@ -107,7 +72,7 @@ namespace fight
             ResetScale();
         }
 
-        void ResetScale(){
+        public void ResetScale(){
 
             var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
 
@@ -115,11 +80,6 @@ namespace fight
             {
                 hand[i].transform.localScale = CardInfo.DEFAULT_SCALE;
             }
-        }
-
-        void OnDestroy() {
-            //ResetHand();
-            //ResetScale();
         }
     }
 }

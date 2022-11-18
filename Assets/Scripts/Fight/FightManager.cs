@@ -16,10 +16,9 @@ namespace fight{
         [SerializeField] GameObject cardSpawner;
         [SerializeField] GameObject cardDiscarder;
         [SerializeField] Camera cardTargetingCam;
-        public List<Enemy> enemies = new List<Enemy>();
+        [SerializeField] public List<Enemy> enemies = new List<Enemy>();
 
         CardHandMovementManager _cardHandMovementManager;
-        PlayCardManager _playCardManager;
         PlayerTurnInputManager _playerTurnInputManager;
         PlayerInputState state;
         
@@ -31,14 +30,10 @@ namespace fight{
         // Start is called before the first frame update
         void Start()
         {
-            _cardHandMovementManager = gameObject.AddComponent<CardHandMovementManager>();
+            _cardHandMovementManager = this.gameObject.AddComponent<CardHandMovementManager>();
             _cardHandMovementManager.Initialize(curve, cardSpawner, cardDiscarder);
 
-            _playCardManager = gameObject.AddComponent<PlayCardManager>();
-            _playCardManager.Enable(false);
-
-            
-            _playerTurnInputManager = gameObject.AddComponent<PlayerTurnInputManager>();
+            _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
             state = new PlayerInputState();
             state.Initialize(_playerTurnInputManager);
             _playerTurnInputManager.state = state;

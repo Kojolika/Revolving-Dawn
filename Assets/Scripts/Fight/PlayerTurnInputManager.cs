@@ -1,5 +1,6 @@
 using UnityEngine;
 using cards;
+using characters;
 
 namespace fight
 {
@@ -24,6 +25,9 @@ namespace fight
 
         public delegate void RightClicked();
         public event RightClicked TriggerRightClicked;
+
+        public delegate void EnemyMouseOver(Enemy enemy);
+        public event EnemyMouseOver TriggerEnemyMouseOver;
 
         void OnMouseEnterPlayArea()
         {
@@ -50,6 +54,13 @@ namespace fight
             if (TriggerCardMouseOver != null)
             {
                 TriggerCardMouseOver(card);
+            }
+        }
+        void IsEnemyMouseOver(Enemy enemy)
+        {
+            if(TriggerEnemyMouseOver != null)
+            {
+                TriggerEnemyMouseOver(enemy);
             }
         }
 
@@ -87,6 +98,7 @@ namespace fight
             RaycastHit[] hits;
             hits = Physics.RaycastAll(ray, 100.0F);
             Card currentCard = null;
+            Enemy currentEnemy = null;
             for (int i = 0; i < hits.Length; i++)
             {
                 RaycastHit hit = hits[i];
@@ -103,6 +115,15 @@ namespace fight
                 else if (hit.transform.gameObject.name == "CardPlayingArea")
                 {
                     OnMouseEnterPlayArea();
+                }
+                else if (hit.transform.gameObject.GetComponent<Enemy>())
+                {
+                    currentEnemy = hit.transform.gameObject.GetComponent<Enemy>();
+                    IsEnemyMouseOver(currentEnemy);
+                }
+                else
+                {
+                    IsEnemyMouseOver(null);
                 }
             }
 
