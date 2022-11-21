@@ -1,8 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Targeting_Border : MonoBehaviour
+
+namespace characters
 {
-    public GameObject border;
+    public class Targeting_Border : MonoBehaviour
+    {
+        public GameObject border;
+    }
+
 }
