@@ -98,7 +98,7 @@ namespace fight
 
             currentCard = card;
             hoverManager = _input.gameObject.AddComponent<HoverManager>();
-            hoverManager.Initialize(_input.gameObject.GetComponent<CardHandMovementManager>(),currentCard);
+            hoverManager.Initialize(_input.gameObject.GetComponent<CardHandManager>(),currentCard);
             hoverManager.ResetHand();
             hoverManager.HoverCardEffects();
         } 
@@ -170,7 +170,7 @@ namespace fight
     {
         bool change = false;
         bool leftClicked = false;
-    
+
         Card currentCard;
         Dragger dragger;
         TargetingArrow targetingArrow;
@@ -178,14 +178,16 @@ namespace fight
         Mover mover;
         List<Character> targets = new List<Character>();
         FightManager fightManager = _input.GetComponent<FightManager>();
-        
+        CardHandManager cardHandMovementManager = _input.GetComponent<CardHandManager>();
+
         public TargetingState(Card card)
         {
             currentCard = card;
 
+            _input.TriggerLeftClicked += LeftClicked;
             _input.TriggerRightClicked += RightClicked;
             _input.TriggerMouseEnterCardArea += OnEnterCardArea;
-            _input.TriggerEnemyMouseOver += OnEnemyMouseOver;
+            
 
             cardtarget = card.GetTarget();
             switch (cardtarget)
@@ -193,7 +195,8 @@ namespace fight
                 case 0: //Friendly
                 dragger = currentCard.GetComponent<Dragger>();
 
-                Player player = fightManager.GetPlayer();
+                var player = fightManager.GetPlayer();
+                Debug.Log("Player: " + player);
                 targets.Add(player);
                 player.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
                 break;
@@ -202,7 +205,9 @@ namespace fight
 
                 case 1: //Enemy
                 //Hand is still reseting
-                _input.GetComponent<CardHandMovementManager>().StopAllCoroutines();
+                _input.GetComponent<CardHandManager>().StopAllCoroutines();
+
+                _input.TriggerEnemyMouseOver += OnEnemyMouseOver;
 
                 Vector3 cardCenterPosition = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.16f, CardInfo.CAMERA_DISTANCE));
 
@@ -210,11 +215,6 @@ namespace fight
                 mover.Initialize(cardCenterPosition, 40f);
 
                 targetingArrow = currentCard.gameObject.AddComponent<TargetingArrow>();
-
-                foreach(Enemy e in fightManager.enemies)
-                {
-                    targets.Add(e);
-                }
 
                 break;
 
@@ -275,35 +275,53 @@ namespace fight
                 Exit();
                 return new DefaultState();
             }
+
+            if(targets.Count > 0 && leftClicked)
+            {
+                //Trigger playing the card event
+                cardHandMovementManager.OnCardPlayed(currentCard, targets);
+                
+                Exit();
+                return new DefaultState();
+            }
+
+            leftClicked = false;
             
             return this;
         }
 
+        void LeftClicked() => leftClicked = true;
         void RightClicked() => change = true;
         void OnEnterCardArea() => change = true;
         void OnEnemyMouseOver(Enemy enemy)
         {
-            
-            if(enemy != null) enemy.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
+            if(enemy != null)
+            {
+                enemy.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
+                targets.Add(enemy);
+            } 
             else
             {
-                foreach(Enemy e in targets)
+                for(int i=0; i<targets.Count; i++)
                 {
-                    e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = false;
+                    var target = targets[i];
+                    target.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = false;
+                    targets.Remove(target);
                 }
             }
         } 
         
-        void LeftClicked() => leftClicked = true;
+        
 
         public override void Exit()
         {
+            _input.TriggerLeftClicked -= LeftClicked;
             _input.TriggerRightClicked -= RightClicked;
             _input.TriggerMouseEnterCardArea -= OnEnterCardArea;
-            _input.TriggerEnemyMouseOver -= OnEnemyMouseOver;
+            
 
             //reset the hand
-            _input.GetComponent<CardHandMovementManager>().CreateHand();
+            _input.GetComponent<CardHandManager>().CreateHand();
 
             foreach(Character c in targets)
             {
@@ -318,6 +336,8 @@ namespace fight
 
                 case 1: //Enemy
                 if(mover) GameObject.Destroy(mover);
+
+                _input.TriggerEnemyMouseOver -= OnEnemyMouseOver;
 
                 GameObject.Destroy(targetingArrow);
                 break;

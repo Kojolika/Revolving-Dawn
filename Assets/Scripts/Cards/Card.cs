@@ -1,10 +1,12 @@
 using UnityEngine;
+using characters;
+using System.Collections.Generic;
 
 namespace cards
 {
     public abstract class Card : MonoBehaviour
     {
-        public abstract void Play();
+        public abstract void Play(List<Character> targets);
         public abstract int GetTarget();
         public abstract bool IsManaCharged();
         public abstract void LoadInfo(CardScriptableObject cardSO);

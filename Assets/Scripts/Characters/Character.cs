@@ -5,6 +5,6 @@ using UnityEngine;
 namespace characters{
     public abstract class Character : MonoBehaviour
     {
-        public abstract float GetHealth();
+        public abstract HealthSystem health {get; set;}
     }
 }

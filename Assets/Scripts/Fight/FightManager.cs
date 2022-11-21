@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using characters;
 using cards;
@@ -9,7 +7,6 @@ using utils;
 namespace fight{
     public class FightManager : MonoBehaviour
     {
-        static int HAND_SIZE = 10;
         bool playerTurn = true;
         [SerializeField] Player currentPlayer;
         [SerializeField] BezierCurve curve;
@@ -18,20 +15,17 @@ namespace fight{
         [SerializeField] Camera cardTargetingCam;
         [SerializeField] public List<Enemy> enemies = new List<Enemy>();
 
-        CardHandMovementManager _cardHandMovementManager;
+        CardHandManager _cardHandManager;
         PlayerTurnInputManager _playerTurnInputManager;
         PlayerInputState state;
         
-        
-
-        public delegate void CardsDrawn(int amount);
-        public event CardsDrawn TriggerCardsDrawn;
 
         // Start is called before the first frame update
         void Start()
         {
-            _cardHandMovementManager = this.gameObject.AddComponent<CardHandMovementManager>();
-            _cardHandMovementManager.Initialize(curve, cardSpawner, cardDiscarder);
+            _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
+            _cardHandManager.Initialize(curve, cardSpawner, cardDiscarder);
+            _cardHandManager.TriggerCardsPlayed += CardPlayed;
 
             _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
             state = new PlayerInputState();
@@ -39,7 +33,7 @@ namespace fight{
             _playerTurnInputManager.state = state;
             currentPlayer.GetInputState(_playerTurnInputManager.state);
             _playerTurnInputManager.Enable(true);
-            
+
             
             cardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"),new Vector3(80f,0f,0f),Quaternion.identity);
         }
@@ -51,7 +45,7 @@ namespace fight{
             {
                 if (Input.GetKeyDown("space"))
                 {
-                    DrawCards(currentPlayer.DrawAmount);
+                    _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
                 }
             }
 
@@ -61,11 +55,25 @@ namespace fight{
             return currentPlayer;
         }
 
-        void DrawCards(int drawAmount)
+        void CardPlayed(Card card, List<Character> targets)
         {
-            if(TriggerCardsDrawn != null){
-                TriggerCardsDrawn(drawAmount);
+            UpdateTargetsHealth(targets);
+            ApplyAffectsToTargets(targets);
+        }
+        void UpdateTargetsHealth(List<Character> targets)
+        {
+            foreach(var target in targets)
+            {
+                var healthDisplay = target.GetComponentInChildren<HealthDisplay>();
+                healthDisplay.UpdateHealth();
+
+                healthDisplay.GetComponentInChildren<HealthBarInside>().gameObject.transform.localScale = new Vector3(.5f,1f,1f);
             }
+        }
+
+        void ApplyAffectsToTargets(List<Character> targets)
+        {
+
         }
     }
 }

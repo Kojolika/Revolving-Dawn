@@ -6,14 +6,14 @@ namespace fight
     internal class HoverManager : MonoBehaviour
     {
         public Card currentCard;
-        CardHandMovementManager _cardHandMovementManager;
+        CardHandManager _cardHandMovementManager;
 
         const float SCALE_AMOUNT = 1.5f;
         const float MOVE_SPEED = 8f;
 
         bool resetRequired = false;
 
-        public void Initialize(CardHandMovementManager CHMM, Card card){
+        public void Initialize(CardHandManager CHMM, Card card){
             currentCard = card;
             _cardHandMovementManager = CHMM;
         }

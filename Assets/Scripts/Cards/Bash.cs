@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
+using characters;
 using TMPro;
+using System.Collections.Generic;
 
 namespace cards{
     public class Bash : Card
@@ -15,7 +17,9 @@ namespace cards{
         [SerializeField] Targeting target = Targeting.Enemy;
         bool manaCharged = false;
 
-        public override void Play()
+        float damage = 6;
+
+        public override void Play(List<Character> targets)
         {
             if (IsManaCharged())
             {
@@ -24,6 +28,10 @@ namespace cards{
             else
             {
                 //Play regular effect
+                foreach(var target in targets)
+                {
+                    target.health.DealDamage(damage);
+                }
             }
         }
         public override int GetTarget()
@@ -41,6 +49,7 @@ namespace cards{
         {
             return manaCharged;
         }
+
 
         public override void LoadInfo(CardScriptableObject cardSO){
             artwork.GetComponent<MeshRenderer>().material = cardSO.artwork;
