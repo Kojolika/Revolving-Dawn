@@ -23,11 +23,16 @@ namespace characters
         void Start()
         {
             _health = new HealthSystem();
-            health.SetMaxHealth(50f);
-            health.SetHealth(50f);
+            health.SetMaxHealth(15f);
+            health.SetHealth(15f);
 
             healthDisplay.health = health;
             healthDisplay.UpdateHealth();
+            
+            //not ideal, figure out a better way to do this
+            //possibly a way in character.cs?
+            //this.gameObject.AddComponent<TurnOnShadows>();
+            CastShadows();
         }
     }
 }

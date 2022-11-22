@@ -46,6 +46,8 @@ namespace characters
             _playerCardDecks.Hand = new List<Card>();
             _playerCardDecks.Discard = new List<Card>();
             _playerCardDecks.Lost = new List<Card>();
+
+            this.gameObject.AddComponent<TurnOnShadows>();
         }
 
         public void GetInputState(PlayerInputState state) => _state = state;

@@ -65,9 +65,23 @@ namespace fight{
             foreach(var target in targets)
             {
                 var healthDisplay = target.GetComponentInChildren<HealthDisplay>();
+                var healthBar = healthDisplay.GetComponentInChildren<HealthBarInside>();
+
                 healthDisplay.UpdateHealth();
 
-                healthDisplay.GetComponentInChildren<HealthBarInside>().gameObject.transform.localScale = new Vector3(.5f,1f,1f);
+                if(target.health.GetHealthValue() < 0)
+                {   
+                    Debug.Log("Health below 0");
+                    Debug.Log(target);
+                    if(target.GetComponent<Character>())
+                    {
+                        //Player died
+                    }
+                    else if(target.GetComponent<Enemy>())
+                    {
+                        Debug.Log("Enemy died");
+                    }
+                }
             }
         }
 

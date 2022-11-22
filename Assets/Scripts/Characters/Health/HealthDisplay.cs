@@ -7,17 +7,20 @@ namespace characters
     {
 
         [SerializeField] TextMeshPro healthText;
+        [SerializeField] float healthPercent;
         public HealthSystem health;
-
-        [SerializeField] float hp;
-        [SerializeField] float maxHP;
 
         public void UpdateHealth()
         {
-            Debug.Log("Updated health");
             healthText.text = health.GetHealthValue() + "/" + health.GetMaxHealthValue();
-            hp = health.GetHealthValue();
-            maxHP = health.GetMaxHealthValue();
+            healthPercent = health.GetHealthValue() /health.GetMaxHealthValue();
+            if(healthPercent < 0) healthPercent = 0;
+            
+            this.gameObject.GetComponentInChildren<HealthBarInside>().gameObject.transform.localScale = new Vector3(
+                healthPercent,
+                this.gameObject.GetComponentInChildren<HealthBarInside>().gameObject.transform.localScale.y,
+                this.gameObject.GetComponentInChildren<HealthBarInside>().gameObject.transform.localScale.z
+            );
         }
     }
 }
