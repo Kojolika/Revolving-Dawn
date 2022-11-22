@@ -20,7 +20,7 @@ namespace fight
         public void HoverCardEffects()
         {
             var card = currentCard;
-            var hand = _cardHandMovementManager.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
+            var hand = _cardHandMovementManager.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
             int cardposition = hand.IndexOf(card);
             float moveAmount;
             int positionDifference;
@@ -62,7 +62,7 @@ namespace fight
         }
         public void ResetHand()
         {
-            var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
+            var hand = this.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
 
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
@@ -74,7 +74,7 @@ namespace fight
 
         public void ResetScale(){
 
-            var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
+            var hand = this.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
 
             for (int i = 0; i < hand.Count; i++)
             {

@@ -11,8 +11,8 @@ namespace characters
         public int DrawAmount = 3;
         public HealthSystem _health;
         [SerializeField] HealthDisplay healthDisplay;
-        public PlayerCardDecks _playerCardDecks;
-        public PlayerInputState _state = null;
+        public PlayerCardDecks playerCardDecks;
+        public PlayerInputState state = null;
 
         public override HealthSystem health 
         { 
@@ -26,41 +26,41 @@ namespace characters
             }
         }
 
-        void Start() {
+        void Awake() {
             _health = new HealthSystem();
             health.SetMaxHealth(50f);
             health.SetHealth(50f);
             healthDisplay.health = health;
             healthDisplay.UpdateHealth();
 
-            _playerCardDecks = new PlayerCardDecks();
+            playerCardDecks = new PlayerCardDecks();
 
             //the players deck is loaded in from the current run
             //currently still WIP so its loaded in from a test component
             //Draw pile can be created from the deck
-            _playerCardDecks.Deck = this.GetComponent<TestDeck>().deck;
-            _playerCardDecks.DrawPile = _playerCardDecks.Deck;
+            playerCardDecks.Deck = this.GetComponent<TestDeck>().deck;
+            playerCardDecks.DrawPile = playerCardDecks.Deck;
             
             //These decks are only used during combat
             //Thus are created when Player is loaded into a fight
-            _playerCardDecks.Hand = new List<Card>();
-            _playerCardDecks.Discard = new List<Card>();
-            _playerCardDecks.Lost = new List<Card>();
+            playerCardDecks.Hand = new List<Card>();
+            playerCardDecks.Discard = new List<Card>();
+            playerCardDecks.Lost = new List<Card>();
 
             this.gameObject.AddComponent<TurnOnShadows>();
         }
 
-        public void GetInputState(PlayerInputState state) => _state = state;
+        public void GetInputState(PlayerInputState state) => this.state = state;
         void HandleInput()
         {
-            if(_state == null) return;
+            if(state == null) return;
 
-            PlayerInputState temp = _state.Transition();
-            _state = temp;
+            PlayerInputState temp = state.Transition();
+            state = temp;
         }
         void Update() {
             HandleInput();
-            Debug.Log(_state);
+            //Debug.Log(_state);
         }
     }
 }

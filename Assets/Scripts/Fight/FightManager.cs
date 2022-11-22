@@ -3,11 +3,12 @@ using UnityEngine;
 using characters;
 using cards;
 using utils;
- 
-namespace fight{
+
+namespace fight
+{
     public class FightManager : MonoBehaviour
     {
-        bool playerTurn = true;
+        [SerializeField] bool playerTurn;
         [SerializeField] Player currentPlayer;
         [SerializeField] BezierCurve curve;
         [SerializeField] GameObject cardSpawner;
@@ -18,10 +19,67 @@ namespace fight{
         CardHandManager _cardHandManager;
         PlayerTurnInputManager _playerTurnInputManager;
         PlayerInputState state;
-        
+
+        public delegate void EnemyDiedEffects(Enemy enemy);
+        public event EnemyDiedEffects TriggerEnemyDiedEffects;
+
+        public void OnEnemyDied(Enemy enemy)
+        {
+            if (TriggerEnemyDiedEffects != null)
+            {
+                TriggerEnemyDiedEffects(enemy);
+            }
+        }
+
+        public delegate void PlayerDiedEffects(Player player);
+        public event PlayerDiedEffects TriggerPlayerDiedEffects;
+
+        public void OnPlayerDied(Player player)
+        {
+            if (TriggerPlayerDiedEffects != null)
+            {
+                TriggerPlayerDiedEffects(player);
+            }
+        }
+
+        public delegate void FightWon();
+        public event FightWon TriggerFightWonEffects;
+
+        public void OnFightWon()
+        {
+            Debug.Log("Fight won");
+            if (TriggerFightWonEffects != null)
+            {
+                TriggerFightWonEffects();
+            }
+        }
+
+        public delegate void PlayerTurnStarted();
+        public event PlayerTurnStarted TriggerPlayerTurnStarted;
+
+        public void OnPlayerTurnStarted()
+        {
+            //trigger start of turn effects
+            if (TriggerPlayerTurnStarted != null)
+            {
+                TriggerPlayerTurnStarted();
+            }
+        }
+
+        public delegate void PlayerTurnEnded();
+        public event PlayerTurnStarted TriggerPlayerTurnEnded;
+
+        public void OnPlayerTurnEnded()
+        {
+            //trigger end of turn effects
+            if (TriggerPlayerTurnEnded != null)
+            {
+                TriggerPlayerTurnEnded();
+            }
+        }
 
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
             _cardHandManager.Initialize(curve, cardSpawner, cardDiscarder);
@@ -32,26 +90,33 @@ namespace fight{
             state.Initialize(_playerTurnInputManager);
             _playerTurnInputManager.state = state;
             currentPlayer.GetInputState(_playerTurnInputManager.state);
-            _playerTurnInputManager.Enable(true);
 
-            
-            cardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"),new Vector3(80f,0f,0f),Quaternion.identity);
+            cardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f), Quaternion.identity);
+
+            TriggerPlayerTurnStarted += DefaultStartTurnEffects;
+            TriggerPlayerTurnEnded += DefaultEndTurnEffects;
         }
 
-        // Update is called once per frame
-        void Update()
+        void Start() {
+            Invoke("OnPlayerTurnStarted",1f);
+        }
+        void DefaultStartTurnEffects()
         {
-            if (playerTurn)
-            {
-                if (Input.GetKeyDown("space"))
-                {
-                    _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
-                }
-            }
-
+            playerTurn = true;
+            _playerTurnInputManager.Enable(true);
+            _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
         }
-
-        public Player GetPlayer(){
+        void DefaultEndTurnEffects()
+        {
+            Debug.Log("Hand size before: "+ currentPlayer.playerCardDecks.Hand.Count);
+            playerTurn = false;
+            _playerTurnInputManager.Enable(false);
+            _cardHandManager.DiscardHand();
+            Debug.Log("Discard size: "+ currentPlayer.playerCardDecks.Discard.Count);
+            Debug.Log("Hand size: "+ currentPlayer.playerCardDecks.Hand.Count);
+        }
+        public Player GetPlayer()
+        {
             return currentPlayer;
         }
 
@@ -62,32 +127,42 @@ namespace fight{
         }
         void UpdateTargetsHealth(List<Character> targets)
         {
-            foreach(var target in targets)
+            foreach (var target in targets)
             {
                 var healthDisplay = target.GetComponentInChildren<HealthDisplay>();
                 var healthBar = healthDisplay.GetComponentInChildren<HealthBarInside>();
 
                 healthDisplay.UpdateHealth();
 
-                if(target.health.GetHealthValue() < 0)
-                {   
-                    Debug.Log("Health below 0");
-                    Debug.Log(target);
-                    if(target.GetComponent<Character>())
-                    {
-                        //Player died
-                    }
-                    else if(target.GetComponent<Enemy>())
-                    {
-                        Debug.Log("Enemy died");
-                    }
-                }
+                IsCharacterDead(target);
             }
         }
 
         void ApplyAffectsToTargets(List<Character> targets)
         {
 
+        }
+
+        void IsCharacterDead(Character c)
+        {
+            if (c.health.GetHealthValue() > 0) return;
+
+            if (c.TryGetComponent<Player>(out Player player))
+            {
+                //Player died
+            }
+            else if (c.TryGetComponent<Enemy>(out Enemy enemy))
+            {
+                enemies.Remove(enemy);
+                Destroy(enemy.gameObject);
+
+                OnEnemyDied(enemy);
+            }
+
+            if (enemies.Count < 1)
+            {
+                OnFightWon();
+            }
         }
     }
 }
