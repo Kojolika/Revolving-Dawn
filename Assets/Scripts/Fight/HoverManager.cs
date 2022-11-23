@@ -6,69 +6,21 @@ namespace fight
     internal class HoverManager : MonoBehaviour
     {
         public Card currentCard;
-        Card previousCard;
-        CardHandMovementManager _cardHandMovementManager;
+        CardHandManager _cardHandMovementManager;
 
         const float SCALE_AMOUNT = 1.5f;
         const float MOVE_SPEED = 8f;
 
         bool resetRequired = false;
-        bool isEnabled = false;
-        bool IsHandUpdating;
 
-        void Start()
-        {
-            _cardHandMovementManager = this.gameObject.GetComponent<CardHandMovementManager>();
-            _cardHandMovementManager.TriggerIsHandUpdating += HandUpdateEventHandler;
+        public void Initialize(CardHandManager CHMM, Card card){
+            currentCard = card;
+            _cardHandMovementManager = CHMM;
         }
-
-        public void Enable(bool value)
+        public void HoverCardEffects()
         {
-            isEnabled = value;
-        }
-
-        public void HandUpdateEventHandler(bool isUpdating){
-            IsHandUpdating = isUpdating;
-        }
-
-        private void Update()
-        {
-            if (!isEnabled) return;
-            if(IsHandUpdating) return;
-            
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100))
-            {
-                //if mousing over a card set that as the current card
-                if (hit.transform.gameObject.GetComponent(typeof(Card)))
-                {
-                    currentCard = hit.transform.gameObject.GetComponent(typeof(Card)) as Card;
-
-                    //if the previous card is not the one currently mousing over, reset the hand to its normal positions
-                    if (currentCard != previousCard)
-                    {
-                        ResetScale();
-                        HoverCardEffects(currentCard);
-                        resetRequired = true;
-                    }
-                    previousCard = currentCard;
-                }
-                //if not mousing over a card, reset the hand
-                else if (resetRequired)
-                {
-                    //resetRequired flag ensures the hand is only reset once when the mouse is not mousing over a card
-                    //and not every update frame
-                    currentCard = previousCard = null;
-                    ResetHand();
-                    resetRequired = false;
-                }
-            }
-        }
-
-        private void HoverCardEffects(Card card)
-        {
-            var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
+            var card = currentCard;
+            var hand = _cardHandMovementManager.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
             int cardposition = hand.IndexOf(card);
             float moveAmount;
             int positionDifference;
@@ -107,11 +59,10 @@ namespace fight
                     MOVE_SPEED
                 ));
             }
-
         }
-        void ResetHand()
+        public void ResetHand()
         {
-            var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
+            var hand = this.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
 
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
@@ -121,9 +72,9 @@ namespace fight
             ResetScale();
         }
 
-        void ResetScale(){
+        public void ResetScale(){
 
-            var hand = this.GetComponent<FightManager>().GetPlayer()._playerCardDecks.Hand;
+            var hand = this.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
 
             for (int i = 0; i < hand.Count; i++)
             {

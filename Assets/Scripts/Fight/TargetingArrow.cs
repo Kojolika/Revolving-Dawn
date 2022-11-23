@@ -64,6 +64,8 @@ namespace fight
             {
                 //set position of pieces on curve
                 arrowLinePieces[i].transform.position = arrowCurve.GetPoint(t);
+                arrowLinePieces[i].transform.position = new Vector3(arrowLinePieces[i].transform.position.x, arrowLinePieces[i].transform.position.y,arrowLinePieces[i].transform.position.z + (i * 0.1f));
+
                 Vector3 ArrowRotation = arrowCurve.GetDirection(t);
                 //change rotation of pieces on curve so they follow the curve
                 arrowLinePieces[i].transform.rotation = Quaternion.Euler(0f, 0f, -ArrowRotation.x * comp.Normalize(i,0,NUM_OF_ARROW_PIECES,1,175f));

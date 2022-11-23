@@ -5,6 +5,12 @@ using UnityEngine;
 namespace characters{
     public abstract class Character : MonoBehaviour
     {
-        public abstract float GetHealth();
+        public abstract HealthSystem health {get; set;}
+
+        //turns on shadow casting for character sprites
+        public virtual void CastShadows()
+        {
+            this.gameObject.AddComponent<TurnOnShadows>();
+        }
     }
 }
