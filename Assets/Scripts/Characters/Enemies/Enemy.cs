@@ -5,7 +5,9 @@ using UnityEngine;
 namespace characters{
     public abstract class Enemy : Character
     {
-
+        public abstract List<Move> moves {get; set;}
+        public abstract Vector3 movePosition {get;set;}
+        public abstract void LoadMoves();
     }
 }
 

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1917359487885556969}
   - component: {fileID: 1917359487885556970}
   - component: {fileID: 1917359487885556971}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7c5c870469a5fe948a869965885c1ae2, type: 2}
+  - {fileID: 2100000, guid: 7ecb80541cc99bd408a478a25bbd978a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 1917359488200442445}
   - component: {fileID: 1917359488200442443}
   - component: {fileID: 1917359488200442444}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: -7196294508766795441, guid: 0d1d473cdda32ff4ab026b2702d40a6a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -181,8 +181,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Sample text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0d1d473cdda32ff4ab026b2702d40a6a, type: 2}
+  m_sharedMaterial: {fileID: -7196294508766795441, guid: 0d1d473cdda32ff4ab026b2702d40a6a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 1917359488963012121}
   - component: {fileID: 1917359488963012118}
   - component: {fileID: 1917359488963012119}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Artwork
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -310,7 +310,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 142d1f858f0ac0745aa7908a2f056bb3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -343,7 +343,7 @@ GameObject:
   - component: {fileID: 1917359488971266805}
   - component: {fileID: 1917359488971266803}
   - component: {fileID: 1917359488971266804}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -358,7 +358,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1917359488971266806}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0.7071068, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 2.6516669}
+  m_LocalPosition: {x: 0, y: 0, z: 2.528}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1598081010533181127}
@@ -367,7 +367,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.02359461, y: 0.005}
-  m_SizeDelta: {x: 8.5457, y: 3.7437}
+  m_SizeDelta: {x: 8.546, y: 3.4964}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1917359488971266803
 MeshRenderer:
@@ -465,7 +465,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -514,7 +514,7 @@ GameObject:
   - component: {fileID: 8006092532495443989}
   - component: {fileID: 414267812309660517}
   - component: {fileID: 7778169936422705945}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

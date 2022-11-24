@@ -8,7 +8,7 @@ namespace characters{
         public abstract HealthSystem health {get; set;}
 
         //turns on shadow casting for character sprites
-        public virtual void CastShadows()
+        public void CastShadows()
         {
             this.gameObject.AddComponent<TurnOnShadows>();
         }

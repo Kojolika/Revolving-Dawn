@@ -54,8 +54,11 @@ namespace cards{
         public override void LoadInfo(CardScriptableObject cardSO){
             artwork.GetComponent<MeshRenderer>().material = cardSO.artwork;
             border.GetComponent<MeshRenderer>().material = cardSO.border;
+
             nameText.text = cardSO.name;
             description.text = cardSO.description;
+            nameText.font = CardInfo.DEFAULT_FONT;
+            description.font = CardInfo.DEFAULT_FONT;
         }
         void Start() {
             LoadInfo(cardSO);

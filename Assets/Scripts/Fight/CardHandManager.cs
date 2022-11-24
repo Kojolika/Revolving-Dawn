@@ -60,7 +60,6 @@ namespace fight
         {
             TriggerCardsDrawn += DrawCards;
             TriggerCardsPlayed += CardPlayedEffects;
-            Debug.Log("added draw event subscribers to cardhandmanager");
 
             player = this.GetComponent<FightManager>().GetPlayer();
             movementCoroutines = new List<IEnumerator>();
@@ -97,10 +96,10 @@ namespace fight
             var hand = player.playerCardDecks.Hand;
             var discard = player.playerCardDecks.Discard;
 
-            Debug.Log("removing card: " + card);
             hand.Remove(card);
             discard.Add(card);
             Destroy(card.gameObject);
+            //In the future add an animation that transitions the card to the discard pile
         }
 
         public void DiscardHand()
@@ -108,13 +107,9 @@ namespace fight
             var hand = player.playerCardDecks.Hand;
             int handSize = hand.Count;
 
-            //Removing cards changes the hand size,
-            //this gives an error cuz after it removes 3, the size is only 2
-            //and cannot access hand[i], where i > 2
-            for(int i=0; i<handSize; i++)
+            for(int i=handSize-1; i>=0; i--)
             {
                 var card = hand[i];
-                Debug.Log("calling discardCard at : " + i);
                 DiscardCard(card);
             }
                 

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using characters;
 using cards;
 using utils;
+
 
 namespace fight
 {
@@ -60,6 +62,7 @@ namespace fight
         public void OnPlayerTurnStarted()
         {
             //trigger start of turn effects
+            //No events yet, will for later effects (bleed,poison, etc.)
             if (TriggerPlayerTurnStarted != null)
             {
                 TriggerPlayerTurnStarted();
@@ -72,6 +75,7 @@ namespace fight
         public void OnPlayerTurnEnded()
         {
             //trigger end of turn effects
+            //No events yet, will for later effects (bleed,poison, etc.)
             if (TriggerPlayerTurnEnded != null)
             {
                 TriggerPlayerTurnEnded();
@@ -92,29 +96,89 @@ namespace fight
             currentPlayer.GetInputState(_playerTurnInputManager.state);
 
             cardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f), Quaternion.identity);
-
-            TriggerPlayerTurnStarted += DefaultStartTurnEffects;
-            TriggerPlayerTurnEnded += DefaultEndTurnEffects;
         }
 
         void Start() {
-            Invoke("OnPlayerTurnStarted",1f);
+            Invoke("StartPlayerTurn",1f);
         }
-        void DefaultStartTurnEffects()
+
+        void StartPlayerTurn()
         {
             playerTurn = true;
             _playerTurnInputManager.Enable(true);
             _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
+            foreach(var enemy in enemies)
+            {
+                ChooseEnemyMove(enemy);
+            }
+
+            OnPlayerTurnStarted();
         }
-        void DefaultEndTurnEffects()
+        public void EndPlayerTurn()
         {
-            Debug.Log("Hand size before: "+ currentPlayer.playerCardDecks.Hand.Count);
             playerTurn = false;
             _playerTurnInputManager.Enable(false);
             _cardHandManager.DiscardHand();
-            Debug.Log("Discard size: "+ currentPlayer.playerCardDecks.Discard.Count);
-            Debug.Log("Hand size: "+ currentPlayer.playerCardDecks.Hand.Count);
+
+            OnPlayerTurnEnded();
         }
+
+        void ChooseEnemyMove(Enemy enemy)
+        {
+            int moveCount = enemy.moves.Count;
+            System.Random r = new System.Random();
+            int rInt = r.Next(0, moveCount);
+
+            var nextMove = enemy.moves[rInt];
+
+            LoadMovePreview(nextMove, enemy);
+        }
+        void LoadMovePreview(Move move, Enemy enemy)
+        {
+            GameObject moveImage = new GameObject();
+            moveImage.transform.parent = enemy.transform;
+            moveImage.transform.localPosition = enemy.movePosition;
+            moveImage.name = "moveImage";
+            moveImage.transform.localScale = Vector3.one;
+            
+            var renderer = moveImage.AddComponent<SpriteRenderer>();
+            renderer.sprite = move.GetPreviewImage();
+
+            moveImage.AddComponent<EnemyMoveIconHover>();
+
+            if(move.GetType() == typeof(Attack) || move.GetType() == typeof(Block))
+            {
+                GameObject textParent = new GameObject();
+                textParent.transform.parent = moveImage.transform;
+                textParent.name = "moveIcon";
+
+                TextMeshPro moveNum;
+                moveNum = textParent.AddComponent<TextMeshPro>();
+                moveNum.font = CardInfo.DEFAULT_FONT;
+                moveNum.fontSize = 8;
+                moveNum.sortingOrder = 1;
+                moveNum.horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center;
+                moveNum.verticalAlignment = TMPro.VerticalAlignmentOptions.Middle;
+
+                if(move.GetType() == typeof(Attack))
+                {
+                    var attack = move as Attack;
+                    moveNum.text = "" + attack.damageAmount;
+                    textParent.transform.localPosition = new Vector3(.09f,.02f,0);            
+                }
+                else
+                {
+                    var block = move as Block;
+                    moveNum.text = "" + block.blockAmount;
+                    textParent.transform.localPosition = new Vector3(.1f,.01f,0);
+                }
+            }
+            else if (move.GetType() == typeof(Special))
+            {
+                moveImage.AddComponent<EnemyMoveIconTwirl>();
+            }
+        }
+
         public Player GetPlayer()
         {
             return currentPlayer;
@@ -137,7 +201,6 @@ namespace fight
                 IsCharacterDead(target);
             }
         }
-
         void ApplyAffectsToTargets(List<Character> targets)
         {
 
