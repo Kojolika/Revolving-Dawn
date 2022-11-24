@@ -16,16 +16,20 @@ public class Special : Move {
 
     public override void execute(Character target = null,List<Character> targets = null)
     {
-        if(target)
+        if(target != null)
         {
             Debug.Log("Special on self...");
         }
-        else
+        else if (targets != null)
         {
             foreach(var _target in targets)
             {
                 Debug.Log("Special on all enemies...");
             }
+        }
+        else
+        {
+            Debug.Log("Special with no targets...");
         }
     }
     public override Sprite GetPreviewImage()

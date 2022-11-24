@@ -17,7 +17,7 @@ public class Attack : Move {
 
     public override void execute(Character target = null,List<Character> targets = null)
     {
-        if(target)
+        if(target != null)
         {
             target.health.DealDamage(damageAmount);
         }

@@ -17,6 +17,7 @@ namespace fight
         [SerializeField] GameObject cardDiscarder;
         [SerializeField] Camera cardTargetingCam;
         [SerializeField] public List<Enemy> enemies = new List<Enemy>();
+        Dictionary<Enemy,Move> enemyMoves = new Dictionary<Enemy, Move>();
 
         CardHandManager _cardHandManager;
         PlayerTurnInputManager _playerTurnInputManager;
@@ -107,6 +108,8 @@ namespace fight
             playerTurn = true;
             _playerTurnInputManager.Enable(true);
             _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
+
+            //Select enemy moves for the next enemy turn
             foreach(var enemy in enemies)
             {
                 ChooseEnemyMove(enemy);
@@ -121,8 +124,40 @@ namespace fight
             _cardHandManager.DiscardHand();
 
             OnPlayerTurnEnded();
+            StartEnemyTurn();
         }
+        void StartEnemyTurn()
+        {
+            //Might be better to do a foreach enemy to apply start of turn affects first,
+            //then grab the enemy move from the list with the key enemy
+            foreach(KeyValuePair<Enemy,Move> enemyMove in enemyMoves)
+            {
+                ChooseEnemyTargetsAndExcuteMove(enemyMove);
 
+            }
+        }
+        void ChooseEnemyTargetsAndExcuteMove(KeyValuePair<Enemy,Move> enemyMove)
+        {
+            var move = enemyMove.Value as Move;
+            var enemy = enemyMove.Key as Enemy;
+            switch(move.targeting)
+            {
+                case Move.Enemy_Targeting.Player:
+                enemy.ExecuteMove(move,currentPlayer);
+                break;
+                case Move.Enemy_Targeting.Self:
+                enemy.ExecuteMove(move,enemy);
+                break;
+                case Move.Enemy_Targeting.AllEnemies:
+                //Need to cast somehow...?
+                //enemy.ExecuteMove(move,null,enemies);
+                break;
+                case Move.Enemy_Targeting.All:
+                break;
+                case Move.Enemy_Targeting.None:
+                break;
+            }
+        }
         void ChooseEnemyMove(Enemy enemy)
         {
             int moveCount = enemy.moves.Count;
@@ -131,10 +166,12 @@ namespace fight
 
             var nextMove = enemy.moves[rInt];
 
-            LoadMovePreview(nextMove, enemy);
+            enemyMoves.Add(enemy,nextMove);
+            LoadMovePreview(enemy, nextMove);
         }
-        void LoadMovePreview(Move move, Enemy enemy)
+        void LoadMovePreview(Enemy enemy, Move move)
         {
+            //Create gameobject to hold sprite for enemy move
             GameObject moveImage = new GameObject();
             moveImage.transform.parent = enemy.transform;
             moveImage.transform.localPosition = enemy.movePosition;
@@ -144,10 +181,13 @@ namespace fight
             var renderer = moveImage.AddComponent<SpriteRenderer>();
             renderer.sprite = move.GetPreviewImage();
 
+            //Makes the icon bounce up and down
             moveImage.AddComponent<EnemyMoveIconHover>();
 
             if(move.GetType() == typeof(Attack) || move.GetType() == typeof(Block))
             {
+                //Attacks and Blocks have a number associated with the amount
+                //this creates the number and sets its formatting correctly next to the move sprite
                 GameObject textParent = new GameObject();
                 textParent.transform.parent = moveImage.transform;
                 textParent.name = "moveIcon";
@@ -175,6 +215,7 @@ namespace fight
             }
             else if (move.GetType() == typeof(Special))
             {
+                //Makes the icon swirlfor special moves
                 moveImage.AddComponent<EnemyMoveIconTwirl>();
             }
         }

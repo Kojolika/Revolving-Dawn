@@ -17,7 +17,7 @@ public class Block : Move {
 
     public override void execute(Character target = null,List<Character> targets = null)
     {
-        if(target)
+        if(target != null)
         {
             Debug.Log("Blocking self...");
         }
