@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
 using characters;
-using System.Collections.Generic;
 
 public class Block : Move {
 
