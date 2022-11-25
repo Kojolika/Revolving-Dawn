@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 using characters;
@@ -17,7 +18,6 @@ namespace fight
         [SerializeField] GameObject cardDiscarder;
         [SerializeField] Camera cardTargetingCam;
         [SerializeField] public List<Enemy> enemies = new List<Enemy>();
-        Dictionary<Enemy,Move> enemyMoves = new Dictionary<Enemy, Move>();
 
         CardHandManager _cardHandManager;
         PlayerTurnInputManager _playerTurnInputManager;
@@ -130,33 +130,45 @@ namespace fight
         {
             //Might be better to do a foreach enemy to apply start of turn affects first,
             //then grab the enemy move from the list with the key enemy
-            foreach(KeyValuePair<Enemy,Move> enemyMove in enemyMoves)
+            foreach (Enemy enemy in enemies)
             {
-                ChooseEnemyTargetsAndExcuteMove(enemyMove);
-
+                //Call start of turn effects here
+                //StartOfTurnAffects(target)? (target = enemy in this case)
+                PassInEnemyTargetsAndExcuteMove(enemy);
+                enemy.currentMove = null;
             }
+            StartPlayerTurn();
         }
-        void ChooseEnemyTargetsAndExcuteMove(KeyValuePair<Enemy,Move> enemyMove)
+        
+        void PassInEnemyTargetsAndExcuteMove(Enemy enemy)
         {
-            var move = enemyMove.Value as Move;
-            var enemy = enemyMove.Key as Enemy;
-            switch(move.targeting)
+            List<Character> enemyTargets = new List<Character>();
+            switch(enemy.currentMove.targeting)
             {
                 case Move.Enemy_Targeting.Player:
-                enemy.ExecuteMove(move,currentPlayer);
+                enemyTargets.Add(currentPlayer);
+                enemy.ExecuteMove(targets:enemyTargets);
                 break;
                 case Move.Enemy_Targeting.Self:
-                enemy.ExecuteMove(move,enemy);
+                enemyTargets.Add(enemy);
+                enemy.ExecuteMove(targets:enemyTargets);
                 break;
                 case Move.Enemy_Targeting.AllEnemies:
                 //Need to cast somehow...?
-                //enemy.ExecuteMove(move,null,enemies);
+                enemyTargets.AddRange(enemies);
+                enemy.ExecuteMove(targets:enemyTargets);
                 break;
                 case Move.Enemy_Targeting.All:
+                //Adds all the enemies in enmies to the list all
+                enemyTargets.AddRange(enemies);
+                enemyTargets.Add(currentPlayer);
+                enemy.ExecuteMove(targets:enemyTargets);
                 break;
                 case Move.Enemy_Targeting.None:
+                enemy.ExecuteMove();
                 break;
             }
+            UpdateTargetsHealth(enemyTargets);
         }
         void ChooseEnemyMove(Enemy enemy)
         {
@@ -166,7 +178,7 @@ namespace fight
 
             var nextMove = enemy.moves[rInt];
 
-            enemyMoves.Add(enemy,nextMove);
+            enemy.currentMove = nextMove;
             LoadMovePreview(enemy, nextMove);
         }
         void LoadMovePreview(Enemy enemy, Move move)
@@ -174,7 +186,7 @@ namespace fight
             //Create gameobject to hold sprite for enemy move
             GameObject moveImage = new GameObject();
             moveImage.transform.parent = enemy.transform;
-            moveImage.transform.localPosition = enemy.movePosition;
+            moveImage.transform.localPosition = enemy.moveIconPosition;
             moveImage.name = "moveImage";
             moveImage.transform.localScale = Vector3.one;
             

@@ -17,10 +17,8 @@ public class Attack : Move {
 
     public override void execute(Character target = null,List<Character> targets = null)
     {
-        if(target != null)
-        {
-            target.health.DealDamage(damageAmount);
-        }
+        Debug.Log("calling attack...");
+        if(target != null) target.health.DealDamage(damageAmount);
         else
         {
             foreach(var _target in targets)

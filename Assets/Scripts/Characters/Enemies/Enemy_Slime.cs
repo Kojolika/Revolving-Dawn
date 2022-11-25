@@ -9,6 +9,7 @@ namespace characters
         public HealthSystem _health;
         public List<Move> _moves;
         public Vector3 _movePosition;
+        public Move _currentMove = null;
         [SerializeField] HealthDisplay healthDisplay;
 
         public override HealthSystem health 
@@ -21,10 +22,15 @@ namespace characters
             get => _moves;
             set => _moves = value;   
         }
-        public override Vector3 movePosition 
+        public override Vector3 moveIconPosition 
         { 
             get => _movePosition; 
             set => _movePosition = value; 
+        }
+        public override Move currentMove 
+        { 
+            get => _currentMove; 
+            set => _currentMove = value; 
         }
 
         public override void LoadMoves()
@@ -32,9 +38,9 @@ namespace characters
             _moves = new List<Move>();
 
             Attack attack1 = new Attack();
-            attack1.damageAmount = 99f;
+            attack1.damageAmount = 7f;
             attack1.targeting = Move.Enemy_Targeting.Player;
-            //moves.Add(attack1);
+            moves.Add(attack1);
 
             Block block1 = new Block();
             block1.blockAmount = 10f;
@@ -43,16 +49,8 @@ namespace characters
 
             Special specal1 = new Special();
             specal1.targeting = Move.Enemy_Targeting.AllEnemies;
-            moves.Add(specal1);
+            //moves.Add(specal1);
 
-        }
-        public override void ExecuteMove(Move move,Character target = null,List<Character> targets = null)
-        {
-            if(target != null) move.execute(target);
-            else if(targets != null) move.execute(null,targets);
-            else move.execute();
-
-            //play enemy animation here
         }
         void Start()
         {
