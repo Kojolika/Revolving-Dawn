@@ -8,6 +8,7 @@ namespace characters{
         public abstract List<Move> moves {get; set;}
         public abstract Vector3 moveIconPosition {get;set;}
         public abstract void LoadMoves();
+        public abstract Move currentMove{get; set;}
         public void ExecuteMove(Character target = null,List<Character> targets = null)
         {
             if(target != null) currentMove.execute(target);
@@ -16,7 +17,6 @@ namespace characters{
 
             //Animation here?
         }
-        public abstract Move currentMove{get; set;}
     }
 }
 

@@ -45,11 +45,11 @@ namespace characters
             Block block1 = new Block();
             block1.blockAmount = 10f;
             block1.targeting = Move.Enemy_Targeting.Self;
-            //moves.Add(block1);
+            moves.Add(block1);
 
             Special specal1 = new Special();
             specal1.targeting = Move.Enemy_Targeting.AllEnemies;
-            //moves.Add(specal1);
+            moves.Add(specal1);
 
         }
         void Start()

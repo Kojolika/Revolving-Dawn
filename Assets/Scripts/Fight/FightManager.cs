@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections;
 using UnityEngine;
 using TMPro;
 using characters;
@@ -18,7 +18,7 @@ namespace fight
         [SerializeField] GameObject cardDiscarder;
         [SerializeField] Camera cardTargetingCam;
         [SerializeField] public List<Enemy> enemies = new List<Enemy>();
-
+        [SerializeField] Dictionary<Enemy,GameObject> previousEnemyMoves = new Dictionary<Enemy, GameObject>();
         CardHandManager _cardHandManager;
         PlayerTurnInputManager _playerTurnInputManager;
         PlayerInputState state;
@@ -119,28 +119,36 @@ namespace fight
         }
         public void EndPlayerTurn()
         {
+            //prevents multiple end turn clicks
+            if (playerTurn == false) return;
+
             playerTurn = false;
             _playerTurnInputManager.Enable(false);
             _cardHandManager.DiscardHand();
 
             OnPlayerTurnEnded();
-            StartEnemyTurn();
+            StartCoroutine(StartEnemyTurn());
         }
-        void StartEnemyTurn()
+        IEnumerator StartEnemyTurn()
         {
-            //Might be better to do a foreach enemy to apply start of turn affects first,
-            //then grab the enemy move from the list with the key enemy
+            yield return new WaitForSeconds(1f);
+
             foreach (Enemy enemy in enemies)
             {
                 //Call start of turn effects here
                 //StartOfTurnAffects(target)? (target = enemy in this case)
-                PassInEnemyTargetsAndExcuteMove(enemy);
+
+                ExecuteEnemyMove(enemy);
+
                 enemy.currentMove = null;
+                previousEnemyMoves.TryGetValue(enemy, out var value);
+                previousEnemyMoves.Remove(enemy);
+                Destroy(value);
             }
             StartPlayerTurn();
         }
         
-        void PassInEnemyTargetsAndExcuteMove(Enemy enemy)
+        void ExecuteEnemyMove(Enemy enemy)
         {
             List<Character> enemyTargets = new List<Character>();
             switch(enemy.currentMove.targeting)
@@ -149,21 +157,25 @@ namespace fight
                 enemyTargets.Add(currentPlayer);
                 enemy.ExecuteMove(targets:enemyTargets);
                 break;
+
                 case Move.Enemy_Targeting.Self:
                 enemyTargets.Add(enemy);
                 enemy.ExecuteMove(targets:enemyTargets);
                 break;
+
                 case Move.Enemy_Targeting.AllEnemies:
                 //Need to cast somehow...?
                 enemyTargets.AddRange(enemies);
                 enemy.ExecuteMove(targets:enemyTargets);
                 break;
+
                 case Move.Enemy_Targeting.All:
                 //Adds all the enemies in enmies to the list all
                 enemyTargets.AddRange(enemies);
                 enemyTargets.Add(currentPlayer);
                 enemy.ExecuteMove(targets:enemyTargets);
                 break;
+
                 case Move.Enemy_Targeting.None:
                 enemy.ExecuteMove();
                 break;
@@ -185,6 +197,7 @@ namespace fight
         {
             //Create gameobject to hold sprite for enemy move
             GameObject moveImage = new GameObject();
+            previousEnemyMoves.Add(enemy,moveImage);
             moveImage.transform.parent = enemy.transform;
             moveImage.transform.localPosition = enemy.moveIconPosition;
             moveImage.name = "moveImage";
