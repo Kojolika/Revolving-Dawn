@@ -10,6 +10,7 @@ namespace characters
         public List<Move> _moves;
         public Vector3 _movePosition;
         public Move _currentMove = null;
+        public Vector3 _targetingBorderPosition;
         [SerializeField] HealthDisplay healthDisplay;
 
         public override HealthSystem health 
@@ -31,6 +32,11 @@ namespace characters
         { 
             get => _currentMove; 
             set => _currentMove = value; 
+        }
+        public override Vector3 targetingBorderPosition 
+        { 
+            get => _targetingBorderPosition; 
+            set => _targetingBorderPosition = value; 
         }
 
         public override void LoadMoves()
@@ -62,6 +68,7 @@ namespace characters
             healthDisplay.UpdateHealth();
 
             _movePosition = new Vector3(0f, .4f, 0f);
+            _targetingBorderPosition = new Vector3(0f, -0.1802177f, -0.008749962f);
 
             LoadMoves();
             
