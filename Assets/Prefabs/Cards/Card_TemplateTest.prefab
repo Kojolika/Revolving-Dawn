@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 15737370194880451}
   - component: {fileID: 15737370194880452}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Card_TemplateTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 15737371942248518}
   - component: {fileID: 15737371942248517}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: AlphaArt_Bash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

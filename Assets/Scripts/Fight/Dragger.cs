@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Dragger : MonoBehaviour 
 {
-
+    public Camera cardCam;
     Vector3 mousePos;
     public void StartDragging(Card card)
     {
@@ -16,7 +16,7 @@ public class Dragger : MonoBehaviour
         while(true)
         {
             Vector3 mousePoisiton = new Vector3(Input.mousePosition.x, Input.mousePosition.y, CardInfo.CAMERA_DISTANCE);
-            mousePos = Camera.main.ScreenToWorldPoint(mousePoisiton);
+            mousePos = cardCam.ScreenToWorldPoint(mousePoisiton);
             card.transform.position = mousePos;
 
             yield return null;

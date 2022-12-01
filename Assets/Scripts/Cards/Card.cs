@@ -23,7 +23,8 @@ namespace cards
         None
     }
 
-    public static class CardInfo{
+    public static class CardInfo
+    {
         public static Vector3 DEFAULT_CARD_ROTATION = new Vector3(90f,90f,-90f);
         public static Vector3 DEFAULT_SCALE = new Vector3(0.2f,1f,0.3f);
         public static float CAMERA_DISTANCE = Camera.main.nearClipPlane + 7;

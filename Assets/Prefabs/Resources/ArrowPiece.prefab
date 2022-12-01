@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2256489835015852699}
   - component: {fileID: 6033926821403046118}
   - component: {fileID: 894236578137218802}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: ArrowPiece
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 2998439151808868476}
   - component: {fileID: 1998965311070515318}
   - component: {fileID: 5312656388229624461}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}

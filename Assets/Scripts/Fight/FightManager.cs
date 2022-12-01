@@ -13,15 +13,18 @@ namespace fight
     {
         [SerializeField] bool playerTurn;
         [SerializeField] Player currentPlayer;
-        [SerializeField] BezierCurve curve;
-        [SerializeField] GameObject cardSpawner;
-        [SerializeField] GameObject cardDiscarder;
-        [SerializeField] Camera cardTargetingCam;
+        //[SerializeField] BezierCurve curve;
+        //[SerializeField] GameObject cardSpawner;
+        //[SerializeField] GameObject cardDiscarder;
+        //[SerializeField] Camera cardTargetingCam;
         [SerializeField] public List<Enemy> enemies = new List<Enemy>();
         [SerializeField] Dictionary<Enemy,GameObject> previousEnemyMoves = new Dictionary<Enemy, GameObject>();
         CardHandManager _cardHandManager;
         PlayerTurnInputManager _playerTurnInputManager;
         PlayerInputState state;
+
+        public GameObject cardsCamAndGameArea;
+        public Camera arrowCam;
 
         public delegate void EnemyDiedEffects(Enemy enemy);
         public event EnemyDiedEffects TriggerEnemyDiedEffects;
@@ -86,23 +89,34 @@ namespace fight
         // Start is called before the first frame update
         void Awake()
         {
-            _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
-            _cardHandManager.Initialize(curve, cardSpawner, cardDiscarder);
-            _cardHandManager.TriggerCardsPlayed += CardPlayed;
+            Instantiate(cardsCamAndGameArea);
 
+            _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
+            _cardHandManager.Initialize(cardsCamAndGameArea.GetComponentInChildren<BezierCurve>(), 
+                cardsCamAndGameArea.GetComponentInChildren<CardSpawner>().gameObject, 
+                cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject);
+            _cardHandManager.TriggerCardsPlayed += CardPlayed;
+            
             _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
             state = new PlayerInputState();
             state.Initialize(_playerTurnInputManager);
             _playerTurnInputManager.state = state;
+            _playerTurnInputManager.cardCam = cardsCamAndGameArea.GetComponent<Camera>();
             currentPlayer.GetInputState(_playerTurnInputManager.state);
 
-            cardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f), Quaternion.identity);
+            arrowCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f), Quaternion.identity);
         }
 
         void Start() {
             Invoke("StartPlayerTurn",1f);
         }
 
+        private void Update() {
+            if(Input.GetKey(KeyCode.Space))
+            {
+                _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
+            }
+        }
         void StartPlayerTurn()
         {
             playerTurn = true;
@@ -155,31 +169,27 @@ namespace fight
             {
                 case Move.Enemy_Targeting.Player:
                 enemyTargets.Add(currentPlayer);
-                enemy.ExecuteMove(targets:enemyTargets);
                 break;
 
                 case Move.Enemy_Targeting.Self:
                 enemyTargets.Add(enemy);
-                enemy.ExecuteMove(targets:enemyTargets);
                 break;
 
                 case Move.Enemy_Targeting.AllEnemies:
-                //Need to cast somehow...?
                 enemyTargets.AddRange(enemies);
-                enemy.ExecuteMove(targets:enemyTargets);
                 break;
 
                 case Move.Enemy_Targeting.All:
                 //Adds all the enemies in enmies to the list all
                 enemyTargets.AddRange(enemies);
                 enemyTargets.Add(currentPlayer);
-                enemy.ExecuteMove(targets:enemyTargets);
                 break;
 
                 case Move.Enemy_Targeting.None:
-                enemy.ExecuteMove();
+                //No targets to add
                 break;
             }
+            StartCoroutine(enemy.ExecuteMove(enemyTargets));
             UpdateTargetsHealth(enemyTargets);
         }
         void ChooseEnemyMove(Enemy enemy)

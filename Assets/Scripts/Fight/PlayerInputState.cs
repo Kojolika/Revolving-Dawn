@@ -98,6 +98,7 @@ namespace fight
 
             currentCard = card;
             hoverManager = _input.gameObject.AddComponent<HoverManager>();
+            hoverManager.cardCam = _input.cardCam;
             hoverManager.Initialize(_input.gameObject.GetComponent<CardHandManager>(),currentCard);
             hoverManager.ResetHand();
             hoverManager.HoverCardEffects();
@@ -131,6 +132,7 @@ namespace fight
 
             currentCard.transform.rotation = Quaternion.Euler(CardInfo.DEFAULT_CARD_ROTATION);
             newDragger = currentCard.gameObject.AddComponent<Dragger>();
+            newDragger.cardCam = _input.cardCam;
             newDragger.StartDragging(currentCard);
         }
 
@@ -209,12 +211,13 @@ namespace fight
 
                 _input.TriggerEnemyMouseOver += OnEnemyMouseOver;
 
-                Vector3 cardCenterPosition = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.16f, CardInfo.CAMERA_DISTANCE));
+                Vector3 cardCenterPosition = _input.cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0.25f, CardInfo.CAMERA_DISTANCE));
 
                 mover = currentCard.gameObject.AddComponent<Mover>();
                 mover.Initialize(cardCenterPosition, 40f);
 
                 targetingArrow = currentCard.gameObject.AddComponent<TargetingArrow>();
+                targetingArrow.cardCam = _input.cardCam;
 
                 break;
 

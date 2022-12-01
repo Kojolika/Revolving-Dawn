@@ -16,7 +16,8 @@ namespace fight
         GameObject arrowCurveParent;
         Vector3 curveStartingPosition;
 
-        Camera CardTargetingCam;
+        public Camera cardCam;
+        public Camera arrowCam;
 
 
         const int NUM_OF_ARROW_PIECES = 20;
@@ -32,9 +33,9 @@ namespace fight
 
             arrowCurve = arrowCurveParent.AddComponent<BezierCurve>();
             
-            CardTargetingCam = GameObject.Find("CardsTargetingCamera(Clone)").GetComponent<Camera>();
+            arrowCam = GameObject.Find("CardsTargetingCamera(Clone)").GetComponent<Camera>();
         
-            curveStartingPosition = CardTargetingCam.ViewportToWorldPoint(new Vector3(0.5f, 0.3f, Z_DISTANCE));
+            curveStartingPosition = arrowCam.ViewportToWorldPoint(new Vector3(0.5f, 0.3f, Z_DISTANCE));
 
             arrowCurve.Reset();
             arrowCurve.SetPoint(1, curveStartingPosition);
@@ -53,7 +54,7 @@ namespace fight
         void Update()
         {
             //Set curve based on mouse position
-            Vector3 MousePositionInWorldSpace = CardTargetingCam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Z_DISTANCE));
+            Vector3 MousePositionInWorldSpace = arrowCam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Z_DISTANCE));
             arrowCurve.SetPoint(2, new Vector3(curveStartingPosition.x, MousePositionInWorldSpace.y, MousePositionInWorldSpace.z));
             arrowCurve.SetPoint(3, new Vector3(curveStartingPosition.x, MousePositionInWorldSpace.y + 2f, MousePositionInWorldSpace.z));
             arrowCurve.SetPoint(4, MousePositionInWorldSpace);

@@ -6,6 +6,8 @@ namespace fight
 {
     public class PlayerTurnInputManager : MonoBehaviour
     {
+        public Camera cardCam;
+
         public PlayerInputState state;
         bool isEnabled;
 
@@ -94,7 +96,7 @@ namespace fight
 
         void MouseOver()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = cardCam.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits;
             hits = Physics.RaycastAll(ray, 100.0F);
             Card currentCard = null;

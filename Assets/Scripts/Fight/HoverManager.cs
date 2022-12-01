@@ -7,8 +7,9 @@ namespace fight
     {
         public Card currentCard;
         CardHandManager _cardHandMovementManager;
+        public Camera cardCam;
 
-        const float SCALE_AMOUNT = 1.5f;
+        const float SCALE_AMOUNT = 2f;
         const float MOVE_SPEED = 8f;
 
         bool resetRequired = false;
@@ -34,8 +35,8 @@ namespace fight
                     //Selected card will perfectly straight, moved so the text is in view of the screen clear,
                     //and scaled up for better visability
                     card.transform.rotation  = Quaternion.Euler(CardInfo.DEFAULT_CARD_ROTATION);
-                    Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0, Camera.main.nearClipPlane));
-                    card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y - 2f, card.transform.position.z - .1f);
+                    Vector3 p = cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0, Camera.main.nearClipPlane));
+                    card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y - 2.5f, card.transform.position.z - .1f);
                     card.transform.localScale = CardInfo.DEFAULT_SCALE * SCALE_AMOUNT;
                     continue;
                 }

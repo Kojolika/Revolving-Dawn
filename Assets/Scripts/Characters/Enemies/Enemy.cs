@@ -9,12 +9,14 @@ namespace characters{
         public abstract Vector3 moveIconPosition {get;set;}
         public abstract void LoadMoves();
         public abstract Move currentMove{get; set;}
-        public void ExecuteMove(Character target = null,List<Character> targets = null)
+
+        //public abstract List<IEnumerator[]> animations {get; set;}
+        public IEnumerator ExecuteMove(List<Character> targets = null)
         {
-            if(target != null) currentMove.execute(target);
-            else if(targets != null) currentMove.execute(targets:targets);
+            if(targets != null) currentMove.execute(targets:targets);
             else currentMove.execute();
 
+            yield return null;
             //Animation here?
         }
     }

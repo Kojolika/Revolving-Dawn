@@ -14,6 +14,8 @@ namespace characters
         public PlayerCardDecks playerCardDecks;
         public PlayerInputState state = null;
 
+        public Vector3 _targetingBorderPosition;
+
         public override HealthSystem health 
         { 
             get
@@ -25,7 +27,11 @@ namespace characters
                 health = value;
             }
         }
-
+        public override Vector3 targetingBorderPosition 
+        { 
+            get => _targetingBorderPosition; 
+            set => _targetingBorderPosition = value; 
+        }
         void Awake() {
             _health = new HealthSystem();
             health.SetMaxHealth(50f);
@@ -46,6 +52,8 @@ namespace characters
             playerCardDecks.Hand = new List<Card>();
             playerCardDecks.Discard = new List<Card>();
             playerCardDecks.Lost = new List<Card>();
+
+            _targetingBorderPosition = new Vector3(0.08940053f, -0.1010495f, 0f);
 
             this.gameObject.AddComponent<TurnOnShadows>();
         }

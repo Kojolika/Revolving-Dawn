@@ -15,17 +15,13 @@ public class Block : Move {
         set => _targeting = value; 
     }
 
-    public override void execute(Character target = null,List<Character> targets = null)
+    public override void execute(List<Character> targets = null)
     {
-        if(target != null)
-        {
-            Debug.Log("Blocking self...");
-        }
-        else
+        if(targets != null)
         {
             foreach(var _target in targets)
             {
-                Debug.Log("Blocking all enemies...");
+                Debug.Log("Blocking all targets...");
             }
         }
     }

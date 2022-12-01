@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\Fight\CardHandUtils.cs" />
      <Compile Include="Assets\Scripts\Fight\FightManager.cs" />
      <Compile Include="Assets\Scripts\Fight\Dragger.cs" />
+     <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconTwirl.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\Player.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Attack.cs" />
      <Compile Include="Assets\Scripts\Fight\Mover.cs" />
@@ -59,6 +60,7 @@
      <Compile Include="Assets\Scripts\Characters\Health\HealthSystem.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy_Slime.cs" />
      <Compile Include="Assets\Scripts\Fight\PlayerInputState.cs" />
+     <Compile Include="Assets\Scripts\Characters\Affects\Affect.cs" />
      <Compile Include="Assets\Scripts\Cards\Card.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthDisplay.cs" />
      <Compile Include="Assets\Scripts\Fight\CardHandManager.cs" />
@@ -68,7 +70,8 @@
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Block.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
-     <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconTwirl.cs" />
+     <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
+     <Compile Include="Assets\Scripts\Fight\GameArea\CardDiscarder.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
