@@ -41,8 +41,10 @@
      <Compile Include="Assets\Scripts\Shading\TurnOnShadows.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Move.cs" />
      <Compile Include="Assets\Scripts\Cards\CardScriptableObject.cs" />
+     <Compile Include="Assets\Scripts\Fight\GameArea\CardDiscarder.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\PlayerCardDecks.cs" />
      <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconHover.cs" />
+     <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Special.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthBarInside.cs" />
@@ -70,8 +72,6 @@
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Block.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
-     <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
-     <Compile Include="Assets\Scripts\Fight\GameArea\CardDiscarder.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

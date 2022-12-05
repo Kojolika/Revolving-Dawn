@@ -5,7 +5,6 @@ namespace characters
 {
     public class HealthDisplay : MonoBehaviour
     {
-
         [SerializeField] TextMeshPro healthText;
         [SerializeField] float healthPercent;
         public HealthSystem health;

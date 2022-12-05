@@ -74,6 +74,7 @@ namespace fight
         {
             if(changeDefault)
             {
+                
                 Exit();
                 return new DefaultState();
             }
@@ -94,18 +95,17 @@ namespace fight
         void NewCardForHoverEffects(Card card)
         {
             if(currentCard == card) return;
-            if(hoverManager != null) GameObject.Destroy(hoverManager);
+            if(!hoverManager) hoverManager = _input.gameObject.AddComponent<HoverManager>();
 
             currentCard = card;
-            hoverManager = _input.gameObject.AddComponent<HoverManager>();
             hoverManager.cardCam = _input.cardCam;
             hoverManager.Initialize(_input.gameObject.GetComponent<CardHandManager>(),currentCard);
-            hoverManager.ResetHand();
+            hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
             hoverManager.HoverCardEffects();
         } 
         public override void Exit()
         {
-            hoverManager.ResetHand();
+            hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
             _input.TriggerLeftClicked -= LeftClicked;
             _input.TriggerNoCardMouseOver -= NoCardMouseOver;
             _input.TriggerCardMouseOver -= CardMouseOver;
@@ -226,7 +226,7 @@ namespace fight
                 case 2: //RandomEnemy
                 dragger = currentCard.GetComponent<Dragger>();
 
-                foreach(Enemy e in fightManager.enemies)
+                foreach(Enemy e in fightManager.currentEnemies)
                 {
                     targets.Add(e);
                     e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
@@ -238,7 +238,7 @@ namespace fight
                 case 3: //AllEnemies
                 dragger = currentCard.GetComponent<Dragger>();
 
-                foreach(Enemy e in fightManager.enemies)
+                foreach(Enemy e in fightManager.currentEnemies)
                 {
                     targets.Add(e);
                     e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;   
@@ -251,7 +251,7 @@ namespace fight
                 dragger = currentCard.GetComponent<Dragger>();
 
                 
-                foreach(Enemy e in fightManager.enemies)
+                foreach(Enemy e in fightManager.currentEnemies)
                 {
                     targets.Add(e);
                     
@@ -301,7 +301,8 @@ namespace fight
             if(enemy != null)
             {
                 enemy.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
-                targets.Add(enemy);
+                if(!targets.Contains(enemy))
+                    targets.Add(enemy);
             } 
             else
             {

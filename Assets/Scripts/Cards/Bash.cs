@@ -30,7 +30,8 @@ namespace cards{
                 //Play regular effect
                 foreach(var target in targets)
                 {
-                    target.health.DealDamage(damage);
+                    Debug.Log("Dealing damage: " + damage);
+                    target.healthDisplay.health.DealDamage(damage);
                 }
             }
         }

@@ -22,7 +22,7 @@ public class Attack : Move {
         {
             foreach(var _target in targets)
             {
-                _target.health.DealDamage(damageAmount);
+                _target.healthDisplay.health.DealDamage(damageAmount);
             }
         }
     }

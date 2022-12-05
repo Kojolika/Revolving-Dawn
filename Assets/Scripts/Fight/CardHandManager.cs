@@ -184,9 +184,9 @@ namespace fight
 
         internal void CreateHand()
         {
-            StartCoroutine(CreateHandCurve());
+            StartCoroutine(CreateHandCurve(cardMoveSpeed));
         }
-        internal IEnumerator CreateHandCurve()
+        internal IEnumerator CreateHandCurve(float speed)
         {
             var hand = player.playerCardDecks.Hand;
             //failsale

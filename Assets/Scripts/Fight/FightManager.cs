@@ -12,19 +12,21 @@ namespace fight
     public class FightManager : MonoBehaviour
     {
         [SerializeField] bool playerTurn;
-        [SerializeField] Player currentPlayer;
-        //[SerializeField] BezierCurve curve;
-        //[SerializeField] GameObject cardSpawner;
-        //[SerializeField] GameObject cardDiscarder;
-        //[SerializeField] Camera cardTargetingCam;
-        [SerializeField] public List<Enemy> enemies = new List<Enemy>();
+        Player currentPlayer;
+        [SerializeField] Player player;
+        [SerializeField] List<Enemy> enemies = new List<Enemy>();
+        public List<Enemy> currentEnemies = new List<Enemy>();
+        [SerializeField] GameObject playerSpawnpoint;
+        [SerializeField] List<GameObject> enemySpawnPoints = new List<GameObject>();
         [SerializeField] Dictionary<Enemy,GameObject> previousEnemyMoves = new Dictionary<Enemy, GameObject>();
+
         CardHandManager _cardHandManager;
         PlayerTurnInputManager _playerTurnInputManager;
         PlayerInputState state;
 
-        public GameObject cardsCamAndGameArea;
-        public Camera arrowCam;
+        [SerializeField] GameObject cardsCamAndGameAreaPrefab;
+        GameObject cardsCamAndGameArea;
+        Camera arrowCam;
 
         public delegate void EnemyDiedEffects(Enemy enemy);
         public event EnemyDiedEffects TriggerEnemyDiedEffects;
@@ -89,14 +91,46 @@ namespace fight
         // Start is called before the first frame update
         void Awake()
         {
-            Instantiate(cardsCamAndGameArea);
+            //Probably create a new class in the future for loading objects
+            //and passing refernces to fightmanager when needed
 
+            //Load Game Area for card placement and events
+            cardsCamAndGameArea = Instantiate(cardsCamAndGameAreaPrefab);
+
+            //Load players and enemies
+            //PLAYER
+            currentPlayer = Instantiate(player);
+            currentPlayer.transform.position = playerSpawnpoint.transform.position;
+            currentPlayer.healthDisplay = Instantiate(Resources.Load<HealthDisplay>("HealthBar"), currentPlayer.transform);
+            currentPlayer.InitializeHealth();
+
+            var targetingBorder = currentPlayer.gameObject.AddComponent<Targeting_Border>();
+            targetingBorder.border = Instantiate(Resources.Load<GameObject>("Targeting_Border"), currentPlayer.transform);
+            targetingBorder.border.transform.localPosition = currentPlayer.targetingBorderPosition;
+
+            //ENEMIES
+            for(int i=0; i<enemies.Count; i++)
+            {
+                Enemy e = Instantiate(enemies[i]);
+                currentEnemies.Add(e);
+                e.transform.position = enemySpawnPoints[i].transform.position;
+                e.healthDisplay  = Instantiate(Resources.Load<HealthDisplay>("HealthBar"), e.transform);
+                e.InitializeHealth();
+
+                var eTargetingBorder = e.gameObject.AddComponent<Targeting_Border>();
+                eTargetingBorder.border = Instantiate(Resources.Load<GameObject>("Targeting_Border"), e.transform);
+                eTargetingBorder.border.transform.localPosition = e.targetingBorderPosition;
+            }
+
+
+            //Load Card manager for moving cards around
             _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
             _cardHandManager.Initialize(cardsCamAndGameArea.GetComponentInChildren<BezierCurve>(), 
                 cardsCamAndGameArea.GetComponentInChildren<CardSpawner>().gameObject, 
                 cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject);
             _cardHandManager.TriggerCardsPlayed += CardPlayed;
             
+            //Load playerinputmanager to handle player input during turns
             _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
             state = new PlayerInputState();
             state.Initialize(_playerTurnInputManager);
@@ -104,7 +138,14 @@ namespace fight
             _playerTurnInputManager.cardCam = cardsCamAndGameArea.GetComponent<Camera>();
             currentPlayer.GetInputState(_playerTurnInputManager.state);
 
+            //Load inputmanager for non turn related events
+            //.
+            //
+            //....
+
+            //Load camera that handles the targetting arrow
             arrowCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f), Quaternion.identity);
+
         }
 
         void Start() {
@@ -124,7 +165,7 @@ namespace fight
             _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
 
             //Select enemy moves for the next enemy turn
-            foreach(var enemy in enemies)
+            foreach(var enemy in currentEnemies)
             {
                 ChooseEnemyMove(enemy);
             }
@@ -147,7 +188,7 @@ namespace fight
         {
             yield return new WaitForSeconds(1f);
 
-            foreach (Enemy enemy in enemies)
+            foreach (Enemy enemy in currentEnemies)
             {
                 //Call start of turn effects here
                 //StartOfTurnAffects(target)? (target = enemy in this case)
@@ -176,12 +217,12 @@ namespace fight
                 break;
 
                 case Move.Enemy_Targeting.AllEnemies:
-                enemyTargets.AddRange(enemies);
+                enemyTargets.AddRange(currentEnemies);
                 break;
 
                 case Move.Enemy_Targeting.All:
                 //Adds all the enemies in enmies to the list all
-                enemyTargets.AddRange(enemies);
+                enemyTargets.AddRange(currentEnemies);
                 enemyTargets.Add(currentPlayer);
                 break;
 
@@ -284,7 +325,7 @@ namespace fight
 
         void IsCharacterDead(Character c)
         {
-            if (c.health.GetHealthValue() > 0) return;
+            if (c.healthDisplay.health.GetHealthValue() > 0) return;
 
             if (c.TryGetComponent<Player>(out Player player))
             {
@@ -292,13 +333,13 @@ namespace fight
             }
             else if (c.TryGetComponent<Enemy>(out Enemy enemy))
             {
-                enemies.Remove(enemy);
+                currentEnemies.Remove(enemy);
                 Destroy(enemy.gameObject);
 
                 OnEnemyDied(enemy);
             }
 
-            if (enemies.Count < 1)
+            if (currentEnemies.Count < 1)
             {
                 OnFightWon();
             }

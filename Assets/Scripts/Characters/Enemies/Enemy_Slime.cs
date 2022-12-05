@@ -8,15 +8,17 @@ namespace characters
     {
         public HealthSystem _health;
         public List<Move> _moves;
-        public Vector3 _movePosition;
         public Move _currentMove = null;
-        public Vector3 _targetingBorderPosition;
-        [SerializeField] HealthDisplay healthDisplay;
+        HealthDisplay _healthDisplay;
 
-        public override HealthSystem health 
+        Vector3 _targetingBorderPosition = new Vector3(0f, 0.115f, 0f);
+        Vector3 _movePosition = new Vector3(0f, .4f, 0f);
+        Vector3 _healthBarPosition = new Vector3 (0f, .3f, 0f);
+
+        public override HealthDisplay healthDisplay 
         {
-            get => _health;
-            set => _health = value;
+            get => _healthDisplay;
+            set => _healthDisplay = value;
         }
         public override List<Move> moves
         {
@@ -37,6 +39,11 @@ namespace characters
         { 
             get => _targetingBorderPosition; 
             set => _targetingBorderPosition = value; 
+        }
+        public override Vector3 healthbarPosition
+        { 
+            get => _healthBarPosition; 
+            set => _healthBarPosition = value; 
         }
 
         public override void LoadMoves()
@@ -60,22 +67,16 @@ namespace characters
         }
         void Start()
         {
-            _health = new HealthSystem();
-            health.SetMaxHealth(50f);
-            health.SetHealth(50f);
-
-            healthDisplay.health = health;
-            healthDisplay.UpdateHealth();
-
-            _movePosition = new Vector3(0f, .4f, 0f);
-            _targetingBorderPosition = new Vector3(0f, -0.1802177f, -0.008749962f);
-
             LoadMoves();
             
             //not ideal, figure out a better way to do this
             //possibly a way in character.cs?
             //this.gameObject.AddComponent<TurnOnShadows>();
             CastShadows();
+        }
+        public override void InitializeHealth()
+        {
+            base.InitializeHealth();
         }
     }
 }
