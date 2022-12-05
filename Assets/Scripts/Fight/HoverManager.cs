@@ -7,9 +7,11 @@ namespace fight
     {
         public Card currentCard;
         CardHandManager _cardHandMovementManager;
+        public Camera cardCam;
 
         const float SCALE_AMOUNT = 1.5f;
-        const float MOVE_SPEED = 8f;
+        const float MOVE_SPEED_HOVER = 8f;
+        public const float MOVE_SPEED_RESET = 35f;
 
         bool resetRequired = false;
 
@@ -24,6 +26,7 @@ namespace fight
             int cardposition = hand.IndexOf(card);
             float moveAmount;
             int positionDifference;
+            float selectedCardHoverHeight = 2.25f;
 
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
@@ -34,8 +37,8 @@ namespace fight
                     //Selected card will perfectly straight, moved so the text is in view of the screen clear,
                     //and scaled up for better visability
                     card.transform.rotation  = Quaternion.Euler(CardInfo.DEFAULT_CARD_ROTATION);
-                    Vector3 p = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0, Camera.main.nearClipPlane));
-                    card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y - 2f, card.transform.position.z - .1f);
+                    Vector3 p = cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0, cardCam.nearClipPlane));
+                    card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y + selectedCardHoverHeight, card.transform.position.z - .1f);
                     card.transform.localScale = CardInfo.DEFAULT_SCALE * SCALE_AMOUNT;
                     continue;
                 }
@@ -56,18 +59,18 @@ namespace fight
                 StartCoroutine(_cardHandMovementManager.MoveCardCoroutine(hand[i],
                     NewPosition,
                     CardHandUtils.ReturnCardRotation(hand.Count, i + 1),
-                    MOVE_SPEED
+                    MOVE_SPEED_HOVER
                 ));
             }
         }
-        public void ResetHand()
+        public void ResetHand(float speed)
         {
             var hand = this.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
 
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
 
-            StartCoroutine(_cardHandMovementManager.CreateHandCurve());
+            StartCoroutine(_cardHandMovementManager.CreateHandCurve(speed));
 
             ResetScale();
         }

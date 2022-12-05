@@ -1,24 +1,32 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+using TMPro;
 using characters;
 using cards;
 using utils;
+
 
 namespace fight
 {
     public class FightManager : MonoBehaviour
     {
         [SerializeField] bool playerTurn;
-        [SerializeField] Player currentPlayer;
-        [SerializeField] BezierCurve curve;
-        [SerializeField] GameObject cardSpawner;
-        [SerializeField] GameObject cardDiscarder;
-        [SerializeField] Camera cardTargetingCam;
-        [SerializeField] public List<Enemy> enemies = new List<Enemy>();
+        Player currentPlayer;
+        [SerializeField] Player player;
+        [SerializeField] List<Enemy> enemies = new List<Enemy>();
+        public List<Enemy> currentEnemies = new List<Enemy>();
+        [SerializeField] GameObject playerSpawnpoint;
+        [SerializeField] List<GameObject> enemySpawnPoints = new List<GameObject>();
+        [SerializeField] Dictionary<Enemy,GameObject> previousEnemyMoves = new Dictionary<Enemy, GameObject>();
 
         CardHandManager _cardHandManager;
         PlayerTurnInputManager _playerTurnInputManager;
         PlayerInputState state;
+
+        [SerializeField] GameObject cardsCamAndGameAreaPrefab;
+        GameObject cardsCamAndGameArea;
+        Camera arrowCam;
 
         public delegate void EnemyDiedEffects(Enemy enemy);
         public event EnemyDiedEffects TriggerEnemyDiedEffects;
@@ -60,6 +68,7 @@ namespace fight
         public void OnPlayerTurnStarted()
         {
             //trigger start of turn effects
+            //No events yet, will for later effects (bleed,poison, etc.)
             if (TriggerPlayerTurnStarted != null)
             {
                 TriggerPlayerTurnStarted();
@@ -72,6 +81,7 @@ namespace fight
         public void OnPlayerTurnEnded()
         {
             //trigger end of turn effects
+            //No events yet, will for later effects (bleed,poison, etc.)
             if (TriggerPlayerTurnEnded != null)
             {
                 TriggerPlayerTurnEnded();
@@ -81,40 +91,211 @@ namespace fight
         // Start is called before the first frame update
         void Awake()
         {
-            _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
-            _cardHandManager.Initialize(curve, cardSpawner, cardDiscarder);
-            _cardHandManager.TriggerCardsPlayed += CardPlayed;
+            //Probably create a new class in the future for loading objects
+            //and passing refernces to fightmanager when needed
 
+            //Load Game Area for card placement and events
+            cardsCamAndGameArea = Instantiate(cardsCamAndGameAreaPrefab);
+
+            //Load players and enemies
+            //PLAYER
+            currentPlayer = Instantiate(player);
+            currentPlayer.transform.position = playerSpawnpoint.transform.position;
+            currentPlayer.healthDisplay = Instantiate(Resources.Load<HealthDisplay>("HealthBar"), currentPlayer.transform);
+            currentPlayer.InitializeHealth();
+
+            var targetingBorder = currentPlayer.gameObject.AddComponent<Targeting_Border>();
+            targetingBorder.border = Instantiate(Resources.Load<GameObject>("Targeting_Border"), currentPlayer.transform);
+            targetingBorder.border.transform.localPosition = currentPlayer.targetingBorderPosition;
+
+            //ENEMIES
+            for(int i=0; i<enemies.Count; i++)
+            {
+                Enemy e = Instantiate(enemies[i]);
+                currentEnemies.Add(e);
+                e.transform.position = enemySpawnPoints[i].transform.position;
+                e.healthDisplay  = Instantiate(Resources.Load<HealthDisplay>("HealthBar"), e.transform);
+                e.InitializeHealth();
+
+                var eTargetingBorder = e.gameObject.AddComponent<Targeting_Border>();
+                eTargetingBorder.border = Instantiate(Resources.Load<GameObject>("Targeting_Border"), e.transform);
+                eTargetingBorder.border.transform.localPosition = e.targetingBorderPosition;
+            }
+
+
+            //Load Card manager for moving cards around
+            _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
+            _cardHandManager.Initialize(cardsCamAndGameArea.GetComponentInChildren<BezierCurve>(), 
+                cardsCamAndGameArea.GetComponentInChildren<CardSpawner>().gameObject, 
+                cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject);
+            _cardHandManager.TriggerCardsPlayed += CardPlayed;
+            
+            //Load playerinputmanager to handle player input during turns
             _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
             state = new PlayerInputState();
             state.Initialize(_playerTurnInputManager);
             _playerTurnInputManager.state = state;
+            _playerTurnInputManager.cardCam = cardsCamAndGameArea.GetComponent<Camera>();
             currentPlayer.GetInputState(_playerTurnInputManager.state);
 
-            cardTargetingCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f), Quaternion.identity);
+            //Load inputmanager for non turn related events
+            //.
+            //
+            //....
 
-            TriggerPlayerTurnStarted += DefaultStartTurnEffects;
-            TriggerPlayerTurnEnded += DefaultEndTurnEffects;
+            //Load camera that handles the targetting arrow
+            arrowCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f), Quaternion.identity);
+
         }
 
         void Start() {
-            Invoke("OnPlayerTurnStarted",1f);
+            Invoke("StartPlayerTurn",1f);
         }
-        void DefaultStartTurnEffects()
+
+        private void Update() {
+            if(Input.GetKey(KeyCode.Space))
+            {
+                _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
+            }
+        }
+        void StartPlayerTurn()
         {
             playerTurn = true;
             _playerTurnInputManager.Enable(true);
             _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
+
+            //Select enemy moves for the next enemy turn
+            foreach(var enemy in currentEnemies)
+            {
+                ChooseEnemyMove(enemy);
+            }
+
+            OnPlayerTurnStarted();
         }
-        void DefaultEndTurnEffects()
+        public void EndPlayerTurn()
         {
-            Debug.Log("Hand size before: "+ currentPlayer.playerCardDecks.Hand.Count);
+            //prevents multiple end turn clicks
+            if (playerTurn == false) return;
+
             playerTurn = false;
             _playerTurnInputManager.Enable(false);
             _cardHandManager.DiscardHand();
-            Debug.Log("Discard size: "+ currentPlayer.playerCardDecks.Discard.Count);
-            Debug.Log("Hand size: "+ currentPlayer.playerCardDecks.Hand.Count);
+
+            OnPlayerTurnEnded();
+            StartCoroutine(StartEnemyTurn());
         }
+        IEnumerator StartEnemyTurn()
+        {
+            yield return new WaitForSeconds(1f);
+
+            foreach (Enemy enemy in currentEnemies)
+            {
+                //Call start of turn effects here
+                //StartOfTurnAffects(target)? (target = enemy in this case)
+
+                ExecuteEnemyMove(enemy);
+
+                enemy.currentMove = null;
+                previousEnemyMoves.TryGetValue(enemy, out var value);
+                previousEnemyMoves.Remove(enemy);
+                Destroy(value);
+            }
+            StartPlayerTurn();
+        }
+        
+        void ExecuteEnemyMove(Enemy enemy)
+        {
+            List<Character> enemyTargets = new List<Character>();
+            switch(enemy.currentMove.targeting)
+            {
+                case Move.Enemy_Targeting.Player:
+                enemyTargets.Add(currentPlayer);
+                break;
+
+                case Move.Enemy_Targeting.Self:
+                enemyTargets.Add(enemy);
+                break;
+
+                case Move.Enemy_Targeting.AllEnemies:
+                enemyTargets.AddRange(currentEnemies);
+                break;
+
+                case Move.Enemy_Targeting.All:
+                //Adds all the enemies in enmies to the list all
+                enemyTargets.AddRange(currentEnemies);
+                enemyTargets.Add(currentPlayer);
+                break;
+
+                case Move.Enemy_Targeting.None:
+                //No targets to add
+                break;
+            }
+            StartCoroutine(enemy.ExecuteMove(enemyTargets));
+            UpdateTargetsHealth(enemyTargets);
+        }
+        void ChooseEnemyMove(Enemy enemy)
+        {
+            int moveCount = enemy.moves.Count;
+            System.Random r = new System.Random();
+            int rInt = r.Next(0, moveCount);
+
+            var nextMove = enemy.moves[rInt];
+
+            enemy.currentMove = nextMove;
+            LoadMovePreview(enemy, nextMove);
+        }
+        void LoadMovePreview(Enemy enemy, Move move)
+        {
+            //Create gameobject to hold sprite for enemy move
+            GameObject moveImage = new GameObject();
+            previousEnemyMoves.Add(enemy,moveImage);
+            moveImage.transform.parent = enemy.transform;
+            moveImage.transform.localPosition = enemy.moveIconPosition;
+            moveImage.name = "moveImage";
+            moveImage.transform.localScale = Vector3.one;
+            
+            var renderer = moveImage.AddComponent<SpriteRenderer>();
+            renderer.sprite = move.GetPreviewImage();
+
+            //Makes the icon bounce up and down
+            moveImage.AddComponent<EnemyMoveIconHover>();
+
+            if(move.GetType() == typeof(Attack) || move.GetType() == typeof(Block))
+            {
+                //Attacks and Blocks have a number associated with the amount
+                //this creates the number and sets its formatting correctly next to the move sprite
+                GameObject textParent = new GameObject();
+                textParent.transform.parent = moveImage.transform;
+                textParent.name = "moveIcon";
+
+                TextMeshPro moveNum;
+                moveNum = textParent.AddComponent<TextMeshPro>();
+                moveNum.font = CardInfo.DEFAULT_FONT;
+                moveNum.fontSize = 8;
+                moveNum.sortingOrder = 1;
+                moveNum.horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center;
+                moveNum.verticalAlignment = TMPro.VerticalAlignmentOptions.Middle;
+
+                if(move.GetType() == typeof(Attack))
+                {
+                    var attack = move as Attack;
+                    moveNum.text = "" + attack.damageAmount;
+                    textParent.transform.localPosition = new Vector3(.09f,.02f,0);            
+                }
+                else
+                {
+                    var block = move as Block;
+                    moveNum.text = "" + block.blockAmount;
+                    textParent.transform.localPosition = new Vector3(.1f,.01f,0);
+                }
+            }
+            else if (move.GetType() == typeof(Special))
+            {
+                //Makes the icon swirlfor special moves
+                moveImage.AddComponent<EnemyMoveIconTwirl>();
+            }
+        }
+
         public Player GetPlayer()
         {
             return currentPlayer;
@@ -137,7 +318,6 @@ namespace fight
                 IsCharacterDead(target);
             }
         }
-
         void ApplyAffectsToTargets(List<Character> targets)
         {
 
@@ -145,7 +325,7 @@ namespace fight
 
         void IsCharacterDead(Character c)
         {
-            if (c.health.GetHealthValue() > 0) return;
+            if (c.healthDisplay.health.GetHealthValue() > 0) return;
 
             if (c.TryGetComponent<Player>(out Player player))
             {
@@ -153,13 +333,13 @@ namespace fight
             }
             else if (c.TryGetComponent<Enemy>(out Enemy enemy))
             {
-                enemies.Remove(enemy);
+                currentEnemies.Remove(enemy);
                 Destroy(enemy.gameObject);
 
                 OnEnemyDied(enemy);
             }
 
-            if (enemies.Count < 1)
+            if (currentEnemies.Count < 1)
             {
                 OnFightWon();
             }

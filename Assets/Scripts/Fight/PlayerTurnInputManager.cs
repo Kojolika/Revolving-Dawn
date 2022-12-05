@@ -6,6 +6,8 @@ namespace fight
 {
     public class PlayerTurnInputManager : MonoBehaviour
     {
+        public Camera cardCam;
+
         public PlayerInputState state;
         bool isEnabled;
 
@@ -94,11 +96,10 @@ namespace fight
 
         void MouseOver()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = cardCam.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits;
             hits = Physics.RaycastAll(ray, 100.0F);
             Card currentCard = null;
-            Enemy currentEnemy = null;
             for (int i = 0; i < hits.Length; i++)
             {
                 RaycastHit hit = hits[i];
@@ -116,23 +117,30 @@ namespace fight
                 {
                     OnMouseEnterPlayArea();
                 }
-                else if (hit.transform.gameObject.GetComponent<Enemy>())
-                {
-                    currentEnemy = hit.transform.gameObject.GetComponent<Enemy>();
-                    IsEnemyMouseOver(currentEnemy);
-                }
-                else
-                {
-                    IsEnemyMouseOver(null);
-                }
             }
 
             if(currentCard == null)
             {
                 OnNoCardMouseOver();
             }
+        }
+        void MouseOverCharacter()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(ray, 100.0F);
+            Enemy currentEnemy = null;
+            for (int i = 0; i < hits.Length; i++)
+            {
+                RaycastHit hit = hits[i];
 
-
+                if (hit.transform.gameObject.GetComponent<Enemy>())
+                {
+                    currentEnemy = hit.transform.gameObject.GetComponent<Enemy>();
+                    
+                }
+            }
+            IsEnemyMouseOver(currentEnemy);
         }
         void MouseInput(){
 
@@ -153,6 +161,7 @@ namespace fight
             if(!isEnabled) return;
 
             MouseOver();
+            MouseOverCharacter();
             MouseInput();
         }
     }

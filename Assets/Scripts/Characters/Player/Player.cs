@@ -8,31 +8,31 @@ namespace characters
     //combat instantiation of the player
     public class Player : Character
     {
-        public int DrawAmount = 3;
-        public HealthSystem _health;
-        [SerializeField] HealthDisplay healthDisplay;
+        public int DrawAmount = 5;
+        public HealthDisplay _healthDisplay;
         public PlayerCardDecks playerCardDecks;
         public PlayerInputState state = null;
 
-        public override HealthSystem health 
+        Vector3 _healthBarPosition = new Vector3 (0f, 0.45f, 0f);  
+        Vector3 _targetingBorderPosition = new Vector3(0f, .15f, 0f);
+
+        public override HealthDisplay healthDisplay 
         { 
-            get
-            {
-                return _health;
-            } 
-            set
-            {
-                health = value;
-            }
+            get => _healthDisplay;
+            set => _healthDisplay = value;
+        }
+        public override Vector3 targetingBorderPosition 
+        { 
+            get => _targetingBorderPosition; 
+            set => _targetingBorderPosition = value; 
+        }
+        public override Vector3 healthbarPosition
+        { 
+            get => _healthBarPosition; 
+            set => _healthBarPosition = value; 
         }
 
-        void Awake() {
-            _health = new HealthSystem();
-            health.SetMaxHealth(50f);
-            health.SetHealth(50f);
-            healthDisplay.health = health;
-            healthDisplay.UpdateHealth();
-
+        void Start() {
             playerCardDecks = new PlayerCardDecks();
 
             //the players deck is loaded in from the current run
@@ -50,6 +50,10 @@ namespace characters
             this.gameObject.AddComponent<TurnOnShadows>();
         }
 
+        public override void InitializeHealth()
+        {
+            base.InitializeHealth();
+        }
         public void GetInputState(PlayerInputState state) => this.state = state;
         void HandleInput()
         {
@@ -60,7 +64,6 @@ namespace characters
         }
         void Update() {
             HandleInput();
-            //Debug.Log(_state);
         }
     }
 }

@@ -1,38 +1,82 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 namespace characters
 {
     public class Enemy_Slime : Enemy
     {
         public HealthSystem _health;
+        public List<Move> _moves;
+        public Move _currentMove = null;
+        HealthDisplay _healthDisplay;
 
-        [SerializeField] HealthDisplay healthDisplay;
+        Vector3 _targetingBorderPosition = new Vector3(0f, 0.115f, 0f);
+        Vector3 _movePosition = new Vector3(0f, .4f, 0f);
+        Vector3 _healthBarPosition = new Vector3 (0f, .3f, 0f);
 
-        public override HealthSystem health {
-            get
-            {
-                return _health;
-            }
-            set
-            {
-                _health = value;
-            }
+        public override HealthDisplay healthDisplay 
+        {
+            get => _healthDisplay;
+            set => _healthDisplay = value;
+        }
+        public override List<Move> moves
+        {
+            get => _moves;
+            set => _moves = value;   
+        }
+        public override Vector3 moveIconPosition 
+        { 
+            get => _movePosition; 
+            set => _movePosition = value; 
+        }
+        public override Move currentMove 
+        { 
+            get => _currentMove; 
+            set => _currentMove = value; 
+        }
+        public override Vector3 targetingBorderPosition 
+        { 
+            get => _targetingBorderPosition; 
+            set => _targetingBorderPosition = value; 
+        }
+        public override Vector3 healthbarPosition
+        { 
+            get => _healthBarPosition; 
+            set => _healthBarPosition = value; 
         }
 
+        public override void LoadMoves()
+        {
+            _moves = new List<Move>();
+
+            Attack attack1 = new Attack();
+            attack1.damageAmount = 7f;
+            attack1.targeting = Move.Enemy_Targeting.Player;
+            moves.Add(attack1);
+
+            Block block1 = new Block();
+            block1.blockAmount = 10f;
+            block1.targeting = Move.Enemy_Targeting.Self;
+            moves.Add(block1);
+
+            Special specal1 = new Special();
+            specal1.targeting = Move.Enemy_Targeting.AllEnemies;
+            moves.Add(specal1);
+
+        }
         void Start()
         {
-            _health = new HealthSystem();
-            health.SetMaxHealth(15f);
-            health.SetHealth(15f);
-
-            healthDisplay.health = health;
-            healthDisplay.UpdateHealth();
+            LoadMoves();
             
             //not ideal, figure out a better way to do this
             //possibly a way in character.cs?
             //this.gameObject.AddComponent<TurnOnShadows>();
             CastShadows();
+        }
+        public override void InitializeHealth()
+        {
+            base.InitializeHealth();
         }
     }
 }

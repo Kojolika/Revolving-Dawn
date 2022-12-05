@@ -30,7 +30,8 @@ namespace cards{
                 //Play regular effect
                 foreach(var target in targets)
                 {
-                    target.health.DealDamage(damage);
+                    Debug.Log("Dealing damage: " + damage);
+                    target.healthDisplay.health.DealDamage(damage);
                 }
             }
         }
@@ -54,8 +55,11 @@ namespace cards{
         public override void LoadInfo(CardScriptableObject cardSO){
             artwork.GetComponent<MeshRenderer>().material = cardSO.artwork;
             border.GetComponent<MeshRenderer>().material = cardSO.border;
+
             nameText.text = cardSO.name;
             description.text = cardSO.description;
+            nameText.font = CardInfo.DEFAULT_FONT;
+            description.font = CardInfo.DEFAULT_FONT;
         }
         void Start() {
             LoadInfo(cardSO);

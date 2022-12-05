@@ -60,7 +60,6 @@ namespace fight
         {
             TriggerCardsDrawn += DrawCards;
             TriggerCardsPlayed += CardPlayedEffects;
-            Debug.Log("added draw event subscribers to cardhandmanager");
 
             player = this.GetComponent<FightManager>().GetPlayer();
             movementCoroutines = new List<IEnumerator>();
@@ -97,10 +96,10 @@ namespace fight
             var hand = player.playerCardDecks.Hand;
             var discard = player.playerCardDecks.Discard;
 
-            Debug.Log("removing card: " + card);
             hand.Remove(card);
             discard.Add(card);
-            Destroy(card.gameObject);
+            card.gameObject.SetActive(false);
+            //In the future add an animation that transitions the card to the discard pile
         }
 
         public void DiscardHand()
@@ -108,13 +107,9 @@ namespace fight
             var hand = player.playerCardDecks.Hand;
             int handSize = hand.Count;
 
-            //Removing cards changes the hand size,
-            //this gives an error cuz after it removes 3, the size is only 2
-            //and cannot access hand[i], where i > 2
-            for(int i=0; i<handSize; i++)
+            for(int i=handSize-1; i>=0; i--)
             {
                 var card = hand[i];
-                Debug.Log("calling discardCard at : " + i);
                 DiscardCard(card);
             }
                 
@@ -139,7 +134,7 @@ namespace fight
                     else
                     {
                         //shuffle discard back into drawpile when discard is empty
-                        drawPile = discardPile;
+                        drawPile.AddRange(discardPile);
                         discardPile.Clear();
                         Shuffle(drawPile);
                     }
@@ -152,23 +147,31 @@ namespace fight
                 {
                     //discard drawn card if hand is full
                     discardPile.Add(cardDrawn);
-                    amount--;
+                    //amount--;
                 }
                 else
                 {
-                    //instantiate the card into the scene
-                    //Quaternion q = Quaternion.Euler(0f,0f,0f);
-                    cardDrawn = Instantiate(cardDrawn,
-                        cardSpawner.transform.position,
-                        cardDrawn.transform.rotation
-                    );
-
+                    //if not already instantiated... instiated the card
+                    //otherwise set the card to active
+                    if(cardDrawn.gameObject.scene.name == null)
+                    {
+                        cardDrawn = Instantiate(cardDrawn,
+                            cardSpawner.transform.position,
+                            cardDrawn.transform.rotation
+                        );
+                    }
+                    else 
+                    {
+                        //make it look like its drawing from the drawpile
+                        cardDrawn.transform.position = cardSpawner.transform.position;
+                        cardDrawn.gameObject.SetActive(true);
+                    }
+                    
                     hand.Add(cardDrawn);
                 }
             }
-
             //update hand in the players class
-            player.playerCardDecks.Hand = hand;
+            //player.playerCardDecks.Hand = hand;
             CreateHand();
         }
 
@@ -181,9 +184,9 @@ namespace fight
 
         internal void CreateHand()
         {
-            StartCoroutine(CreateHandCurve());
+            StartCoroutine(CreateHandCurve(cardMoveSpeed));
         }
-        internal IEnumerator CreateHandCurve()
+        internal IEnumerator CreateHandCurve(float speed)
         {
             var hand = player.playerCardDecks.Hand;
             //failsale
