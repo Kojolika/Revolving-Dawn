@@ -13,7 +13,7 @@ namespace characters
         public PlayerCardDecks playerCardDecks;
         public PlayerInputState state = null;
 
-        Vector3 _healthBarPosition = new Vector3 (0f, 0.45f, 0f);  
+        Vector3 _healthBarPosition = new Vector3 (0f, -0.05f, 0f);  
         Vector3 _targetingBorderPosition = new Vector3(0f, .15f, 0f);
 
         public override HealthDisplay healthDisplay 

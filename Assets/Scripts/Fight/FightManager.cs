@@ -24,6 +24,7 @@ namespace fight
         PlayerTurnInputManager _playerTurnInputManager;
         PlayerInputState state;
 
+        [SerializeField] Camera worldUICam;
         [SerializeField] GameObject cardsCamAndGameAreaPrefab;
         GameObject cardsCamAndGameArea;
         Camera arrowCam;
@@ -97,24 +98,33 @@ namespace fight
             //Load Game Area for card placement and events
             cardsCamAndGameArea = Instantiate(cardsCamAndGameAreaPrefab);
 
+            //Load camera for world UI
+            Instantiate(worldUICam, Camera.main.transform.position, Camera.main.transform.rotation, Camera.main.transform);
+
             //Load players and enemies
             //PLAYER
-            currentPlayer = Instantiate(player);
-            currentPlayer.transform.position = playerSpawnpoint.transform.position;
+            currentPlayer = Instantiate(player, playerSpawnpoint.transform.position, Quaternion.identity);
+
+            currentPlayer.transform.LookAt(currentPlayer.transform.position + Camera.main.transform.forward);   
+
             currentPlayer.healthDisplay = Instantiate(Resources.Load<HealthDisplay>("HealthBar"), currentPlayer.transform);
             currentPlayer.InitializeHealth();
 
             var targetingBorder = currentPlayer.gameObject.AddComponent<Targeting_Border>();
             targetingBorder.border = Instantiate(Resources.Load<GameObject>("Targeting_Border"), currentPlayer.transform);
             targetingBorder.border.transform.localPosition = currentPlayer.targetingBorderPosition;
+            
 
             //ENEMIES
             for(int i=0; i<enemies.Count; i++)
             {
-                Enemy e = Instantiate(enemies[i]);
+                Enemy e = Instantiate(enemies[i], enemySpawnPoints[i].transform.position, Quaternion.identity);
                 currentEnemies.Add(e);
-                e.transform.position = enemySpawnPoints[i].transform.position;
+
+                e.transform.LookAt(e.transform.position + Camera.main.transform.forward);
+
                 e.healthDisplay  = Instantiate(Resources.Load<HealthDisplay>("HealthBar"), e.transform);
+                //e.healthDisplay.transform.LookAt(e.healthDisplay.transform.position + Camera.main.transform.forward);
                 e.InitializeHealth();
 
                 var eTargetingBorder = e.gameObject.AddComponent<Targeting_Border>();
@@ -148,8 +158,10 @@ namespace fight
 
         }
 
-        void Start() {
-            Invoke("StartPlayerTurn",1f);
+        IEnumerator Start() {
+
+            yield return new WaitForSeconds(1f);
+            StartPlayerTurn();
         }
 
         private void Update() {
@@ -165,11 +177,7 @@ namespace fight
             _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
 
             //Select enemy moves for the next enemy turn
-            foreach(var enemy in currentEnemies)
-            {
-                ChooseEnemyMove(enemy);
-            }
-
+            ChooseEnemyMoves();
             OnPlayerTurnStarted();
         }
         public void EndPlayerTurn()
@@ -233,24 +241,30 @@ namespace fight
             StartCoroutine(enemy.ExecuteMove(enemyTargets));
             UpdateTargetsHealth(enemyTargets);
         }
-        void ChooseEnemyMove(Enemy enemy)
+        void ChooseEnemyMoves()
         {
-            int moveCount = enemy.moves.Count;
             System.Random r = new System.Random();
-            int rInt = r.Next(0, moveCount);
+            foreach (Enemy enemy in currentEnemies)
+            {
+                int moveCount = enemy.moves.Count;
+                int rInt = r.Next(0, moveCount);
 
-            var nextMove = enemy.moves[rInt];
+                var nextMove = enemy.moves[rInt];
 
-            enemy.currentMove = nextMove;
-            LoadMovePreview(enemy, nextMove);
+                enemy.currentMove = nextMove;
+                LoadMovePreview(enemy, nextMove);
+            }
         }
         void LoadMovePreview(Enemy enemy, Move move)
         {
             //Create gameobject to hold sprite for enemy move
             GameObject moveImage = new GameObject();
             previousEnemyMoves.Add(enemy,moveImage);
+
             moveImage.transform.parent = enemy.transform;
             moveImage.transform.localPosition = enemy.moveIconPosition;
+            moveImage.transform.rotation = enemy.transform.rotation;
+
             moveImage.name = "moveImage";
             moveImage.transform.localScale = Vector3.one;
             
@@ -266,6 +280,7 @@ namespace fight
                 //this creates the number and sets its formatting correctly next to the move sprite
                 GameObject textParent = new GameObject();
                 textParent.transform.parent = moveImage.transform;
+                textParent.transform.rotation = moveImage.transform.rotation;
                 textParent.name = "moveIcon";
 
                 TextMeshPro moveNum;

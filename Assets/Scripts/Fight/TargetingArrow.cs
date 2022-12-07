@@ -49,6 +49,14 @@ namespace fight
                     Quaternion.identity, arrowCurveParent.transform));
             }
 
+        }
+
+        public void ChangeColor(Material m)
+        {
+           foreach(var piece in arrowLinePieces)
+           {
+                piece.GetComponentInChildren<MeshRenderer>().materials[0] = m;
+           } 
 
         }
         void Update()
