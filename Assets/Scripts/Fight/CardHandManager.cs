@@ -24,7 +24,7 @@ namespace fight
         public event IsHandUpdating TriggerIsHandUpdating;
 
         public delegate void CardPlayed(Card card, List<Character> targets);
-        public event CardPlayed TriggerCardsPlayed;
+        public event CardPlayed TriggerCardPlayed;
 
 
         public void IsUpdating(bool isUpdating)
@@ -35,15 +35,15 @@ namespace fight
                 TriggerIsHandUpdating(isUpdating);
             }
         }
-        public void OnCardPlayed(Card card, List<Character> targets)
+        public void PlayCard(Card card, List<Character> targets)
         {
-            if (TriggerCardsPlayed != null)
+            if (TriggerCardPlayed != null)
             {
                 //trigger before all events do
                 //not sure if this is the best way to do it
                 //but it works for now
                 card.Play(targets);
-                TriggerCardsPlayed(card, targets);
+                TriggerCardPlayed(card, targets);
             }
         }
 
@@ -59,7 +59,7 @@ namespace fight
         void Awake()
         {
             TriggerCardsDrawn += DrawCards;
-            TriggerCardsPlayed += CardPlayedEffects;
+            TriggerCardPlayed += CardPlayedEffects;
 
             player = this.GetComponent<FightManager>().GetPlayer();
             movementCoroutines = new List<IEnumerator>();
