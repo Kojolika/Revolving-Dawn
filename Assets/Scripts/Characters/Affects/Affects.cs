@@ -6,30 +6,30 @@ namespace characters
     public class Affects : MonoBehaviour
     {
         //This component will be added to each character when an affect is added
-        public List<Affect> list;
-        List<Affect> startOfTurnList;
-        List<Affect> endOfTurnList;
+        public List<Affect> list = new List<Affect>();
+        List<Affect> startOfTurnList = new List<Affect>();
+        List<Affect> endOfTurnList = new List<Affect>();
+        List<Affect> passiveList = new List<Affect>();
 
-        void Start() 
-        {
-            list = new List<Affect>();
-            startOfTurnList = new List<Affect>();
-            endOfTurnList = new List<Affect>();
-        }
+        GameObject IconHolder = null;
 
         public void AddAffect(Affect affect)
         {
             list.Add(affect);
             
-            if(affect.IsStartOfTurn)
+            if(affect.WhenApplied == TurnTime.StartOfTurn)
             {
                 startOfTurnList.Add(affect);
             }
-            if(affect.IsEndOfTurn)
+            if(affect.WhenApplied == TurnTime.EndOfTurn)
             {
                 endOfTurnList.Add(affect);
             }
 
+            if(!IconHolder)
+            {
+                
+            }
         }
 
         public void ApplyStartOfTurnAffects()
