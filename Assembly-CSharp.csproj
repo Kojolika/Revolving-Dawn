@@ -36,6 +36,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\FightInfo.cs" />
      <Compile Include="Assets\Scripts\utils\Computations.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
      <Compile Include="Assets\Scripts\Shading\TurnOnShadows.cs" />
@@ -47,6 +48,7 @@
      <Compile Include="Assets\Scripts\Characters\Player\PlayerCardDecks.cs" />
      <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconHover.cs" />
      <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
+     <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Processor.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Special.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthBarInside.cs" />
@@ -67,13 +69,20 @@
      <Compile Include="Assets\Scripts\Characters\Affects\Affect.cs" />
      <Compile Include="Assets\Scripts\Cards\Card.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthDisplay.cs" />
+     <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\BuffProcessor.cs" />
      <Compile Include="Assets\Scripts\Fight\CardHandManager.cs" />
      <Compile Include="Assets\Scripts\Fight\HoverManager.cs" />
-     <Compile Include="Assets\Scripts\Cards\Bash.cs" />
+     <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Chain.cs" />
+     <Compile Include="Assets\Scripts\Cards\Warrior\Bash.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Block.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
+     <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\DeBuffProcessor.cs" />
+     <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\ResistProcessor.cs" />
+     <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Weaken.cs" />
+     <Compile Include="Assets\Scripts\Characters\Affects\AffectIcons.cs" />
+     <Compile Include="Assets\Scripts\Cards\Warrior\Cripple.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

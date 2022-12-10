@@ -15,4 +15,4 @@ MonoBehaviour:
   name: Bash
   description: Deal 6 damage
   artwork: {fileID: 2100000, guid: 133c92c97174a5648ac03abaa069563c, type: 2}
-  border: {fileID: 2100000, guid: 8206bfe5249b0384f8a9282185bcc3f0, type: 2}
+  border: {fileID: 2100000, guid: 81e904125e6671b48acfe24d85fa6a45, type: 2}

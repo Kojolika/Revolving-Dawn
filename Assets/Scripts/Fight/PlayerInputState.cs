@@ -283,7 +283,7 @@ namespace fight
             if (targets.Count > 0 && leftClicked)
             {
                 //Trigger playing the card event
-                cardHandMovementManager.OnCardPlayed(currentCard, targets);
+                cardHandMovementManager.PlayCard(currentCard, targets);
 
                 Exit();
                 return new DefaultState();

@@ -138,7 +138,7 @@ namespace fight
             _cardHandManager.Initialize(cardsCamAndGameArea.GetComponentInChildren<BezierCurve>(), 
                 cardsCamAndGameArea.GetComponentInChildren<CardSpawner>().gameObject, 
                 cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject);
-            _cardHandManager.TriggerCardsPlayed += CardPlayed;
+            _cardHandManager.TriggerCardPlayed += CardPlayed;
             
             //Load playerinputmanager to handle player input during turns
             _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
