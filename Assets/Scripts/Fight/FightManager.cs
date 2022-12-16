@@ -29,66 +29,6 @@ namespace fight
         GameObject cardsCamAndGameArea;
         Camera arrowCam;
 
-        public delegate void EnemyDiedEffects(Enemy enemy);
-        public event EnemyDiedEffects TriggerEnemyDiedEffects;
-
-        public void OnEnemyDied(Enemy enemy)
-        {
-            if (TriggerEnemyDiedEffects != null)
-            {
-                TriggerEnemyDiedEffects(enemy);
-            }
-        }
-
-        public delegate void PlayerDiedEffects(Player player);
-        public event PlayerDiedEffects TriggerPlayerDiedEffects;
-
-        public void OnPlayerDied(Player player)
-        {
-            if (TriggerPlayerDiedEffects != null)
-            {
-                TriggerPlayerDiedEffects(player);
-            }
-        }
-
-        public delegate void FightWon();
-        public event FightWon TriggerFightWonEffects;
-
-        public void OnFightWon()
-        {
-            Debug.Log("Fight won");
-            if (TriggerFightWonEffects != null)
-            {
-                TriggerFightWonEffects();
-            }
-        }
-
-        public delegate void PlayerTurnStarted();
-        public event PlayerTurnStarted TriggerPlayerTurnStarted;
-
-        public void OnPlayerTurnStarted()
-        {
-            //trigger start of turn effects
-            //No events yet, will for later effects (bleed,poison, etc.)
-            if (TriggerPlayerTurnStarted != null)
-            {
-                TriggerPlayerTurnStarted();
-            }
-        }
-
-        public delegate void PlayerTurnEnded();
-        public event PlayerTurnStarted TriggerPlayerTurnEnded;
-
-        public void OnPlayerTurnEnded()
-        {
-            //trigger end of turn effects
-            //No events yet, will for later effects (bleed,poison, etc.)
-            if (TriggerPlayerTurnEnded != null)
-            {
-                TriggerPlayerTurnEnded();
-            }
-        }
-
         // Start is called before the first frame update
         void Awake()
         {
@@ -178,7 +118,7 @@ namespace fight
 
             //Select enemy moves for the next enemy turn
             ChooseEnemyMoves();
-            OnPlayerTurnStarted();
+            FightEvents.TriggerPlayerTurnStarted();
         }
         public void EndPlayerTurn()
         {
@@ -189,7 +129,7 @@ namespace fight
             _playerTurnInputManager.Enable(false);
             _cardHandManager.DiscardHand();
 
-            OnPlayerTurnEnded();
+            FightEvents.TriggerPlayerTurnEnded();
             StartCoroutine(StartEnemyTurn());
         }
         IEnumerator StartEnemyTurn()
@@ -283,8 +223,7 @@ namespace fight
                 textParent.transform.rotation = moveImage.transform.rotation;
                 textParent.name = "moveIcon";
 
-                TextMeshPro moveNum;
-                moveNum = textParent.AddComponent<TextMeshPro>();
+                TextMeshPro moveNum = textParent.AddComponent<TextMeshPro>();
                 moveNum.font = CardInfo.DEFAULT_FONT;
                 moveNum.fontSize = 8;
                 moveNum.sortingOrder = 1;
@@ -351,12 +290,12 @@ namespace fight
                 currentEnemies.Remove(enemy);
                 Destroy(enemy.gameObject);
 
-                OnEnemyDied(enemy);
+                FightEvents.OnEnemyDied(enemy);
             }
 
             if (currentEnemies.Count < 1)
             {
-                OnFightWon();
+                FightEvents.OnFightWon();
             }
         }
     }

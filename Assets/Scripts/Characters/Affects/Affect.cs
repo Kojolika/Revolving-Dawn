@@ -1,16 +1,18 @@
 using System;
+using UnityEngine;
 using fightDamageCalc;
 
 namespace characters
 {
-    public abstract class Affect
+    public abstract class Affect: ScriptableObject
     {
         public abstract void Apply(Character target);
         public abstract Tuple<TurnTime,Int16> WhenStackLoss {get; set;}
-        public abstract TurnTime WhenApplied { get; set; }
+        public abstract TurnTime WhenAffectTriggers { get; set; }
         public abstract int Count { get; set; }
         public abstract FightInfo.NumberType NumberType { get; set; }
         public abstract AffectType AffectType { get; set; }
+        public abstract bool IsStackable {get; set;}
 
         public virtual Number process(Number request)
         {

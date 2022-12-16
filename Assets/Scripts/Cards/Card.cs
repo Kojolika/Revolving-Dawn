@@ -11,7 +11,7 @@ namespace cards
         public abstract int GetTarget();
         public abstract bool IsManaCharged();
         public abstract void LoadInfo(CardScriptableObject cardSO);
-        
+        public Player currentPlayer;
     }
 
     enum Targeting

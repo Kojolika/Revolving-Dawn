@@ -23,7 +23,8 @@ namespace fightDamageCalc
             chain = new BuffProcessor(
                     new DeBuffProcessor(
                     new ResistProcessor(
-                    null)));
+                    new RoundingProcessor(
+                    null))));
         }
 
         public Number process(Number request, Character target)

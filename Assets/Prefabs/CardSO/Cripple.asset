@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Cripple
   m_EditorClassIdentifier: 
   name: Cripple
-  description: Deal 4 damage. Apply 2 Weaken.
+  description: Deal 4 damage. NEWLINE Apply 2 Weaken.
   artwork: {fileID: 2100000, guid: b699d00d18578514695699f3ef2f3998, type: 2}
   border: {fileID: 2100000, guid: 81e904125e6671b48acfe24d85fa6a45, type: 2}

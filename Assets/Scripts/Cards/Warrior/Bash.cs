@@ -13,11 +13,8 @@ namespace cards{
         [SerializeField] TextMeshPro description;
         [SerializeField] GameObject artwork;
         [SerializeField] GameObject border;
-
-
         [SerializeField] Targeting target = Targeting.Enemy;
         bool manaCharged = false;
-
         float damage = 6;
 
         public override void Play(List<Character> targets)
@@ -26,14 +23,13 @@ namespace cards{
             if (IsManaCharged())
             {
                 //Play powerful effect
-            }
+            } 
             else
             {
                 //Play regular effect
                 foreach(var target in targets)
                 {
-                    float finalDamage = chain.process(new Number(damage, FightInfo.NumberType.Attack), target).Amount;
-                    target.healthDisplay.health.DealDamage(finalDamage);
+                    currentPlayer.PerformNumberAction(new Number(damage, FightInfo.NumberType.Attack),target);
                 }
             }
         }
@@ -54,7 +50,8 @@ namespace cards{
         }
 
 
-        public override void LoadInfo(CardScriptableObject cardSO){
+        public override void LoadInfo(CardScriptableObject cardSO)
+        {
             artwork.GetComponent<MeshRenderer>().material = cardSO.artwork;
             border.GetComponent<MeshRenderer>().material = cardSO.border;
 
@@ -63,6 +60,7 @@ namespace cards{
             nameText.font = CardInfo.DEFAULT_FONT;
             description.font = CardInfo.DEFAULT_FONT;
         }
+        
         void Awake() {
             LoadInfo(cardSO);
         }

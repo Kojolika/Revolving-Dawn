@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using characters;
 using TMPro;
+using characters;
 using fightDamageCalc;
 
 
@@ -23,7 +23,6 @@ namespace cards{
 
         public override void Play(List<Character> targets)
         {
-            Chain chain = new Chain();
             if (IsManaCharged())
             {
                 //Play powerful effect
@@ -34,19 +33,10 @@ namespace cards{
                 foreach(var target in targets)
                 {
                     //Deal damage
-                    float finalDamage = chain.process(new Number(damage, FightInfo.NumberType.Attack), target).Amount;
-                    target.healthDisplay.health.DealDamage(finalDamage);
+                    currentPlayer.PerformNumberAction(new Number(damage, FightInfo.NumberType.Attack),target);
 
                     //Add affect
-                    if(target.gameObject.TryGetComponent<Affects>(out Affects affects))
-                    {
-                        affects.AddAffect(new Weaken(weakenAmount));
-                    }
-                    else
-                    {
-                        var newAffects = target.gameObject.AddComponent<Affects>();
-                        newAffects.AddAffect(new Weaken(weakenAmount));
-                    }
+                    currentPlayer.PerformAffectAction(new Weaken(2), target);
                 }
             }
         }
@@ -78,6 +68,9 @@ namespace cards{
         }
         void Awake() {
             LoadInfo(cardSO);
+
+            //Use this to update text damage later
+            description.text = description.text.Replace("NEWLINE","\n");
         }
     }
 }

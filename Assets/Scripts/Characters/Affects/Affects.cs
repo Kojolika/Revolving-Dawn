@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace characters
@@ -7,63 +8,46 @@ namespace characters
     {
         //This component will be added to each character when an affect is added
         public List<Affect> list = new List<Affect>();
-        List<Affect> startOfTurnList = new List<Affect>();
-        List<Affect> endOfTurnList = new List<Affect>();
-        List<Affect> passiveList = new List<Affect>();
-
-        GameObject IconHolder = null;
+        AffectIcons iconHolder = null;
 
         public void AddAffect(Affect affect)
         {
-            list.Add(affect);
-            
-            if(affect.WhenApplied == TurnTime.StartOfTurn)
+            if (!iconHolder)
             {
-                startOfTurnList.Add(affect);
-            }
-            if(affect.WhenApplied == TurnTime.EndOfTurn)
-            {
-                endOfTurnList.Add(affect);
+                iconHolder = this.gameObject.GetComponentInChildren<HealthDisplay>().gameObject.GetComponentInChildren<AffectIcons>();
+                iconHolder.Initialize(this);
             }
 
-            if(!IconHolder)
+            Affect affectInList = list.FirstOrDefault(affectToCheck => affectToCheck.GetType() == affect.GetType());
+
+            if (affectInList != null)
             {
-                
+                if (affect.IsStackable)
+                    affectInList.Count += affect.Count;
+
+                iconHolder.UpdateAffectIcon(affectInList);
+            }
+            else
+            {
+                list.Add(affect);
+                iconHolder.AddAffectIcon(affect);
             }
         }
 
         public void ApplyStartOfTurnAffects()
         {
-            if(this.gameObject.TryGetComponent<Player>(out Player player))
+            foreach (Affect a in list)
             {
-                foreach(Affect a in startOfTurnList)
-                {
-                    a.Apply(player);
-                }
-            }
-            else if(this.gameObject.TryGetComponent<Enemy>(out Enemy enemy))
-            {
-                foreach(Affect a in endOfTurnList)
-                {
-                    a.Apply(enemy);
-                }
+                if (a.WhenAffectTriggers == TurnTime.StartOfTurn)
+                    a.Apply(this.GetComponent<Character>());
             }
         }
         public void ApplyEndOfTurnAffects()
         {
-            if(this.gameObject.TryGetComponent<Player>(out Player player))
+            foreach (Affect a in list)
             {
-                foreach(Affect a in endOfTurnList)
-                {
-                    a.Apply(player);
-                }
-            }
-            else if(this.gameObject.TryGetComponent<Enemy>(out Enemy enemy))
-            {
-                foreach(Affect a in endOfTurnList)
-                {
-                    a.Apply(enemy);
-                }
+                if (a.WhenAffectTriggers == TurnTime.EndOfTurn)
+                    a.Apply(this.GetComponent<Character>());
             }
         }
 

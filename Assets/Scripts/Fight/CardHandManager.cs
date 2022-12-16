@@ -16,6 +16,7 @@ namespace fight
         float cardMoveSpeed = 35f;
         Player player;
         List<IEnumerator> movementCoroutines;
+        int maxHandSize = 8;
 
         public delegate void CardsDrawn(int amount);
         public event CardsDrawn TriggerCardsDrawn;
@@ -143,11 +144,10 @@ namespace fight
                 var cardDrawn = drawPile[drawPile.Count - 1];
                 drawPile.RemoveAt(drawPile.Count - 1);
 
-                if (hand.Count >= 10)
+                if (hand.Count >= maxHandSize)
                 {
                     //discard drawn card if hand is full
                     discardPile.Add(cardDrawn);
-                    //amount--;
                 }
                 else
                 {
@@ -164,6 +164,7 @@ namespace fight
                     {
                         //make it look like its drawing from the drawpile
                         cardDrawn.transform.position = cardSpawner.transform.position;
+                        
                         cardDrawn.gameObject.SetActive(true);
                     }
                     

@@ -53,16 +53,19 @@ namespace characters
             Attack attack1 = new Attack();
             attack1.damageAmount = 7f;
             attack1.targeting = Move.Enemy_Targeting.Player;
+            attack1.enemyUsingMove = this.gameObject;
             moves.Add(attack1);
 
             Block block1 = new Block();
             block1.blockAmount = 10f;
             block1.targeting = Move.Enemy_Targeting.Self;
+            block1.enemyUsingMove = this.gameObject;
             moves.Add(block1);
 
-            Special specal1 = new Special();
-            specal1.targeting = Move.Enemy_Targeting.AllEnemies;
-            moves.Add(specal1);
+            Special special1 = new Special();
+            special1.targeting = Move.Enemy_Targeting.AllEnemies;
+            special1.enemyUsingMove = this.gameObject;
+            moves.Add(special1);
 
         }
         void Start()

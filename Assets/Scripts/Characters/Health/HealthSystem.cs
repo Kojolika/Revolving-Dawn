@@ -2,8 +2,8 @@
 {
     public class HealthSystem 
     {
-        private float HP = 100f;
-        private float maxHP = 100f;
+        float HP = 100f;
+        float maxHP = 100f;
 
         public float GetHealthValue()
         {
