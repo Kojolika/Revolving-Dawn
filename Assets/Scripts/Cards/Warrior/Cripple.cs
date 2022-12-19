@@ -33,10 +33,10 @@ namespace cards{
                 foreach(var target in targets)
                 {
                     //Deal damage
-                    currentPlayer.PerformNumberAction(new Number(damage, FightInfo.NumberType.Attack),target);
+                    currentPlayer.PerformDamageNumberAction(new Number(damage, FightInfo.NumberType.Attack),target);
 
                     //Add affect
-                    currentPlayer.PerformAffectAction(new Weaken(2), target);
+                    currentPlayer.PerformAffectAction(new Weaken(weakenAmount), target);
                 }
             }
         }
@@ -57,7 +57,8 @@ namespace cards{
         }
 
 
-        public override void LoadInfo(CardScriptableObject cardSO){
+        public override void LoadInfo(CardScriptableObject cardSO)
+        {
             artwork.GetComponent<MeshRenderer>().material = cardSO.artwork;
             border.GetComponent<MeshRenderer>().material = cardSO.border;
 
@@ -65,6 +66,9 @@ namespace cards{
             description.text = cardSO.description;
             nameText.font = CardInfo.DEFAULT_FONT;
             description.font = CardInfo.DEFAULT_FONT;
+
+            nameText.color = Color.black;
+            description.color = Color.black;
         }
         void Awake() {
             LoadInfo(cardSO);

@@ -10,7 +10,7 @@ namespace cards
         public abstract void Play(List<Character> targets);
         public abstract int GetTarget();
         public abstract bool IsManaCharged();
-        public abstract void LoadInfo(CardScriptableObject cardSO);
+        public virtual void LoadInfo(CardScriptableObject cardSO){}
         public Player currentPlayer;
     }
 

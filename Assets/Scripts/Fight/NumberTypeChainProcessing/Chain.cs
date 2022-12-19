@@ -19,7 +19,8 @@ namespace fightDamageCalc
             //         Debuff -33% attack => 10
             //         Final Attack: 10
             //Resistances are possibly not going to be added but
-            //Not implementing the ResistProcessor is the same as not having them
+            //Not implementing the ResistProcessor.process method is the same as not having them
+            //so here they are to remind me of the idea
             chain = new BuffProcessor(
                     new DeBuffProcessor(
                     new ResistProcessor(

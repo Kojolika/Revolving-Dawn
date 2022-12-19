@@ -19,9 +19,9 @@ public class Block : Move {
     {
         if(targets != null)
         {
-            foreach(var _target in targets)
+            foreach(var target in targets)
             {
-                Debug.Log("Blocking all targets...");
+                enemyUsingMove.PerformDamageNumberAction(new fightDamageCalc.Number(10,fightDamageCalc.FightInfo.NumberType.Block),target);
             }
         }
     }

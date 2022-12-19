@@ -80,10 +80,12 @@
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Block.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Weaken.cs" />
+     <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\RoundingProcessor.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
-     <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\RoundingProcessor.cs" />
      <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
+     <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Fracture.cs" />
+     <Compile Include="Assets\Scripts\Cards\Warrior\FractureDefense.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

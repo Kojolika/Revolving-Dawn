@@ -78,7 +78,7 @@ namespace fight
             _cardHandManager.Initialize(cardsCamAndGameArea.GetComponentInChildren<BezierCurve>(), 
                 cardsCamAndGameArea.GetComponentInChildren<CardSpawner>().gameObject, 
                 cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject);
-            _cardHandManager.TriggerCardPlayed += CardPlayed;
+            _cardHandManager.OnCardPlayed += CardPlayed;
             
             //Load playerinputmanager to handle player input during turns
             _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
@@ -107,21 +107,24 @@ namespace fight
         private void Update() {
             if(Input.GetKey(KeyCode.Space))
             {
-                _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
+                _cardHandManager.TriggerDrawCards(currentPlayer.DrawAmount);
             }
         }
         void StartPlayerTurn()
         {
             playerTurn = true;
-            _playerTurnInputManager.Enable(true);
-            _cardHandManager.OnDrawCards(currentPlayer.DrawAmount);
 
             //Select enemy moves for the next enemy turn
             ChooseEnemyMoves();
-            FightEvents.TriggerPlayerTurnStarted();
+            FightEvents.TriggerCharacterTurnStarted(currentPlayer);
+
+            
+            _playerTurnInputManager.Enable(true);
+            _cardHandManager.TriggerDrawCards(currentPlayer.DrawAmount);
         }
         public void EndPlayerTurn()
-        {
+        {   
+            //Called by UI button click
             //prevents multiple end turn clicks
             if (playerTurn == false) return;
 
@@ -129,17 +132,18 @@ namespace fight
             _playerTurnInputManager.Enable(false);
             _cardHandManager.DiscardHand();
 
-            FightEvents.TriggerPlayerTurnEnded();
+            FightEvents.TriggerCharacterTurnEnded(currentPlayer);
             StartCoroutine(StartEnemyTurn());
         }
         IEnumerator StartEnemyTurn()
         {
             yield return new WaitForSeconds(1f);
 
+            Debug.Log("enemies size: " + currentEnemies.Count);
             foreach (Enemy enemy in currentEnemies)
             {
                 //Call start of turn effects here
-                //StartOfTurnAffects(target)? (target = enemy in this case)
+                FightEvents.TriggerCharacterTurnStarted(enemy);
 
                 ExecuteEnemyMove(enemy);
 
@@ -147,6 +151,10 @@ namespace fight
                 previousEnemyMoves.TryGetValue(enemy, out var value);
                 previousEnemyMoves.Remove(enemy);
                 Destroy(value);
+
+                FightEvents.TriggerCharacterTurnEnded(enemy);
+
+                yield return new WaitForSeconds(1f);
             }
             StartPlayerTurn();
         }
@@ -258,7 +266,6 @@ namespace fight
         void CardPlayed(Card card, List<Character> targets)
         {
             UpdateTargetsHealth(targets);
-            ApplyAffectsToTargets(targets);
         }
         void UpdateTargetsHealth(List<Character> targets)
         {
@@ -268,13 +275,9 @@ namespace fight
                 var healthBar = healthDisplay.GetComponentInChildren<HealthBarInside>();
 
                 healthDisplay.UpdateHealth();
-
+                
                 IsCharacterDead(target);
             }
-        }
-        void ApplyAffectsToTargets(List<Character> targets)
-        {
-
         }
 
         void IsCharacterDead(Character c)
@@ -290,12 +293,12 @@ namespace fight
                 currentEnemies.Remove(enemy);
                 Destroy(enemy.gameObject);
 
-                FightEvents.OnEnemyDied(enemy);
+                FightEvents.TriggerEnemyDied(enemy);
             }
 
             if (currentEnemies.Count < 1)
             {
-                FightEvents.OnFightWon();
+                FightEvents.TriggerFightWon();
             }
         }
     }

@@ -573,6 +573,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 178e091f3b902d34c9c81464f97a1637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentPlayer: {fileID: 0}
   cardSO: {fileID: 11400000, guid: af8464683267dd04d8bb8ac3140ae569, type: 2}
   nameText: {fileID: 1917359488200442444}
   description: {fileID: 1917359488971266804}

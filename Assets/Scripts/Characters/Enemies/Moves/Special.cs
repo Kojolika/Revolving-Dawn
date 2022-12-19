@@ -19,9 +19,9 @@ public class Special : Move {
     {
         if(targets != null)
         {
-            foreach(var _target in targets)
+            foreach(var target in targets)
             {
-                Debug.Log("Special on all targets...");
+                enemyUsingMove.GetComponent<Enemy>().PerformAffectAction(new Weaken(4),target);
             }
         }
         else

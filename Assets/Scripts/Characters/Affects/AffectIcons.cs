@@ -8,21 +8,22 @@ namespace characters
     public class AffectIcons : MonoBehaviour
     {
         Dictionary<Affect,GameObject> dict = new Dictionary<Affect, GameObject>();
-        Affects affects;
         const float affectIconFontSize = 0.5f;
         const float affectTextBoxWidthAndHeightSize = 0.07f;
 
-        public void Initialize(Affects affects)
-        {
-            this.affects = affects;
-        }
         public void UpdateAffectIcon(Affect affect)
         {
             foreach(KeyValuePair<Affect, GameObject> pair in dict)
             {
                 if(pair.Key.GetType() == affect.GetType())
                 {
-                    pair.Value.GetComponentInChildren<TextMeshPro>().text = "" + affect.Count;
+                    if(affect.StackSize <= 0)
+                    {
+                        Destroy(pair.Value);
+                        dict.Remove(affect);
+                        return;
+                    }
+                    pair.Value.GetComponentInChildren<TextMeshPro>().text = "" + affect.StackSize;
                     return;
                 }
             }
@@ -47,7 +48,10 @@ namespace characters
             switch(affect.GetType())
             {
                 case var value when value == typeof(Weaken):
-                renderer.sprite = Resources.Load<Sprite>("affect_weaken");
+                    renderer.sprite = Resources.Load<Sprite>("affect_weaken");
+                break;
+                case var value when value == typeof(Fracture):
+                    renderer.sprite = Resources.Load<Sprite>("affect_fracture");
                 break;
             }
 
@@ -67,10 +71,11 @@ namespace characters
             text3D.font = cards.CardInfo.DEFAULT_FONT;
             text3D.fontSize = affectIconFontSize;
             text3D.name = "Stack Amount";
-            text3D.text = "" + affect.Count;
+            text3D.text = "" + affect.StackSize;
             text3D.horizontalAlignment = HorizontalAlignmentOptions.Right;
             text3D.verticalAlignment = VerticalAlignmentOptions.Bottom;
             text3D.gameObject.layer = newIcon.layer;
+            text3D.sortingOrder = 2;
 
             //Add to dict to update later
             dict.Add(affect, newIcon);

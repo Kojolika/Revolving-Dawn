@@ -18,49 +18,46 @@ namespace fight
         List<IEnumerator> movementCoroutines;
         int maxHandSize = 8;
 
+        //Events
         public delegate void CardsDrawn(int amount);
-        public event CardsDrawn TriggerCardsDrawn;
-
-        public delegate void IsHandUpdating(bool isUpdating);
-        public event IsHandUpdating TriggerIsHandUpdating;
-
-        public delegate void CardPlayed(Card card, List<Character> targets);
-        public event CardPlayed TriggerCardPlayed;
-
-
-        public void IsUpdating(bool isUpdating)
+        public event CardsDrawn OnCardsDrawn;
+        public void TriggerDrawCards(int drawAmount)
         {
-            //Condition checks if any methods are subscribed to this event
-            if (TriggerIsHandUpdating != null)
+            if (OnCardsDrawn != null)
             {
-                TriggerIsHandUpdating(isUpdating);
+                OnCardsDrawn(drawAmount);
             }
         }
-        public void PlayCard(Card card, List<Character> targets)
+        public delegate void IsHandUpdating(bool isUpdating);
+        public event IsHandUpdating OnHandUpdating;
+
+        public void TriggerHandUpdating(bool isUpdating)
         {
-            if (TriggerCardPlayed != null)
+            //Condition checks if any methods are subscribed to this event
+            if (OnHandUpdating != null)
+            {
+                OnHandUpdating(isUpdating);
+            }
+        }
+        public delegate void CardPlayed(Card card, List<Character> targets);
+        public event CardPlayed OnCardPlayed;
+
+        public void TriggerPlayCard(Card card, List<Character> targets)
+        {
+            if (OnCardPlayed != null)
             {
                 //trigger before all events do
                 //not sure if this is the best way to do it
                 //but it works for now
                 card.Play(targets);
-                TriggerCardPlayed(card, targets);
+                OnCardPlayed(card, targets);
             }
         }
-
-        public void OnDrawCards(int drawAmount)
-        {
-            if (TriggerCardsDrawn != null)
-            {
-                TriggerCardsDrawn(drawAmount);
-            }
-        }
-
 
         void Awake()
         {
-            TriggerCardsDrawn += DrawCards;
-            TriggerCardPlayed += CardPlayedEffects;
+            OnCardsDrawn += DrawCards;
+            OnCardPlayed += CardPlayedEffects;
 
             player = this.GetComponent<FightManager>().GetPlayer();
             movementCoroutines = new List<IEnumerator>();
@@ -194,7 +191,7 @@ namespace fight
             if (hand.Count < 1) yield return null;
 
             //Send event that the hand is being updated
-            IsUpdating(true);
+            TriggerHandUpdating(true);
 
             Coroutine[] tasks = new Coroutine[hand.Count];
             for (int i = 1; i <= hand.Count; i++)
@@ -212,7 +209,7 @@ namespace fight
                 yield return task;
 
             //Send event that the hand is no longer being updated
-            IsUpdating(false);
+            TriggerHandUpdating(false);
         }
         public IEnumerator MoveCardCoroutine(Card card, Vector3 newPosition, float cardRotation, float speed)
         {

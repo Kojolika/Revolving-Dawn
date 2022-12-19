@@ -33,7 +33,7 @@ namespace characters
             get => whenAffectTriggers;
             set => whenAffectTriggers = value;
         }
-        public override int Count 
+        public override int StackSize 
         { 
             get => count;
             set => count = value;
@@ -49,7 +49,7 @@ namespace characters
             get => affectType;
             set => affectType = value;
         }
-        public override Tuple<TurnTime,Int16> WhenStackLoss
+        public override Tuple<TurnTime,Int16> WhenStackLossAndAmount
         { 
             get => whenStackLoss; 
             set => whenStackLoss = value;
@@ -61,7 +61,8 @@ namespace characters
         }
         public override Number process(Number request)
         {
-            request.Amount = request.Amount * weakenAmount;
+            if(request.getType() == numberType)
+                request.Amount = request.Amount * weakenAmount;
             return request;
         }
     }

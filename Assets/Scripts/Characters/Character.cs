@@ -38,11 +38,23 @@ namespace characters
             this.gameObject.AddComponent<TurnOnShadows>();
         }
 
-        public void PerformNumberAction(fightDamageCalc.Number number, Character target)
+        public void PerformDamageNumberAction(fightDamageCalc.Number number, Character target)
         {
             fightDamageCalc.Chain chain = new fightDamageCalc.Chain();
-            float finalDamage = chain.process(number, this).Amount;
-            target.healthDisplay.health.DealDamage(finalDamage);
+            float finalAmount = chain.process(number, this).Amount;
+
+            if (number.getType() == fightDamageCalc.FightInfo.NumberType.Attack)
+            {
+                target.healthDisplay.health.DealDamage(finalAmount);
+                target.healthDisplay.UpdateBlock();
+            }
+            else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Block)
+            {
+                target.healthDisplay.health.Block(finalAmount);
+                target.healthDisplay.UpdateBlock();
+            }
+            else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Heal)
+                target.healthDisplay.health.Heal(finalAmount);
         }
         public void PerformAffectAction(Affect affect, Character target)
         {

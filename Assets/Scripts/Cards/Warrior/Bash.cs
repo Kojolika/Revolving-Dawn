@@ -29,7 +29,7 @@ namespace cards{
                 //Play regular effect
                 foreach(var target in targets)
                 {
-                    currentPlayer.PerformNumberAction(new Number(damage, FightInfo.NumberType.Attack),target);
+                    currentPlayer.PerformDamageNumberAction(new Number(damage, FightInfo.NumberType.Attack),target);
                 }
             }
         }
@@ -59,6 +59,9 @@ namespace cards{
             description.text = cardSO.description;
             nameText.font = CardInfo.DEFAULT_FONT;
             description.font = CardInfo.DEFAULT_FONT;
+
+            nameText.color = Color.black;
+            description.color = Color.black;
         }
         
         void Awake() {
