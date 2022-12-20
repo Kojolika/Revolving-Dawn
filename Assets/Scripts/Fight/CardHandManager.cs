@@ -180,6 +180,13 @@ namespace fight
             return shuffledcards;
         }
 
+        public void ShuffleDeck()
+        {
+            var drawPile = player.playerCardDecks.DrawPile;
+            var temp = Shuffle(drawPile);
+            drawPile = temp;
+        }
+
         internal void CreateHand()
         {
             StartCoroutine(CreateHandCurve(cardMoveSpeed));

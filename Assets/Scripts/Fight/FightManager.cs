@@ -125,6 +125,7 @@ namespace fight
         public void EndPlayerTurn()
         {   
             //Called by UI button click
+            
             //prevents multiple end turn clicks
             if (playerTurn == false) return;
 
@@ -275,6 +276,7 @@ namespace fight
                 var healthBar = healthDisplay.GetComponentInChildren<HealthBarInside>();
 
                 healthDisplay.UpdateHealth();
+                healthDisplay.UpdateBlock();
                 
                 IsCharacterDead(target);
             }

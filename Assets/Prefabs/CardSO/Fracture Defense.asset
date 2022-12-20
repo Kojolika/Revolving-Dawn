@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Fracture Defense
   m_EditorClassIdentifier: 
   name: Fracture Defense
-  description: Deal 5 damage Apply 2 Fracture
+  description: Deal 5 damage NEWLINE Apply 2 Fracture
   artwork: {fileID: 2100000, guid: 3218cab082a81c84cab1d98988672ba5, type: 2}
   border: {fileID: 2100000, guid: 81e904125e6671b48acfe24d85fa6a45, type: 2}

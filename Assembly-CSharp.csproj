@@ -86,6 +86,7 @@
      <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Fracture.cs" />
      <Compile Include="Assets\Scripts\Cards\Warrior\FractureDefense.cs" />
+     <Compile Include="Assets\Scripts\Cards\Warrior\Defend.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
