@@ -14,7 +14,7 @@ GameObject:
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2800000, guid: d1ee13283cbbd2e409b03a6d2b373c01, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -65,12 +65,13 @@ MonoBehaviour:
   - {fileID: 7778169936422705945, guid: 0b77b0bcb507f3c44bf26edfd2ba1de5, type: 3}
   - {fileID: 7778169936422705945, guid: 0b77b0bcb507f3c44bf26edfd2ba1de5, type: 3}
   - {fileID: 7778169936422705945, guid: 0b77b0bcb507f3c44bf26edfd2ba1de5, type: 3}
-  - {fileID: 7778169936422705945, guid: 0b77b0bcb507f3c44bf26edfd2ba1de5, type: 3}
-  - {fileID: 7778169936422705945, guid: 0b77b0bcb507f3c44bf26edfd2ba1de5, type: 3}
-  - {fileID: 7778169936422705945, guid: 0b77b0bcb507f3c44bf26edfd2ba1de5, type: 3}
-  - {fileID: 7778169936422705945, guid: 0b77b0bcb507f3c44bf26edfd2ba1de5, type: 3}
-  - {fileID: 7778169936422705945, guid: 0b77b0bcb507f3c44bf26edfd2ba1de5, type: 3}
-  - {fileID: 7778169936422705945, guid: 0b77b0bcb507f3c44bf26edfd2ba1de5, type: 3}
+  - {fileID: -7058396742178049024, guid: 774903e1c8106d94d88a0ad13db0f90b, type: 3}
+  - {fileID: -7058396742178049024, guid: 774903e1c8106d94d88a0ad13db0f90b, type: 3}
+  - {fileID: -7058396742178049024, guid: 774903e1c8106d94d88a0ad13db0f90b, type: 3}
+  - {fileID: -7058396742178049024, guid: 774903e1c8106d94d88a0ad13db0f90b, type: 3}
+  - {fileID: -7058396742178049024, guid: 774903e1c8106d94d88a0ad13db0f90b, type: 3}
+  - {fileID: 948079653773867047, guid: 07884603ee639104c8d4cd7e1baf43bb, type: 3}
+  - {fileID: -8193257268220745665, guid: 2858575a71367554dbc7e1bc6837eced, type: 3}
 --- !u!1 &9206561498931515453
 GameObject:
   m_ObjectHideFlags: 0

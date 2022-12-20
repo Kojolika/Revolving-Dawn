@@ -1,13 +1,20 @@
-﻿namespace characters
+﻿using UnityEngine;
+
+namespace characters
 {
     public class HealthSystem 
     {
-        private float HP = 100f;
-        private float maxHP = 100f;
+        float hp = 100f;
+        float maxHP = 100f;
+        float block = 0f;
 
+        public float GetBlockValue()
+        {
+            return block;
+        }
         public float GetHealthValue()
         {
-            return HP;
+            return hp;
         }
         public float GetMaxHealthValue()
         {
@@ -15,7 +22,7 @@
         }
         public void SetHealth(float amount)
         {
-            HP = amount;
+            hp = amount;
         }
         public void SetMaxHealth(float amount)
         {
@@ -23,12 +30,25 @@
         }
         public void DealDamage(float amount)
         {
-            HP -= amount;
+            float finalAmount = 0;
+
+            if(block > amount)
+                block -= amount;
+            else
+            {
+                finalAmount = amount - block;
+                block = 0;
+            }
+            
+            hp -= finalAmount;
         }
         public void Heal(float amount)
         {
-            HP = ((HP += amount) > maxHP) ?  maxHP : HP += amount;
+            hp = ((hp += amount) > maxHP) ?  maxHP : hp += amount;
         }
-
+        public void Block(float amount)
+        {
+            block += amount;
+        }
     }
 }

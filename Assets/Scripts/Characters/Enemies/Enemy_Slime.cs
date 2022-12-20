@@ -12,8 +12,8 @@ namespace characters
         HealthDisplay _healthDisplay;
 
         Vector3 _targetingBorderPosition = new Vector3(0f, 0.115f, 0f);
-        Vector3 _movePosition = new Vector3(0f, .4f, 0f);
-        Vector3 _healthBarPosition = new Vector3 (0f, .3f, 0f);
+        Vector3 _movePosition = new Vector3(0f, .35f, 0f);
+        Vector3 _healthBarPosition = new Vector3 (0f, -0.05f, 0f);
 
         public override HealthDisplay healthDisplay 
         {
@@ -53,16 +53,19 @@ namespace characters
             Attack attack1 = new Attack();
             attack1.damageAmount = 7f;
             attack1.targeting = Move.Enemy_Targeting.Player;
+            attack1.enemyUsingMove = this;
             moves.Add(attack1);
 
             Block block1 = new Block();
             block1.blockAmount = 10f;
             block1.targeting = Move.Enemy_Targeting.Self;
+            block1.enemyUsingMove = this;
             moves.Add(block1);
 
-            Special specal1 = new Special();
-            specal1.targeting = Move.Enemy_Targeting.AllEnemies;
-            moves.Add(specal1);
+            Special special1 = new Special();
+            special1.targeting = Move.Enemy_Targeting.Player;
+            special1.enemyUsingMove = this;
+            moves.Add(special1);
 
         }
         void Start()
@@ -76,7 +79,12 @@ namespace characters
         }
         public override void InitializeHealth()
         {
-            base.InitializeHealth();
+            healthDisplay.health = new HealthSystem();
+            healthDisplay.health.SetHealth(16);
+            healthDisplay.health.SetMaxHealth(16);
+            healthDisplay.UpdateHealth();
+
+            healthDisplay.transform.localPosition = healthbarPosition;
         }
     }
 }

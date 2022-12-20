@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class EnemyMoveIconTwirl : MonoBehaviour 
 {
-    void FixedUpdate() 
+    void LateUpdate() 
     {
-        this.transform.Rotate(0f, 0f, .9f, Space.Self);
+        this.transform.Rotate(0f, 0f, .1f, Space.Self);
     }
 }

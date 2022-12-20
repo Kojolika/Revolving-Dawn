@@ -124,6 +124,7 @@ namespace fight
                 OnNoCardMouseOver();
             }
         }
+
         void MouseOverCharacter()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -137,7 +138,8 @@ namespace fight
                 if (hit.transform.gameObject.GetComponent<Enemy>())
                 {
                     currentEnemy = hit.transform.gameObject.GetComponent<Enemy>();
-                    
+                    IsEnemyMouseOver(currentEnemy);
+                    return;
                 }
             }
             IsEnemyMouseOver(currentEnemy);
@@ -148,7 +150,7 @@ namespace fight
             {
                 IsRightClicked();
             }
-            if(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse0))
+            if(Input.GetKeyDown(KeyCode.Mouse0))
             {
                 IsLeftClicked();
             }
