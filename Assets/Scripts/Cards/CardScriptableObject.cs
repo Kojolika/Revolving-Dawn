@@ -1,14 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+using characters;
 using UnityEngine;
-using fightDamageCalc;
 
-[CreateAssetMenu(fileName = "New Card", menuName = "New Card")]
-public class CardScriptableObject : ScriptableObject
+namespace cards
 {
-    public new string name;
-    public string description;
-    public Material artwork;
-    public Material border;
+    [CreateAssetMenu(fileName = "New Card", menuName = "New Card")]
+    public class CardScriptableObject : ScriptableObject
+    {
+        public new string name;
+        public string description;
+        public Sprite artwork;
+        public PlayerClass cardClass;
+        public Targeting target;
+        public Targeting manaChargedTarget;
+    }
 
 }

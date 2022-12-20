@@ -43,7 +43,6 @@
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\DeBuffProcessor.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Move.cs" />
      <Compile Include="Assets\Scripts\Cards\CardScriptableObject.cs" />
-     <Compile Include="Assets\Scripts\Cards\Warrior\Cripple.cs" />
      <Compile Include="Assets\Scripts\Fight\GameArea\CardDiscarder.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Affects.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\PlayerCardDecks.cs" />

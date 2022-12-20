@@ -13,6 +13,7 @@ namespace characters
         public PlayerCardDecks playerCardDecks;
         public PlayerInputState state = null;
 
+
         Vector3 _healthBarPosition = new Vector3 (0f, -0.05f, 0f);  
         Vector3 _targetingBorderPosition = new Vector3(0f, .15f, 0f);
 
@@ -72,5 +73,15 @@ namespace characters
         void Update() {
             HandleInput();
         }
+    }
+
+    public enum PlayerClass
+    {
+        //Classes not designed yet,
+        //this is just for logic
+        Warrior,
+        Rogue,
+        Mage,
+        Priest
     }
 }

@@ -161,7 +161,7 @@ namespace fight
             _input.TriggerRightClicked -= RightClicked;
             _input.TriggerMouseEnterPlayArea -= OnEnterPlayArea;
 
-            if (currentCard.GetTarget() == 1 || changeDefault)
+            if ((int)currentCard.GetTarget() == 1 || changeDefault)
             {
                 newDragger.StopCoroutine(newDragger.DraggingCoroutine(currentCard));
                 GameObject.Destroy(newDragger);
@@ -193,7 +193,7 @@ namespace fight
             _input.TriggerMouseEnterCardArea += OnEnterCardArea;
 
 
-            cardtarget = card.GetTarget();
+            cardtarget = (int)card.GetTarget();
             switch (cardtarget)
             {
                 case 0: //Friendly
