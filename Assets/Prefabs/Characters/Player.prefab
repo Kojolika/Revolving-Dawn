@@ -61,16 +61,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deck:
   - {fileID: 540175026711384270, guid: b4990c0deceb5814c9c79eab2e84c0b4, type: 3}
-  - {fileID: 948079653773867047, guid: 07884603ee639104c8d4cd7e1baf43bb, type: 3}
   - {fileID: 540175026711384270, guid: b4990c0deceb5814c9c79eab2e84c0b4, type: 3}
-  - {fileID: 948079653773867047, guid: 07884603ee639104c8d4cd7e1baf43bb, type: 3}
-  - {fileID: 948079653773867047, guid: 07884603ee639104c8d4cd7e1baf43bb, type: 3}
   - {fileID: 540175026711384270, guid: b4990c0deceb5814c9c79eab2e84c0b4, type: 3}
-  - {fileID: 948079653773867047, guid: 07884603ee639104c8d4cd7e1baf43bb, type: 3}
-  - {fileID: 948079653773867047, guid: 07884603ee639104c8d4cd7e1baf43bb, type: 3}
   - {fileID: 540175026711384270, guid: b4990c0deceb5814c9c79eab2e84c0b4, type: 3}
-  - {fileID: 948079653773867047, guid: 07884603ee639104c8d4cd7e1baf43bb, type: 3}
-  - {fileID: 948079653773867047, guid: 07884603ee639104c8d4cd7e1baf43bb, type: 3}
+  - {fileID: 540175026711384270, guid: b4990c0deceb5814c9c79eab2e84c0b4, type: 3}
+  - {fileID: -6963531116086329047, guid: 4abf8781ba4a5254b9f8aacf0cc0d2a9, type: 3}
+  - {fileID: -6963531116086329047, guid: 4abf8781ba4a5254b9f8aacf0cc0d2a9, type: 3}
+  - {fileID: -6963531116086329047, guid: 4abf8781ba4a5254b9f8aacf0cc0d2a9, type: 3}
+  - {fileID: -6963531116086329047, guid: 4abf8781ba4a5254b9f8aacf0cc0d2a9, type: 3}
+  - {fileID: -6963531116086329047, guid: 4abf8781ba4a5254b9f8aacf0cc0d2a9, type: 3}
   - {fileID: 948079653773867047, guid: 07884603ee639104c8d4cd7e1baf43bb, type: 3}
 --- !u!1 &9206561498931515453
 GameObject:

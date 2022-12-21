@@ -15,7 +15,6 @@ MonoBehaviour:
   name: Fracture Defense
   description: Deal 5 damage NEWLINE Apply 2 Fracture
   artwork: {fileID: 21300000, guid: 3dd36dc331b6d114ca3f6c5e59c81102, type: 3}
-  border: {fileID: 21300000, guid: 199ea291b8dc10749814c60df5e5232a, type: 3}
   cardClass: 0
   target: 1
   manaChargedTarget: 3

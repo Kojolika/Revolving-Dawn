@@ -21,7 +21,7 @@ public class Special : Move {
         {
             foreach(var target in targets)
             {
-                enemyUsingMove.GetComponent<Enemy>().PerformAffectAction(new Weaken(4),target);
+                enemyUsingMove.GetComponent<Enemy>().PerformAffectAction(new Weaken(2),target);
             }
         }
         else

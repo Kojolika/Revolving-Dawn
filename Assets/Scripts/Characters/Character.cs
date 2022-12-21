@@ -6,15 +6,11 @@ namespace characters
 {
     public abstract class Character : MonoBehaviour
     {
-        public abstract HealthDisplay healthDisplay { get; set; }
-        public virtual void InitializeHealth()
+        float maxHealth = 50f;
+        public virtual float MaxHealth 
         {
-            healthDisplay.health = new HealthSystem();
-            healthDisplay.health.SetHealth(50f);
-            healthDisplay.health.SetMaxHealth(50f);
-            healthDisplay.UpdateHealth();
-
-            healthDisplay.transform.localPosition = healthbarPosition;
+            get => maxHealth;
+            set => maxHealth = value;
         }
         Vector3 healthBarVector;
         public virtual Vector3 healthbarPosition
@@ -23,7 +19,6 @@ namespace characters
             set => healthBarVector = value;
         }
 
-
         Vector3 targetingBorderVector;
         public virtual Vector3 targetingBorderPosition
         {
@@ -31,6 +26,15 @@ namespace characters
             set => targetingBorderVector = value;
         }
 
+        public abstract HealthDisplay healthDisplay { get; set; }
+        public virtual void InitializeHealth()
+        {
+            healthDisplay.health = new HealthSystem(healthDisplay);
+            healthDisplay.health.SetMaxHealth(MaxHealth);
+            healthDisplay.health.SetHealth(MaxHealth);
+        
+            healthDisplay.transform.localPosition = healthbarPosition;
+        }
 
         //turns on shadow casting for character sprites
         public void CastShadows()
@@ -46,12 +50,12 @@ namespace characters
             if (number.getType() == fightDamageCalc.FightInfo.NumberType.Attack)
             {
                 target.healthDisplay.health.DealDamage(finalAmount);
-                target.healthDisplay.UpdateBlock();
+                //target.healthDisplay.UpdateBlock();
             }
             else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Block)
             {
                 target.healthDisplay.health.Block(finalAmount);
-                target.healthDisplay.UpdateBlock();
+                //target.healthDisplay.UpdateBlock();
             }
             else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Heal)
                 target.healthDisplay.health.Heal(finalAmount);

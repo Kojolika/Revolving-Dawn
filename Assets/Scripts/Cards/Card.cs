@@ -27,8 +27,11 @@ namespace cards
             description.text = cardSO.description;
             nameText.font = CardInfo.DEFAULT_FONT;
             description.font = CardInfo.DEFAULT_FONT;
-            nameText.color = Color.black;
-            description.color = Color.black;
+            nameText.color = CardInfo.DEFAULT_FONT_COLOR;
+            description.color = CardInfo.DEFAULT_FONT_COLOR;
+            nameText.fontSize = CardInfo.DEFAULT_FONT_NAME_SIZE;
+            description.fontSize = CardInfo.DEFAULT_FONT_DESCRIPTION_SIZE;
+            description.verticalAlignment = VerticalAlignmentOptions.Top;
 
             target = cardSO.target;
             manaChargedTarget = cardSO.manaChargedTarget;
@@ -58,6 +61,7 @@ namespace cards
         void Awake() {
             LoadInfo();
             ReplaceDiscriptionText();
+            UpdateDiscriptionText();
         }
     }
 
@@ -76,7 +80,10 @@ namespace cards
         public static Vector3 DEFAULT_CARD_ROTATION = new Vector3(90f,90f,-90f);
         public static Vector3 DEFAULT_SCALE = new Vector3(0.2f,1f,0.3f);
         public static float CAMERA_DISTANCE = Camera.main.nearClipPlane + 7;
-        public static TMP_FontAsset DEFAULT_FONT = Resources.Load<TMP_FontAsset>("DeterminationSansWebRegular-369X SDF");
+        public static TMP_FontAsset DEFAULT_FONT = Resources.Load<TMP_FontAsset>("Bitter-Regular SDF");
+        public static Color DEFAULT_FONT_COLOR = Color.white;
+        public static float DEFAULT_FONT_NAME_SIZE = 8f;
+        public static float DEFAULT_FONT_DESCRIPTION_SIZE = 6f;
 
         public static Sprite GetClassBorder(PlayerClass playerClass)
         {

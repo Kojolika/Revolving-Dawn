@@ -6,40 +6,40 @@ namespace characters
 {
     public class Enemy_Slime : Enemy
     {
-        public HealthSystem _health;
-        public List<Move> _moves;
-        public Move _currentMove = null;
+        float maxHealth = 16f;
+        public override float MaxHealth { get => maxHealth; set => maxHealth= value; }
         HealthDisplay _healthDisplay;
+        public override HealthDisplay healthDisplay { get => _healthDisplay; set => _healthDisplay = value; }
 
-        Vector3 _targetingBorderPosition = new Vector3(0f, 0.115f, 0f);
-        Vector3 _movePosition = new Vector3(0f, .35f, 0f);
-        Vector3 _healthBarPosition = new Vector3 (0f, -0.05f, 0f);
-
-        public override HealthDisplay healthDisplay 
-        {
-            get => _healthDisplay;
-            set => _healthDisplay = value;
-        }
+        public List<Move> _moves;
         public override List<Move> moves
         {
             get => _moves;
             set => _moves = value;   
         }
+
+        Vector3 _movePosition = new Vector3(0f, .35f, 0f);
         public override Vector3 moveIconPosition 
         { 
             get => _movePosition; 
             set => _movePosition = value; 
         }
+
+        public Move _currentMove = null;
         public override Move currentMove 
         { 
             get => _currentMove; 
             set => _currentMove = value; 
         }
+
+        Vector3 _targetingBorderPosition = new Vector3(0f, 0.115f, 0f);
         public override Vector3 targetingBorderPosition 
         { 
             get => _targetingBorderPosition; 
             set => _targetingBorderPosition = value; 
         }
+
+        Vector3 _healthBarPosition = new Vector3 (0f, -0.05f, 0f);
         public override Vector3 healthbarPosition
         { 
             get => _healthBarPosition; 
@@ -57,7 +57,7 @@ namespace characters
             moves.Add(attack1);
 
             Block block1 = new Block();
-            block1.blockAmount = 10f;
+            block1.blockAmount = 9f;
             block1.targeting = Move.Enemy_Targeting.Self;
             block1.enemyUsingMove = this;
             moves.Add(block1);
@@ -76,15 +76,6 @@ namespace characters
             //possibly a way in character.cs?
             //this.gameObject.AddComponent<TurnOnShadows>();
             CastShadows();
-        }
-        public override void InitializeHealth()
-        {
-            healthDisplay.health = new HealthSystem();
-            healthDisplay.health.SetHealth(16);
-            healthDisplay.health.SetMaxHealth(16);
-            healthDisplay.UpdateHealth();
-
-            healthDisplay.transform.localPosition = healthbarPosition;
         }
     }
 }

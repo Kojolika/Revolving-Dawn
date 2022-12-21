@@ -10,9 +10,9 @@ namespace characters
         [SerializeField] GameObject blockIcon;
         [SerializeField] TextMeshPro blockText;
         public HealthSystem health;
-
         public void UpdateHealth()
         {
+
             healthText.text = health.GetHealthValue() + "/" + health.GetMaxHealthValue();
             healthPercent = health.GetHealthValue() / health.GetMaxHealthValue();
             if (healthPercent < 0) healthPercent = 0;
@@ -42,6 +42,10 @@ namespace characters
 
                 blockText.text = "" + health.GetBlockValue();
             }
+        }
+        void OnDestroy() 
+        {
+            health.OnDestroy();
         }
     }
 }

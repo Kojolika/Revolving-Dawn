@@ -581,7 +581,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -7196294508766795441, guid: 0d1d473cdda32ff4ab026b2702d40a6a, type: 2}
+  - {fileID: -6274999835230137625, guid: 4b9e6d495361dfa4684964bc7c914345, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -625,8 +625,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: health
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0d1d473cdda32ff4ab026b2702d40a6a, type: 2}
-  m_sharedMaterial: {fileID: -7196294508766795441, guid: 0d1d473cdda32ff4ab026b2702d40a6a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4b9e6d495361dfa4684964bc7c914345, type: 2}
+  m_sharedMaterial: {fileID: -6274999835230137625, guid: 4b9e6d495361dfa4684964bc7c914345, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -729,7 +729,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.015}
+  m_AnchoredPosition: {x: 0, y: 0.0118}
   m_SizeDelta: {x: 0.07, y: 0.07}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &342027421304443101
@@ -751,7 +751,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -7196294508766795441, guid: 0d1d473cdda32ff4ab026b2702d40a6a, type: 2}
+  - {fileID: -6274999835230137625, guid: 4b9e6d495361dfa4684964bc7c914345, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -795,8 +795,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 10
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0d1d473cdda32ff4ab026b2702d40a6a, type: 2}
-  m_sharedMaterial: {fileID: -7196294508766795441, guid: 0d1d473cdda32ff4ab026b2702d40a6a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4b9e6d495361dfa4684964bc7c914345, type: 2}
+  m_sharedMaterial: {fileID: -6274999835230137625, guid: 4b9e6d495361dfa4684964bc7c914345, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -820,8 +820,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.8
-  m_fontSizeBase: 0.8
+  m_fontSize: 0.7
+  m_fontSizeBase: 0.7
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -859,7 +859,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_renderer: {fileID: 342027421304443101}
   m_maskType: 0
   _SortingLayer: 0

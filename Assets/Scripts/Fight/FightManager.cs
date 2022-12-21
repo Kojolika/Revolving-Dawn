@@ -249,7 +249,7 @@ namespace fight
                 {
                     var block = move as Block;
                     moveNum.text = "" + block.blockAmount;
-                    textParent.transform.localPosition = new Vector3(.1f,.01f,0);
+                    textParent.transform.localPosition = new Vector3(.11f,.01f,0);
                 }
             }
             else if (move.GetType() == typeof(Special))
@@ -275,8 +275,8 @@ namespace fight
                 var healthDisplay = target.GetComponentInChildren<HealthDisplay>();
                 var healthBar = healthDisplay.GetComponentInChildren<HealthBarInside>();
 
-                healthDisplay.UpdateHealth();
-                healthDisplay.UpdateBlock();
+                //healthDisplay.UpdateHealth();
+                //healthDisplay.UpdateBlock();
                 
                 IsCharacterDead(target);
             }
