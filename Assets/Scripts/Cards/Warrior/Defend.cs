@@ -19,9 +19,14 @@ namespace cards
                 //Play regular effect
                 foreach(var target in targets)
                 {
-                    currentPlayer.PerformDamageNumberAction(new Number(block, FightInfo.NumberType.Attack),target);
+                    currentPlayer.PerformDamageNumberAction(new Number(block, FightInfo.NumberType.Block),target);
                 }
             }
+        }
+
+        public override void UpdateDiscriptionText()
+        {
+            description.text = description.text.Replace("BLOCK","" + block);
         }
     }
 }
