@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Defend
   m_EditorClassIdentifier: 
   name: Defend
-  description: Block 6
+  description: Block BLOCK
   artwork: {fileID: 21300000, guid: 4024798ef8e3da84f96ea6b0774e6ebb, type: 3}
   cardClass: 0
   target: 0

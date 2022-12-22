@@ -7,7 +7,7 @@ namespace characters
     public abstract class Character : MonoBehaviour
     {
         float maxHealth = 50f;
-        public virtual float MaxHealth 
+        public virtual float MaxHealth
         {
             get => maxHealth;
             set => maxHealth = value;
@@ -32,14 +32,8 @@ namespace characters
             healthDisplay.health = new HealthSystem(healthDisplay);
             healthDisplay.health.SetMaxHealth(MaxHealth);
             healthDisplay.health.SetHealth(MaxHealth);
-        
-            healthDisplay.transform.localPosition = healthbarPosition;
-        }
 
-        //turns on shadow casting for character sprites
-        public void CastShadows()
-        {
-            this.gameObject.AddComponent<TurnOnShadows>();
+            healthDisplay.transform.localPosition = healthbarPosition;
         }
 
         public void PerformDamageNumberAction(fightDamageCalc.Number number, Character target)
@@ -71,6 +65,16 @@ namespace characters
                 var newAffects = target.gameObject.AddComponent<Affects>();
                 newAffects.AddAffect(affect);
             }
+        }
+        public virtual void Start()
+        {
+            CastShadows();
+        }
+
+        //turns on shadow casting for character sprites
+        public void CastShadows()
+        {
+            this.gameObject.AddComponent<TurnOnShadows>();
         }
     }
 }

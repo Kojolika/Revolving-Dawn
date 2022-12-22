@@ -68,14 +68,10 @@ namespace characters
             moves.Add(special1);
 
         }
-        void Start()
+        public override void Start()
         {
             LoadMoves();
-            
-            //not ideal, figure out a better way to do this
-            //possibly a way in character.cs?
-            //this.gameObject.AddComponent<TurnOnShadows>();
-            CastShadows();
+            base.Start();
         }
     }
 }

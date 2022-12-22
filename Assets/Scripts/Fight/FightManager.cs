@@ -140,7 +140,6 @@ namespace fight
         {
             yield return new WaitForSeconds(1f);
 
-            Debug.Log("enemies size: " + currentEnemies.Count);
             foreach (Enemy enemy in currentEnemies)
             {
                 //Call start of turn effects here
