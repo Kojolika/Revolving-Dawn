@@ -67,11 +67,11 @@
      <Compile Include="Assets\Scripts\Characters\Affects\AffectIcons.cs" />
      <Compile Include="Assets\Scripts\Fight\Mover.cs" />
      <Compile Include="Assets\Scripts\utils\Bezier.cs" />
-     <Compile Include="Assets\Scripts\Fight\PlayerTurnInputManager.cs" />
+     <Compile Include="Assets\Scripts\Fight\Input\PlayerTurnInputManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\TestDeck.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthSystem.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy_Slime.cs" />
-     <Compile Include="Assets\Scripts\Fight\PlayerInputState.cs" />
+     <Compile Include="Assets\Scripts\Fight\Input\PlayerInputState.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Affect.cs" />
      <Compile Include="Assets\Scripts\Cards\Card.cs" />
      <Compile Include="Assets\Scripts\Cards\Warrior\FractureDefense.cs" />
@@ -88,6 +88,13 @@
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
      <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
+     <Compile Include="Assets\Scripts\Fight\Input\DefaultState.cs" />
+     <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
+     <Compile Include="Assets\Scripts\Fight\Input\DraggingState.cs" />
+     <Compile Include="Assets\Scripts\Fight\Input\TargetingState.cs" />
+     <Compile Include="Assets\Scripts\Fight\Input\ManaViewingState.cs" />
+     <Compile Include="Assets\Scripts\Fight\Input\ManaHovering.cs" />
+     <Compile Include="Assets\Scripts\Fight\Input\ManaDragging.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

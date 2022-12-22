@@ -1,23 +1,40 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using cards;
 
-public class Mover : MonoBehaviour
+namespace fight
 {
-    public void Initialize(Vector3 destination, float speed)
+    public class Mover : MonoBehaviour
     {
-        StartCoroutine(MoveCardCoroutine(destination, speed));
-
-        if(this.gameObject.transform.position == destination) 
-            Destroy(this);
-    }
-    IEnumerator MoveCardCoroutine(Vector3 destination, float speed)
-    {
-        while(this.gameObject.transform.position != destination)
+        bool local;
+        public void Initialize(Vector3 destination, float speed, bool local = false)
         {
-            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, destination, speed * Time.deltaTime);
-            yield return null;
+            this.local = local;
+            StartCoroutine(MoveCardCoroutine(destination, speed));
+
+            if (this.gameObject.transform.position == destination && !local)
+                Destroy(this);
+            else if(this.gameObject.transform.localPosition == destination)
+                Destroy(this);
+        }       
+        IEnumerator MoveCardCoroutine(Vector3 destination, float speed)
+        {
+            if (local)
+            {
+                while (this.gameObject.transform.localPosition != destination)
+                {
+                    Debug.Log("Moving local...");
+                    this.gameObject.transform.localPosition = Vector3.MoveTowards(this.gameObject.transform.localPosition, destination, speed * Time.deltaTime);
+                    yield return null;
+                }
+            }
+            else
+            {
+                while (this.gameObject.transform.position != destination)
+                {
+                    this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, destination, speed * Time.deltaTime);
+                    yield return null;
+                }
+            }
         }
     }
 }

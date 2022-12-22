@@ -36,7 +36,7 @@ namespace characters
             GameObject newIcon = new GameObject();
 
             newIcon.AddComponent<RectTransform>();
-            newIcon.transform.parent = grid.transform;
+            newIcon.transform.SetParent(grid.transform);
             newIcon.transform.position = grid.transform.position;
             newIcon.transform.rotation = grid.transform.rotation;
             newIcon.transform.localScale = Vector3.one;
@@ -61,7 +61,7 @@ namespace characters
 
             TextMeshPro text3D = textParent.AddComponent<TextMeshPro>();
     
-            text3D.transform.parent = newIcon.transform;
+            text3D.transform.SetParent(newIcon.transform);
             text3D.transform.position = newIcon.transform.position;
             text3D.transform.rotation = newIcon.transform.rotation;
             text3D.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, affectTextBoxWidthAndHeightSize);

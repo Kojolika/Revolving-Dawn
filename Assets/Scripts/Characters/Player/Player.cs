@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using cards;
-using fight;
+using fightInput;
 using UnityEngine;
 
 namespace characters
@@ -69,6 +69,8 @@ namespace characters
 
             PlayerInputState temp = state.Transition();
             state = temp;
+
+           Debug.Log(state);
         }
         void Update() {
             HandleInput();

@@ -5,6 +5,7 @@ using TMPro;
 using characters;
 using cards;
 using utils;
+using fightInput;
 
 
 namespace fight

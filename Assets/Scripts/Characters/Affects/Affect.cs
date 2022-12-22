@@ -4,7 +4,7 @@ using fightDamageCalc;
 
 namespace characters
 {
-    public abstract class Affect: ScriptableObject
+    public abstract class Affect
     {
         public abstract void Apply(Character target);
         public abstract Tuple<TurnTime,Int16> WhenStackLossAndAmount {get; set;}
