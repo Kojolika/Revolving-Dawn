@@ -54,6 +54,7 @@ namespace fightInput
 
                     mover = currentCard.gameObject.AddComponent<Mover>();
                     mover.Initialize(cardCenterPosition, 40f);
+                    mover.StartCoroutine(mover.MoveGameObjectCoroutine());
 
                     targetingArrow = currentCard.gameObject.AddComponent<TargetingArrow>();
                     targetingArrow.cardCam = _input.cardCam;

@@ -13,53 +13,44 @@ namespace mana
         public GameObject center;
         float radius = .5f;
         Vector2 circleCenter;
-        float rotateSpeed = 1f;
+        float rotateSpeed = 50f;
         float moveSpeed = 2f;
         float z = 2f;
-        float[] currentAngleInRad;
-        Vector3[] fixedPoints;
-        float[] fixedAngleInRad;
+        float[] angle;
         bool rotating = false;
 
         void Start()
         {
             manaCount = mana.Count;
 
-            fixedPoints = new Vector3[manaCount];
-            currentAngleInRad = new float[manaCount];
-            fixedAngleInRad = new float[manaCount];
-            for (int i = 0; i < manaCount; i++)
-                currentAngleInRad[i] = fixedAngleInRad[i] = 1f;
+            angle = new float[manaCount];
                 
-            fixedPoints = GetStoppingPoints();
-
             circleCenter = new Vector2(center.transform.localPosition.x, center.transform.localPosition.y);
-
+            
+            var points = GetStoppingPoints();
             for (int i = 0; i < manaCount; i++)
             {
-                var mana = this.mana[i];
-                mana.transform.localPosition = fixedPoints[i];
+                mana[i].transform.localPosition = points[i];
             }
-
         }
+
         Vector3[] GetStoppingPoints()
         {
             Vector3[] points = new Vector3[manaCount];
             
             for (int i = 0; i < manaCount; i++)
             {
-                var mana = this.mana[i];
                 float offset = i * (360 / manaCount);
-                currentAngleInRad[i] = fixedAngleInRad[i] = offset;
-                Debug.Log("Rad " + i + ": " + currentAngleInRad[i]);
+                angle[i] = offset;
+
                 points[i] = new Vector3(
-                    circleCenter.x + (radius * Mathf.Cos(currentAngleInRad[i] * Mathf.Deg2Rad)),
-                    circleCenter.y + (radius * Mathf.Sin(currentAngleInRad[i] * Mathf.Deg2Rad)),
+                    circleCenter.x + (radius * Mathf.Cos(offset * Mathf.Deg2Rad)),
+                    circleCenter.y + (radius * Mathf.Sin(offset * Mathf.Deg2Rad)),
                     z);
             }
-
             return points;
         }
+
         public bool IsRotating()
         {
             return rotating;
@@ -67,35 +58,6 @@ namespace mana
         public void StopRotating()
         {
             rotating = false;
-            StartCoroutine(StopRotatingCoroutine());
-        }
-        IEnumerator StopRotatingCoroutine()
-        {
-            StopCoroutine(CircularRotateCoroutine());
-
-            for (int i = 0; i < manaCount; i++)
-            {
-                var mana = this.mana[i];
-
-                float minDistance = Vector3.Distance(mana.transform.localPosition, fixedPoints[i]);
-                Vector3 newPos = fixedPoints[i];
-
-                /*
-                for(int p = 0; p < manaCount; p++)
-                {
-                    var point = fixedPoints[p];
-                    if(minDistance > Vector3.Distance(mana.transform.localPosition, point))
-                    {
-                        minDistance = Vector3.Distance(mana.transform.localPosition, point);
-                        newPos = point;
-                        currentAngleInRad[i] = fixedAngleInRad[p];
-                    }
-                }
-                */
-                StartCoroutine(MoveMana(mana, newPos));
-            }
-
-            yield return null;
         }
 
         IEnumerator MoveMana(Mana mana, Vector3 destination)
@@ -113,19 +75,19 @@ namespace mana
         }
         IEnumerator CircularRotateCoroutine()
         {
-            StopCoroutine(StopRotatingCoroutine());
             while (rotating)
             {
                 for (int i = 0; i < manaCount; i++)
                 {
                     var mana = this.mana[i];
 
-                    currentAngleInRad[i] += (Time.deltaTime * rotateSpeed);
+                    angle[i] += (Time.deltaTime * rotateSpeed);
                     mana.transform.localPosition = new Vector3(
-                        circleCenter.x + radius + Mathf.Cos(currentAngleInRad[i] * Mathf.Deg2Rad),
-                        circleCenter.y + radius + Mathf.Sin(currentAngleInRad[i] * Mathf.Deg2Rad),
+                        circleCenter.x + radius + Mathf.Cos(angle[i] * Mathf.Deg2Rad),
+                        circleCenter.y + radius + Mathf.Sin(angle[i] * Mathf.Deg2Rad),
                         z);
                 }
+
                 yield return null;
             }
 
