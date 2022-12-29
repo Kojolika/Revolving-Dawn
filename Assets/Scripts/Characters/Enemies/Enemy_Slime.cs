@@ -6,45 +6,25 @@ namespace characters
 {
     public class Enemy_Slime : Enemy
     {
-        float maxHealth = 16f;
-        public override float MaxHealth { get => maxHealth; set => maxHealth= value; }
+        float _maxHealth = 16f;
+        public override float MaxHealth { get => _maxHealth; set => _maxHealth = value; }
         HealthDisplay _healthDisplay;
         public override HealthDisplay healthDisplay { get => _healthDisplay; set => _healthDisplay = value; }
 
         public List<Move> _moves;
-        public override List<Move> moves
-        {
-            get => _moves;
-            set => _moves = value;   
-        }
+        public override List<Move> moves{ get => _moves; set => _moves = value; }
 
         Vector3 _movePosition = new Vector3(0f, .35f, 0f);
-        public override Vector3 moveIconPosition 
-        { 
-            get => _movePosition; 
-            set => _movePosition = value; 
-        }
+        public override Vector3 moveIconPosition { get => _movePosition; set => _movePosition = value;  }
 
         public Move _currentMove = null;
-        public override Move currentMove 
-        { 
-            get => _currentMove; 
-            set => _currentMove = value; 
-        }
+        public override Move currentMove {  get => _currentMove; set => _currentMove = value; }
 
         Vector3 _targetingBorderPosition = new Vector3(0f, 0.115f, 0f);
-        public override Vector3 targetingBorderPosition 
-        { 
-            get => _targetingBorderPosition; 
-            set => _targetingBorderPosition = value; 
-        }
+        public override Vector3 targetingBorderPosition { get => _targetingBorderPosition; set => _targetingBorderPosition = value; }
 
         Vector3 _healthBarPosition = new Vector3 (0f, -0.05f, 0f);
-        public override Vector3 healthbarPosition
-        { 
-            get => _healthBarPosition; 
-            set => _healthBarPosition = value; 
-        }
+        public override Vector3 healthbarPosition { get => _healthBarPosition; set => _healthBarPosition = value; }
 
         public override void LoadMoves()
         {

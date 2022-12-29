@@ -7,40 +7,66 @@ namespace mana
 {
     public class ManaPool : MonoBehaviour
     {
-        public List<Mana> manaPool = new List<Mana>();
+        public List<Mana> mana = new List<Mana>();
         int manaCount;
 
         public GameObject center;
         float radius = .5f;
         Vector2 circleCenter;
-        float rotateSpeed = 50f;
-        float moveSpeed = .001f;
+        float rotateSpeed = 1f;
+        float moveSpeed = 2f;
         float z = 2f;
-        float[] angle;
+        float[] currentAngleInRad;
+        Vector3[] fixedPoints;
+        float[] fixedAngleInRad;
+        bool rotating = false;
 
         void Start()
         {
-            manaCount = manaPool.Count;
-            angle = new float[manaCount];
+            manaCount = mana.Count;
+
+            fixedPoints = new Vector3[manaCount];
+            currentAngleInRad = new float[manaCount];
+            fixedAngleInRad = new float[manaCount];
             for (int i = 0; i < manaCount; i++)
-                angle[i] = 1f;
+                currentAngleInRad[i] = fixedAngleInRad[i] = 1f;
+                
+            fixedPoints = GetStoppingPoints();
 
             circleCenter = new Vector2(center.transform.localPosition.x, center.transform.localPosition.y);
 
             for (int i = 0; i < manaCount; i++)
             {
-                var mana = manaPool[i];
-                float offset = i * (360 / manaCount);
-                angle[i] = offset;
-                mana.transform.localPosition = new Vector3(
-                    circleCenter.x + radius + Mathf.Cos(angle[i] * Mathf.Deg2Rad),
-                    circleCenter.y + radius + Mathf.Sin(angle[i] * Mathf.Deg2Rad),
-                    z);
+                var mana = this.mana[i];
+                mana.transform.localPosition = fixedPoints[i];
             }
 
         }
+        Vector3[] GetStoppingPoints()
+        {
+            Vector3[] points = new Vector3[manaCount];
+            
+            for (int i = 0; i < manaCount; i++)
+            {
+                var mana = this.mana[i];
+                float offset = i * (360 / manaCount);
+                currentAngleInRad[i] = fixedAngleInRad[i] = offset;
+                Debug.Log("Rad " + i + ": " + currentAngleInRad[i]);
+                points[i] = new Vector3(
+                    circleCenter.x + (radius * Mathf.Cos(currentAngleInRad[i] * Mathf.Deg2Rad)),
+                    circleCenter.y + (radius * Mathf.Sin(currentAngleInRad[i] * Mathf.Deg2Rad)),
+                    z);
+            }
+
+            return points;
+        }
+        public bool IsRotating()
+        {
+            return rotating;
+        }
         public void StopRotating()
         {
+            rotating = false;
             StartCoroutine(StopRotatingCoroutine());
         }
         IEnumerator StopRotatingCoroutine()
@@ -49,36 +75,55 @@ namespace mana
 
             for (int i = 0; i < manaCount; i++)
             {
-                var mana = manaPool[i];
-                float offset = i * (360 / manaCount);
-                angle[i] = offset;
+                var mana = this.mana[i];
 
-                Vector3 newPos = new Vector3(
-                    circleCenter.x + radius + Mathf.Cos(angle[i] * Mathf.Deg2Rad),
-                    circleCenter.y + radius + Mathf.Sin(angle[i] * Mathf.Deg2Rad),
-                    z);
+                float minDistance = Vector3.Distance(mana.transform.localPosition, fixedPoints[i]);
+                Vector3 newPos = fixedPoints[i];
 
-                Mover mover = mana.gameObject.AddComponent<Mover>();
-                mover.Initialize(newPos, moveSpeed, true);
+                /*
+                for(int p = 0; p < manaCount; p++)
+                {
+                    var point = fixedPoints[p];
+                    if(minDistance > Vector3.Distance(mana.transform.localPosition, point))
+                    {
+                        minDistance = Vector3.Distance(mana.transform.localPosition, point);
+                        newPos = point;
+                        currentAngleInRad[i] = fixedAngleInRad[p];
+                    }
+                }
+                */
+                StartCoroutine(MoveMana(mana, newPos));
             }
 
             yield return null;
         }
+
+        IEnumerator MoveMana(Mana mana, Vector3 destination)
+        {
+            while (mana.gameObject.transform.localPosition != destination)
+            {
+                    mana.gameObject.transform.localPosition = Vector3.MoveTowards(mana.gameObject.transform.localPosition, destination, moveSpeed * Time.deltaTime);
+                    yield return null;
+            }
+        }
         public void StartCircularRotate()
         {
+            rotating = true;
             StartCoroutine(CircularRotateCoroutine());
         }
         IEnumerator CircularRotateCoroutine()
         {
-            while (true)
+            StopCoroutine(StopRotatingCoroutine());
+            while (rotating)
             {
                 for (int i = 0; i < manaCount; i++)
                 {
-                    var mana = manaPool[i];
-                    angle[i] += (Time.deltaTime * rotateSpeed);
+                    var mana = this.mana[i];
+
+                    currentAngleInRad[i] += (Time.deltaTime * rotateSpeed);
                     mana.transform.localPosition = new Vector3(
-                        circleCenter.x + radius + Mathf.Cos(angle[i] * Mathf.Deg2Rad),
-                        circleCenter.y + radius + Mathf.Sin(angle[i] * Mathf.Deg2Rad),
+                        circleCenter.x + radius + Mathf.Cos(currentAngleInRad[i] * Mathf.Deg2Rad),
+                        circleCenter.y + radius + Mathf.Sin(currentAngleInRad[i] * Mathf.Deg2Rad),
                         z);
                 }
                 yield return null;

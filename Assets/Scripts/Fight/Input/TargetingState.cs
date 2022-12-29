@@ -216,7 +216,7 @@ namespace fightInput
 
         void StopDragging()
         {
-            dragger.StopCoroutine(dragger.DraggingCoroutine(currentCard));
+            dragger.StopDragging();
             GameObject.Destroy(dragger);
         }
     }

@@ -6,18 +6,22 @@ public class Dragger : MonoBehaviour
 {
     public Camera cardCam;
     Vector3 mousePos;
-    public void StartDragging(Card card)
+    public void StartDragging()
     {
-        StartCoroutine(DraggingCoroutine(card));
+        StartCoroutine(DraggingCoroutine(this.gameObject));
     }
     
-    public IEnumerator DraggingCoroutine(Card card)
+    public void StopDragging()
+    {
+        StopCoroutine(DraggingCoroutine(this.gameObject));
+    }
+    IEnumerator DraggingCoroutine(GameObject go)
     {
         while(true)
         {
-            Vector3 mousePoisiton = new Vector3(Input.mousePosition.x, Input.mousePosition.y, cardCam.nearClipPlane + 7f);
-            mousePos = cardCam.ScreenToWorldPoint(mousePoisiton);
-            card.transform.position = mousePos;
+            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, cardCam.nearClipPlane + 7f);
+            mousePos = cardCam.ScreenToWorldPoint(mousePosition);
+            go.transform.position = mousePos;
 
             yield return null;
         }

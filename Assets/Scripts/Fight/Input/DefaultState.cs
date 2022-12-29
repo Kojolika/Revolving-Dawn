@@ -15,8 +15,8 @@ namespace fightInput
             _input.OnCardMouseOver += CardMouseOver;
             _input.OnMouseEnterManaArea += MouseEnterManaArea;
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
-            manaPool.StopAllCoroutines();
-            manaPool.StartCircularRotate();
+            if(!manaPool.IsRotating())
+                manaPool.StartCircularRotate();
         }
 
         public override PlayerInputState Transition()
@@ -29,7 +29,6 @@ namespace fightInput
                     Exit();
                     return new HoveringState(currentCard);
                 case ChangeStateTo.ManaViewing:
-                    manaPool.StopRotating();
                     Exit();
                     return new ManaViewingState();
             }

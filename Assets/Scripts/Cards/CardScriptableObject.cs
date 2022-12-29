@@ -12,6 +12,7 @@ namespace cards
         public PlayerClass cardClass;
         public Targeting target;
         public Targeting manaChargedTarget;
+        public CardScriptableObject manaChargedCardSO;
     }
 
 }

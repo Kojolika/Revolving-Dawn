@@ -13,8 +13,6 @@ namespace fight
         const float MOVE_SPEED_HOVER = 8f;
         public const float MOVE_SPEED_RESET = 35f;
 
-        bool resetRequired = false;
-
         public void Initialize(CardHandManager CHMM, Card card){
             currentCard = card;
             _cardHandMovementManager = CHMM;

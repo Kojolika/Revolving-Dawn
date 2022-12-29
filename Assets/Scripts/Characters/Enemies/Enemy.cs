@@ -9,8 +9,6 @@ namespace characters{
         public abstract Vector3 moveIconPosition {get;set;}
         public abstract void LoadMoves();
         public abstract Move currentMove{get; set;}
-
-        //public abstract List<IEnumerator[]> animations {get; set;}
         public IEnumerator ExecuteMove(List<Character> targets = null)
         {
             if(targets != null) currentMove.execute(targets:targets);

@@ -201,6 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b58ddd3eaee22e479945c15ace98a3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manaType: 0
 --- !u!1 &2608695676266846720
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,6 +310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b58ddd3eaee22e479945c15ace98a3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manaType: 0
 --- !u!1 &3766926104576821266
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,6 +924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b58ddd3eaee22e479945c15ace98a3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manaType: 0
 --- !u!1 &4254111766671610997
 GameObject:
   m_ObjectHideFlags: 0
@@ -1096,7 +1099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63c7f2d8a330bd240b9196485cd86437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manaPool:
+  mana:
   - {fileID: 5731211084388506095}
   - {fileID: 5116990429666236292}
   - {fileID: 1240174079212813175}
@@ -1210,3 +1213,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b58ddd3eaee22e479945c15ace98a3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manaType: 0

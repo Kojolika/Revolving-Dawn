@@ -7,24 +7,11 @@ namespace characters
     public abstract class Character : MonoBehaviour
     {
         float maxHealth = 50f;
-        public virtual float MaxHealth
-        {
-            get => maxHealth;
-            set => maxHealth = value;
-        }
+        public virtual float MaxHealth{ get => maxHealth; set => maxHealth = value; }
         Vector3 healthBarVector;
-        public virtual Vector3 healthbarPosition
-        {
-            get => new Vector3(0f, 1f, 0f);
-            set => healthBarVector = value;
-        }
-
+        public virtual Vector3 healthbarPosition { get => new Vector3(0f, 1f, 0f); set => healthBarVector = value; }
         Vector3 targetingBorderVector;
-        public virtual Vector3 targetingBorderPosition
-        {
-            get => Vector3.zero;
-            set => targetingBorderVector = value;
-        }
+        public virtual Vector3 targetingBorderPosition { get => Vector3.zero; set => targetingBorderVector = value; }
 
         public abstract HealthDisplay healthDisplay { get; set; }
         public virtual void InitializeHealth()
@@ -44,12 +31,10 @@ namespace characters
             if (number.getType() == fightDamageCalc.FightInfo.NumberType.Attack)
             {
                 target.healthDisplay.health.DealDamage(finalAmount);
-                //target.healthDisplay.UpdateBlock();
             }
             else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Block)
             {
                 target.healthDisplay.health.Block(finalAmount);
-                //target.healthDisplay.UpdateBlock();
             }
             else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Heal)
                 target.healthDisplay.health.Heal(finalAmount);

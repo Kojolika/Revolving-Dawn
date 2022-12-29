@@ -15,9 +15,10 @@ namespace fightInput
             _input.OnMouseExitManaArea += ExitManaArea;
             _input.OnManaMouseOver += ManaMouseOver;
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
-            manaPool.StopRotating();
+            if(manaPool.IsRotating())
+                manaPool.StopRotating();
         }
-
+ 
         public override PlayerInputState Transition()
         {
             switch (changeStateTo)
@@ -26,10 +27,8 @@ namespace fightInput
                     return this;
                 case ChangeStateTo.ManaHovering:
                     Exit();
-                    return new ManaHovering(currentMana);
+                    return new ManaHoveringState(currentMana);
                 case ChangeStateTo.Default:
-                    manaPool.StopAllCoroutines();
-                    manaPool.StartCircularRotate();
                     Exit();
                     return new DefaultState();
             }

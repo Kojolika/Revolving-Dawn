@@ -1,5 +1,6 @@
 using UnityEngine;
 using characters;
+using mana;
 using System.Collections.Generic;
 using TMPro;
 
@@ -7,6 +8,7 @@ namespace cards
 {
     public abstract class Card : MonoBehaviour
     {
+        Dictionary<Mana, bool> Mana { get; set;}
         public CardScriptableObject cardSO;
         public Player currentPlayer;
         Targeting target;
@@ -57,7 +59,13 @@ namespace cards
             //By default does nothing
             //Used for cards that implement numbers
         }
-        
+        public void BindMana(Mana mana)
+        {
+            foreach(var pair in Mana)
+            {
+                
+            }
+        }
         void Awake() {
             LoadInfo();
             ReplaceDiscriptionText();

@@ -23,7 +23,7 @@ namespace fightInput
             currentCard.transform.rotation = Quaternion.Euler(CardInfo.DEFAULT_CARD_ROTATION);
             newDragger = currentCard.gameObject.AddComponent<Dragger>();
             newDragger.cardCam = _input.cardCam;
-            newDragger.StartDragging(currentCard);
+            newDragger.StartDragging();
         }
 
         public override PlayerInputState Transition()
@@ -52,7 +52,7 @@ namespace fightInput
 
             if ((int)currentCard.GetTarget() == 1 || changeDefault)
             {
-                newDragger.StopCoroutine(newDragger.DraggingCoroutine(currentCard));
+                newDragger.StopDragging();
                 GameObject.Destroy(newDragger);
             }
         }
