@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using System;
 using characters;
 using mana;
 
@@ -8,12 +9,12 @@ namespace cards
 {
     public abstract class Card : MonoBehaviour
     {
-        public Dictionary<ManaType, bool> Mana { get; set;}
+        public List<(ManaType, Mana)> ManaOfSockets { get; set;}
         public CardScriptableObject cardSO;
         public Player currentPlayer;
         Targeting target;
         Targeting manaChargedTarget;
-        public bool isManaCharged = false;
+        public bool isManaCharged;
         public PlayerClass cardClass;
 
         [SerializeField] GameObject sockets;
@@ -24,6 +25,7 @@ namespace cards
 
         public void LoadInfo()
         {
+            isManaCharged = false;
             artwork.GetComponent<SpriteRenderer>().sprite = cardSO.artwork;
             border.GetComponent<SpriteRenderer>().sprite = CardInfo.GetClassBorder(cardSO.cardClass);
             nameText.text = cardSO.name;
@@ -40,13 +42,13 @@ namespace cards
             manaChargedTarget = cardSO.manaChargedTarget;
             cardClass = cardSO.cardClass;
 
-            Mana = new Dictionary<ManaType, bool>();
+            ManaOfSockets = new List<(ManaType, Mana)>();
             for(int i = 0; i < cardSO.mana.Length; i++)
             {
-                var mana = cardSO.mana[i];
+                ManaType manaType = cardSO.mana[i];
                 //add each mana from the scriptableObject
                 //initilize to false since the card is not charged
-                Mana.Add(mana,false);
+                ManaOfSockets.Add((manaType,null));
 
                 var socket = sockets.transform.GetChild(i).gameObject;
                 socket.SetActive(true);
@@ -55,7 +57,7 @@ namespace cards
 
                 //default color
                 Material colorMat = color.GetComponent<Renderer>().sharedMaterial;
-                switch(mana)
+                switch(manaType)
                 {
                     case ManaType.Red:
                     colorMat = Resources.Load<Material>("Mana_Red");
@@ -100,35 +102,53 @@ namespace cards
             //By default does nothing
             //Used for cards that implement numbers
         }
-        public void BindMana(Mana mana)
+        public void BindMana(Mana manaBeingBound)
         {
-            for(int i=0; i < cardSO.mana.Length; i++)
+            bool readyToTransform = true; //flag if the card has all mana binded for transformation 
+            bool stillBinding = true;     //flag if the card has bound the specified mana yet,
+                                          //continues looping to see if rest of mana are bound after
+            for(int i=0; i < ManaOfSockets.Count; i++)
             {
-                var manaType = cardSO.mana[i];
-                if(manaType == mana.manaType)
+                var manaType = ManaOfSockets[i].Item1;
+                var mana = ManaOfSockets[i].Item2;
+                if(mana == null) readyToTransform = false;
+
+                if(manaType == manaBeingBound.manaType && stillBinding)
                 {
+                    ManaOfSockets[i] = (manaType, manaBeingBound);
+
                     //mana.StopAllCoroutines();
                     var socket = sockets.transform.GetChild(i);
-                    mana.transform.SetParent(socket,false);
-                    mana.transform.localPosition = Vector3.zero;
-                    mana.transform.rotation = socket.rotation;
-                    mana.transform.localScale = new Vector3(.15f, .15f, .15f);
-                    break;
+                    manaBeingBound.transform.SetParent(socket,false);
+                    manaBeingBound.transform.localPosition = Vector3.zero;
+                    manaBeingBound.transform.rotation = socket.rotation;
+                    manaBeingBound.transform.localScale = new Vector3(.05f, .05f, .05f);
+                    
+                    stillBinding = false;
                 }
             }
 
-            //if not all values are true, return from function call and dont tranform
-            //otherwise if all vlaues are true, every mana slot has been filled
-            foreach (var item in Mana)
+            if(readyToTransform)
+            TransformCard();
+        }
+        public List<Mana> UnBindMana()
+        {
+            List<Mana> manaToUnBind = new List<Mana>();
+            
+            for(int i=0; i<ManaOfSockets.Count; i++)
             {
-                if(!item.Value)
-                    return;
+                var socket = ManaOfSockets[i];
+                if(socket.Item2 != null)
+                {
+                    manaToUnBind.Add(socket.Item2);
+                    socket = (socket.Item1, null);
+                }
             }
 
-            TransformToManaChargedVersion();
+            return manaToUnBind;
         }
 
-        void TransformToManaChargedVersion()
+        void TransformCard()
         {
             isManaCharged = true;
             description.text = cardSO.manaChargedCardSO.description;

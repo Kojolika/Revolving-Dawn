@@ -1,18 +1,21 @@
 using UnityEngine;
 using cards;
 using fight;
+using mana;
 
 namespace fightInput
 {
     public class HoveringState : PlayerInputState
     {
-        bool changeDefault = false;
-        bool changeDragging = false;
+        ChangeStateTo changeStateTo = ChangeStateTo.Hovering;
+        ManaPool manaPool;
         Card currentCard;
         HoverManager hoverManager = null;
 
         public HoveringState(Card card)
         {
+            manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
+            _input.OnRightClicked += RightClicked;
             _input.OnLeftClicked += LeftClicked;
             _input.OnNoCardMouseOver += NoCardMouseOver;
             _input.OnCardMouseOver += CardMouseOver;
@@ -22,24 +25,33 @@ namespace fightInput
 
         public override PlayerInputState Transition()
         {
-            if (changeDefault)
+            switch(changeStateTo)
             {
-
-                Exit();
-                return new DefaultState();
+                case ChangeStateTo.Hovering:
+                    return this;
+                case ChangeStateTo.Default:
+                    Exit();
+                    return new DefaultState();
+                case ChangeStateTo.Dragging:
+                    Exit();
+                    return new DraggingState(currentCard);
             }
-
-            if (changeDragging)
-            {
-                Exit();
-                return new DraggingState(currentCard);
-            }
-
             return this;
         }
 
-        void LeftClicked() => changeDragging = true;
-        void NoCardMouseOver() => changeDefault = true;
+        void RightClicked()
+        {
+            foreach(var mana in currentCard.UnBindMana())
+            {
+                manaPool.AddMana(mana);
+                mana.transform.SetParent(manaPool.transform);
+                mana.transform.localPosition = Vector3.zero;
+                mana.ResetScale();
+                changeStateTo = ChangeStateTo.Default;
+            }
+        }
+        void LeftClicked() => changeStateTo = ChangeStateTo.Dragging;
+        void NoCardMouseOver() => changeStateTo = ChangeStateTo.Default;
         void CardMouseOver(Card card) => NewCardForHoverEffects(card);
 
         void NewCardForHoverEffects(Card card)
@@ -56,6 +68,7 @@ namespace fightInput
         public override void Exit()
         {
             hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
+            _input.OnRightClicked -= RightClicked;
             _input.OnLeftClicked -= LeftClicked;
             _input.OnNoCardMouseOver -= NoCardMouseOver;
             _input.OnCardMouseOver -= CardMouseOver;

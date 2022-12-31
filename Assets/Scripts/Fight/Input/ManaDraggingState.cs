@@ -68,12 +68,12 @@ namespace fightInput
         void TryBindManaToCard(Mana mana, Card card)
         {
             bool bindable = false;
-            foreach(var manaType in card.Mana)
+            foreach(var manaType in card.ManaOfSockets)
             {
                 //!manaType.Value means the socket has not been binded to a mana gem
-                if(manaType.Key == mana.manaType && !manaType.Value)
+                if(manaType.Item1 == mana.manaType)
                 {
-                    card.Mana[manaType.Key] = bindable = true;
+                    bindable = true;
                     manaPool.StopAllCoroutines();
                     manaPool.RemoveMana(manaBeingDragged);
                     StopDraggingMana();

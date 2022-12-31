@@ -7,11 +7,15 @@ namespace mana
     {
         public ManaType manaType;
         bool rotating = true;
-        float scaleBy = .4f;
+        Vector3 DEFAULT_SCALE = new Vector3(.4f,.4f,.4f);
         void Start() 
         {
-            this.transform.localScale = new Vector3(scaleBy,scaleBy,scaleBy);
+            this.transform.localScale = DEFAULT_SCALE;
             StartCoroutine(RotateSelf());
+        }
+        public void ResetScale()
+        {
+            this.transform.localScale = DEFAULT_SCALE;
         }
         IEnumerator RotateSelf()
         {
