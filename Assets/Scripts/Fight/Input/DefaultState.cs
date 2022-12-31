@@ -1,5 +1,6 @@
 using cards;
 using mana;
+using UnityEngine;
 
 namespace fightInput
 {
@@ -16,7 +17,10 @@ namespace fightInput
             _input.OnMouseEnterManaArea += MouseEnterManaArea;
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
             if(!manaPool.IsRotating())
+            {
                 manaPool.StartCircularRotate();
+            }
+                
         }
 
         public override PlayerInputState Transition()

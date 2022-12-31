@@ -19,4 +19,4 @@ MonoBehaviour:
   cardClass: 0
   target: 0
   manaChargedTarget: 0
-  manaChargedCardSO: {fileID: 0}
+  manaChargedCardSO: {fileID: 11400000, guid: 5f8294b2b862ea44bbe6bae6516c5794, type: 2}

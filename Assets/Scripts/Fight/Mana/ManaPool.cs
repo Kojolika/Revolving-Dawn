@@ -7,31 +7,21 @@ namespace mana
 {
     public class ManaPool : MonoBehaviour
     {
-        public List<Mana> mana = new List<Mana>();
+        public List<Mana> pool = new List<Mana>();
         int manaCount;
 
         public GameObject center;
         float radius = .5f;
         Vector2 circleCenter;
         float rotateSpeed = 50f;
-        float moveSpeed = 2f;
         float z = 2f;
         float[] angle;
         bool rotating = false;
 
         void Start()
         {
-            manaCount = mana.Count;
-
-            angle = new float[manaCount];
-                
             circleCenter = new Vector2(center.transform.localPosition.x, center.transform.localPosition.y);
-            
-            var points = GetStoppingPoints();
-            for (int i = 0; i < manaCount; i++)
-            {
-                mana[i].transform.localPosition = points[i];
-            }
+            ResetPool();
         }
 
         Vector3[] GetStoppingPoints()
@@ -58,16 +48,9 @@ namespace mana
         public void StopRotating()
         {
             rotating = false;
+            StopCoroutine(CircularRotateCoroutine());
         }
 
-        IEnumerator MoveMana(Mana mana, Vector3 destination)
-        {
-            while (mana.gameObject.transform.localPosition != destination)
-            {
-                    mana.gameObject.transform.localPosition = Vector3.MoveTowards(mana.gameObject.transform.localPosition, destination, moveSpeed * Time.deltaTime);
-                    yield return null;
-            }
-        }
         public void StartCircularRotate()
         {
             rotating = true;
@@ -75,11 +58,12 @@ namespace mana
         }
         IEnumerator CircularRotateCoroutine()
         {
+            manaCount = pool.Count;
             while (rotating)
             {
                 for (int i = 0; i < manaCount; i++)
                 {
-                    var mana = this.mana[i];
+                    var mana = this.pool[i];
 
                     angle[i] += (Time.deltaTime * rotateSpeed);
                     mana.transform.localPosition = new Vector3(
@@ -91,6 +75,30 @@ namespace mana
                 yield return null;
             }
 
+        }
+
+        public void AddMana(Mana mana)
+        {
+            StopAllCoroutines();
+            pool.Add(mana);
+            ResetPool();
+        }
+        public void RemoveMana(Mana mana)
+        {
+            StopAllCoroutines();
+            pool.Remove(mana);
+            ResetPool();
+        }
+
+        void ResetPool()
+        {
+            manaCount = this.pool.Count;
+            angle = new float[manaCount];
+            var points = GetStoppingPoints();
+            for (int i = 0; i < manaCount; i++)
+            {
+                pool[i].transform.localPosition = points[i];
+            }
         }
     }
 }

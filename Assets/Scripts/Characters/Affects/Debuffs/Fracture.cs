@@ -5,6 +5,8 @@ namespace characters
 {
     public class Fracture : Affect
     {
+        bool whichCharacterThisAffects = false;
+        
         Tuple<TurnTime, Int16> whenStackLoss = new Tuple<TurnTime, Int16>(TurnTime.EndOfTurn, 1);
         TurnTime whenAffectTriggers = TurnTime.Passive;
         FightInfo.NumberType numberType = FightInfo.NumberType.Block;
@@ -23,6 +25,8 @@ namespace characters
         {
             count = amount;
         }
+
+        public override bool WhichCharacterThisAffects { get => whichCharacterThisAffects; set => whichCharacterThisAffects = value; }
         public override bool IsStackable
         { 
             get => isStackable;

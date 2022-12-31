@@ -1,6 +1,6 @@
 using fightDamageCalc;
 using characters;
-using System.Collections.Generic;
+using UnityEngine;
 
 public class BuffProcessor : Processor
 {
@@ -8,23 +8,36 @@ public class BuffProcessor : Processor
     {
     }
 
-    public override Number process(Number request, Character target)
+    public override Number process(Number request, Character source,  Character target)
     {
+        //processing affects both targets equally
+        //need to fix
+        //example: weaken will affect the person defending too
         if(target.gameObject.TryGetComponent<Affects>(out Affects affects))
         {
             foreach(var affect in affects.list)
             {
-                if(affect.AffectType == AffectType.Buff)
+                if(affect.AffectType == AffectType.Buff && affect.WhichCharacterThisAffects)
+                {
+                    request = affect.process(request);
+                }
+            }
+        }
+        if(source.gameObject.TryGetComponent<Affects>(out Affects source_affects))
+        {
+            foreach(var affect in source_affects.list)
+            {
+                if(affect.AffectType == AffectType.Buff && !affect.WhichCharacterThisAffects)
                 {
                     request = affect.process(request);
                 }
             }
 
-            return base.process(request,target);
+            return base.process(request, source, target);
         }
         else
         {
-            return base.process(request,target);
+            return base.process(request, source, target);
         }
     }
 

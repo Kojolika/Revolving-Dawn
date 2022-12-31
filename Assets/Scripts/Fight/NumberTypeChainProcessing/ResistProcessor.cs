@@ -7,10 +7,10 @@ public class ResistProcessor : Processor
     {
     }
 
-    public override Number process(Number request, Character target)
+    public override Number process(Number request, Character source,  Character target)
     {
         //effectively empty processor
         //no resistences are implemented yet
-        return base.process(request, target);
+        return base.process(request, source, target);
     }
 }

@@ -8,11 +8,18 @@ namespace cards
     public class Defend : Card
     {
         [SerializeField] float block = 6;
+        [SerializeField] float manaBlock = 8f;
+
         public override void Play(List<Character> targets)
         {
             if (isManaCharged)
             {
                 //Play powerful effect
+                foreach(var target in targets)
+                {
+                    currentPlayer.PerformDamageNumberAction(new Number(manaBlock, FightInfo.NumberType.Block), target);
+                    currentPlayer.PerformAffectAction(new Reinforce(2), target);
+                }
             } 
             else
             {
@@ -26,7 +33,16 @@ namespace cards
 
         public override void UpdateDiscriptionText()
         {
-            description.text = description.text.Replace("BLOCK","" + block);
+            if(isManaCharged)
+            {
+                description.text = description.text.Replace("BLOCK","" + manaBlock);
+                description.text = description.text.Replace("NEWLINE","\n");
+            }
+            else
+            {
+                description.text = description.text.Replace("BLOCK","" + block);
+            }
+            
         }
     }
 }

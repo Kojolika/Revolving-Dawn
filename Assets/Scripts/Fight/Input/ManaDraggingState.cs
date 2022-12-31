@@ -53,8 +53,7 @@ namespace fightInput
         {
             if(cardBeingMousedOver)
             {
-                BindManaToCard(manaBeingDragged,cardBeingMousedOver);
-                changeStateTo = ChangeStateTo.Default;
+                TryBindManaToCard(manaBeingDragged,cardBeingMousedOver);
             }
         }
         void MouseOverCard(Card card)
@@ -66,11 +65,31 @@ namespace fightInput
             cardBeingMousedOver = null;
         }
 
-        void BindManaToCard(Mana mana, Card card)
+        void TryBindManaToCard(Mana mana, Card card)
         {
-            Debug.Log("binding mana to card...");
-            manaPool.mana.Remove(manaBeingDragged);
-            GameObject.Destroy(manaBeingDragged.gameObject);
+            bool bindable = false;
+            foreach(var manaType in card.Mana)
+            {
+                //!manaType.Value means the socket has not been binded to a mana gem
+                if(manaType.Key == mana.manaType && !manaType.Value)
+                {
+                    card.Mana[manaType.Key] = bindable = true;
+                    manaPool.StopAllCoroutines();
+                    manaPool.RemoveMana(manaBeingDragged);
+                    StopDraggingMana();
+
+                    card.BindMana(manaBeingDragged);
+
+                    changeStateTo = ChangeStateTo.Default;
+                    
+                    break;
+                }
+            }
+            if(!bindable)
+            {
+                Debug.Log("Invalid mana type");
+            }
+
         }
 
         public override void Exit()

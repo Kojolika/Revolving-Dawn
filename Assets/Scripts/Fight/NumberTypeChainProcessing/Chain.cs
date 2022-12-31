@@ -28,9 +28,9 @@ namespace fightDamageCalc
                     null))));
         }
 
-        public Number process(Number request, Character target)
+        public Number process(Number request, Character source, Character target)
         {
-            return chain.process(request, target);
+            return chain.process(request, source, target);
         }
    
 

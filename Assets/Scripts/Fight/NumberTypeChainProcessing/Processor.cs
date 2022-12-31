@@ -10,11 +10,11 @@ public abstract class Processor
         this.nextProcessor = nextProcessor;
     }
 
-    public virtual Number process(Number request, Character target)
+    public virtual Number process(Number request, Character source,  Character target)
     {
         if(nextProcessor != null)
         {
-            return nextProcessor.process(request, target);
+            return nextProcessor.process(request, source, target);
         }
         else return request;
     }

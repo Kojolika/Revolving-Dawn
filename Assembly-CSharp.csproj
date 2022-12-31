@@ -87,6 +87,7 @@
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Chain.cs" />
      <Compile Include="Assets\Scripts\Cards\Warrior\Bash.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy.cs" />
+     <Compile Include="Assets\Scripts\Characters\Affects\Buffs\Reinforce.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Block.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Weaken.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\RoundingProcessor.cs" />

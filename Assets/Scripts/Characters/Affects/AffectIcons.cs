@@ -53,6 +53,9 @@ namespace characters
                 case var value when value == typeof(Fracture):
                     renderer.sprite = Resources.Load<Sprite>("affect_fracture");
                 break;
+                case var value when value == typeof(Reinforce):
+                    renderer.sprite = Resources.Load<Sprite>("affect_reinforce");
+                break;
             }
 
             //Text gameobject

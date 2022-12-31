@@ -1,13 +1,25 @@
 using UnityEngine;
+using System.Collections;
 
 namespace mana
 {
     public class Mana : MonoBehaviour
     {
         public ManaType manaType;
-        void LateUpdate()
+        bool rotating = true;
+        float scaleBy = .4f;
+        void Start() 
         {
-            this.transform.Rotate(.1f, .1f, .1f, Space.Self);
+            this.transform.localScale = new Vector3(scaleBy,scaleBy,scaleBy);
+            StartCoroutine(RotateSelf());
+        }
+        IEnumerator RotateSelf()
+        {
+            while(rotating)
+            {
+                this.transform.Rotate(.1f, .1f, .1f, Space.Self);
+                yield return null;
+            }
         }
     }
 

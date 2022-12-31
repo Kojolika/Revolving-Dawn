@@ -22,7 +22,7 @@ public class Attack : Move {
         {
             foreach(var _target in targets)
             {
-                    float finalDamage = chain.process(new Number(damageAmount, FightInfo.NumberType.Attack), enemyUsingMove.GetComponent<Character>()).Amount;
+                    float finalDamage = chain.process(new Number(damageAmount, FightInfo.NumberType.Attack), enemyUsingMove.GetComponent<Character>(), _target).Amount;
                     _target.healthDisplay.health.DealDamage(finalDamage);
             }
         }

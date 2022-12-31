@@ -1,8 +1,8 @@
 using UnityEngine;
+using TMPro;
+using System.Collections.Generic;
 using characters;
 using mana;
-using System.Collections.Generic;
-using TMPro;
 
 namespace cards
 {
@@ -102,10 +102,38 @@ namespace cards
         }
         public void BindMana(Mana mana)
         {
-            foreach(var pair in Mana)
+            for(int i=0; i < cardSO.mana.Length; i++)
             {
-                
+                var manaType = cardSO.mana[i];
+                if(manaType == mana.manaType)
+                {
+                    //mana.StopAllCoroutines();
+                    var socket = sockets.transform.GetChild(i);
+                    mana.transform.SetParent(socket,false);
+                    mana.transform.localPosition = Vector3.zero;
+                    mana.transform.rotation = socket.rotation;
+                    mana.transform.localScale = new Vector3(.15f, .15f, .15f);
+                    break;
+                }
             }
+
+            //if not all values are true, return from function call and dont tranform
+            //otherwise if all vlaues are true, every mana slot has been filled
+            foreach (var item in Mana)
+            {
+                if(!item.Value)
+                    return;
+            }
+
+            TransformToManaChargedVersion();
+        }
+
+        void TransformToManaChargedVersion()
+        {
+            isManaCharged = true;
+            description.text = cardSO.manaChargedCardSO.description;
+            ReplaceDiscriptionText();
+            UpdateDiscriptionText();
         }
         void Awake() {
             LoadInfo();

@@ -26,7 +26,7 @@ namespace characters
         public void PerformDamageNumberAction(fightDamageCalc.Number number, Character target)
         {
             fightDamageCalc.Chain chain = new fightDamageCalc.Chain();
-            float finalAmount = chain.process(number, this).Amount;
+            float finalAmount = chain.process(number, this, target).Amount;
 
             if (number.getType() == fightDamageCalc.FightInfo.NumberType.Attack)
             {

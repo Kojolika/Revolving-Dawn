@@ -6,6 +6,10 @@ namespace characters
 {
     public abstract class Affect
     {
+        //flag; 
+        //false: buff affects self abilities
+        //true: buff affects abilities others target at self
+        public abstract bool WhichCharacterThisAffects {get; set;} 
         public abstract void Apply(Character target);
         public abstract Tuple<TurnTime,Int16> WhenStackLossAndAmount {get; set;}
         public abstract TurnTime WhenAffectTriggers { get; set; }

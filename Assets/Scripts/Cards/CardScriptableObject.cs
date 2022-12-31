@@ -7,6 +7,7 @@ namespace cards
     [CreateAssetMenu(fileName = "New Card", menuName = "New Card")]
     public class CardScriptableObject : ScriptableObject
     {
+        //Must only be size 3 or less
         public ManaType[] mana;
         public new string name;
         public string description;
