@@ -215,7 +215,7 @@ namespace fightInput
         }
         void MouseInput(){
 
-            if(Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse1))
+            if(Input.GetKeyUp(KeyCode.Mouse1))
             {
                 TriggerRightClicked();
             }

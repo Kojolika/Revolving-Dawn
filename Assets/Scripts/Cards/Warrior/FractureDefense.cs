@@ -25,7 +25,7 @@ namespace cards
                 }
             }
         }
-        public override void ReplaceDiscriptionText()
+        public override void UpdateDiscriptionText()
         {
             //Use this to update text damage later
             description.text = description.text.Replace("NEWLINE","\n");

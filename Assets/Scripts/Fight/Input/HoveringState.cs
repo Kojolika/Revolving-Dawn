@@ -11,6 +11,7 @@ namespace fightInput
         ManaPool manaPool;
         Card currentCard;
         HoverManager hoverManager = null;
+        bool rightClicked = false;
 
         public HoveringState(Card card)
         {
@@ -28,6 +29,8 @@ namespace fightInput
             switch(changeStateTo)
             {
                 case ChangeStateTo.Hovering:
+                    if(rightClicked) AddManaBackToPool();
+                    rightClicked = false;
                     return this;
                 case ChangeStateTo.Default:
                     Exit();
@@ -41,19 +44,25 @@ namespace fightInput
 
         void RightClicked()
         {
-            foreach(var mana in currentCard.UnBindMana())
-            {
-                manaPool.AddMana(mana);
-                mana.transform.SetParent(manaPool.transform);
-                mana.transform.localPosition = Vector3.zero;
-                mana.ResetScale();
-                changeStateTo = ChangeStateTo.Default;
-            }
+            rightClicked = true;
+            changeStateTo = ChangeStateTo.Hovering;
         }
         void LeftClicked() => changeStateTo = ChangeStateTo.Dragging;
         void NoCardMouseOver() => changeStateTo = ChangeStateTo.Default;
         void CardMouseOver(Card card) => NewCardForHoverEffects(card);
+        
+        void AddManaBackToPool()
+        {
+            if(!currentCard.isManaCharged) return;
 
+            foreach(var mana in currentCard.UnBindManaAndReturnManaUnBound())
+            {
+                manaPool.AddMana(mana);
+            }
+
+            manaPool.StartCircularRotate();
+            rightClicked = false;
+        }
         void NewCardForHoverEffects(Card card)
         {
             if (currentCard == card) return;

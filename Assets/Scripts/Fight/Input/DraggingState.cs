@@ -5,8 +5,7 @@ namespace fightInput
 {
     public class DraggingState : PlayerInputState
     {
-        bool changeDefault = false;
-        bool changeTargeting = false;
+        ChangeStateTo changeStateTo = ChangeStateTo.Dragging;
         Card currentCard = null;
         Dragger newDragger;
 
@@ -28,29 +27,28 @@ namespace fightInput
 
         public override PlayerInputState Transition()
         {
-            if (changeDefault)
+            switch(changeStateTo)
             {
-                Exit();
-                return new DefaultState();
+                case ChangeStateTo.Dragging:
+                    return this;
+                case ChangeStateTo.Default:
+                    Exit();
+                    return new DefaultState();
+                case ChangeStateTo.Targeting:
+                    Exit();
+                    return new TargetingState(currentCard);
             }
-
-            if (changeTargeting)
-            {
-                Exit();
-                return new TargetingState(currentCard);
-            }
-
             return this;
         }
 
-        void RightClicked() => changeDefault = true;
-        void OnEnterPlayArea() => changeTargeting = true;
+        void RightClicked() => changeStateTo = ChangeStateTo.Default;
+        void OnEnterPlayArea() => changeStateTo = ChangeStateTo.Targeting;
         public override void Exit()
         {
             _input.OnRightClicked -= RightClicked;
             _input.OnMouseEnterPlayArea -= OnEnterPlayArea;
 
-            if ((int)currentCard.GetTarget() == 1 || changeDefault)
+            if ((int)currentCard.GetTarget() == 1 || changeStateTo == ChangeStateTo.Default)
             {
                 newDragger.StopDragging();
                 GameObject.Destroy(newDragger);

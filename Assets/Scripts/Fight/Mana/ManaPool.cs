@@ -27,7 +27,8 @@ namespace mana
         Vector3[] GetStoppingPoints()
         {
             Vector3[] points = new Vector3[manaCount];
-            
+            angle = new float[manaCount];
+
             for (int i = 0; i < manaCount; i++)
             {
                 float offset = i * (360 / manaCount);
@@ -80,7 +81,10 @@ namespace mana
         public void AddMana(Mana mana)
         {
             StopAllCoroutines();
+            
             pool.Add(mana);
+            mana.transform.SetParent(this.transform);
+            mana.ResetScale();
             ResetPool();
         }
         public void RemoveMana(Mana mana)
@@ -93,7 +97,6 @@ namespace mana
         void ResetPool()
         {
             manaCount = this.pool.Count;
-            angle = new float[manaCount];
             var points = GetStoppingPoints();
             for (int i = 0; i < manaCount; i++)
             {

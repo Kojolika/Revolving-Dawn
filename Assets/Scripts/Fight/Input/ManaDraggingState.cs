@@ -28,6 +28,9 @@ namespace fightInput
             {
                 case ChangeStateTo.ManaDragging:
                     return this;
+                case ChangeStateTo.Hovering:
+                    Exit();
+                    return new HoveringState(cardBeingMousedOver);
                 case ChangeStateTo.Default:
                     Exit();
                     return new DefaultState();
@@ -80,7 +83,7 @@ namespace fightInput
 
                     card.BindMana(manaBeingDragged);
 
-                    changeStateTo = ChangeStateTo.Default;
+                    changeStateTo = ChangeStateTo.Hovering;
                     
                     break;
                 }

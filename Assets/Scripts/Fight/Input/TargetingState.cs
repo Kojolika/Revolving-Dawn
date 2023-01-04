@@ -9,8 +9,7 @@ namespace fightInput
 {
         public class TargetingState : PlayerInputState
     {
-        bool change = false;
-        bool leftClicked = false;
+        ChangeStateTo changeStateTo = ChangeStateTo.Targeting;
 
         Card currentCard;
         Enemy previousEnemy = null;
@@ -113,29 +112,29 @@ namespace fightInput
 
         public override PlayerInputState Transition()
         {
-            if (change)
+            switch(changeStateTo)
             {
-                Exit();
-                return new DefaultState();
+                case ChangeStateTo.Default:
+                    Exit();
+                    return new DefaultState();
+                case ChangeStateTo.Targeting:
+                    return this;
             }
-
-            if (targets.Count > 0 && leftClicked)
-            {
-                //Trigger playing the card event
-                cardHandMovementManager.TriggerPlayCard(currentCard, targets);
-
-                Exit();
-                return new DefaultState();
-            }
-
-            leftClicked = false;
 
             return this;
         }
 
-        void LeftClicked() => leftClicked = true;
-        void RightClicked() => change = true;
-        void OnEnterCardArea() => change = true;
+        void LeftClicked() 
+        {
+            if (targets.Count > 0)
+            {
+                //Trigger playing the card event
+                cardHandMovementManager.TriggerPlayCard(currentCard, targets);
+                changeStateTo = ChangeStateTo.Default;
+            }
+        }
+        void RightClicked() => changeStateTo = ChangeStateTo.Default;
+        void OnEnterCardArea() => changeStateTo = ChangeStateTo.Default;
         void OnEnemyMouseOver(Enemy enemy)
         {
             if (enemy != null)

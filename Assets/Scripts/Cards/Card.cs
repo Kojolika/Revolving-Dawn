@@ -23,7 +23,7 @@ namespace cards
         [SerializeField] GameObject artwork;
         [SerializeField] GameObject border;
 
-        public void LoadInfo()
+        void LoadInfo()
         {
             isManaCharged = false;
             artwork.GetComponent<SpriteRenderer>().sprite = cardSO.artwork;
@@ -92,46 +92,42 @@ namespace cards
             return target;
         }
         public abstract void Play(List<Character> targets);
-        public virtual void ReplaceDiscriptionText()
-        {
-            //By default does nothing
-            //Used for cards that have multiple lines
-        }
+
         public virtual void UpdateDiscriptionText()
         {
             //By default does nothing
             //Used for cards that implement numbers
         }
+        void FitManaIntoSocket(Mana mana, Transform socket)
+        {
+            Debug.Log("Adding to socket");
+            mana.transform.SetParent(socket,true);
+            mana.transform.localPosition = Vector3.zero;
+            //mana.transform.rotation = socket.rotation;
+            mana.transform.localScale = new Vector3(.05f, .05f, .05f);
+        }
         public void BindMana(Mana manaBeingBound)
         {
             bool readyToTransform = true; //flag if the card has all mana binded for transformation 
-            bool stillBinding = true;     //flag if the card has bound the specified mana yet,
                                           //continues looping to see if rest of mana are bound after
+
             for(int i=0; i < ManaOfSockets.Count; i++)
             {
-                var manaType = ManaOfSockets[i].Item1;
-                var mana = ManaOfSockets[i].Item2;
-                if(mana == null) readyToTransform = false;
-
-                if(manaType == manaBeingBound.manaType && stillBinding)
+                if(ManaOfSockets[i].Item1 == manaBeingBound.manaType && ManaOfSockets[i].Item2 == null)
                 {
-                    ManaOfSockets[i] = (manaType, manaBeingBound);
+                    ManaOfSockets[i] = (ManaOfSockets[i].Item1, manaBeingBound);
 
-                    //mana.StopAllCoroutines();
                     var socket = sockets.transform.GetChild(i);
-                    manaBeingBound.transform.SetParent(socket,false);
-                    manaBeingBound.transform.localPosition = Vector3.zero;
-                    manaBeingBound.transform.rotation = socket.rotation;
-                    manaBeingBound.transform.localScale = new Vector3(.05f, .05f, .05f);
-                    
-                    stillBinding = false;
+                    FitManaIntoSocket(manaBeingBound,socket);
                 }
+
+                if(ManaOfSockets[i].Item2 == null) readyToTransform = false;
             }
 
             if(readyToTransform)
             TransformCard();
         }
-        public List<Mana> UnBindMana()
+        public List<Mana> UnBindManaAndReturnManaUnBound()
         {
             List<Mana> manaToUnBind = new List<Mana>();
             
@@ -145,19 +141,26 @@ namespace cards
                 }
             }
 
+            TransformCard();
             return manaToUnBind;
         }
 
         void TransformCard()
         {
-            isManaCharged = true;
-            description.text = cardSO.manaChargedCardSO.description;
-            ReplaceDiscriptionText();
+            isManaCharged = !isManaCharged;
+            if(isManaCharged)
+            {
+                description.text = cardSO.manaChargedCardSO.description;
+            }
+            else
+            {
+                description.text = cardSO.description;
+            }
+            
             UpdateDiscriptionText();
         }
         void Awake() {
             LoadInfo();
-            ReplaceDiscriptionText();
             UpdateDiscriptionText();
         }
     }
