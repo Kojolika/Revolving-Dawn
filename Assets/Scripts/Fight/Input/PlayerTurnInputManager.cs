@@ -8,9 +8,10 @@ namespace fightInput
     public class PlayerTurnInputManager : MonoBehaviour
     {
         public Camera cardCam;
+        public static PlayerTurnInputManager staticInstance;
 
         public PlayerInputState state;
-        bool isEnabled;
+        public bool isEnabled;
 
         public delegate void ManaMouseOver(Mana mana);
         public event ManaMouseOver OnManaMouseOver;
@@ -234,6 +235,14 @@ namespace fightInput
             MouseOver();
             MouseOverCharacter();
             MouseInput();
+        }
+
+        void Awake() 
+        {
+           if (staticInstance == null)
+                staticInstance = this;
+            else
+                Destroy(this);
         }
     }
 }
