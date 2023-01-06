@@ -84,7 +84,7 @@ namespace fight
             //Load playerinputmanager to handle player input during turns
             _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
             state = new PlayerInputState();
-            state.Initialize(_playerTurnInputManager);
+            state.Initialize();
             _playerTurnInputManager.state = state;
             _playerTurnInputManager.cardCam = cardsCamAndGameArea.GetComponent<Camera>();
             currentPlayer.GetInputState(_playerTurnInputManager.state);
@@ -96,7 +96,6 @@ namespace fight
 
             //Load camera that handles the targetting arrow
             arrowCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f), Quaternion.identity);
-
         }
 
         IEnumerator Start() {
@@ -111,6 +110,7 @@ namespace fight
                 _cardHandManager.TriggerDrawCards(currentPlayer.DrawAmount);
             }
         }
+
         void StartPlayerTurn()
         {
             playerTurn = true;

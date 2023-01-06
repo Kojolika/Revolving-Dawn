@@ -25,9 +25,9 @@ namespace fightInput
 
         public virtual void Exit() => Debug.Log("testing exit");
 
-        public void Initialize(PlayerTurnInputManager inputManager)
+        public void Initialize()
         {
-            _input = inputManager;
+            _input = PlayerTurnInputManager.staticInstance;
         }
     }
 }

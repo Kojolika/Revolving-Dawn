@@ -179,6 +179,7 @@ namespace fightInput
 
             foreach (Character c in targets)
             {
+                if(c == null) continue;
                 c.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = false;
             }
 

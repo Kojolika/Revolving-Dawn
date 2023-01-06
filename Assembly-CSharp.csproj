@@ -53,7 +53,6 @@
      <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconHover.cs" />
      <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Processor.cs" />
-     <Compile Include="Assets\Scripts\UI\UIInput.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Special.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthBarInside.cs" />
@@ -61,6 +60,7 @@
      <Compile Include="Assets\Scripts\Fight\Input\ManaDraggingState.cs" />
      <Compile Include="Assets\Scripts\Fight\CardHandUtils.cs" />
      <Compile Include="Assets\Scripts\Fight\Mana\Mana.cs" />
+     <Compile Include="Assets\Scripts\UI\MenuTransition.cs" />
      <Compile Include="Assets\Scripts\Fight\FightManager.cs" />
      <Compile Include="Assets\Scripts\Fight\Dragger.cs" />
      <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconTwirl.cs" />
@@ -97,6 +97,14 @@
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
      <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
+     <Compile Include="Assets\Scripts\UI\TabGroup.cs" />
+     <Compile Include="Assets\Scripts\UI\TabButton.cs" />
+     <Compile Include="Assets\Scripts\UI\GlobalUIInput.cs" />
+     <Compile Include="Assets\Scripts\UI\GlobalKeyBindings.cs" />
+     <Compile Include="Assets\Scripts\UI\EscapeMenu.cs" />
+     <Compile Include="Assets\Scripts\UI\MenuButton.cs" />
+     <Compile Include="Assets\Scripts\UI\PauseBackGround.cs" />
+     <Compile Include="Assets\Scripts\UI\Overlay.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
