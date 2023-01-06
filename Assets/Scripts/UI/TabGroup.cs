@@ -20,6 +20,8 @@ namespace UI
             if (tabs == null)
             {
                 tabs = new List<TabButton>();
+                selectedTab = button;
+                OnTabSelected(button);
             }
 
             tabs.Add(button);
@@ -37,6 +39,7 @@ namespace UI
         }
         public void OnTabSelected(TabButton button)
         {
+            Debug.Log("calling select");
             if (selectedTab) selectedTab.menuOfTab.SetActive(false); //disable previous tab
             selectedTab = button;
             ResetTabs();
@@ -47,7 +50,7 @@ namespace UI
         {
             foreach (var button in tabs)
             {
-                if (!selectedTab || selectedTab == button) continue;
+                if (selectedTab == button) continue;
                 button.background.sprite = idle;
             }
         }

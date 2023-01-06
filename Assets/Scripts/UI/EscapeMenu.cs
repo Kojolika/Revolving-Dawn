@@ -88,5 +88,8 @@ namespace UI
             //Save Game,
             //Close Game
         }
+        private void OnDisable() {
+            ResetButtons();
+        }
     }
 }

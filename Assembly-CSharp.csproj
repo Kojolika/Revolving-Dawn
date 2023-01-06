@@ -105,6 +105,7 @@
      <Compile Include="Assets\Scripts\UI\MenuButton.cs" />
      <Compile Include="Assets\Scripts\UI\PauseBackGround.cs" />
      <Compile Include="Assets\Scripts\UI\Overlay.cs" />
+     <Compile Include="Assets\Scripts\UI\ManaBook.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

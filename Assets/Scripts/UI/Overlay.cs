@@ -23,6 +23,23 @@ namespace UI
             //set all children of pauseScreen to inactive
             //unless child == escape menu, activate escape menu
             pauseScreen.SetActive(!isFightPaused);
+            if(!isFightPaused)
+            {
+                bool bothSet = false;
+                foreach(Transform child in pauseScreen.transform)
+                {
+                    if(!bothSet && child.TryGetComponent<EscapeMenu>(out EscapeMenu menu))
+                    {
+                        menu.gameObject.SetActive(true);
+                        bothSet = true;
+                    }
+                    else if(child.TryGetComponent<TabGroup>(out TabGroup tabGroup))
+                    {
+                        tabGroup.gameObject.SetActive(false);
+                        break;
+                    }
+                }
+            }
             fightInput.PlayerTurnInputManager.staticInstance.isEnabled = isFightPaused;
             isFightPaused = !isFightPaused;
         }
