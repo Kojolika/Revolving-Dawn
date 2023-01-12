@@ -25,8 +25,6 @@ namespace cards
 
         void LoadInfo()
         {
-            var coll = this.GetComponentInChildren<SpriteRenderer>();
-            Debug.Log("Card size: " + coll.bounds.size );
             isManaCharged = false;
             artwork.GetComponent<SpriteRenderer>().sprite = cardSO.artwork;
             border.GetComponent<SpriteRenderer>().sprite = CardInfo.GetClassBorder(cardSO.cardClass);

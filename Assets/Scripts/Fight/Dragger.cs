@@ -19,7 +19,7 @@ public class Dragger : MonoBehaviour
     {
         while(true)
         {
-            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, cardCam.nearClipPlane + 7f);
+            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, cardCam.nearClipPlane + 3f);
             mousePos = cardCam.ScreenToWorldPoint(mousePosition);
             go.transform.position = mousePos;
 

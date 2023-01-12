@@ -39,7 +39,7 @@
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\FightInfo.cs" />
      <Compile Include="Assets\Scripts\utils\Computations.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
-     <Compile Include="Assets\Scripts\UI\FlexibleGridLayoutCards.cs" />
+     <Compile Include="Assets\Scripts\UI\DeckViewer.cs" />
      <Compile Include="Assets\Scripts\UI\PauseBackGround.cs" />
      <Compile Include="Assets\Scripts\Shading\TurnOnShadows.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\DeBuffProcessor.cs" />
@@ -108,6 +108,7 @@
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
      <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
+     <Compile Include="Assets\Scripts\UI\DeckViewerButton.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

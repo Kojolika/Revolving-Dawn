@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using cards;
+using characters;
 
 namespace fight
 {
@@ -20,7 +21,7 @@ namespace fight
         public void HoverCardEffects()
         {
             var card = currentCard;
-            var hand = _cardHandMovementManager.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
             int cardposition = hand.IndexOf(card);
             float moveAmount;
             int positionDifference;
@@ -63,7 +64,7 @@ namespace fight
         }
         public void ResetHand(float speed)
         {
-            var hand = this.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
 
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
@@ -75,7 +76,7 @@ namespace fight
 
         public void ResetScale(){
 
-            var hand = this.GetComponent<FightManager>().GetPlayer().playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
 
             for (int i = 0; i < hand.Count; i++)
             {

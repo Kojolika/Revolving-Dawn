@@ -71,7 +71,7 @@ namespace fight
 
         void CardPlayedEffects(Card cardBeingPlayed, List<Character> targets)
         {
-            var hand = player.playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
 
             //Remove the card from the hand, add it to the discard pile
             //Add effects for playing the card here in the future
@@ -91,18 +91,15 @@ namespace fight
 
         void DiscardCard(Card card)
         {
-            var hand = player.playerCardDecks.Hand;
-            var discard = player.playerCardDecks.Discard;
-
-            hand.Remove(card);
-            discard.Add(card);
+            PlayerCardDecks.Hand.Remove(card);
+            PlayerCardDecks.Discard.Add(card);
             card.gameObject.SetActive(false);
             //In the future add an animation that transitions the card to the discard pile
         }
 
         public void DiscardHand()
         {
-            var hand = player.playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
             int handSize = hand.Count;
 
             for(int i=handSize-1; i>=0; i--)
@@ -115,9 +112,9 @@ namespace fight
         public void DrawCards(int amount)
         {
 
-            var drawPile = player.playerCardDecks.DrawPile;
-            var discardPile = player.playerCardDecks.Discard;
-            var hand = player.playerCardDecks.Hand;
+            var drawPile = PlayerCardDecks.DrawPile;
+            var discardPile = PlayerCardDecks.Discard;
+            var hand = PlayerCardDecks.Hand;
 
             for (int i = 0; i < amount; i++)
             {
@@ -182,7 +179,7 @@ namespace fight
 
         public void ShuffleDeck()
         {
-            var drawPile = player.playerCardDecks.DrawPile;
+            var drawPile = PlayerCardDecks.DrawPile;
             var temp = Shuffle(drawPile);
             drawPile = temp;
         }
@@ -193,7 +190,7 @@ namespace fight
         }
         internal IEnumerator CreateHandCurve(float speed)
         {
-            var hand = player.playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
             //failsale
             if (hand.Count < 1) yield return null;
 
@@ -220,7 +217,7 @@ namespace fight
         }
         public IEnumerator MoveCardCoroutine(Card card, Vector3 newPosition, float cardRotation, float speed)
         {
-            var hand = player.playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
 
             var rotation = CardInfo.DEFAULT_CARD_ROTATION;
             rotation.x += cardRotation;
