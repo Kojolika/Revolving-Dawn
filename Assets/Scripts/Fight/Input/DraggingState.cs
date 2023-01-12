@@ -41,7 +41,7 @@ namespace fightInput
             return this;
         }
 
-        void RightClicked() => changeStateTo = ChangeStateTo.Default;
+        void RightClicked()=> changeStateTo = ChangeStateTo.Default;
         void OnEnterPlayArea() => changeStateTo = ChangeStateTo.Targeting;
         public override void Exit()
         {

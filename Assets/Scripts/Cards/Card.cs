@@ -25,6 +25,8 @@ namespace cards
 
         void LoadInfo()
         {
+            var coll = this.GetComponentInChildren<SpriteRenderer>();
+            Debug.Log("Card size: " + coll.bounds.size );
             isManaCharged = false;
             artwork.GetComponent<SpriteRenderer>().sprite = cardSO.artwork;
             border.GetComponent<SpriteRenderer>().sprite = CardInfo.GetClassBorder(cardSO.cardClass);
@@ -179,6 +181,8 @@ namespace cards
     {
         public static Vector3 DEFAULT_CARD_ROTATION = new Vector3(90f,90f,-90f);
         public static Vector3 DEFAULT_SCALE = new Vector3(0.2f,1f,0.3f);
+        public static Vector2 DEFAULT_PIXEL_SIZE = new Vector2(200,300);
+        public static Vector2 DEFAULT_PIXEL_SIZE_TO_WORLD_SIZE = new Vector2(200,300);
         public static float CAMERA_DISTANCE = Camera.main.nearClipPlane + 7;
         public static TMP_FontAsset DEFAULT_FONT = Resources.Load<TMP_FontAsset>("DeterminationSansWebRegular-369X SDF");
         public static Color DEFAULT_FONT_COLOR = Color.white;
@@ -187,15 +191,15 @@ namespace cards
 
         public static Sprite GetClassBorder(PlayerClass playerClass)
         {
-            switch((int)playerClass)
+            switch(playerClass)
             {
-                case(0):
+                case(PlayerClass.Warrior):
                 return Resources.Load<Sprite>("Warrior_Border");
-                case(1):
+                case(PlayerClass.Rogue):
                 return Resources.Load<Sprite>("Rogue_Border");
-                case(2):
+                case(PlayerClass.Mage):
                 return Resources.Load<Sprite>("Mage_Border");
-                case(3):
+                case(PlayerClass.Priest):
                 return Resources.Load<Sprite>("Priest_Border");
             }
             return Resources.Load<Sprite>("Neutral_Border");

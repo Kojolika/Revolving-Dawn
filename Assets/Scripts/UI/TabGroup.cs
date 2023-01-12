@@ -20,10 +20,9 @@ namespace UI
             if (tabs == null)
             {
                 tabs = new List<TabButton>();
-                selectedTab = button;
-                OnTabSelected(button);
             }
-
+            if(tabs.Count == 0) OnTabSelected(button);
+            
             tabs.Add(button);
         }
 
