@@ -107,8 +107,8 @@
      <Compile Include="Assets\Scripts\Fight\Input\DraggingState.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
-     <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
      <Compile Include="Assets\Scripts\UI\DeckViewerButton.cs" />
+     <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

@@ -26,10 +26,10 @@ public class DeckViewerButton : MonoBehaviour, IPointerEnterHandler, IPointerExi
             case DeckType.All:
                 break;
             case DeckType.Discard:
-                PlayerCardDecks.OnDiscardChanged += ChangeValue;
+                //PlayerCardDecks.OnDiscardChanged += ChangeValue;
                 break;
             case DeckType.Draw:
-                PlayerCardDecks.OnDrawChanged += ChangeValue;
+                //PlayerCardDecks.OnDrawChanged += ChangeValue;
                 break;
             case DeckType.Lost:
                 break;
@@ -37,7 +37,7 @@ public class DeckViewerButton : MonoBehaviour, IPointerEnterHandler, IPointerExi
     }
     void ChangeValue() 
     {
-        Debug.Log("Called changed value");
+        
         switch(deckType)
         {
             case DeckType.All:

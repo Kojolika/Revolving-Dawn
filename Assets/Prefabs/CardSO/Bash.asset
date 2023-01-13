@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e5dd339edc358043952fc5500a9e259, type: 3}
   m_Name: Bash
   m_EditorClassIdentifier: 
+  mana: 
   name: Bash
   description: Deal 6 damage
   artwork: {fileID: 21300000, guid: 43e72cc9bd51c4547bd8aeaa0d30abbb, type: 3}
   cardClass: 0
   target: 1
   manaChargedTarget: 3
+  manaChargedCardSO: {fileID: 0}

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using System;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using cards;
+using System.Collections.Specialized;
 
 namespace characters
 {
@@ -21,44 +21,6 @@ namespace characters
         public static List<Card> DrawPile { get => drawPile; set => drawPile = value; }
         public static List<Card> Discard { get => discard; set => discard = value; }
         public static List<Card> Lost { get => lost; set => lost = value; }
-
-        public enum ListChange
-        {
-            Add,
-            Remove,
-            
-        }
-        public static void ChangeList(List<Card> list)
-        {
-
-        }
-        public delegate void DeckChanged();
-        public static event DeckChanged OnDeckChanged;
-        
-        public delegate void DrawChanged();
-        public static event DrawChanged OnDrawChanged;
-        
-        public static void TriggerDrawChanged()
-        {
-            if(OnDrawChanged != null)
-            {
-                OnDrawChanged();
-            }
-        }
-
-        public delegate void DiscardChanged();
-        public static event DiscardChanged OnDiscardChanged;
-
-        public static void TriggerDiscardChanged()
-        {
-            if(OnDiscardChanged != null)
-            {
-                OnDiscardChanged();
-            }
-        }
-
-        public delegate void LostChanged();
-        public static event LostChanged OnLostChanged;
 
     }
 }
