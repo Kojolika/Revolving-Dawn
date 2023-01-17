@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections;
 using UnityEngine;
 using cards;
@@ -10,6 +11,7 @@ namespace fight
 {
     public class CardHandManager : MonoBehaviour
     {
+        GameObject cardHandGO;
         internal BezierCurve curve;
         GameObject cardSpawner;
         GameObject cardDiscarder;
@@ -62,11 +64,12 @@ namespace fight
             player = this.GetComponent<FightManager>().GetPlayer();
             movementCoroutines = new List<IEnumerator>();
         }
-        public void Initialize(BezierCurve curve, GameObject cardspawner, GameObject carddiscarder)
+        public void Initialize(BezierCurve curve, GameObject cardspawner, GameObject carddiscarder, GameObject cardHandGO)
         {
             this.curve = curve;
             cardSpawner = cardspawner;
             cardDiscarder = carddiscarder;
+            this.cardHandGO = cardHandGO;
         }
 
         void CardPlayedEffects(Card cardBeingPlayed, List<Character> targets)
@@ -129,7 +132,11 @@ namespace fight
                     else
                     {
                         //shuffle discard back into drawpile when discard is empty
-                        drawPile.AddRange(discardPile);
+                        //drawPile.AddRange(discardPile);
+                        foreach(var card in discardPile)
+                        {
+                            drawPile.Add(card);
+                        }
                         discardPile.Clear();
                         Shuffle(drawPile);
                     }
@@ -151,7 +158,8 @@ namespace fight
                     {
                         cardDrawn = Instantiate(cardDrawn,
                             cardSpawner.transform.position,
-                            cardDrawn.transform.rotation
+                            cardDrawn.transform.rotation,
+                            cardHandGO.transform
                         );
                     }
                     else 
@@ -170,11 +178,12 @@ namespace fight
             CreateHand();
         }
 
-        List<Card> Shuffle(List<Card> DeckToShuffle)
+        ObservableCollection<Card> Shuffle(ObservableCollection<Card> DeckToShuffle)
         {
             var rng = new System.Random();
-            var shuffledcards = DeckToShuffle.OrderBy(a => rng.Next()).ToList();
-            return shuffledcards;
+            var shuffledCards = DeckToShuffle.OrderBy(a => rng.Next()).ToList();
+            ObservableCollection<Card> shuffledCollection = new ObservableCollection<Card>(shuffledCards);
+            return shuffledCollection;
         }
 
         public void ShuffleDeck()

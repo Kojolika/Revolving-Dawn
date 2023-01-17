@@ -40,7 +40,6 @@
      <Compile Include="Assets\Scripts\utils\Computations.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
      <Compile Include="Assets\Scripts\UI\DeckViewer.cs" />
-     <Compile Include="Assets\Scripts\UI\PauseBackGround.cs" />
      <Compile Include="Assets\Scripts\Shading\TurnOnShadows.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\DeBuffProcessor.cs" />
      <Compile Include="Assets\Scripts\UI\Overlay.cs" />
@@ -48,7 +47,6 @@
      <Compile Include="Assets\Scripts\Cards\Card_UI.cs" />
      <Compile Include="Assets\Scripts\Cards\CardScriptableObject.cs" />
      <Compile Include="Assets\Scripts\Fight\Mana\ManaPool.cs" />
-     <Compile Include="Assets\Scripts\UI\GlobalKeyBindings.cs" />
      <Compile Include="Assets\Scripts\Fight\GameArea\CardDiscarder.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\ManaViewingState.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Affects.cs" />
@@ -66,11 +64,10 @@
      <Compile Include="Assets\Scripts\Fight\CardHandUtils.cs" />
      <Compile Include="Assets\Scripts\UI\EscapeMenu.cs" />
      <Compile Include="Assets\Scripts\Fight\Mana\Mana.cs" />
-     <Compile Include="Assets\Scripts\UI\MenuTransition.cs" />
      <Compile Include="Assets\Scripts\Fight\FightManager.cs" />
      <Compile Include="Assets\Scripts\Fight\Dragger.cs" />
      <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconTwirl.cs" />
-     <Compile Include="Assets\Scripts\UI\GlobalUIEvents.cs" />
+     <Compile Include="Assets\Scripts\UI\MenuManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\Player.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Fracture.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Attack.cs" />
@@ -82,7 +79,7 @@
      <Compile Include="Assets\Scripts\utils\Bezier.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\PlayerTurnInputManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\TestDeck.cs" />
-     <Compile Include="Assets\Scripts\UI\MenuButton.cs" />
+     <Compile Include="Assets\Scripts\UI\EscapeMenuButton.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthSystem.cs" />
      <Compile Include="Assets\Scripts\UI\TabGroup.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy_Slime.cs" />
@@ -100,7 +97,6 @@
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Buffs\Reinforce.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Block.cs" />
-     <Compile Include="Assets\Scripts\UI\GlobalUIInput.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Weaken.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\RoundingProcessor.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
@@ -109,6 +105,11 @@
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
      <Compile Include="Assets\Scripts\UI\DeckViewerButton.cs" />
      <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
+     <Compile Include="Assets\Scripts\UI\Menu.cs" />
+     <Compile Include="Assets\Scripts\UI\DeckViewerMenu.cs" />
+     <Compile Include="Assets\Scripts\UI\SettingsMenu.cs" />
+     <Compile Include="Assets\Scripts\Characters\Characters.cs" />
+     <Compile Include="Assets\Scripts\Cards\Hand.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using cards;
 using fightInput;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace characters
             //the players deck is loaded in from the current run
             //currently still WIP so its loaded in from a test component
             //Draw pile can be created from the deck
-            PlayerCardDecks.Deck = this.GetComponent<TestDeck>().deck;
+            PlayerCardDecks.Deck = new ObservableCollection<Card>(this.GetComponent<TestDeck>().deck);
             foreach(Card card in PlayerCardDecks.Deck)
             {
                 //initialize player reference during a fight
@@ -39,9 +40,9 @@ namespace characters
             
             //These decks are only used during combat
             //Thus are created when Player is loaded into a fight
-            PlayerCardDecks.Hand = new List<Card>();
-            PlayerCardDecks.Discard = new List<Card>();
-            PlayerCardDecks.Lost = new List<Card>();
+            PlayerCardDecks.Hand = new ObservableCollection<Card>();
+            PlayerCardDecks.Discard = new ObservableCollection<Card>();
+            PlayerCardDecks.Lost = new ObservableCollection<Card>();
 
             this.gameObject.AddComponent<TurnOnShadows>();
         }

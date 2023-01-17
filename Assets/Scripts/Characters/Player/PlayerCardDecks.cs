@@ -9,18 +9,28 @@ namespace characters
     public static class PlayerCardDecks
     {
         //Used for out of combat
-        static List<Card> deck;
-        public static List<Card> Deck { get => deck; set => deck = value; }
+        static ObservableCollection<Card> deck;
+        public static ObservableCollection<Card> Deck { get => deck; set => deck = value; }
 
         //Only used for combat
-        static List<Card> drawPile;
-        static List<Card> hand;
-        static List<Card> discard;
-        static List<Card> lost;
-        public static List<Card> Hand { get => hand; set => hand = value; }
-        public static List<Card> DrawPile { get => drawPile; set => drawPile = value; }
-        public static List<Card> Discard { get => discard; set => discard = value; }
-        public static List<Card> Lost { get => lost; set => lost = value; }
+        static ObservableCollection<Card> drawPile;
+        static ObservableCollection<Card> hand;
+        static ObservableCollection<Card> discard;
+        static ObservableCollection<Card> lost;
+        public static ObservableCollection<Card> Hand { get => hand; set => hand = value; }
+        public static ObservableCollection<Card> DrawPile { get => drawPile; set => drawPile = value; }
+        public static ObservableCollection<Card> Discard { get => discard; set => discard = value; }
+        public static ObservableCollection<Card> Lost { get => lost; set => lost = value; }
+
+        //call this method whenever a new game is starting
+        public static void ClearDecks()
+        {
+            deck.Clear();
+            drawPile.Clear();
+            hand.Clear();
+            discard.Clear();
+            lost.Clear();
+        }
 
     }
 }

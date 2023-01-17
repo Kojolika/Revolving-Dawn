@@ -45,6 +45,7 @@ namespace fight
             //Load players and enemies
             //PLAYER
             currentPlayer = Instantiate(player, playerSpawnpoint.transform.position, Quaternion.identity);
+            currentPlayer.transform.SetParent(Characters.staticInstance.transform);
 
             currentPlayer.transform.LookAt(currentPlayer.transform.position + Camera.main.transform.forward);   
 
@@ -60,6 +61,7 @@ namespace fight
             for(int i=0; i<enemies.Count; i++)
             {
                 Enemy e = Instantiate(enemies[i], enemySpawnPoints[i].transform.position, Quaternion.identity);
+                e.transform.SetParent(Characters.staticInstance.transform);
                 currentEnemies.Add(e);
 
                 e.transform.LookAt(e.transform.position + Camera.main.transform.forward);
@@ -78,7 +80,8 @@ namespace fight
             _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
             _cardHandManager.Initialize(cardsCamAndGameArea.GetComponentInChildren<BezierCurve>(), 
                 cardsCamAndGameArea.GetComponentInChildren<CardSpawner>().gameObject, 
-                cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject);
+                cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject,
+                cardsCamAndGameArea.GetComponentInChildren<Hand>().gameObject);
             _cardHandManager.OnCardPlayed += CardPlayed;
             
             //Load playerinputmanager to handle player input during turns

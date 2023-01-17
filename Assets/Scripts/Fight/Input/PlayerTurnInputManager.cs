@@ -12,6 +12,7 @@ namespace fightInput
 
         public PlayerInputState state;
         public bool isEnabled;
+        public bool isPaused = false;
 
         public delegate void ManaMouseOver(Mana mana);
         public event ManaMouseOver OnManaMouseOver;
@@ -230,6 +231,7 @@ namespace fightInput
         }
         void Update()
         {
+            if(isPaused) return;
             if(!isEnabled) return;
 
             MouseOver();

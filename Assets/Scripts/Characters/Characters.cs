@@ -1,0 +1,22 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace characters
+{
+    public class Characters : MonoBehaviour
+    {
+        //Used to group characters in the scene under one GameObject
+        public static Characters staticInstance;
+        void Awake()
+        {
+            if(staticInstance == null)
+            {
+                staticInstance = this;
+            }
+            else
+                Destroy(this);
+        }
+    }
+
+}

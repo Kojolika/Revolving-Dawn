@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 namespace UI
 {
-    public class EscapeMenu : MonoBehaviour
+    public class EscapeMenu : Menu
     {
         public EscapeMenu staticInstance;
-        public List<MenuButton> buttons;
-
+        public List<EscapeMenuButton> buttons;
+        [SerializeField] Sprite hovered;
+        [SerializeField] Sprite selected;
+        [SerializeField] Sprite idle;
         public enum ButtonType
         {
             Resume,
@@ -16,37 +18,32 @@ namespace UI
             MainMenu,
             Desktop
         }
-
-        [SerializeField] Sprite hovered;
-        [SerializeField] Sprite selected;
-        [SerializeField] Sprite idle;
-
         private void Awake() {
             if(!staticInstance)
                 staticInstance = this;
             else
                 Destroy(this);
         }
-        public void Subscribe(MenuButton button)
+        public void Subscribe(EscapeMenuButton button)
         {
             if (buttons == null)
             {
-                buttons = new List<MenuButton>();
+                buttons = new List<EscapeMenuButton>();
             }
 
             buttons.Add(button);
         }
 
-        public void OnButtonEnter(MenuButton button)
+        public void OnButtonEnter(EscapeMenuButton button)
         {
             ResetButtons();
             button.background.sprite = hovered;
         }
-        public void OnButtonExit(MenuButton button)
+        public void OnButtonExit(EscapeMenuButton button)
         {
             ResetButtons();
         }
-        public void OnButtonSelected(MenuButton button)
+        public void OnButtonSelected(EscapeMenuButton button)
         {
             ResetButtons();
             button.background.sprite = selected;
@@ -54,11 +51,10 @@ namespace UI
             switch(button.buttonType)
             {
                 case ButtonType.Resume:
-                    Overlay.staticInstance.PauseOrUnPause();
+                    MenuManager.staticInstance.escapeMenu.Close();
                     break;
                 case ButtonType.Settings:
-                    button.menuOfTab.SetActive(true);
-                    this.gameObject.SetActive(false);
+                    MenuManager.staticInstance.SettingsMenu.Open();
                     break;
                 case ButtonType.MainMenu:
                     MainMenu();
@@ -88,7 +84,8 @@ namespace UI
             //Save Game,
             //Close Game
         }
-        private void OnDisable() {
+        void OnEnable() 
+        {
             ResetButtons();
         }
     }

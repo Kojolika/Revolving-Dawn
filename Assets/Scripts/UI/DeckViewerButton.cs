@@ -1,74 +1,99 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections.Specialized;
 using TMPro;
-using characters;
+using characters; 
 
-public class DeckViewerButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+namespace UI
 {
     public enum DeckType
     {
         Draw,
         Discard,
         Lost,
-        All
+        Deck
     }
+public class DeckViewerButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+{
+
     public DeckType deckType;
     [SerializeField] Image imageObject;
-    [SerializeField] GameObject countTextObject;
+    [SerializeField] TextMeshProUGUI countTextObject;
     [SerializeField] Sprite hoverIcon;
     [SerializeField] Sprite icon;
 
 
-    void Start() {
-        switch(deckType)
-        {
-            case DeckType.All:
-                break;
-            case DeckType.Discard:
-                //PlayerCardDecks.OnDiscardChanged += ChangeValue;
-                break;
-            case DeckType.Draw:
-                //PlayerCardDecks.OnDrawChanged += ChangeValue;
-                break;
-            case DeckType.Lost:
-                break;
-        }
-    }
-    void ChangeValue() 
+    void Start()
     {
-        
-        switch(deckType)
+        switch (deckType)
         {
-            case DeckType.All:
-                countTextObject.GetComponent<TextMeshPro>().text = "" + characters.PlayerCardDecks.Deck.Count;
-                Debug.Log(countTextObject.GetComponent<TextMeshPro>().text );
+            case DeckType.Deck:
+                PlayerCardDecks.Deck.CollectionChanged += ChangeValue;
                 break;
             case DeckType.Discard:
-                countTextObject.GetComponent<TextMeshPro>().text = "" + characters.PlayerCardDecks.Discard.Count;
+                PlayerCardDecks.Discard.CollectionChanged += ChangeValue;
                 break;
             case DeckType.Draw:
-                countTextObject.GetComponent<TextMeshPro>().text = "" + characters.PlayerCardDecks.DrawPile.Count;
+                PlayerCardDecks.DrawPile.CollectionChanged += ChangeValue;
+                countTextObject.text = "" + PlayerCardDecks.DrawPile.Count;
                 break;
             case DeckType.Lost:
-                countTextObject.GetComponent<TextMeshPro>().text = "" + characters.PlayerCardDecks.Lost.Count;
+                PlayerCardDecks.Lost.CollectionChanged += ChangeValue;
                 break;
         }
-        
     }
-    
+    void ChangeValue(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        switch (deckType)
+        {
+            case DeckType.Deck:
+                countTextObject.text = "" + characters.PlayerCardDecks.Deck.Count;
+                break;
+            case DeckType.Discard:
+                countTextObject.text = "" + characters.PlayerCardDecks.Discard.Count;
+                break;
+            case DeckType.Draw:
+                countTextObject.text = "" + characters.PlayerCardDecks.DrawPile.Count;
+                break;
+            case DeckType.Lost:
+                countTextObject.text = "" + characters.PlayerCardDecks.Lost.Count;
+                break;
+        }
+
+    }
+    void OnDisable()
+    {
+        switch (deckType)
+        {
+            case DeckType.Deck:
+                PlayerCardDecks.Deck.CollectionChanged -= ChangeValue;
+                break;
+            case DeckType.Discard:
+                PlayerCardDecks.Discard.CollectionChanged -= ChangeValue;
+                break;
+            case DeckType.Draw:
+                PlayerCardDecks.DrawPile.CollectionChanged -= ChangeValue;
+                break;
+            case DeckType.Lost:
+                PlayerCardDecks.Lost.CollectionChanged -= ChangeValue;
+                break;
+        }
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        imageObject.sprite = hoverIcon;
+        if (imageObject.sprite != hoverIcon) imageObject.sprite = hoverIcon;
     }
     void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
     {
-        imageObject.sprite = icon;
+        if (imageObject.sprite != icon) imageObject.sprite = icon;
     }
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        UI.MenuManager.staticInstance.DeckViewerMenu.Open(deckType);
     }
 
 
+}
 }

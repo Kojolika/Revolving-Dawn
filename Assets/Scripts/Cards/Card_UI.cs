@@ -1,8 +1,12 @@
 using UnityEngine;
 
-public class Card_UI : MonoBehaviour 
+namespace cards
 {
-    void Awake() 
+    public class Card_UI : MonoBehaviour
     {
+        public void LoadInfo(Card card)
+        {
+
+        }
     }
 }

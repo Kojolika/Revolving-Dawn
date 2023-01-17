@@ -100,7 +100,7 @@ namespace cards
         }
         void FitManaIntoSocket(Mana mana, Transform socket)
         {
-            Debug.Log("Adding to socket");
+            //Debug.Log("Adding to socket");
             mana.transform.SetParent(socket,true);
             mana.transform.localPosition = Vector3.zero;
             //mana.transform.rotation = socket.rotation;
