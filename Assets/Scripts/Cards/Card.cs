@@ -17,11 +17,11 @@ namespace cards
         public bool isManaCharged;
         public PlayerClass cardClass;
 
-        [SerializeField] GameObject sockets;
-        [SerializeField] TextMeshPro nameText;
-        [SerializeField] internal TextMeshPro description;
-        [SerializeField] GameObject artwork;
-        [SerializeField] GameObject border;
+        public GameObject sockets;
+        public TextMeshPro nameText;
+        public TextMeshPro descriptionText;
+        public GameObject artwork;
+        public GameObject border;
 
         void LoadInfo()
         {
@@ -29,14 +29,14 @@ namespace cards
             artwork.GetComponent<SpriteRenderer>().sprite = cardSO.artwork;
             border.GetComponent<SpriteRenderer>().sprite = CardInfo.GetClassBorder(cardSO.cardClass);
             nameText.text = cardSO.name;
-            description.text = cardSO.description;
+            descriptionText.text = cardSO.description;
             nameText.font = CardInfo.DEFAULT_FONT;
-            description.font = CardInfo.DEFAULT_FONT;
+            descriptionText.font = CardInfo.DEFAULT_FONT;
             nameText.color = CardInfo.DEFAULT_FONT_COLOR;
-            description.color = CardInfo.DEFAULT_FONT_COLOR;
+            descriptionText.color = CardInfo.DEFAULT_FONT_COLOR;
             nameText.fontSize = CardInfo.DEFAULT_FONT_NAME_SIZE;
-            description.fontSize = CardInfo.DEFAULT_FONT_DESCRIPTION_SIZE;
-            description.verticalAlignment = VerticalAlignmentOptions.Top;
+            descriptionText.fontSize = CardInfo.DEFAULT_FONT_DESCRIPTION_SIZE;
+            descriptionText.verticalAlignment = VerticalAlignmentOptions.Top;
 
             target = cardSO.target;
             manaChargedTarget = cardSO.manaChargedTarget;
@@ -150,11 +150,11 @@ namespace cards
             isManaCharged = !isManaCharged;
             if(isManaCharged)
             {
-                description.text = cardSO.manaChargedCardSO.description;
+                descriptionText.text = cardSO.manaChargedCardSO.description;
             }
             else
             {
-                description.text = cardSO.description;
+                descriptionText.text = cardSO.description;
             }
             
             UpdateDiscriptionText();
@@ -179,13 +179,13 @@ namespace cards
     {
         public static Vector3 DEFAULT_CARD_ROTATION = new Vector3(90f,90f,-90f);
         public static Vector3 DEFAULT_SCALE = new Vector3(0.2f,1f,0.3f);
-        public static Vector2 DEFAULT_PIXEL_SIZE = new Vector2(200,300);
-        public static Vector2 DEFAULT_PIXEL_SIZE_TO_WORLD_SIZE = new Vector2(200,300);
         public static float CAMERA_DISTANCE = Camera.main.nearClipPlane + 7;
         public static TMP_FontAsset DEFAULT_FONT = Resources.Load<TMP_FontAsset>("DeterminationSansWebRegular-369X SDF");
         public static Color DEFAULT_FONT_COLOR = Color.white;
         public static float DEFAULT_FONT_NAME_SIZE = 10f;
+        public static float DEFAULT_FONT_NAME_SIZE_UI = 25f;
         public static float DEFAULT_FONT_DESCRIPTION_SIZE = 9f;
+        public static float DEFAULT_FONT_DESCRIPTION_SIZE_UI = 23f;
 
         public static Sprite GetClassBorder(PlayerClass playerClass)
         {

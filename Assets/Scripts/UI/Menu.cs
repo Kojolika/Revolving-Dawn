@@ -1,10 +1,12 @@
 using UnityEngine;
-using UnityEngine.UI;
+using System.Dynamic;
 
 namespace UI
 {
     public abstract class Menu : MonoBehaviour
     {
+
+        public abstract ExpandoObject MenuInput {get; set;}
         public virtual void OnBackPressed()
         {
             Close();
@@ -13,10 +15,13 @@ namespace UI
         {
             MenuManager.staticInstance.CloseMenu();
         }
-        public virtual void Open()
+        public virtual void Open(dynamic input = null)
         {
-            MenuManager.staticInstance.OpenMenu(this.gameObject);
+            MenuManager.staticInstance.OpenMenu(this.gameObject, input);
         }
-        public virtual void Open(DeckType deckType){}
+        public virtual void HandleInput(dynamic input)
+        {
+            if(input == null) return;
+        }
     }
 }

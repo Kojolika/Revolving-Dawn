@@ -35,12 +35,12 @@ namespace cards
         {
             if(isManaCharged)
             {
-                description.text = description.text.Replace("BLOCK","" + manaBlock);
-                description.text = description.text.Replace("NEWLINE","\n");
+                descriptionText.text = descriptionText.text.Replace("BLOCK","" + manaBlock);
+                descriptionText.text = descriptionText.text.Replace("NEWLINE","\n");
             }
             else
             {
-                description.text = description.text.Replace("BLOCK","" + block);
+                descriptionText.text = descriptionText.text.Replace("BLOCK","" + block);
             }
             
         }

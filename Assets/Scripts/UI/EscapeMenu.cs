@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace UI
 {
@@ -11,6 +12,9 @@ namespace UI
         [SerializeField] Sprite hovered;
         [SerializeField] Sprite selected;
         [SerializeField] Sprite idle;
+
+        public override ExpandoObject MenuInput { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
         public enum ButtonType
         {
             Resume,
@@ -87,6 +91,11 @@ namespace UI
         void OnEnable() 
         {
             ResetButtons();
+        }
+
+        public override void HandleInput(dynamic input)
+        {
+            
         }
     }
 }

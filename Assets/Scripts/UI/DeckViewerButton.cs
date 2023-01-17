@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Specialized;
+using System.Collections;
+using System.Dynamic;
 using TMPro;
 using characters; 
 
@@ -91,7 +93,9 @@ public class DeckViewerButton : MonoBehaviour, IPointerEnterHandler, IPointerExi
     }
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
     {
-        UI.MenuManager.staticInstance.DeckViewerMenu.Open(deckType);
+        dynamic input = new ExpandoObject();
+        input.DeckType = this.deckType;
+        UI.MenuManager.staticInstance.DeckViewerMenu.Open(input);
     }
 
 

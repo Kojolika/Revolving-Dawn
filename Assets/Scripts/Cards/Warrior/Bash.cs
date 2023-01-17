@@ -26,7 +26,7 @@ namespace cards
 
         public override void UpdateDiscriptionText()
         {
-            description.text = description.text.Replace("DAMAGE","" + damage);
+            descriptionText.text = descriptionText.text.Replace("DAMAGE","" + damage);
         }
     }
 }

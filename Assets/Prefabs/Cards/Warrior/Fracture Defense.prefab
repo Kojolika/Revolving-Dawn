@@ -524,9 +524,9 @@ MonoBehaviour:
   currentPlayer: {fileID: 0}
   isManaCharged: 0
   cardClass: 0
-  sockets: {fileID: 0}
+  sockets: {fileID: 1323159339636487823}
   nameText: {fileID: 1917359488200442444}
-  description: {fileID: 1917359488971266804}
+  descriptionText: {fileID: 1917359488971266804}
   artwork: {fileID: 1917359488963012122}
   border: {fileID: 1917359487885556973}
   damage: 5

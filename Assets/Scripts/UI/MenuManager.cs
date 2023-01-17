@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using System.Dynamic;
 using System.Collections.Generic;
 
 namespace UI
@@ -9,9 +9,10 @@ namespace UI
         public static MenuManager staticInstance;
         public static Stack<GameObject> MenuStack = new Stack<GameObject>();
 
-        //MENUS
         [SerializeField] GameObject pauseBackGround;
         private GameObject pauseBackGroundInstance;
+        
+        //MENUS
         public Menu escapeMenu;
         public Menu SettingsMenu;
         public Menu DeckViewerMenu;
@@ -44,7 +45,7 @@ namespace UI
 
             }
         }
-        public void OpenMenu(GameObject menu)
+        public void OpenMenu(GameObject menu, dynamic input = null)
         {
              var instance = Instantiate(menu,transform);
 
@@ -61,6 +62,7 @@ namespace UI
                 fightInput.PlayerTurnInputManager.staticInstance.isPaused = true;
             }
             
+            instance.GetComponent<Menu>().HandleInput(input);
             MenuStack.Push(instance);     
         }
         public void CloseMenu()
