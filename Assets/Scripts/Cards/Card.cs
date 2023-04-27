@@ -183,9 +183,9 @@ namespace cards
         public static TMP_FontAsset DEFAULT_FONT = Resources.Load<TMP_FontAsset>("DeterminationSansWebRegular-369X SDF");
         public static Color DEFAULT_FONT_COLOR = Color.white;
         public static float DEFAULT_FONT_NAME_SIZE = 10f;
-        public static float DEFAULT_FONT_NAME_SIZE_UI = 25f;
+        public static float DEFAULT_FONT_NAME_SIZE_UI = 23f;
         public static float DEFAULT_FONT_DESCRIPTION_SIZE = 9f;
-        public static float DEFAULT_FONT_DESCRIPTION_SIZE_UI = 23f;
+        public static float DEFAULT_FONT_DESCRIPTION_SIZE_UI = 21f;
 
         public static Sprite GetClassBorder(PlayerClass playerClass)
         {

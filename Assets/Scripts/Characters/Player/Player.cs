@@ -23,27 +23,6 @@ namespace characters
         public override Vector3 healthbarPosition { get => _healthBarPosition;  set => _healthBarPosition = value; }
 
         void Awake() {
-            //playerCardDecks = new PlayerCardDecks();
-
-            //the players deck is loaded in from the current run
-            //currently still WIP so its loaded in from a test component
-            //Draw pile can be created from the deck
-            PlayerCardDecks.Deck = new ObservableCollection<Card>(this.GetComponent<TestDeck>().deck);
-            foreach(Card card in PlayerCardDecks.Deck)
-            {
-                //initialize player reference during a fight
-                //not sure if this is best way to do it
-                card.currentPlayer = this;
-            }
-
-            PlayerCardDecks.DrawPile = PlayerCardDecks.Deck;
-            
-            //These decks are only used during combat
-            //Thus are created when Player is loaded into a fight
-            PlayerCardDecks.Hand = new ObservableCollection<Card>();
-            PlayerCardDecks.Discard = new ObservableCollection<Card>();
-            PlayerCardDecks.Lost = new ObservableCollection<Card>();
-
             this.gameObject.AddComponent<TurnOnShadows>();
         }
 

@@ -8,6 +8,7 @@ namespace cards
 {
     public class Card_UI : MonoBehaviour
     {
+        public Card card;
         public List<(ManaType, Mana)> ManaOfSockets { get; set;}
         public GameObject sockets;
         public GameObject border;
@@ -17,15 +18,15 @@ namespace cards
 
         public void LoadInfo(Card card)
         {
+            this.card = card;
             border.GetComponent<Image>().sprite = card.border.GetComponent<SpriteRenderer>().sprite;
             artwork.GetComponent<Image>().sprite = card.artwork.GetComponent<SpriteRenderer>().sprite;
 
-            nameText.text = card.cardSO.name;
-            descriptionText.text = card.cardSO.description;
+            nameText.text = card.nameText.text;
+            descriptionText.text = card.descriptionText.text;
 
             //same code as Card.cs
             //Probably need to refactor in the future
-            //Feels pretty
             nameText.font = CardInfo.DEFAULT_FONT;
             descriptionText.font = CardInfo.DEFAULT_FONT;
             nameText.color = CardInfo.DEFAULT_FONT_COLOR;
@@ -34,45 +35,21 @@ namespace cards
             descriptionText.fontSize = CardInfo.DEFAULT_FONT_DESCRIPTION_SIZE_UI;
             descriptionText.verticalAlignment = VerticalAlignmentOptions.Top;
 
-            ManaOfSockets = new List<(ManaType, Mana)>();
-            for(int i = 0; i < card.cardSO.mana.Length; i++)
+            var socketCount = card.sockets.transform.childCount;
+            card.gameObject.SetActive(true);
+            for(int i=0; i<socketCount;i++)
             {
-                ManaType manaType = card.cardSO.mana[i];
-                //add each mana from the scriptableObject
-                //initilize to false since the card is not charged
-                ManaOfSockets.Add((manaType,null));
+                var cardGameObjectSocket = card.sockets.transform.GetChild(i).gameObject;
+                if(!cardGameObjectSocket.activeInHierarchy) continue;
 
                 var socket = sockets.transform.GetChild(i).gameObject;
                 socket.SetActive(true);
                 var color = socket.transform.GetChild(0);
                 color.gameObject.SetActive(true);
+                color.GetComponent<Image>().material = cardGameObjectSocket.transform.GetChild(0).GetComponent<MeshRenderer>().materials[0];
 
-                //default color
-                Material colorMat = color.GetComponent<Image>().material;
-                switch(manaType)
-                {
-                    case ManaType.Red:
-                    colorMat = Resources.Load<Material>("Mana_Red");
-                    break;
-                    case ManaType.Blue:
-                    colorMat = Resources.Load<Material>("Mana_Blue");
-                    break;    
-                    case ManaType.Green:
-                    colorMat = Resources.Load<Material>("Mana_Green");
-                    break;
-                    case ManaType.White:
-                    colorMat = Resources.Load<Material>("Mana_White");
-                    break;
-                    case ManaType.Gold:
-                    colorMat = Resources.Load<Material>("Mana_Gold");
-                    break;
-                    case ManaType.Black:
-                    colorMat = Resources.Load<Material>("Mana_Black");
-                    break;
-                }
-
-                color.GetComponent<Image>().material = colorMat;
             }
+            card.gameObject.SetActive(false);
         }
     }
 }

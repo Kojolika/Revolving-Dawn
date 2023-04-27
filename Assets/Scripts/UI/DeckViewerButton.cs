@@ -16,14 +16,11 @@ namespace UI
         Lost,
         Deck
     }
-public class DeckViewerButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class DeckViewerButton : MenuButton
 {
 
     public DeckType deckType;
-    [SerializeField] Image imageObject;
-    [SerializeField] TextMeshProUGUI countTextObject;
-    [SerializeField] Sprite hoverIcon;
-    [SerializeField] Sprite icon;
+    [SerializeField] Image imageObject; 
 
 
     void Start()
@@ -38,7 +35,7 @@ public class DeckViewerButton : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 break;
             case DeckType.Draw:
                 PlayerCardDecks.DrawPile.CollectionChanged += ChangeValue;
-                countTextObject.text = "" + PlayerCardDecks.DrawPile.Count;
+                buttonText.text = "" + PlayerCardDecks.DrawPile.Count;
                 break;
             case DeckType.Lost:
                 PlayerCardDecks.Lost.CollectionChanged += ChangeValue;
@@ -50,16 +47,16 @@ public class DeckViewerButton : MonoBehaviour, IPointerEnterHandler, IPointerExi
         switch (deckType)
         {
             case DeckType.Deck:
-                countTextObject.text = "" + characters.PlayerCardDecks.Deck.Count;
+                buttonText.text = "" + characters.PlayerCardDecks.Deck.Count;
                 break;
             case DeckType.Discard:
-                countTextObject.text = "" + characters.PlayerCardDecks.Discard.Count;
+                buttonText.text = "" + characters.PlayerCardDecks.Discard.Count;
                 break;
             case DeckType.Draw:
-                countTextObject.text = "" + characters.PlayerCardDecks.DrawPile.Count;
+                buttonText.text = "" + characters.PlayerCardDecks.DrawPile.Count;
                 break;
             case DeckType.Lost:
-                countTextObject.text = "" + characters.PlayerCardDecks.Lost.Count;
+                buttonText.text = "" + characters.PlayerCardDecks.Lost.Count;
                 break;
         }
 
@@ -83,15 +80,15 @@ public class DeckViewerButton : MonoBehaviour, IPointerEnterHandler, IPointerExi
         }
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerEnter(PointerEventData eventData)
     {
         if (imageObject.sprite != hoverIcon) imageObject.sprite = hoverIcon;
     }
-    void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
+    public override void OnPointerExit(PointerEventData eventData)
     {
         if (imageObject.sprite != icon) imageObject.sprite = icon;
     }
-    void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
+    public override void OnPointerClick(PointerEventData eventData)
     {
         dynamic input = new ExpandoObject();
         input.DeckType = this.deckType;

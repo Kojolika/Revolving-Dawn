@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class DeckViewer : LayoutGroup
 {
+    public UI.DeckViewerMenu deckViewerMenu;
     public enum FitType
     {
         Uniform,
@@ -97,9 +98,11 @@ public class DeckViewer : LayoutGroup
             }
             SetChildAlongAxis(item, 0, xPos, cellSize.x);
             SetChildAlongAxis(item, 1, yPos, cellSize.y);
+            
+            
         }
-
-
+        Debug.Log("calling ExpandOrShrinkContentSize");
+        deckViewerMenu.ExpandOrShrinkContentSize();
     }
     public override void CalculateLayoutInputVertical()
     {

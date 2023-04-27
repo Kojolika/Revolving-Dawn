@@ -9,7 +9,7 @@ namespace UI
 
         public override void HandleInput(dynamic input)
         {
-            throw new System.NotImplementedException();
+            // do nothing
         }
     }
 }

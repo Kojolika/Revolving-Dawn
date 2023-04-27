@@ -61,15 +61,41 @@ namespace fight
             OnCardsDrawn += DrawCards;
             OnCardPlayed += CardPlayedEffects;
 
-            player = this.GetComponent<FightManager>().GetPlayer();
             movementCoroutines = new List<IEnumerator>();
         }
-        public void Initialize(BezierCurve curve, GameObject cardspawner, GameObject carddiscarder, GameObject cardHandGO)
+
+        public void Initialize(BezierCurve curve, GameObject cardSpawner, GameObject cardDiscarder, GameObject cardHandGO, Player player)
         {
             this.curve = curve;
-            cardSpawner = cardspawner;
-            cardDiscarder = carddiscarder;
+            this.cardSpawner = cardSpawner;
+            this.cardDiscarder = cardDiscarder;
             this.cardHandGO = cardHandGO;
+            this.player = player;
+
+            List<Card> playerDeck = this.player.GetComponent<TestDeck>().deck;
+            PlayerCardDecks.Deck = new ObservableCollection<Card>(playerDeck);
+            PlayerCardDecks.InstantiatedDeck = new ObservableCollection<Card>();
+            foreach (Card card in playerDeck)
+            {
+                //PlayerCardDecks.Deck.Add(card);
+                var instantiatedCard = Instantiate(card,
+                            this.cardSpawner.transform.position,
+                            card.transform.rotation,
+                            this.cardHandGO.transform
+                        );
+                instantiatedCard.currentPlayer = this.player;
+                PlayerCardDecks.InstantiatedDeck.Add(instantiatedCard);
+                instantiatedCard.gameObject.SetActive(false);
+            }
+
+            PlayerCardDecks.DrawPile = PlayerCardDecks.InstantiatedDeck;
+            Shuffle(PlayerCardDecks.InstantiatedDeck);
+
+            //These decks are only used during combat
+            //Thus are created when Player is loaded into a fight
+            PlayerCardDecks.Hand = new ObservableCollection<Card>();
+            PlayerCardDecks.Discard = new ObservableCollection<Card>();
+            PlayerCardDecks.Lost = new ObservableCollection<Card>();
         }
 
         void CardPlayedEffects(Card cardBeingPlayed, List<Character> targets)
@@ -105,12 +131,12 @@ namespace fight
             var hand = PlayerCardDecks.Hand;
             int handSize = hand.Count;
 
-            for(int i=handSize-1; i>=0; i--)
+            for (int i = handSize - 1; i >= 0; i--)
             {
                 var card = hand[i];
                 DiscardCard(card);
             }
-                
+
         }
         public void DrawCards(int amount)
         {
@@ -127,13 +153,14 @@ namespace fight
                     {
                         // do nothing
                         // no cards to draw from
+                        Debug.Log("No cards in draw,discard or deck");
                         return;
                     }
                     else
                     {
                         //shuffle discard back into drawpile when discard is empty
                         //drawPile.AddRange(discardPile);
-                        foreach(var card in discardPile)
+                        foreach (var card in discardPile)
                         {
                             drawPile.Add(card);
                         }
@@ -152,45 +179,31 @@ namespace fight
                 }
                 else
                 {
-                    //if not already instantiated... instiated the card
-                    //otherwise set the card to active
-                    if(cardDrawn.gameObject.scene.name == null)
-                    {
-                        cardDrawn = Instantiate(cardDrawn,
-                            cardSpawner.transform.position,
-                            cardDrawn.transform.rotation,
-                            cardHandGO.transform
-                        );
-                    }
-                    else 
-                    {
-                        //make it look like its drawing from the drawpile
-                        cardDrawn.transform.position = cardSpawner.transform.position;
-                        
-                        cardDrawn.gameObject.SetActive(true);
-                    }
-                    
+                    //make it look like its drawing from the drawpile
+                    cardDrawn.transform.position = cardSpawner.transform.position;
+
+                    cardDrawn.gameObject.SetActive(true);
+
+
                     hand.Add(cardDrawn);
                 }
             }
             //update hand in the players class
-            //player.playerCardDecks.Hand = hand;
             CreateHand();
         }
 
-        ObservableCollection<Card> Shuffle(ObservableCollection<Card> DeckToShuffle)
+        void Shuffle(ObservableCollection<Card> deckToShuffle)
         {
             var rng = new System.Random();
-            var shuffledCards = DeckToShuffle.OrderBy(a => rng.Next()).ToList();
-            ObservableCollection<Card> shuffledCollection = new ObservableCollection<Card>(shuffledCards);
-            return shuffledCollection;
-        }
-
-        public void ShuffleDeck()
-        {
-            var drawPile = PlayerCardDecks.DrawPile;
-            var temp = Shuffle(drawPile);
-            drawPile = temp;
+            int size = deckToShuffle.Count;
+            while(size > 1)
+            {
+                size--;
+                int k = rng.Next(size + 1);
+                Card value = deckToShuffle[k];
+                deckToShuffle[k] = deckToShuffle[size];
+                deckToShuffle[size] = value;
+            }
         }
 
         internal void CreateHand()

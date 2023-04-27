@@ -985,11 +985,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d09d1aa5100c714789b14ac3e9b634c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckType: 1
-  imageObject: {fileID: 364483662}
-  countTextObject: {fileID: 2039923037}
+  buttonText: {fileID: 2039923037}
   hoverIcon: {fileID: 21300000, guid: cf7c3f5f39545364c95a2d3a013e625c, type: 3}
   icon: {fileID: 21300000, guid: cd1446384cdc6e84b8993561037ae9f4, type: 3}
+  deckType: 1
+  imageObject: {fileID: 364483662}
 --- !u!1 &627139644
 GameObject:
   m_ObjectHideFlags: 0
@@ -2996,11 +2996,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d09d1aa5100c714789b14ac3e9b634c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckType: 0
-  imageObject: {fileID: 627139646}
-  countTextObject: {fileID: 1581738282}
+  buttonText: {fileID: 1581738282}
   hoverIcon: {fileID: 21300000, guid: 61b8d785023a2ac4abdb5c2c3e553394, type: 3}
   icon: {fileID: 21300000, guid: e14296d49a6b43847b3e983e49ee8c69, type: 3}
+  deckType: 0
+  imageObject: {fileID: 627139646}
 --- !u!1 &1914926899
 GameObject:
   m_ObjectHideFlags: 0

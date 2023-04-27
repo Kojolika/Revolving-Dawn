@@ -431,7 +431,7 @@ MonoBehaviour:
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 1
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -469,6 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3850467ef9e8f84a8cf6fc1f4dc6d58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  card: {fileID: 0}
   sockets: {fileID: 0}
   border: {fileID: 0}
   artwork: {fileID: 0}
@@ -713,13 +714,13 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 4024798ef8e3da84f96ea6b0774e6ebb, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
-  m_UseSpriteMesh: 0
+  m_UseSpriteMesh: 1
   m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1970632055801174211
 GameObject:
@@ -784,6 +785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3850467ef9e8f84a8cf6fc1f4dc6d58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  card: {fileID: 0}
   sockets: {fileID: 1970632055017018964}
   border: {fileID: 1970632054333558182}
   artwork: {fileID: 1970632055572834270}

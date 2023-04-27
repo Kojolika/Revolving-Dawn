@@ -12,7 +12,10 @@ namespace characters
         static ObservableCollection<Card> deck;
         public static ObservableCollection<Card> Deck { get => deck; set => deck = value; }
 
+
         //Only used for combat
+        static ObservableCollection<Card> instantiatedDeck;
+        public static ObservableCollection<Card> InstantiatedDeck { get => deck; set => deck = value; }
         static ObservableCollection<Card> drawPile;
         static ObservableCollection<Card> hand;
         static ObservableCollection<Card> discard;
