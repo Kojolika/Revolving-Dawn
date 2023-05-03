@@ -59,7 +59,6 @@
      <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Processor.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Special.cs" />
-     <Compile Include="Assets\Scripts\utils\SerializableValueContainer.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthBarInside.cs" />
      <Compile Include="Assets\Scripts\Cards\Hand.cs" />

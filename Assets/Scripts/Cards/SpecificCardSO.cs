@@ -10,28 +10,25 @@ namespace cards
 {
     public abstract class SpecificCardSO : ScriptableObject
     {
-        //Must only be size 3 or less
-        [SerializeField]
-        ManaType[] _mana;
-        public new string name;
-        [SerializeField]
-        string descriptionWithReplaceables;
-        [HideInInspector]
-        public string description;
-        public Sprite artwork;
-        public PlayerClass @class = PlayerClass.Classless;
-        public Targeting target;
 
-        public Targeting manaChargedTarget;
+        [SerializeField] public Character owner; //character that plays this card
+        [SerializeField] ManaType[] _mana; //what mana this card uses to charge
+        public new string name; //name of the card
+        [SerializeField] string descriptionWithReplaceables; // description of what the card does, contains words that will be replaced by number values, edit this one
+        [HideInInspector] public string description; //final description that is shown on the card after word replacements have been replaced, should not be edited by itself
+        public Sprite artwork; //card art
+        public PlayerClass @class = PlayerClass.Classless; //class of the card
+        public Targeting target;   //what the card targets
+        public abstract void PlayUncharged(List<Character> targets); //effect of the card when played
 
-        public abstract void PlayUncharged(List<Character> targets);
+        public Targeting targetManaCharged;
         public abstract void PlayManaCharged(List<Character> targets);
 
-        [SerializeField]//maybe use fight damage calc number instead
-        protected List<Number> descriptionReplacementsInterface = new List<Number>();
-        
-        [SerializeField] //key is the text to be replaced in the description, value is the replacement
-        protected SerializableDictionary<string, float> descriptionReplacements = new SerializableDictionary<string, float>();
+
+        [SerializeField] protected List<Number> descriptionReplacementsInterface = new List<Number>();
+
+        //key is the text to be replaced in the description, value is the replacement
+        [SerializeField] protected SerializableDictionary<string, float> descriptionReplacements = new SerializableDictionary<string, float>();
 
 
         void UpdateDescription()

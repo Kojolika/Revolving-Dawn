@@ -19,7 +19,7 @@ namespace fightInput
         Mover mover;
         List<Character> targets = new List<Character>();
         FightManager fightManager = _input.GetComponent<FightManager>();
-        CardHandManager cardHandMovementManager = _input.GetComponent<CardHandManager>();
+        CardHandManager cardMovementManager = _input.GetComponent<CardHandManager>();
 
         public TargetingState(Card card)
         {
@@ -129,7 +129,7 @@ namespace fightInput
             if (targets.Count > 0)
             {
                 //Trigger playing the card event
-                cardHandMovementManager.TriggerPlayCard(currentCard, targets);
+                cardMovementManager.TriggerPlayCard(currentCard, targets);
                 changeStateTo = ChangeStateTo.Default;
             }
         }

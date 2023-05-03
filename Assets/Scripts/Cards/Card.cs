@@ -188,20 +188,49 @@ namespace cards
         public const float DEFAULT_FONT_DESCRIPTION_SIZE = 9f;
         public const float DEFAULT_FONT_DESCRIPTION_SIZE_UI = 21f;
 
+        static Sprite BORDER_WARRIOR = null;
+        static Sprite BORDER_ROGUE = null;
+        static Sprite BORDER_MAGE = null;
+        static Sprite BORDER_PRIEST = null;
+        static Sprite BORDER_NEUTRAL = null;
+
         public static Sprite GetClassBorder(PlayerClass playerClass)
         {
             switch (playerClass)
             {
                 case (PlayerClass.Warrior):
-                    return Resources.Load<Sprite>("Warrior_Border");
+                    if (BORDER_WARRIOR == null)
+                    {
+                        BORDER_WARRIOR = Resources.Load<Sprite>("Warrior_Border");
+                        return BORDER_WARRIOR;
+                    }
+                    else return BORDER_WARRIOR;
                 case (PlayerClass.Rogue):
-                    return Resources.Load<Sprite>("Rogue_Border");
+                    if (BORDER_ROGUE == null)
+                    {
+                        BORDER_ROGUE = Resources.Load<Sprite>("Rogue_Border");
+                        return BORDER_ROGUE;
+                    }
+                    else return BORDER_ROGUE;
                 case (PlayerClass.Mage):
-                    return Resources.Load<Sprite>("Mage_Border");
+                    if(BORDER_MAGE == null)
+                    {
+                        BORDER_MAGE = Resources.Load<Sprite>("Mage_Border");
+                        return BORDER_MAGE;
+                    }
+                    else return BORDER_MAGE;
                 case (PlayerClass.Priest):
-                    return Resources.Load<Sprite>("Priest_Border");
+                    if(BORDER_PRIEST == null){
+                        BORDER_PRIEST = Resources.Load<Sprite>("Priest_Border");
+                        return BORDER_PRIEST;
+                    }
+                    else return BORDER_PRIEST;
                 case (PlayerClass.Classless):
-                    return Resources.Load<Sprite>("Neutral_Border");
+                    if(BORDER_NEUTRAL == null){
+                        BORDER_NEUTRAL = Resources.Load<Sprite>("Neutral_Border");
+                        return BORDER_NEUTRAL;
+                    }
+                    else return BORDER_NEUTRAL;
             }
             return Resources.Load<Sprite>("Neutral_Border");
         }

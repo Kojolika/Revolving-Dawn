@@ -47,7 +47,7 @@ namespace cards
         {
             if (isManaCharged)
             {
-                return cardScriptableObject.manaChargedTarget;
+                return cardScriptableObject.targetManaCharged;
             }
             else
             {

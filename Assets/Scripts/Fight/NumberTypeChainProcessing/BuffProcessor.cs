@@ -10,9 +10,6 @@ public class BuffProcessor : Processor
 
     public override Number process(Number request, Character source,  Character target)
     {
-        //processing affects both targets equally
-        //need to fix
-        //example: weaken will affect the person defending too
         if(target.gameObject.TryGetComponent<Affects>(out Affects affects))
         {
             foreach(var affect in affects.list)

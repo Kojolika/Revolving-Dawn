@@ -51,7 +51,7 @@ namespace fightInput
             if (OnManaMouseOver != null)
             {
                 OnManaMouseOver(mana);
-            }            
+            }
         }
         void TriggerNoManaMouseOver()
         {
@@ -59,7 +59,7 @@ namespace fightInput
             if (OnNoManaMouseOver != null)
             {
                 OnNoManaMouseOver();
-            }            
+            }
         }
         void TriggerMouseEnterManaArea()
         {
@@ -104,7 +104,7 @@ namespace fightInput
         }
         void TriggerEnemyMouseOver(Enemy enemy)
         {
-            if(OnEnemyMouseOver != null)
+            if (OnEnemyMouseOver != null)
             {
                 OnEnemyMouseOver(enemy);
             }
@@ -117,7 +117,7 @@ namespace fightInput
             {
                 OnNoCardMouseOver();
             }
-        }    
+        }
         void TriggerLeftClicked()
         {
             //Condition checks if any methods are subscribed to this event
@@ -162,7 +162,7 @@ namespace fightInput
                     currentCard = hit.transform.gameObject.GetComponent(typeof(Card)) as Card;
                     TriggerCardMouseOver(currentCard);
                 }
-                if(hit.transform.gameObject.GetComponent<Mana>())
+                if (hit.transform.gameObject.GetComponent<Mana>())
                 {
                     currentMana = hit.transform.gameObject.GetComponent<Mana>();
                     TriggerManaMouseOver(currentMana);
@@ -175,22 +175,22 @@ namespace fightInput
                 {
                     TriggerMouseEnterPlayArea();
                 }
-                if(hit.transform.gameObject.name == "ManaArea")
+                if (hit.transform.gameObject.name == "ManaArea")
                 {
                     TriggerMouseEnterManaArea();
                     manaArea = hit.transform.gameObject;
                 }
             }
 
-            if(!currentCard)
+            if (!currentCard)
             {
                 TriggerNoCardMouseOver();
             }
-            if(!currentMana)
+            if (!currentMana)
             {
                 TriggerNoManaMouseOver();
             }
-            if(!manaArea)
+            if (!manaArea)
             {
                 TriggerMouseExitManaArea();
             }
@@ -215,33 +215,35 @@ namespace fightInput
             }
             TriggerEnemyMouseOver(currentEnemy);
         }
-        void MouseInput(){
+        void MouseInput()
+        {
 
-            if(Input.GetKeyUp(KeyCode.Mouse1))
+            if (Input.GetKeyUp(KeyCode.Mouse1))
             {
                 TriggerRightClicked();
             }
-            if(Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 TriggerLeftClicked();
             }
         }
-        public void Enable(bool value){
+        public void Enable(bool value)
+        {
             isEnabled = value;
         }
         void Update()
         {
-            if(isPaused) return;
-            if(!isEnabled) return;
+            if (isPaused) return;
+            if (!isEnabled) return;
 
             MouseOver();
             MouseOverCharacter();
             MouseInput();
         }
 
-        void Awake() 
+        void Awake()
         {
-           if (staticInstance == null)
+            if (staticInstance == null)
                 staticInstance = this;
             else
                 Destroy(this);
