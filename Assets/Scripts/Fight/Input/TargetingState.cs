@@ -49,7 +49,7 @@ namespace fightInput
 
                     _input.OnEnemyMouseOver += OnEnemyMouseOver;
 
-                    Vector3 cardCenterPosition = _input.cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0.25f, CardInfo.CAMERA_DISTANCE));
+                    Vector3 cardCenterPosition = _input.cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0.25f, CardConfiguration.CAMERA_DISTANCE));
 
                     mover = currentCard.gameObject.AddComponent<Mover>();
                     mover.Initialize(cardCenterPosition, 40f);

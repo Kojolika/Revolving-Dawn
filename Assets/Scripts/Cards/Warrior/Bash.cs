@@ -13,20 +13,20 @@ namespace cards
             if (isManaCharged)
             {
                 //Play powerful effect
-            } 
+            }
             else
             {
                 //Play regular effect
-                foreach(var target in targets)
+                foreach (var target in targets)
                 {
-                    currentPlayer.PerformDamageNumberAction(new Number(damage, FightInfo.NumberType.Attack),target);
+                    currentPlayer.PerformDamageNumberAction(new Number(damage, FightInfo.NumberType.Attack), target);
                 }
             }
         }
 
         public override void UpdateDiscriptionText()
         {
-            descriptionText.text = descriptionText.text.Replace("DAMAGE","" + damage);
+            descriptionText.text = descriptionText.text.Replace("DAMAGE", "" + damage);
         }
     }
 }

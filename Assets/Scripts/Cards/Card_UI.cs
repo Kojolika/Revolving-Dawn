@@ -27,12 +27,12 @@ namespace cards
 
             //same code as Card.cs
             //Probably need to refactor in the future
-            nameText.font = CardInfo.DEFAULT_FONT;
-            descriptionText.font = CardInfo.DEFAULT_FONT;
-            nameText.color = CardInfo.DEFAULT_FONT_COLOR;
-            descriptionText.color = CardInfo.DEFAULT_FONT_COLOR;
-            nameText.fontSize = CardInfo.DEFAULT_FONT_NAME_SIZE_UI;
-            descriptionText.fontSize = CardInfo.DEFAULT_FONT_DESCRIPTION_SIZE_UI;
+            nameText.font = CardConfiguration.DEFAULT_FONT;
+            descriptionText.font = CardConfiguration.DEFAULT_FONT;
+            nameText.color = CardConfiguration.DEFAULT_FONT_COLOR;
+            descriptionText.color = CardConfiguration.DEFAULT_FONT_COLOR;
+            nameText.fontSize = CardConfiguration.DEFAULT_FONT_NAME_SIZE_UI;
+            descriptionText.fontSize = CardConfiguration.DEFAULT_FONT_DESCRIPTION_SIZE_UI;
             descriptionText.verticalAlignment = VerticalAlignmentOptions.Top;
 
             var socketCount = card.sockets.transform.childCount;

@@ -40,6 +40,7 @@
      <Compile Include="Assets\Scripts\utils\Computations.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
      <Compile Include="Assets\Scripts\UI\DeckViewer.cs" />
+     <Compile Include="Assets\Scripts\utils\SerializableDictionary.cs" />
      <Compile Include="Assets\Scripts\Shading\TurnOnShadows.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\DeBuffProcessor.cs" />
      <Compile Include="Assets\Scripts\UI\Overlay.cs" />
@@ -48,6 +49,7 @@
      <Compile Include="Assets\Scripts\Cards\CardScriptableObject.cs" />
      <Compile Include="Assets\Scripts\Fight\Mana\ManaPool.cs" />
      <Compile Include="Assets\Scripts\Fight\GameArea\CardDiscarder.cs" />
+     <Compile Include="Assets\Scripts\Cards\SpecificCardSO.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\ManaViewingState.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Affects.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\PlayerCardDecks.cs" />
@@ -57,6 +59,7 @@
      <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Processor.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Special.cs" />
+     <Compile Include="Assets\Scripts\utils\SerializableValueContainer.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthBarInside.cs" />
      <Compile Include="Assets\Scripts\Cards\Hand.cs" />
@@ -95,6 +98,7 @@
      <Compile Include="Assets\Scripts\Cards\Card.cs" />
      <Compile Include="Assets\Scripts\Cards\Warrior\FractureDefense.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthDisplay.cs" />
+     <Compile Include="Assets\Scripts\Cards\Card3D.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\BuffProcessor.cs" />
      <Compile Include="Assets\Scripts\Fight\CardHandManager.cs" />
      <Compile Include="Assets\Scripts\Fight\HoverManager.cs" />
@@ -108,6 +112,7 @@
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\RoundingProcessor.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\DraggingState.cs" />
+     <Compile Include="Assets\Scripts\Cards\Warrior\BashSO.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
      <Compile Include="Assets\Scripts\UI\DeckViewerButton.cs" />

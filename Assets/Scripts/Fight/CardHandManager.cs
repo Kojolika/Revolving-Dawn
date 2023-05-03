@@ -241,7 +241,7 @@ namespace fight
         {
             var hand = PlayerCardDecks.Hand;
 
-            var rotation = CardInfo.DEFAULT_CARD_ROTATION;
+            var rotation = CardConfiguration.DEFAULT_CARD_ROTATION;
             rotation.x += cardRotation;
             card.transform.rotation = Quaternion.Euler(rotation);
 

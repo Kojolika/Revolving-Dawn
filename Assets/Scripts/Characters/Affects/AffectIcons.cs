@@ -71,7 +71,7 @@ namespace characters
             text3D.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, affectTextBoxWidthAndHeightSize);
             text3D.transform.localScale = Vector3.one;
 
-            text3D.font = cards.CardInfo.DEFAULT_FONT;
+            text3D.font = cards.CardConfiguration.DEFAULT_FONT;
             text3D.fontSize = affectIconFontSize;
             text3D.name = "Stack Amount";
             text3D.text = "" + affect.StackSize;

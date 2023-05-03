@@ -35,10 +35,10 @@ namespace fight
                 {
                     //Selected card will perfectly straight, moved so the text is in view of the screen clear,
                     //and scaled up for better visability
-                    card.transform.rotation  = Quaternion.Euler(CardInfo.DEFAULT_CARD_ROTATION);
+                    card.transform.rotation  = Quaternion.Euler(CardConfiguration.DEFAULT_CARD_ROTATION);
                     Vector3 p = cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0, cardCam.nearClipPlane));
                     card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y + selectedCardHoverHeight, card.transform.position.z - .1f);
-                    card.transform.localScale = CardInfo.DEFAULT_SCALE * SCALE_AMOUNT;
+                    card.transform.localScale = CardConfiguration.DEFAULT_SCALE * SCALE_AMOUNT;
                     continue;
                 }
 
@@ -80,7 +80,7 @@ namespace fight
 
             for (int i = 0; i < hand.Count; i++)
             {
-                hand[i].transform.localScale = CardInfo.DEFAULT_SCALE;
+                hand[i].transform.localScale = CardConfiguration.DEFAULT_SCALE;
             }
         }
     }

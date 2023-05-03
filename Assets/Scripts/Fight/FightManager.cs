@@ -39,6 +39,7 @@ namespace fight
             //Load Game Area for card placement and events
             cardsCamAndGameArea = Instantiate(cardsCamAndGameAreaPrefab);
 
+
             //Load camera for world UI
             Instantiate(worldUICam, Camera.main.transform.position, Camera.main.transform.rotation, Camera.main.transform);
 
@@ -238,7 +239,7 @@ namespace fight
                 textParent.name = "moveIcon";
 
                 TextMeshPro moveNum = textParent.AddComponent<TextMeshPro>();
-                moveNum.font = CardInfo.DEFAULT_FONT;
+                moveNum.font = CardConfiguration.DEFAULT_FONT;
                 moveNum.fontSize = 8;
                 moveNum.sortingOrder = 1;
                 moveNum.horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center;

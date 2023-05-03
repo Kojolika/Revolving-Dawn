@@ -19,7 +19,7 @@ namespace fightInput
             _input.OnRightClicked += RightClicked;
             _input.OnMouseEnterPlayArea += OnEnterPlayArea;
 
-            currentCard.transform.rotation = Quaternion.Euler(CardInfo.DEFAULT_CARD_ROTATION);
+            currentCard.transform.rotation = Quaternion.Euler(CardConfiguration.DEFAULT_CARD_ROTATION);
             newDragger = currentCard.gameObject.AddComponent<Dragger>();
             newDragger.cardCam = _input.cardCam;
             newDragger.StartDragging();
