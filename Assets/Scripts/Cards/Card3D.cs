@@ -68,12 +68,38 @@ namespace cards
             cardScriptableObject = cardScriptableObject.Transform(direction) == null ? cardScriptableObject : cardScriptableObject.Transform(direction);
             PopulateFromData();
         }
+        public void BindMana(Mana3D manaBeingBound)
+        {
+            bool readyToTransform = true;
+
+            for (int index = 0; index < manaInSockets.Length; index++)
+            {
+                //manaInSockets and cardScriptableObject.mana will always be same length
+                if (manaInSockets[index] == null && manaBeingBound.type == cardScriptableObject.mana[index])
+                {
+                    Transform socketTransform = manaSockets.transform.GetChild(index);
+                    FitManaIntoSocket(manaBeingBound, socketTransform);
+                }
+
+                if (manaInSockets[index] == null) readyToTransform = false;
+            }
+
+            //input is true because when every mana is fit into the socket, the card is upgraded
+            if (readyToTransform) Transform(true);
+
+            void FitManaIntoSocket(Mana3D mana, Transform socket)
+            {
+                mana.transform.SetParent(socket, true);
+                mana.transform.localPosition = Vector3.zero;
+                mana.transform.localScale = new Vector3(.05f, .05f, .05f);
+            }
+        }
         public List<ManaType> UnBindAndReturnMana()
         {
             List<ManaType> manaTypesToBeUnbound = new List<ManaType>();
-            foreach(Mana3D mana in manaInSockets)
+            foreach (Mana3D mana in manaInSockets)
             {
-                if(mana != null)
+                if (mana != null)
                 {
                     manaTypesToBeUnbound.Add(mana.type);
                 }
