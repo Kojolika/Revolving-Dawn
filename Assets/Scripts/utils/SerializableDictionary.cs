@@ -52,8 +52,6 @@ namespace utils
 
         public void Add(object key, object value)
         {
-            Debug.Log("Type of key: "+key.GetType());
-            Debug.Log("Type should be: "+typeof(TKey));
             if (key.GetType()!= typeof(TKey))
             {
                 throw new Exception("Key is not a valid type");

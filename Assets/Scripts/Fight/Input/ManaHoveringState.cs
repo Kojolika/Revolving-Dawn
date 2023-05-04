@@ -5,8 +5,8 @@ namespace fightInput
     public class ManaHoveringState : PlayerInputState
     {
         ChangeStateTo changeStateTo = ChangeStateTo.ManaHovering;
-        Mana currentMana = null;
-        public ManaHoveringState(Mana mana)
+        Mana3D currentMana = null;
+        public ManaHoveringState(Mana3D mana)
         {
             currentMana = mana;
             _input.OnNoManaMouseOver += NoManaMouseOver;

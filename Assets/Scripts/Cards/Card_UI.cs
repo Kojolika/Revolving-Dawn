@@ -9,7 +9,7 @@ namespace cards
     public class Card_UI : MonoBehaviour
     {
         public Card card;
-        public List<(ManaType, Mana)> ManaOfSockets { get; set;}
+        public List<(ManaType, Mana3D)> ManaOfSockets { get; set;}
         public GameObject sockets;
         public GameObject border;
         public GameObject artwork;

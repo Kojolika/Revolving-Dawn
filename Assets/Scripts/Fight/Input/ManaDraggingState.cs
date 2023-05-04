@@ -8,10 +8,10 @@ namespace fightInput
     {
         ChangeStateTo changeStateTo = ChangeStateTo.ManaDragging;
         ManaPool manaPool;
-        Mana manaBeingDragged;
+        Mana3D manaBeingDragged;
         Card cardBeingMousedOver;
 
-        public ManaDraggingState(Mana mana)
+        public ManaDraggingState(Mana3D mana)
         {
             manaBeingDragged = mana;
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
@@ -68,13 +68,13 @@ namespace fightInput
             cardBeingMousedOver = null;
         }
 
-        void TryBindManaToCard(Mana mana, Card card)
+        void TryBindManaToCard(Mana3D mana, Card card)
         {
             bool bindable = false;
             foreach(var manaType in card.ManaOfSockets)
             {
                 //!manaType.Value means the socket has not been binded to a mana gem
-                if(manaType.Item1 == mana.manaType)
+                if(manaType.Item1 == mana.type)
                 {
                     bindable = true;
                     manaPool.StopAllCoroutines();

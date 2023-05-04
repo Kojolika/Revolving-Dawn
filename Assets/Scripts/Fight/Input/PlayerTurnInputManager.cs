@@ -14,7 +14,7 @@ namespace fightInput
         public bool isEnabled;
         public bool isPaused = false;
 
-        public delegate void ManaMouseOver(Mana mana);
+        public delegate void ManaMouseOver(Mana3D mana);
         public event ManaMouseOver OnManaMouseOver;
         public delegate void NoManaMouseOver();
         public event NoManaMouseOver OnNoManaMouseOver;
@@ -45,7 +45,7 @@ namespace fightInput
         public event EnemyMouseOver OnEnemyMouseOver;
 
 
-        void TriggerManaMouseOver(Mana mana)
+        void TriggerManaMouseOver(Mana3D mana)
         {
             //Condition checks if any methods are subscribed to this event
             if (OnManaMouseOver != null)
@@ -146,7 +146,7 @@ namespace fightInput
         void MouseOver()
         {
             Card currentCard = null;
-            Mana currentMana = null;
+            Mana3D currentMana = null;
             GameObject manaArea = null;
 
             Ray ray = cardCam.ScreenPointToRay(Input.mousePosition);
@@ -162,9 +162,9 @@ namespace fightInput
                     currentCard = hit.transform.gameObject.GetComponent(typeof(Card)) as Card;
                     TriggerCardMouseOver(currentCard);
                 }
-                if (hit.transform.gameObject.GetComponent<Mana>())
+                if (hit.transform.gameObject.GetComponent<Mana3D>())
                 {
-                    currentMana = hit.transform.gameObject.GetComponent<Mana>();
+                    currentMana = hit.transform.gameObject.GetComponent<Mana3D>();
                     TriggerManaMouseOver(currentMana);
                 }
                 if (hit.transform.gameObject.name == "CardHandArea")

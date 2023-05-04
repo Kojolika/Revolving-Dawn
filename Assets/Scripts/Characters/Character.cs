@@ -7,7 +7,7 @@ namespace characters
     public abstract class Character : MonoBehaviour
     {
         float maxHealth = 50f;
-        public virtual float MaxHealth{ get => maxHealth; set => maxHealth = value; }
+        public virtual float MaxHealth { get => maxHealth; set => maxHealth = value; }
         Vector3 healthBarVector;
         public virtual Vector3 healthbarPosition { get => new Vector3(0f, 1f, 0f); set => healthBarVector = value; }
         Vector3 targetingBorderVector;
@@ -60,6 +60,13 @@ namespace characters
         public void CastShadows()
         {
             this.gameObject.AddComponent<TurnOnShadows>();
+        }
+
+        void OnMouseEnter() {
+            Debug.Log("mousing over character");
+        }
+        void OnMouseExit() {
+            Debug.Log("not mousing over character");
         }
     }
 }

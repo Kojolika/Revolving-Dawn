@@ -10,7 +10,7 @@ public class BuffProcessor : Processor
 
     public override Number process(Number request, Character source,  Character target)
     {
-        if(target.gameObject.TryGetComponent<Affects>(out Affects affects))
+        if(target && target.gameObject.TryGetComponent<Affects>(out Affects affects))
         {
             foreach(var affect in affects.list)
             {
@@ -20,7 +20,7 @@ public class BuffProcessor : Processor
                 }
             }
         }
-        if(source.gameObject.TryGetComponent<Affects>(out Affects source_affects))
+        if(source && source.gameObject.TryGetComponent<Affects>(out Affects source_affects))
         {
             foreach(var affect in source_affects.list)
             {

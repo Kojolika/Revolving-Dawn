@@ -7,7 +7,7 @@ namespace mana
 {
     public class ManaPool : MonoBehaviour
     {
-        public List<Mana> pool = new List<Mana>();
+        public List<Mana3D> pool = new List<Mana3D>();
         int manaCount;
 
         public GameObject center;
@@ -78,7 +78,7 @@ namespace mana
 
         }
 
-        public void AddMana(Mana mana)
+        public void AddMana(Mana3D mana)
         {
             StopAllCoroutines();
             
@@ -87,7 +87,7 @@ namespace mana
             mana.ResetScale();
             ResetPool();
         }
-        public void RemoveMana(Mana mana)
+        public void RemoveMana(Mana3D mana)
         {
             StopAllCoroutines();
             pool.Remove(mana);

@@ -66,7 +66,7 @@
      <Compile Include="Assets\Scripts\Fight\Input\ManaDraggingState.cs" />
      <Compile Include="Assets\Scripts\Fight\CardHandUtils.cs" />
      <Compile Include="Assets\Scripts\UI\EscapeMenu.cs" />
-     <Compile Include="Assets\Scripts\Fight\Mana\Mana.cs" />
+     <Compile Include="Assets\Scripts\Fight\Mana\Mana3D.cs" />
      <Compile Include="Assets\Scripts\Fight\FightManager.cs" />
      <Compile Include="Assets\Scripts\UI\SettingsMenu.cs" />
      <Compile Include="Assets\Scripts\Fight\Dragger.cs" />
@@ -116,6 +116,7 @@
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
      <Compile Include="Assets\Scripts\UI\DeckViewerButton.cs" />
      <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
+     <Compile Include="Assets\Scripts\Fight\Mana\Mana.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

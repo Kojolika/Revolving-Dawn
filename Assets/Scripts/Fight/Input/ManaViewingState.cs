@@ -7,7 +7,7 @@ namespace fightInput
     {
 
         ChangeStateTo changeStateTo = ChangeStateTo.ManaViewing;
-        Mana currentMana = null;
+        Mana3D currentMana = null;
         ManaPool manaPool;
 
         public ManaViewingState()
@@ -38,7 +38,7 @@ namespace fightInput
         {
             changeStateTo = ChangeStateTo.Default;
         }
-        void ManaMouseOver(Mana mana)
+        void ManaMouseOver(Mana3D mana)
         {
             currentMana = mana;
             changeStateTo = ChangeStateTo.ManaHovering;

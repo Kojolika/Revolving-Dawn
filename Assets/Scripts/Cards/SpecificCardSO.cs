@@ -18,68 +18,46 @@ namespace cards
         [HideInInspector] public string description; //final description that is shown on the card after word replacements have been replaced, should not be edited by itself
         public Sprite artwork; //card art
         public PlayerClass @class = PlayerClass.Classless; //class of the card
-        public Targeting target;   //what the card targets
-        public abstract void PlayUncharged(List<Character> targets); //effect of the card when played
-
-        public Targeting targetManaCharged;
-        public abstract void PlayManaCharged(List<Character> targets);
-
-
+        public Targeting target;   //who the card targets
+        public abstract void Play(List<Character> targets); //effect of the card when played
+        [Space(20)]
         [SerializeField] protected List<Number> descriptionReplacementsInterface = new List<Number>();
-
         //key is the text to be replaced in the description, value is the replacement
-        [SerializeField] protected SerializableDictionary<string, float> descriptionReplacements = new SerializableDictionary<string, float>();
+        [SerializeField] protected SerializableDictionary<string, Number> descriptionReplacements = new SerializableDictionary<string, Number>();
 
+        [SerializeField] protected SpecificCardSO nextCardUpgrade;
+        [SerializeField] protected SpecificCardSO previousCard = null;
 
-        void UpdateDescription()
+        //true means transform to next card, false is transform to previous card
+        public SpecificCardSO Transform(bool direction)
         {
-            foreach (KeyValuePair<string, float> entry in descriptionReplacements)
+            if (direction)
             {
-                description = descriptionWithReplaceables.Replace("" + entry.Key, "" + entry.Value);
+                nextCardUpgrade.previousCard = this;
+                return nextCardUpgrade;
+            }
+            else
+            {
+                previousCard.nextCardUpgrade = this;
+                return previousCard;
             }
         }
-        public void UpdateDescriptionForCurrentTargets(List<Character> targets)
+        Chain chain = new Chain();
+        public void UpdateDescription(Character target)
         {
-
+            foreach (KeyValuePair<string, Number> entry in descriptionReplacements)
+            {
+                description = descriptionWithReplaceables.Replace("" + entry.Key, "" + chain.process(entry.Value, owner, target).Amount);
+            }
         }
         void OnEnable()
         {
             descriptionReplacements.Clear();
             for (int index = 0; index < descriptionReplacementsInterface.Count; index++)
             {
-                descriptionReplacements.Add(descriptionReplacementsInterface[index].getType().ToString().ToUpper() + "" + (index + 1), descriptionReplacementsInterface[index].Amount);
+                descriptionReplacements.Add(descriptionReplacementsInterface[index].getType().ToString().ToUpper() + "" + (index + 1), descriptionReplacementsInterface[index]);
             }
-            UpdateDescription();
+            UpdateDescription(null);
         }
-        public Sprite GetBorder()
-        {
-            switch (@class)
-            {
-                case (PlayerClass.Warrior):
-                    return Resources.Load<Sprite>("Warrior_Border");
-                case (PlayerClass.Rogue):
-                    return Resources.Load<Sprite>("Rogue_Border");
-                case (PlayerClass.Mage):
-                    return Resources.Load<Sprite>("Mage_Border");
-                case (PlayerClass.Priest):
-                    return Resources.Load<Sprite>("Priest_Border");
-                case (PlayerClass.Classless):
-                    return Resources.Load<Sprite>("Neutral_Border");
-            }
-            return Resources.Load<Sprite>("Neutral_Border");
-        }
-
-        //Configuration Variables
-        public static Vector3 DEFAULT_ROTATION => new Vector3(90f, 90f, -90f);
-        public static TMP_FontAsset DEFAULT_FONT => Resources.Load<TMP_FontAsset>("DeterminationSansWebRegular-369X SDF");
-        public static Color DEFAULT_FONT_COLOR => Color.white;
-        [SerializeReference]
-        public const float DEFAULT_FONT_NAME_SIZE = 10f;
-        [SerializeReference]
-        public const float DEFAULT_FONT_NAME_SIZE_UI = 23f;
-        [SerializeReference]
-        public const float DEFAULT_FONT_DESCRIPTION_SIZE = 9f;
-        [SerializeReference]
-        public const float DEFAULT_FONT_DESCRIPTION_SIZE_UI = 21f;
     }
 }

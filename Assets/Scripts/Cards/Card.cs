@@ -8,7 +8,7 @@ namespace cards
 {
     public abstract class Card : MonoBehaviour
     {
-        public List<(ManaType, Mana)> ManaOfSockets { get; set; }
+        public List<(ManaType, Mana3D)> ManaOfSockets { get; set; }
         public CardScriptableObject cardSO;
         public Player currentPlayer;
         Targeting target;
@@ -46,7 +46,7 @@ namespace cards
             manaChargedTarget = cardSO.manaChargedTarget;
             cardClass = cardSO.cardClass;
 
-            ManaOfSockets = new List<(ManaType, Mana)>();
+            ManaOfSockets = new List<(ManaType, Mana3D)>();
             for (int i = 0; i < cardSO.mana.Length; i++)
             {
                 ManaType manaType = cardSO.mana[i];
@@ -102,7 +102,7 @@ namespace cards
             //By default does nothing
             //Used for cards that implement numbers
         }
-        void FitManaIntoSocket(Mana mana, Transform socket)
+        void FitManaIntoSocket(Mana3D mana, Transform socket)
         {
             //Debug.Log("Adding to socket");
             mana.transform.SetParent(socket, true);
@@ -110,14 +110,14 @@ namespace cards
             //mana.transform.rotation = socket.rotation;
             mana.transform.localScale = new Vector3(.05f, .05f, .05f);
         }
-        public void BindMana(Mana manaBeingBound)
+        public void BindMana(Mana3D manaBeingBound)
         {
             bool readyToTransform = true; //flag if the card has all mana binded for transformation 
                                           //continues looping to see if rest of mana are bound after
 
             for (int i = 0; i < ManaOfSockets.Count; i++)
             {
-                if (ManaOfSockets[i].Item1 == manaBeingBound.manaType && ManaOfSockets[i].Item2 == null)
+                if (ManaOfSockets[i].Item1 == manaBeingBound.type && ManaOfSockets[i].Item2 == null)
                 {
                     ManaOfSockets[i] = (ManaOfSockets[i].Item1, manaBeingBound);
 
@@ -131,9 +131,9 @@ namespace cards
             if (readyToTransform)
                 TransformCard();
         }
-        public List<Mana> UnBindManaAndReturnManaUnBound()
+        public List<Mana3D> UnBindManaAndReturnManaUnBound()
         {
-            List<Mana> manaToUnBind = new List<Mana>();
+            List<Mana3D> manaToUnBind = new List<Mana3D>();
 
             for (int i = 0; i < ManaOfSockets.Count; i++)
             {
