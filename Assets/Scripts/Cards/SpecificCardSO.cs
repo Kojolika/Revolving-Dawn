@@ -10,7 +10,6 @@ namespace cards
 {
     public abstract class SpecificCardSO : ScriptableObject
     {
-
         public Character owner; //character that plays this card
         public ManaType[] mana; //what mana this card uses to charge
         public new string name; //name of the card
@@ -19,6 +18,7 @@ namespace cards
         public Sprite artwork; //card art
         public PlayerClass @class = PlayerClass.Classless; //class of the card
         public Targeting target;   //who the card targets
+        // Add list of Keywords in future
         public abstract void Play(List<Character> targets); //effect of the card when played
         [Space(20)]
         [SerializeField] protected List<Number> descriptionReplacementsInterface = new List<Number>();

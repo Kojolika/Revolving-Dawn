@@ -55,7 +55,8 @@ namespace fightInput
         {
             if(!currentCard.isManaCharged) return;
 
-            foreach(var mana in currentCard.UnBindManaAndReturnManaUnBound())
+            manaPool.StopAllCoroutines();
+            foreach(var mana in currentCard.UnBindAndReturnMana())
             {
                 manaPool.AddMana(mana);
             }

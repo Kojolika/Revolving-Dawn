@@ -131,21 +131,10 @@ namespace cards
             if (readyToTransform)
                 TransformCard();
         }
-        public List<Mana3D> UnBindManaAndReturnManaUnBound()
+        public ManaType[] UnBindAndReturnMana()
         {
-            List<Mana3D> manaToUnBind = new List<Mana3D>();
+            ManaType[] manaToUnBind = new ManaType[]{};
 
-            for (int i = 0; i < ManaOfSockets.Count; i++)
-            {
-                var socket = ManaOfSockets[i];
-                if (socket.Item2 != null)
-                {
-                    manaToUnBind.Add(socket.Item2);
-                    socket = (socket.Item1, null);
-                }
-            }
-
-            TransformCard();
             return manaToUnBind;
         }
 

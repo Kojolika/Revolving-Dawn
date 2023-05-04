@@ -8,6 +8,7 @@ namespace mana
     public class ManaPool : MonoBehaviour
     {
         public List<Mana3D> pool = new List<Mana3D>();
+        [SerializeField] Mana3D manaPrefab;
         int manaCount;
 
         public GameObject center;
@@ -78,13 +79,11 @@ namespace mana
 
         }
 
-        public void AddMana(Mana3D mana)
-        {
-            StopAllCoroutines();
-            
+        public void AddMana(ManaType type)
+        {    
+            Mana3D mana = Instantiate(manaPrefab, this.transform, true);
+
             pool.Add(mana);
-            mana.transform.SetParent(this.transform);
-            mana.ResetScale();
             ResetPool();
         }
         public void RemoveMana(Mana3D mana)
