@@ -10,7 +10,13 @@ namespace cards
     {
         public override void Play(List<Character> targets)
         {
-            throw new System.NotImplementedException();
+            foreach(Character character in targets)
+            {
+                foreach(Number number in descriptionReplacementsInterface)
+                {
+                    this.owner.PerformDamageNumberAction(number,character);
+                }
+            }
         }
     }
 }

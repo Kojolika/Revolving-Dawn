@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d17351f08bd85445afe2bb8cb747fc4, type: 3}
   m_Name: Blue
   m_EditorClassIdentifier: 
-  type: 0
+  type: 1

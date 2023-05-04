@@ -11,8 +11,8 @@ namespace cards
     public abstract class SpecificCardSO : ScriptableObject
     {
 
-        [SerializeField] public Character owner; //character that plays this card
-        [SerializeField] ManaType[] _mana; //what mana this card uses to charge
+        public Character owner; //character that plays this card
+        public ManaType[] mana; //what mana this card uses to charge
         public new string name; //name of the card
         [SerializeField] string descriptionWithReplaceables; // description of what the card does, contains words that will be replaced by number values, edit this one
         [HideInInspector] public string description; //final description that is shown on the card after word replacements have been replaced, should not be edited by itself

@@ -13,19 +13,21 @@ MonoBehaviour:
   m_Name: Bash
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
-  _mana: 00000000
+  mana: 
   name: Bash
   descriptionWithReplaceables: Deal ATTACK1 damage
-  description: Deal 69 damage
+  description: Deal 6 damage
   artwork: {fileID: 21300000, guid: 43e72cc9bd51c4547bd8aeaa0d30abbb, type: 3}
   class: 0
   target: 1
-  targetManaCharged: 0
   descriptionReplacementsInterface:
-  - amount: 69
+  - amount: 6
     type: 1
   descriptionReplacements:
     keys:
     - ATTACK1
     values:
-    - 69
+    - amount: 6
+      type: 1
+  nextCardUpgrade: {fileID: 0}
+  previousCard: {fileID: 0}
