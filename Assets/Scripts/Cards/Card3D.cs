@@ -80,6 +80,8 @@ namespace cards
             if(_cardScriptableObject.Transform(direction) == null) return;
 
             _cardScriptableObject = _cardScriptableObject.Transform(direction);
+
+            RemoveSockets();
             PopulateFromData();
         }
         public bool BindMana(Mana3D manaBeingBound)
@@ -95,6 +97,7 @@ namespace cards
                     Transform socketTransform = manaSockets.transform.GetChild(index);
                     FitManaIntoSocket(manaBeingBound, socketTransform);
                     binded = true;
+                    manaInSockets[index] = manaBeingBound;
                     continue;
                 }
 
@@ -106,7 +109,7 @@ namespace cards
 
             void FitManaIntoSocket(Mana3D mana, Transform socket)
             {
-                mana.transform.SetParent(socket, true);
+                mana.transform.SetParent(socket, false);
                 mana.transform.localPosition = Vector3.zero;
                 mana.transform.localScale = new Vector3(.05f, .05f, .05f);
             }
@@ -125,6 +128,14 @@ namespace cards
             }
 
             return manaTypesToBeUnbound;
+        }
+
+        void RemoveSockets()
+        {
+            for(int index = 0; index < manaSockets.transform.childCount; index++)
+            {
+                Destroy(manaSockets.transform.GetChild(index).gameObject);
+            }
         }
     }
 }

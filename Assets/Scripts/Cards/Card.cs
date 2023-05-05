@@ -62,10 +62,10 @@ namespace cards
         Chain chain = new Chain();
         public void UpdateDescription(Character target) // need to move this to Card3D, CardUI
         {
-            foreach (Number number in numberValues)
+            for (int index = 0; index < numberValues.Count; index++)
             {
-                Number copy = number;
-                description = descriptionWithReplaceables.Replace("" + number.getType(), "" + chain.process(copy, owner, target).Amount);
+                Number copy = numberValues[index];
+                description = descriptionWithReplaceables.Replace(copy.getType().ToString().ToUpper() + (index + 1), "" + chain.process(copy, owner, target).Amount);
             }
         }
         void OnEnable()
