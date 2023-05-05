@@ -29,7 +29,7 @@ namespace fightInput
         public delegate void MouseEnterCardArea();
         public event MouseEnterCardArea OnMouseEnterCardArea;
 
-        public delegate void CardMouseOver(Card card);
+        public delegate void CardMouseOver(Card3D card);
         public event CardMouseOver OnCardMouseOver;
         public delegate void NoCardMouseOver();
         public event NoCardMouseOver OnNoCardMouseOver;
@@ -94,7 +94,7 @@ namespace fightInput
                 OnMouseEnterCardArea();
             }
         }
-        void TriggerCardMouseOver(Card card)
+        void TriggerCardMouseOver(Card3D card)
         {
             //Condition checks if any methods are subscribed to this event
             if (OnCardMouseOver != null)
@@ -145,7 +145,7 @@ namespace fightInput
 
         void MouseOver()
         {
-            Card currentCard = null;
+            Card3D currentCard = null;
             Mana3D currentMana = null;
             GameObject manaArea = null;
 
@@ -157,9 +157,9 @@ namespace fightInput
             {
                 RaycastHit hit = hits[i];
 
-                if (hit.transform.gameObject.GetComponent(typeof(Card)) && currentCard == null)
+                if (hit.transform.gameObject.GetComponent(typeof(Card3D)) && currentCard == null)
                 {
-                    currentCard = hit.transform.gameObject.GetComponent(typeof(Card)) as Card;
+                    currentCard = hit.transform.gameObject.GetComponent(typeof(Card3D)) as Card3D;
                     TriggerCardMouseOver(currentCard);
                 }
                 if (hit.transform.gameObject.GetComponent<Mana3D>())

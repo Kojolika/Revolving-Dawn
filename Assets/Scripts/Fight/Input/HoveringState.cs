@@ -9,11 +9,11 @@ namespace fightInput
     {
         ChangeStateTo changeStateTo = ChangeStateTo.Hovering;
         ManaPool manaPool;
-        Card currentCard;
+        Card3D currentCard;
         HoverManager hoverManager = null;
         bool rightClicked = false;
 
-        public HoveringState(Card card)
+        public HoveringState(Card3D card)
         {
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
             _input.OnRightClicked += RightClicked;
@@ -26,10 +26,10 @@ namespace fightInput
 
         public override PlayerInputState Transition()
         {
-            switch(changeStateTo)
+            switch (changeStateTo)
             {
                 case ChangeStateTo.Hovering:
-                    if(rightClicked) AddManaBackToPool();
+                    if (rightClicked) AddManaBackToPool();
                     rightClicked = false;
                     return this;
                 case ChangeStateTo.Default:
@@ -49,22 +49,24 @@ namespace fightInput
         }
         void LeftClicked() => changeStateTo = ChangeStateTo.Dragging;
         void NoCardMouseOver() => changeStateTo = ChangeStateTo.Default;
-        void CardMouseOver(Card card) => NewCardForHoverEffects(card);
-        
+        void CardMouseOver(Card3D card) => NewCardForHoverEffects(card);
+
         void AddManaBackToPool()
         {
-            if(!currentCard.isManaCharged) return;
+            //need to remake login for new idea of reducing cards
 
-            manaPool.StopAllCoroutines();
-            foreach(var mana in currentCard.UnBindAndReturnMana())
-            {
-                manaPool.AddMana(mana);
-            }
+            /*if(!currentCard.isManaCharged) return;
 
-            manaPool.StartCircularRotate();
-            rightClicked = false;
+                manaPool.StopAllCoroutines();
+                foreach(var mana in currentCard.UnBindAndReturnMana())
+                {
+                    manaPool.AddMana(mana);
+                }
+
+                manaPool.StartCircularRotate();
+                rightClicked = false; */
         }
-        void NewCardForHoverEffects(Card card)
+        void NewCardForHoverEffects(Card3D card)
         {
             if (currentCard == card) return;
             if (!hoverManager) hoverManager = _input.gameObject.AddComponent<HoverManager>();

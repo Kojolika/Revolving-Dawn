@@ -14,7 +14,7 @@ public class BuffProcessor : Processor
         {
             foreach(var affect in affects.list)
             {
-                if(affect.AffectType == AffectType.Buff && affect.WhichCharacterThisAffects)
+                if(affect.AffectType == AffectType.Buff && affect.AffectsOtherCharactersAbilities)
                 {
                     request = affect.process(request);
                 }
@@ -24,7 +24,7 @@ public class BuffProcessor : Processor
         {
             foreach(var affect in source_affects.list)
             {
-                if(affect.AffectType == AffectType.Buff && !affect.WhichCharacterThisAffects)
+                if(affect.AffectType == AffectType.Buff && !affect.AffectsOtherCharactersAbilities)
                 {
                     request = affect.process(request);
                 }

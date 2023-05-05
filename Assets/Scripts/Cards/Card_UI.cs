@@ -8,7 +8,7 @@ namespace cards
 {
     public class Card_UI : MonoBehaviour
     {
-        public Card card;
+/*         public Card3D card;
         public List<(ManaType, Mana3D)> ManaOfSockets { get; set;}
         public GameObject sockets;
         public GameObject border;
@@ -16,7 +16,7 @@ namespace cards
         public TextMeshProUGUI nameText;
         public TextMeshProUGUI descriptionText;
 
-        public void LoadInfo(Card card)
+        public void LoadInfo(Card3D card)
         {
             this.card = card;
             border.GetComponent<Image>().sprite = card.border.GetComponent<SpriteRenderer>().sprite;
@@ -50,6 +50,6 @@ namespace cards
 
             }
             card.gameObject.SetActive(false);
-        }
+        } */
     }
 }

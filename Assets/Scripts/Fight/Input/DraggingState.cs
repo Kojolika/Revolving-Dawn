@@ -6,11 +6,11 @@ namespace fightInput
     public class DraggingState : PlayerInputState
     {
         ChangeStateTo changeStateTo = ChangeStateTo.Dragging;
-        Card currentCard = null;
+        Card3D currentCard = null;
         Dragger newDragger;
 
 
-        public DraggingState(Card card)
+        public DraggingState(Card3D card)
         {
             if (currentCard == card) return;
 

@@ -12,7 +12,7 @@ public class DeBuffProcessor : Processor
         {
             foreach(var affect in affects.list)
             {
-                if(affect.AffectType == AffectType.Debuff && affect.WhichCharacterThisAffects)
+                if(affect.AffectType == AffectType.Debuff && affect.AffectsOtherCharactersAbilities)
                 {
                     request = affect.process(request);
                 }
@@ -22,7 +22,7 @@ public class DeBuffProcessor : Processor
         {
             foreach(var affect in source_affects.list)
             {
-                if(affect.AffectType == AffectType.Debuff && !affect.WhichCharacterThisAffects)
+                if(affect.AffectType == AffectType.Debuff && !affect.AffectsOtherCharactersAbilities)
                 {
                     request = affect.process(request);
                 }

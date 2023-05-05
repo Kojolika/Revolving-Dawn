@@ -9,7 +9,7 @@ namespace fightInput
         ChangeStateTo changeStateTo = ChangeStateTo.ManaDragging;
         ManaPool manaPool;
         Mana3D manaBeingDragged;
-        Card cardBeingMousedOver;
+        Card3D cardBeingMousedOver;
 
         public ManaDraggingState(Mana3D mana)
         {
@@ -40,7 +40,7 @@ namespace fightInput
 
         void StopDraggingMana()
         {
-            if(manaBeingDragged.TryGetComponent<Dragger>(out Dragger dragger))
+            if (manaBeingDragged.TryGetComponent<Dragger>(out Dragger dragger))
             {
                 dragger.StopDragging();
                 GameObject.Destroy(dragger);
@@ -54,12 +54,12 @@ namespace fightInput
 
         void LeftClicked()
         {
-            if(cardBeingMousedOver)
+            if (cardBeingMousedOver)
             {
-                TryBindManaToCard(manaBeingDragged,cardBeingMousedOver);
+                TryBindManaToCard(manaBeingDragged, cardBeingMousedOver);
             }
         }
-        void MouseOverCard(Card card)
+        void MouseOverCard(Card3D card)
         {
             cardBeingMousedOver = card;
         }
@@ -68,31 +68,22 @@ namespace fightInput
             cardBeingMousedOver = null;
         }
 
-        void TryBindManaToCard(Mana3D mana, Card card)
+        void TryBindManaToCard(Mana3D mana, Card3D card)
         {
-            bool bindable = false;
-            foreach(var manaType in card.ManaOfSockets)
+            if (card.BindMana(mana))
             {
-                //!manaType.Value means the socket has not been binded to a mana gem
-                if(manaType.Item1 == mana.type)
-                {
-                    bindable = true;
-                    manaPool.StopAllCoroutines();
-                    manaPool.RemoveMana(manaBeingDragged);
-                    StopDraggingMana();
+                manaPool.StopAllCoroutines();
+                manaPool.RemoveMana(manaBeingDragged);
+                StopDraggingMana();
 
-                    card.BindMana(manaBeingDragged);
+                changeStateTo = ChangeStateTo.Hovering;
 
-                    changeStateTo = ChangeStateTo.Hovering;
-                    
-                    break;
-                }
+                return;
             }
-            if(!bindable)
+            else
             {
                 Debug.Log("Invalid mana type");
             }
-
         }
 
         public override void Exit()

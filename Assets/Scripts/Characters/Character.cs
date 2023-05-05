@@ -23,7 +23,7 @@ namespace characters
             healthDisplay.transform.localPosition = healthbarPosition;
         }
 
-        public void PerformDamageNumberAction(fightDamageCalc.Number number, Character target)
+        public void PerformNumberAction(fightDamageCalc.Number number, Character target)
         {
             fightDamageCalc.Chain chain = new fightDamageCalc.Chain();
             float finalAmount = chain.process(number, this, target).Amount;

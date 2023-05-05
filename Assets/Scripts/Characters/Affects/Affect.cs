@@ -9,7 +9,7 @@ namespace characters
         //flag; 
         //false: buff affects self abilities
         //true: buff affects abilities others target at self
-        public abstract bool WhichCharacterThisAffects {get; set;} 
+        public abstract bool AffectsOtherCharactersAbilities {get; set;} 
         public abstract void Apply(Character target);
         public abstract Tuple<TurnTime,Int16> WhenStackLossAndAmount {get; set;}
         public abstract TurnTime WhenAffectTriggers { get; set; }
@@ -17,7 +17,8 @@ namespace characters
         public abstract FightInfo.NumberType NumberType { get; set; }
         public abstract AffectType AffectType { get; set; }
         public abstract bool IsStackable {get; set;}
-
+        public abstract Number[] NumbersAffected {get; set;}
+    
         public virtual Number process(Number request)
         {
             return request;

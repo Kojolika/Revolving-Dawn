@@ -23,13 +23,14 @@ namespace characters
             count = amount;
         }
         
-        public override bool WhichCharacterThisAffects { get => whichCharacterThisAffects; set => whichCharacterThisAffects = value; }
+        public override bool AffectsOtherCharactersAbilities { get => whichCharacterThisAffects; set => whichCharacterThisAffects = value; }
         public override bool IsStackable { get => isStackable; set => isStackable = value;}
         public override TurnTime WhenAffectTriggers { get => whenAffectTriggers;set => whenAffectTriggers = value; }
         public override int StackSize { get => count; set => count = value; }
         public override FightInfo.NumberType NumberType { get => numberType; set => numberType = value;}
         public override AffectType AffectType { get => affectType; set => affectType = value; }
         public override Tuple<TurnTime,Int16> WhenStackLossAndAmount { get => whenStackLoss; set => whenStackLoss = value; }
+        public override Number[] NumbersAffected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public override void Apply(Character target)
         {

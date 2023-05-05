@@ -11,6 +11,7 @@ namespace fight
 {
     public class CardHandManager : MonoBehaviour
     {
+        [SerializeField] Card3D cardPrefab;
         GameObject cardHandGO;
         internal BezierCurve curve;
         GameObject cardSpawner;
@@ -41,10 +42,10 @@ namespace fight
                 OnHandUpdating(isUpdating);
             }
         }
-        public delegate void CardPlayed(Card card, List<Character> targets);
+        public delegate void CardPlayed(Card3D card, List<Character> targets);
         public event CardPlayed OnCardPlayed;
 
-        public void TriggerPlayCard(Card card, List<Character> targets)
+        public void TriggerPlayCard(Card3D card, List<Character> targets)
         {
             if (OnCardPlayed != null)
             {
@@ -64,26 +65,24 @@ namespace fight
             movementCoroutines = new List<IEnumerator>();
         }
 
-        public void Initialize(BezierCurve curve, GameObject cardSpawner, GameObject cardDiscarder, GameObject cardHandGO, Player player)
+        public void Initialize(BezierCurve curve, GameObject cardSpawner, GameObject cardDiscarder, GameObject cardHandGO, Player player, Card3D cardPrefab)
         {
             this.curve = curve;
             this.cardSpawner = cardSpawner;
             this.cardDiscarder = cardDiscarder;
             this.cardHandGO = cardHandGO;
             this.player = player;
+            this.cardPrefab = cardPrefab;
 
             List<Card> playerDeck = this.player.GetComponent<TestDeck>().deck;
             PlayerCardDecks.Deck = new ObservableCollection<Card>(playerDeck);
-            PlayerCardDecks.InstantiatedDeck = new ObservableCollection<Card>();
+            PlayerCardDecks.InstantiatedDeck = new ObservableCollection<Card3D>();
             foreach (Card card in playerDeck)
             {
-                //PlayerCardDecks.Deck.Add(card);
-                var instantiatedCard = Instantiate(card,
-                            this.cardSpawner.transform.position,
-                            card.transform.rotation,
-                            this.cardHandGO.transform
-                        );
-                instantiatedCard.currentPlayer = this.player;
+                var instantiatedCard = Instantiate(cardPrefab,this.cardHandGO.transform);
+                instantiatedCard.transform.position = this.cardSpawner.transform.position;
+                instantiatedCard.CardScriptableObject = card;
+                instantiatedCard.Owner = this.player;
                 PlayerCardDecks.InstantiatedDeck.Add(instantiatedCard);
                 instantiatedCard.gameObject.SetActive(false);
             }
@@ -93,19 +92,19 @@ namespace fight
 
             //These decks are only used during combat
             //Thus are created when Player is loaded into a fight
-            PlayerCardDecks.Hand = new ObservableCollection<Card>();
-            PlayerCardDecks.Discard = new ObservableCollection<Card>();
-            PlayerCardDecks.Lost = new ObservableCollection<Card>();
+            PlayerCardDecks.Hand = new ObservableCollection<Card3D>();
+            PlayerCardDecks.Discard = new ObservableCollection<Card3D>();
+            PlayerCardDecks.Lost = new ObservableCollection<Card3D>();
         }
 
-        void CardPlayedEffects(Card cardBeingPlayed, List<Character> targets)
+        void CardPlayedEffects(Card3D cardBeingPlayed, List<Character> targets)
         {
             var hand = PlayerCardDecks.Hand;
 
             //Remove the card from the hand, add it to the discard pile
             //Add effects for playing the card here in the future
             //Possible add new event subscribres for visual effects?
-            foreach (Card card in hand)
+            foreach (Card3D card in hand)
             {
                 if (card != cardBeingPlayed) continue;
 
@@ -118,7 +117,7 @@ namespace fight
             CreateHand();
         }
 
-        void DiscardCard(Card card)
+        void DiscardCard(Card3D card)
         {
             PlayerCardDecks.Hand.Remove(card);
             PlayerCardDecks.Discard.Add(card);
@@ -192,7 +191,7 @@ namespace fight
             CreateHand();
         }
 
-        void Shuffle(ObservableCollection<Card> deckToShuffle)
+        void Shuffle(ObservableCollection<Card3D> deckToShuffle)
         {
             var rng = new System.Random();
             int size = deckToShuffle.Count;
@@ -200,7 +199,7 @@ namespace fight
             {
                 size--;
                 int k = rng.Next(size + 1);
-                Card value = deckToShuffle[k];
+                Card3D value = deckToShuffle[k];
                 deckToShuffle[k] = deckToShuffle[size];
                 deckToShuffle[size] = value;
             }
@@ -237,7 +236,7 @@ namespace fight
             //Send event that the hand is no longer being updated
             TriggerHandUpdating(false);
         }
-        public IEnumerator MoveCardCoroutine(Card card, Vector3 newPosition, float cardRotation, float speed)
+        public IEnumerator MoveCardCoroutine(Card3D card, Vector3 newPosition, float cardRotation, float speed)
         {
             var hand = PlayerCardDecks.Hand;
 

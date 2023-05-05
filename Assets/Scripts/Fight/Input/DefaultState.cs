@@ -8,7 +8,7 @@ namespace fightInput
     {
 
         ChangeStateTo changeStateTo = ChangeStateTo.Default;
-        Card currentCard = null;
+        Card3D currentCard = null;
         ManaPool manaPool;
 
         public DefaultState()
@@ -38,7 +38,7 @@ namespace fightInput
             }
             return this;
         }
-        void CardMouseOver(Card card)
+        void CardMouseOver(Card3D card)
         {
             changeStateTo = ChangeStateTo.Hovering;
             currentCard = card;

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfbd5cef8cd966341b2ecd519a06c743, type: 3}
+  m_Name: Bash
+  m_EditorClassIdentifier: 
+  owner: {fileID: 0}
+  mana: 00000000
+  name: Bash
+  descriptionWithReplaceables: Deal ATTACK1 damage
+  description: Deal 6 damage
+  artwork: {fileID: 21300000, guid: 43e72cc9bd51c4547bd8aeaa0d30abbb, type: 3}
+  class: 0
+  target: 1
+  descriptionReplacementsInterface:
+  - amount: 6
+    type: 1
+  descriptionReplacements:
+    keys:
+    - ATTACK1
+    values:
+    - amount: 6
+      type: 1
+  nextCardUpgrade: {fileID: 0}
+  previousCard: {fileID: 0}

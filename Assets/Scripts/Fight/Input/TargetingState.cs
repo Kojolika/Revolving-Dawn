@@ -11,7 +11,7 @@ namespace fightInput
     {
         ChangeStateTo changeStateTo = ChangeStateTo.Targeting;
 
-        Card currentCard;
+        Card3D currentCard;
         Enemy previousEnemy = null;
         Dragger dragger;
         TargetingArrow targetingArrow;
@@ -21,7 +21,7 @@ namespace fightInput
         FightManager fightManager = _input.GetComponent<FightManager>();
         CardHandManager cardMovementManager = _input.GetComponent<CardHandManager>();
 
-        public TargetingState(Card card)
+        public TargetingState(Card3D card)
         {
             currentCard = card;
 
@@ -146,6 +146,8 @@ namespace fightInput
                     enemy.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
                     targets.Add(enemy);
                     previousEnemy = enemy;
+
+                    currentCard.CardScriptableObject.UpdateDescription(enemy);
 
                     //targetingArrow.ChangeColor(Resources.Load<Material>("Arrow_Red"));
                 }

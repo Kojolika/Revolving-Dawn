@@ -1,32 +1,13 @@
 using System.Collections.Generic;
-using UnityEngine;
 using characters;
+using UnityEngine;
 using fightDamageCalc;
 
 namespace cards
 {
+    [CreateAssetMenu(fileName = "Bash", menuName = "Cards/Warrior/Bash")]
     public class Bash : Card
     {
-        [SerializeField] float damage = 6;
-        public override void Play(List<Character> targets)
-        {
-            if (isManaCharged)
-            {
-                //Play powerful effect
-            }
-            else
-            {
-                //Play regular effect
-                foreach (var target in targets)
-                {
-                    currentPlayer.PerformDamageNumberAction(new Number(damage, FightInfo.NumberType.Attack), target);
-                }
-            }
-        }
 
-        public override void UpdateDiscriptionText()
-        {
-            descriptionText.text = descriptionText.text.Replace("DAMAGE", "" + damage);
-        }
     }
 }

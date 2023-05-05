@@ -6,7 +6,7 @@ namespace fight
 {
     internal class HoverManager : MonoBehaviour
     {
-        public Card currentCard;
+        public Card3D currentCard;
         CardHandManager _cardHandMovementManager;
         public Camera cardCam;
 
@@ -14,7 +14,7 @@ namespace fight
         const float MOVE_SPEED_HOVER = 8f;
         public const float MOVE_SPEED_RESET = 35f;
 
-        public void Initialize(CardHandManager CHMM, Card card){
+        public void Initialize(CardHandManager CHMM, Card3D card){
             currentCard = card;
             _cardHandMovementManager = CHMM;
         }

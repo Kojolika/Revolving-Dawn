@@ -15,6 +15,7 @@ namespace fight
         [SerializeField] bool playerTurn;
         Player currentPlayer;
         [SerializeField] Player player;
+        [SerializeField] Card3D cardPrefab;
         [SerializeField] List<Enemy> enemies = new List<Enemy>();
         public List<Enemy> currentEnemies = new List<Enemy>();
         [SerializeField] GameObject playerSpawnpoint;
@@ -83,7 +84,8 @@ namespace fight
                 cardsCamAndGameArea.GetComponentInChildren<CardSpawner>().gameObject, 
                 cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject,
                 cardsCamAndGameArea.GetComponentInChildren<Hand>().gameObject,
-                currentPlayer
+                currentPlayer,
+                cardPrefab
                 );
             _cardHandManager.OnCardPlayed += CardPlayed;
             
@@ -270,7 +272,7 @@ namespace fight
             return currentPlayer;
         }
 
-        void CardPlayed(Card card, List<Character> targets)
+        void CardPlayed(Card3D card, List<Character> targets)
         {
             UpdateTargetsHealth(targets);
         }

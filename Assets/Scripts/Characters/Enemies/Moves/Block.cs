@@ -21,7 +21,7 @@ public class Block : Move {
         {
             foreach(var target in targets)
             {
-                enemyUsingMove.PerformDamageNumberAction(new fightDamageCalc.Number(blockAmount,fightDamageCalc.FightInfo.NumberType.Block),target);
+                enemyUsingMove.PerformNumberAction(new fightDamageCalc.Number(blockAmount,fightDamageCalc.FightInfo.NumberType.Block),target);
             }
         }
     }

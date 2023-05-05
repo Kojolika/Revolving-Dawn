@@ -6,7 +6,7 @@ using cards;
 //
 // http://answers.unity.com/answers/1678113/view.html
 //
-[CustomEditor(typeof(SpecificCardSO),true)]
+[CustomEditor(typeof(Card),true)]
 public class CardEditor : Editor
 {
 }

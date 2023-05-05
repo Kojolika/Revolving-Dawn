@@ -406,13 +406,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20d14ddfed73c3e40a9b162a34836904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardScriptableObject: {fileID: 11400000, guid: 549affe624a391f47b1bf71b64835200, type: 2}
+  cardScriptableObject: {fileID: 0}
   name: {fileID: 970609177719862540}
   description: {fileID: 970609178354331060}
   artwork: {fileID: 6387026659447049282}
   border: {fileID: 6474699805467113856}
   manaSockets: {fileID: 6283060038093202200}
-  socket: {fileID: 6443997262810385451, guid: 145a565acefd026458a1a7834beb554b, type: 3}
+  socketPrefab: {fileID: 6443997262810385451, guid: 145a565acefd026458a1a7834beb554b, type: 3}
+  manaInSockets: []
 --- !u!1 &6283060038093202200
 GameObject:
   m_ObjectHideFlags: 0

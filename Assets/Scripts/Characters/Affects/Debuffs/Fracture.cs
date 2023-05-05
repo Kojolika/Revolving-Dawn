@@ -26,7 +26,7 @@ namespace characters
             count = amount;
         }
 
-        public override bool WhichCharacterThisAffects { get => whichCharacterThisAffects; set => whichCharacterThisAffects = value; }
+        public override bool AffectsOtherCharactersAbilities { get => whichCharacterThisAffects; set => whichCharacterThisAffects = value; }
         public override bool IsStackable
         { 
             get => isStackable;
@@ -58,6 +58,7 @@ namespace characters
             get => whenStackLoss; 
             set => whenStackLoss = value;
         }
+        public override Number[] NumbersAffected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public override void Apply(Character target)
         {
