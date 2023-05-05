@@ -77,7 +77,9 @@ namespace cards
         //           false is backwards transform
         public void Transform(bool direction)
         {
-            _cardScriptableObject = _cardScriptableObject.Transform(direction) == null ? _cardScriptableObject : _cardScriptableObject.Transform(direction);
+            if(_cardScriptableObject.Transform(direction) == null) return;
+
+            _cardScriptableObject = _cardScriptableObject.Transform(direction);
             PopulateFromData();
         }
         public bool BindMana(Mana3D manaBeingBound)

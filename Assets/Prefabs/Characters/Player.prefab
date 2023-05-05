@@ -65,11 +65,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c52141a4ba9fdd042a901d79b91e82a5, type: 2}
   - {fileID: 11400000, guid: 549affe624a391f47b1bf71b64835200, type: 2}
   - {fileID: 11400000, guid: c52141a4ba9fdd042a901d79b91e82a5, type: 2}
-  - {fileID: 11400000, guid: 549affe624a391f47b1bf71b64835200, type: 2}
+  - {fileID: 11400000, guid: c52141a4ba9fdd042a901d79b91e82a5, type: 2}
+  - {fileID: 11400000, guid: c52141a4ba9fdd042a901d79b91e82a5, type: 2}
   - {fileID: 11400000, guid: c52141a4ba9fdd042a901d79b91e82a5, type: 2}
   - {fileID: 11400000, guid: 549affe624a391f47b1bf71b64835200, type: 2}
   - {fileID: 11400000, guid: 549affe624a391f47b1bf71b64835200, type: 2}
-  - {fileID: 11400000, guid: c52141a4ba9fdd042a901d79b91e82a5, type: 2}
   - {fileID: 11400000, guid: 549affe624a391f47b1bf71b64835200, type: 2}
 --- !u!1 &9206561498931515453
 GameObject:

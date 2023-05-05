@@ -77,7 +77,6 @@
      <Compile Include="Assets\Scripts\UI\DeckViewerCloseButton.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Attack.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\TargetingState.cs" />
-     <Compile Include="Assets\Scripts\Cards\Warrior\Defend.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\AffectIcons.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\DefaultState.cs" />
      <Compile Include="Assets\Scripts\Fight\Mover.cs" />
@@ -109,7 +108,6 @@
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\RoundingProcessor.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\DraggingState.cs" />
-     <Compile Include="Assets\Scripts\Cards\Warrior\Bash.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
      <Compile Include="Assets\Scripts\UI\DeckViewerButton.cs" />

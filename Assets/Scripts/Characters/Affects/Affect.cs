@@ -1,9 +1,9 @@
 using System;
-using UnityEngine;
 using fightDamageCalc;
 
 namespace characters
 {
+    [Serializable]
     public abstract class Affect
     {
         //flag; 

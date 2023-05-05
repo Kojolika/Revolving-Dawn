@@ -9,25 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bc2e214c65385947af7a8c170cd55d4, type: 3}
+  m_Script: {fileID: 11500000, guid: a9c696df5fbceba4aa31b00a9d911a91, type: 3}
   m_Name: Defend
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
-  mana: 01000000
+  mana: 
   name: Defend
   descriptionWithReplaceables: Gain BLOCK1 block
   description: Gain 5 block
   artwork: {fileID: 21300000, guid: 4024798ef8e3da84f96ea6b0774e6ebb, type: 3}
   class: 0
   target: 0
-  descriptionReplacementsInterface:
-  - amount: 5
-    type: 2
-  descriptionReplacements:
-    keys:
-    - BLOCK1
-    values:
-    - amount: 5
-      type: 2
+  numberValues: []
   nextCardUpgrade: {fileID: 0}
   previousCard: {fileID: 0}

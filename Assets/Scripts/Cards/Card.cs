@@ -7,7 +7,8 @@ using fightDamageCalc;
 
 namespace cards
 {
-    public abstract class Card : ScriptableObject
+    [CreateAssetMenu(fileName = "New Card", menuName = "Cards/New Card")]
+    public class Card : ScriptableObject
     {
         public Character owner; //character that plays this card
         public ManaType[] mana; //what mana this card uses to charge
@@ -22,18 +23,16 @@ namespace cards
         {
             foreach (Character character in targets)
             {
-                foreach (Number number in descriptionReplacementsInterface)
+                foreach (Number number in numberValues)
                 {
                     this.owner.PerformNumberAction(number, character);
                 }
             }
-        } 
+        }
         [Space(20)]
-        [SerializeField] protected List<Number> descriptionReplacementsInterface = new List<Number>();
-        //key is the text to be replaced in the description, value is the replacement
-        [SerializeField] protected SerializableDictionary<string, Number> descriptionReplacements = new SerializableDictionary<string, Number>();
-
-        [SerializeField] protected Card nextCardUpgrade;
+        [SerializeField] protected List<Number> numberValues = new List<Number>();
+        [SerializeField] protected List<Affect> affectValues = new List<Affect>();
+        [SerializeField] protected Card nextCardUpgrade = null;
         [SerializeField] protected Card previousCard = null;
 
         //true means transform to next card, false is transform to previous card
@@ -41,32 +40,44 @@ namespace cards
         {
             if (direction)
             {
-                nextCardUpgrade.previousCard = this;
+                if (nextCardUpgrade != null)
+                {
+                    nextCardUpgrade.previousCard = this;
+                    nextCardUpgrade.owner = this.owner;
+                    nextCardUpgrade.UpdateDescription(null);
+                }
                 return nextCardUpgrade;
             }
             else
             {
-                previousCard.nextCardUpgrade = this;
+                if (previousCard != null)
+                {
+                    previousCard.nextCardUpgrade = this;
+                    previousCard.owner = this.owner;
+                    previousCard.UpdateDescription(null);
+                }
                 return previousCard;
             }
         }
         Chain chain = new Chain();
-        public void UpdateDescription(Character target)
+        public void UpdateDescription(Character target) // need to move this to Card3D, CardUI
         {
-            foreach (KeyValuePair<string, Number> entry in descriptionReplacements)
+            foreach (Number number in numberValues)
             {
-                Number copy = entry.Value;
-                description = descriptionWithReplaceables.Replace("" + entry.Key, "" + chain.process(copy, owner, target).Amount);
+                Number copy = number;
+                description = descriptionWithReplaceables.Replace("" + number.getType(), "" + chain.process(copy, owner, target).Amount);
             }
         }
         void OnEnable()
         {
-            descriptionReplacements.Clear();
-            for (int index = 0; index < descriptionReplacementsInterface.Count; index++)
-            {
-                descriptionReplacements.Add(descriptionReplacementsInterface[index].getType().ToString().ToUpper() + "" + (index + 1), descriptionReplacementsInterface[index]);
-            }
             UpdateDescription(null);
+
+            //If there is no next upgrade, there can not be any mana for an upgrade
+            if (nextCardUpgrade == null)
+            {
+                mana = new ManaType[] { };
+                Debug.LogWarning("Cannot add mana to a card that has no upgrade");
+            }
         }
     }
 }
