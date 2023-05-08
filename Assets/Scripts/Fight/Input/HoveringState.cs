@@ -18,8 +18,8 @@ namespace fightInput
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
             _input.OnRightClicked += RightClicked;
             _input.OnLeftClicked += LeftClicked;
-            _input.OnNoCardMouseOver += NoCardMouseOver;
-            _input.OnCardMouseOver += CardMouseOver;
+            _input.OnCardMouseExit += NoCardMouseOver;
+            _input.OnCardMouseEnter += CardMouseOver;
 
             NewCardForHoverEffects(card);
         }
@@ -48,7 +48,7 @@ namespace fightInput
             changeStateTo = ChangeStateTo.Hovering;
         }
         void LeftClicked() => changeStateTo = ChangeStateTo.Dragging;
-        void NoCardMouseOver() => changeStateTo = ChangeStateTo.Default;
+        void NoCardMouseOver(Card3D card) => changeStateTo = ChangeStateTo.Default;
         void CardMouseOver(Card3D card) => NewCardForHoverEffects(card);
 
         void AddManaBackToPool()
@@ -82,8 +82,8 @@ namespace fightInput
             hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
             _input.OnRightClicked -= RightClicked;
             _input.OnLeftClicked -= LeftClicked;
-            _input.OnNoCardMouseOver -= NoCardMouseOver;
-            _input.OnCardMouseOver -= CardMouseOver;
+            _input.OnCardMouseExit -= NoCardMouseOver;
+            _input.OnCardMouseEnter -= CardMouseOver;
 
             GameObject.Destroy(hoverManager);
         }

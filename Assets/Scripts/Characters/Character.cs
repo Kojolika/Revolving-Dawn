@@ -51,9 +51,14 @@ namespace characters
                 newAffects.AddAffect(affect);
             }
         }
-        public virtual void Start()
+        public virtual void Awake()
         {
+            fight.FightEvents.OnFightStarted += OnFightStart;
             CastShadows();
+        }
+        void OnDisable()
+        {
+            fight.FightEvents.OnFightStarted -= OnFightStart;
         }
 
         //turns on shadow casting for character sprites
@@ -62,11 +67,17 @@ namespace characters
             this.gameObject.AddComponent<TurnOnShadows>();
         }
 
-        void OnMouseEnter() {
-            Debug.Log("mousing over character");
-        }
-        void OnMouseExit() {
-            Debug.Log("not mousing over character");
+        void OnFightStart()
+        {
+            this.transform.LookAt(this.transform.position + Camera.main.transform.forward);
+            this.transform.SetParent(Characters.staticInstance.transform);
+
+            this.healthDisplay = Instantiate(Resources.Load<HealthDisplay>("Healthbar"), this.transform);
+            this.InitializeHealth();
+
+            Targeting_Border targetingBorder = this.gameObject.AddComponent<Targeting_Border>();
+            targetingBorder.border = Instantiate(Resources.Load<GameObject>("Targeting_Border"), this.transform);
+            targetingBorder.border.transform.localPosition = this.targetingBorderPosition;
         }
     }
 }

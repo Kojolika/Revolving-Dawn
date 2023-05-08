@@ -57,9 +57,9 @@ namespace characters
                 if (a.WhenAffectTriggers == TurnTime.StartOfTurn)
                     a.Apply(this.GetComponent<Character>());
 
-                if (a.WhenStackLossAndAmount.Item1 == TurnTime.StartOfTurn)
+                if (a.WhenStackLoss == TurnTime.StartOfTurn)
                 {
-                    a.StackSize -= a.WhenStackLossAndAmount.Item2;
+                    a.StackSize -= a.StackLostAmount;
                     if(a.StackSize <= 0) temp.Add(a);
                     iconHolder.UpdateAffectIcon(a);
                 }
@@ -79,9 +79,9 @@ namespace characters
                 if (a.WhenAffectTriggers == TurnTime.EndOfTurn)
                     a.Apply(this.GetComponent<Character>());
 
-                if (a.WhenStackLossAndAmount.Item1 == TurnTime.EndOfTurn)
+                if (a.WhenStackLoss == TurnTime.EndOfTurn)
                 {
-                    a.StackSize -= a.WhenStackLossAndAmount.Item2;
+                    a.StackSize -= a.StackLostAmount;
                     if(a.StackSize <= 0) temp.Add(a);
                     iconHolder.UpdateAffectIcon(a);
                 }

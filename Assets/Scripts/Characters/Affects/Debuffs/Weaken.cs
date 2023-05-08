@@ -6,7 +6,8 @@ namespace characters
     public class Weaken : Affect
     {
         bool whichCharacterThisAffects = false;
-        Tuple<TurnTime, Int16> whenStackLoss = new Tuple<TurnTime, Int16>(TurnTime.EndOfTurn, 1);
+        TurnTime whenStackLoss = TurnTime.EndOfTurn;
+        int stackLostAmount = 1;
         TurnTime whenAffectTriggers = TurnTime.Passive;
         FightInfo.NumberType numberType = FightInfo.NumberType.Attack;
         AffectType affectType = AffectType.Debuff;
@@ -15,7 +16,7 @@ namespace characters
         bool isStackable = true;
 
         //Number of affect stacks to be applied
-        int count;
+        int count = 2;
 
         //30%
         float weakenAmount = .7f;
@@ -26,9 +27,10 @@ namespace characters
         public override int StackSize { get => count; set => count = value; }
         public override FightInfo.NumberType NumberType { get => numberType; set => numberType = value; }
         public override AffectType AffectType { get => affectType; set => affectType = value; }
-        public override Tuple<TurnTime,Int16> WhenStackLossAndAmount { get => whenStackLoss; set => whenStackLoss = value; }
         public override bool AffectsOtherCharactersAbilities { get => whichCharacterThisAffects; set => whichCharacterThisAffects = value; }
         public override Number[] NumbersAffected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override TurnTime WhenStackLoss { get => whenStackLoss; set => whenStackLoss = value; }
+        public override int StackLostAmount { get => stackLostAmount; set => stackLostAmount = value; }
 
         public override void Apply(Character target)
         {

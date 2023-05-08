@@ -22,16 +22,12 @@ namespace characters
         public override Vector3 targetingBorderPosition { get => _targetingBorderPosition; set => _targetingBorderPosition = value; }
         public override Vector3 healthbarPosition { get => _healthBarPosition; set => _healthBarPosition = value; }
 
-        void Awake()
-        {
-            this.gameObject.AddComponent<TurnOnShadows>();
-        }
 
         public override void InitializeHealth()
         {
             base.InitializeHealth();
         }
-        public void GetInputState(PlayerInputState state) => this.state = state;
+        public void SetInputState(PlayerInputState state) => this.state = state;
         void HandleInput()
         {
             if (state == null) return;

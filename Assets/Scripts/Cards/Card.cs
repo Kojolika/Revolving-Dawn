@@ -13,8 +13,7 @@ namespace cards
         public Character owner; //character that plays this card
         public ManaType[] mana; //what mana this card uses to charge
         public new string name; //name of the card
-        [SerializeField] string descriptionWithReplaceables; // description of what the card does, contains words that will be replaced by number values, edit this one
-        [HideInInspector] public string description; //final description that is shown on the card after word replacements have been replaced, should not be edited by itself
+        [SerializeField] public string descriptionWithReplaceables; // description of what the card does, contains words that will be replaced by number values, edit this one
         public Sprite artwork; //card art
         public PlayerClass @class = PlayerClass.Classless; //class of the card
         public Targeting target;   //who the card targets
@@ -27,10 +26,15 @@ namespace cards
                 {
                     this.owner.PerformNumberAction(number, character);
                 }
+
+                foreach(Affect affect in affectValues)
+                {
+                    this.owner.PerformAffectAction(affect, character);
+                }
             }
         }
         [Space(20)]
-        [SerializeField] protected List<Number> numberValues = new List<Number>();
+        [SerializeField] public List<Number> numberValues = new List<Number>();
         [SerializeField] protected List<Affect> affectValues = new List<Affect>();
         [SerializeField] protected Card nextCardUpgrade = null;
         [SerializeField] protected Card previousCard = null;
@@ -44,7 +48,6 @@ namespace cards
                 {
                     nextCardUpgrade.previousCard = this;
                     nextCardUpgrade.owner = this.owner;
-                    nextCardUpgrade.UpdateDescription(null);
                 }
                 return nextCardUpgrade;
             }
@@ -54,25 +57,14 @@ namespace cards
                 {
                     previousCard.nextCardUpgrade = this;
                     previousCard.owner = this.owner;
-                    previousCard.UpdateDescription(null);
                 }
                 return previousCard;
             }
         }
-        Chain chain = new Chain();
-        public void UpdateDescription(Character target) // need to move this to Card3D, CardUI
-        {
-            for (int index = 0; index < numberValues.Count; index++)
-            {
-                Number copy = numberValues[index];
-                description = descriptionWithReplaceables.Replace(copy.getType().ToString().ToUpper() + (index + 1), "" + chain.process(copy, owner, target).Amount);
-            }
-        }
+
         void OnEnable()
         {
-            UpdateDescription(null);
-
-            //If there is no next upgrade, there can not be any mana for an upgrade
+            //If there is no next upgrade, there must not be any mana for an upgrade
             if (nextCardUpgrade == null)
             {
                 mana = new ManaType[] { };

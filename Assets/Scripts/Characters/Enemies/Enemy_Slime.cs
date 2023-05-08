@@ -48,10 +48,9 @@ namespace characters
             moves.Add(special1);
 
         }
-        public override void Start()
+        public void Start()
         {
             LoadMoves();
-            base.Start();
         }
     }
 }

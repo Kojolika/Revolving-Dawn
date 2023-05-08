@@ -29,10 +29,10 @@ namespace fightInput
         public delegate void MouseEnterCardArea();
         public event MouseEnterCardArea OnMouseEnterCardArea;
 
-        public delegate void CardMouseOver(Card3D card);
-        public event CardMouseOver OnCardMouseOver;
-        public delegate void NoCardMouseOver();
-        public event NoCardMouseOver OnNoCardMouseOver;
+        public delegate void CardMouseEnter(Card3D card);
+        public event CardMouseEnter OnCardMouseEnter;
+        public delegate void CardMouseExit(Card3D card);
+        public event CardMouseExit OnCardMouseExit;
 
         public delegate void LeftClicked();
         public event LeftClicked OnLeftClicked;
@@ -94,12 +94,12 @@ namespace fightInput
                 OnMouseEnterCardArea();
             }
         }
-        void TriggerCardMouseOver(Card3D card)
+        void TriggerMouseOverCard(Card3D card)
         {
             //Condition checks if any methods are subscribed to this event
-            if (OnCardMouseOver != null)
+            if (OnCardMouseEnter != null)
             {
-                OnCardMouseOver(card);
+                OnCardMouseEnter(card);
             }
         }
         void TriggerEnemyMouseOver(Enemy enemy)
@@ -110,12 +110,12 @@ namespace fightInput
             }
         }
 
-        void TriggerNoCardMouseOver()
+        void TriggerOnCardMouseExit(Card3D card)
         {
             //Condition checks if any methods are subscribed to this event
-            if (OnNoCardMouseOver != null)
+            if (OnCardMouseExit != null)
             {
-                OnNoCardMouseOver();
+                OnCardMouseExit(card);
             }
         }
         void TriggerLeftClicked()
@@ -145,7 +145,6 @@ namespace fightInput
 
         void MouseOver()
         {
-            Card3D currentCard = null;
             Mana3D currentMana = null;
             GameObject manaArea = null;
 
@@ -157,11 +156,6 @@ namespace fightInput
             {
                 RaycastHit hit = hits[i];
 
-                if (hit.transform.gameObject.GetComponent(typeof(Card3D)) && currentCard == null)
-                {
-                    currentCard = hit.transform.gameObject.GetComponent(typeof(Card3D)) as Card3D;
-                    TriggerCardMouseOver(currentCard);
-                }
                 if (hit.transform.gameObject.GetComponent<Mana3D>())
                 {
                     currentMana = hit.transform.gameObject.GetComponent<Mana3D>();
@@ -182,10 +176,6 @@ namespace fightInput
                 }
             }
 
-            if (!currentCard)
-            {
-                TriggerNoCardMouseOver();
-            }
             if (!currentMana)
             {
                 TriggerNoManaMouseOver();
@@ -247,6 +237,12 @@ namespace fightInput
                 staticInstance = this;
             else
                 Destroy(this);
+
+            foreach(Card3D card in PlayerCardDecks.InstantiatedDeck)
+            {
+                card.OnMouseOverEvent += TriggerMouseOverCard;
+                card.OnMouseExitEvent += TriggerOnCardMouseExit;
+            }
         }
     }
 }

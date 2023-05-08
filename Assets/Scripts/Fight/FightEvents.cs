@@ -5,6 +5,16 @@ namespace fight
 {
     public static class FightEvents
     {
+        public delegate void FightStarted();
+        public static event FightStarted OnFightStarted;
+
+        public static void TriggerFightStarted()
+        {
+            if(OnFightStarted != null)
+            {
+                OnFightStarted();
+            }
+        }
         ///////////////////////////////////////////////////////////////////////
         public delegate void EnemyDiedEffects(Enemy enemy);
         public static event EnemyDiedEffects OnEnemyDiedEffects;

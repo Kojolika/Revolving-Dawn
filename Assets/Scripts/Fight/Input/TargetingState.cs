@@ -147,7 +147,7 @@ namespace fightInput
                     targets.Add(enemy);
                     previousEnemy = enemy;
 
-                    currentCard.CardScriptableObject.UpdateDescription(enemy);
+                    currentCard.UpdateDescription(enemy);
 
                     //targetingArrow.ChangeColor(Resources.Load<Material>("Arrow_Red"));
                 }
@@ -156,6 +156,7 @@ namespace fightInput
             {
                 RemoveTargets();
                 previousEnemy = null;
+                currentCard.UpdateDescription(null);
 
                 //targetingArrow.ChangeColor(Resources.Load<Material>("Arrow"));
             }

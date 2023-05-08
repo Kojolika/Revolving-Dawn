@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using characters;
+using fightDamageCalc;
 using mana;
 
 namespace cards
@@ -9,6 +10,7 @@ namespace cards
     public class Card3D : MonoBehaviour
     {
         [SerializeField] Card _cardScriptableObject; //card object where all the data is retrieved from (the view part of MVC)
+
         public Card CardScriptableObject
         {
             get => _cardScriptableObject;
@@ -33,7 +35,7 @@ namespace cards
         public Targeting GetTarget() => _cardScriptableObject.target;
         public Character Owner { get => _cardScriptableObject.owner; set => _cardScriptableObject.owner = value; }
 
-        void Awake()
+        void OnEnable()
         {
             PopulateFromData();
         }
@@ -49,10 +51,11 @@ namespace cards
             name.color = CardConfiguration.DEFAULT_FONT_COLOR;
             name.fontSize = CardConfiguration.DEFAULT_FONT_NAME_SIZE;
 
-            description.text = _cardScriptableObject.description;
+            description.text = _cardScriptableObject.descriptionWithReplaceables;
             description.font = CardConfiguration.DEFAULT_FONT;
             description.color = CardConfiguration.DEFAULT_FONT_COLOR;
             description.fontSize = CardConfiguration.DEFAULT_FONT_NAME_SIZE;
+            UpdateDescription(null);
 
             manaInSockets = new Mana3D[_cardScriptableObject.mana.Length];
 
@@ -69,6 +72,16 @@ namespace cards
 
             }
         }
+        public void UpdateDescription(Character target)
+        {
+            Chain chain = new Chain();
+            var numberValues = _cardScriptableObject.numberValues;
+            for (int index = 0; index < numberValues.Count; index++)
+            {
+                Number copy = numberValues[index];
+                description.text = _cardScriptableObject.descriptionWithReplaceables.Replace(copy.getType().ToString().ToUpper() + (index + 1), "" + chain.process(copy, _cardScriptableObject.owner, target).Amount);
+            }
+        }
         //Summary:
         //Transform card to next or previous in chain
         //
@@ -77,7 +90,7 @@ namespace cards
         //           false is backwards transform
         public void Transform(bool direction)
         {
-            if(_cardScriptableObject.Transform(direction) == null) return;
+            if (_cardScriptableObject.Transform(direction) == null) return;
 
             _cardScriptableObject = _cardScriptableObject.Transform(direction);
 
@@ -132,10 +145,41 @@ namespace cards
 
         void RemoveSockets()
         {
-            for(int index = 0; index < manaSockets.transform.childCount; index++)
+            for (int index = 0; index < manaSockets.transform.childCount; index++)
             {
                 Destroy(manaSockets.transform.GetChild(index).gameObject);
             }
+        }
+
+        public delegate void MouseOver(Card3D card);
+        public event MouseOver OnMouseOverEvent;
+
+        //OnMouseEnter is a unity event that is called whenever the mouse first enters a gameobject with a collider
+        //OnMouseEnterEvent is my custom event that now lets me subscribe other functions to the event in response to a mouse entering this card
+        void OnMouseOver()
+        {
+            if (OnMouseOverEvent != null)
+            {   
+                OnMouseOverEvent(this);
+            }
+            Debug.Log("Mousing over card " + CardScriptableObject.name);
+        }
+        public delegate void MouseExit(Card3D card);
+        public event MouseExit OnMouseExitEvent;
+
+        void OnMouseExit()
+        {
+            if (OnMouseExitEvent != null)
+            {
+                OnMouseExitEvent(this);
+            }
+            Debug.Log("Stopped mousing over card " + CardScriptableObject.name);
+        }
+
+        void OnDestroy()
+        {
+            OnMouseOverEvent = null;
+            OnMouseExitEvent = null;
         }
     }
 }
