@@ -59,6 +59,15 @@ namespace cards
 
             manaInSockets = new Mana3D[_cardScriptableObject.mana.Length];
 
+            //If sockets are already instantiated, destroy them
+            if (manaSockets.transform.childCount > 0)
+            {
+                for(int index = 0; index < manaSockets.transform.childCount; index++)
+                {
+                    Destroy(manaSockets.transform.GetChild(index)); 
+                }
+            }
+
             for (int index = 0; index < _cardScriptableObject.mana.Length; index++)
             {
                 Debug.Log("adding new socket at index " + index);
@@ -160,7 +169,7 @@ namespace cards
         void OnMouseOver()
         {
             if (OnMouseOverEvent != null)
-            {   
+            {
                 OnMouseOverEvent(this);
             }
             Debug.Log("Mousing over card " + CardScriptableObject.name);
