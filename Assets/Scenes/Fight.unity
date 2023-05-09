@@ -497,15 +497,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTurn: 1
-  player: {fileID: 3637236223743574375, guid: 81628037df91d1e43ae8e5dcc6cfd5cc, type: 3}
+  playerPrefab: {fileID: 3637236223743574375, guid: 81628037df91d1e43ae8e5dcc6cfd5cc, type: 3}
   cardPrefab: {fileID: 7892906070732099115, guid: c578bd1fe73f1f04caa0e1d7740a9170, type: 3}
-  enemies:
+  enemyPrefabs:
   - {fileID: 4639676414776559479, guid: b875aacc27e93ff44b72f538577a7554, type: 3}
   - {fileID: 4639676414776559479, guid: b875aacc27e93ff44b72f538577a7554, type: 3}
   - {fileID: 4639676414776559479, guid: b875aacc27e93ff44b72f538577a7554, type: 3}
   - {fileID: 4639676414776559479, guid: b875aacc27e93ff44b72f538577a7554, type: 3}
   currentEnemies: []
-  playerSpawnpoint: {fileID: 784284602}
+  playerSpawnPoint: {fileID: 784284602}
   enemySpawnPoints:
   - {fileID: 1159660196}
   - {fileID: 575185305}

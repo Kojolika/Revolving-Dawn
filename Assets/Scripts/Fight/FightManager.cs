@@ -51,6 +51,7 @@ namespace fight
             for (int i = 0; i < enemyPrefabs.Count; i++)
             {
                 Enemy e = Instantiate(enemyPrefabs[i], enemySpawnPoints[i].transform.position, Quaternion.identity);
+                currentEnemies.Add(e);
             }
 
 
@@ -179,11 +180,11 @@ namespace fight
         }
         void ChooseEnemyMoves()
         {
-            System.Random r = new System.Random();
+            System.Random random = new System.Random();
             foreach (Enemy enemy in currentEnemies)
             {
                 int moveCount = enemy.moves.Count;
-                int rInt = r.Next(0, moveCount);
+                int rInt = random.Next(0, moveCount);
 
                 var nextMove = enemy.moves[rInt];
 
@@ -193,6 +194,7 @@ namespace fight
         }
         void LoadMovePreview(Enemy enemy, Move move)
         {
+            Debug.Log("Loading image preview");
             //Create gameobject to hold sprite for enemy move
             GameObject moveImage = new GameObject();
             previousEnemyMoves.Add(enemy, moveImage);

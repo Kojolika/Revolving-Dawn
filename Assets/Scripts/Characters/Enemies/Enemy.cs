@@ -11,7 +11,7 @@ namespace characters{
         public abstract Move currentMove{get; set;}
         public IEnumerator ExecuteMove(List<Character> targets = null)
         {
-            if(targets != null) currentMove.execute(targets:targets);
+            if(targets != null) currentMove.execute(targets);
             else currentMove.execute();
 
             yield return null;

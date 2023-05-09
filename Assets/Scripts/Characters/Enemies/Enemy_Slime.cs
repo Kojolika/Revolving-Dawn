@@ -50,6 +50,7 @@ namespace characters
         }
         public void Start()
         {
+            Debug.Log("Loading moves...");
             LoadMoves();
         }
     }

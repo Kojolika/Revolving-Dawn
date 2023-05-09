@@ -30,7 +30,7 @@ namespace fightDamageCalc
 
         public Number process(Number request, Character source, Character target)
         {
-            Number copy = request; //can add a bool in the future if needed where I would want to change the original request value
+            Number copy = new Number(request.Amount, request.getType()); //can add a bool in the future if needed where I would want to change the original request value
             return chain.process(copy, source, target);
         }
    

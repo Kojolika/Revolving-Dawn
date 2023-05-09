@@ -35,9 +35,9 @@ namespace cards
         public Targeting GetTarget() => _cardScriptableObject.target;
         public Character Owner { get => _cardScriptableObject.owner; set => _cardScriptableObject.owner = value; }
 
-        void OnEnable()
+        void Start()
         {
-            PopulateFromData();
+            //PopulateFromData();
         }
         public void PopulateFromData()
         {
@@ -61,6 +61,7 @@ namespace cards
 
             for (int index = 0; index < _cardScriptableObject.mana.Length; index++)
             {
+                Debug.Log("adding new socket at index " + index);
                 //instantiate the socket from the prefab
                 GameObject instanitatedSocket = Instantiate(socketPrefab, manaSockets.transform, false);
 

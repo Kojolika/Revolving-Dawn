@@ -11,7 +11,7 @@ namespace characters
         TurnTime whenAffectTriggers = TurnTime.Passive;
         FightInfo.NumberType numberType = FightInfo.NumberType.Attack;
         AffectType affectType = AffectType.Debuff;
-        
+
         //Can the affect be applied multiple times
         bool isStackable = true;
 
@@ -21,9 +21,9 @@ namespace characters
         //30%
         float weakenAmount = .7f;
 
-        public Weaken(int amount){ count = amount; }
-        public override bool IsStackable{ get => isStackable; set => isStackable = value; }
-        public override TurnTime WhenAffectTriggers { get => whenAffectTriggers; set => whenAffectTriggers = value;}
+        public Weaken(int amount) { count = amount; }
+        public override bool IsStackable { get => isStackable; set => isStackable = value; }
+        public override TurnTime WhenAffectTriggers { get => whenAffectTriggers; set => whenAffectTriggers = value; }
         public override int StackSize { get => count; set => count = value; }
         public override FightInfo.NumberType NumberType { get => numberType; set => numberType = value; }
         public override AffectType AffectType { get => affectType; set => affectType = value; }
@@ -38,8 +38,10 @@ namespace characters
         }
         public override Number process(Number request)
         {
-            if(request.getType() == numberType)
+            if (request.getType() == numberType)
+            {
                 request.Amount = request.Amount * weakenAmount;
+            }
             return request;
         }
     }

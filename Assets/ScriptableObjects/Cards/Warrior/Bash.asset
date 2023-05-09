@@ -22,6 +22,5 @@ MonoBehaviour:
   numberValues:
   - amount: 6
     type: 1
-  affectValues: []
   nextCardUpgrade: {fileID: 11400000, guid: aeb328fba0621de4d8052623ab344f88, type: 2}
   previousCard: {fileID: 0}

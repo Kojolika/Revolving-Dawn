@@ -5,7 +5,6 @@ using UnityEngine;
 using cards;
 using utils;
 using characters;
-using System.Linq;
 
 namespace fight
 {
