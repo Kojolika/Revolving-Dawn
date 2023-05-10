@@ -2,7 +2,7 @@
 
 namespace characters
 {
-    public class HealthSystem 
+    public class HealthSystem
     {
         float hp = 100f;
         float maxHP = 100f;
@@ -31,24 +31,24 @@ namespace characters
         {
             float finalAmount = 0;
 
-            if(block > amount)
+            if (block > amount)
                 block -= amount;
             else
             {
                 finalAmount = amount - block;
                 block = 0;
             }
-            
+
             hp -= finalAmount;
             healthDisplay.UpdateHealth();
             healthDisplay.UpdateBlock();
         }
         public void Heal(float amount)
         {
-            hp = ((hp += amount) > maxHP) ?  maxHP : hp += amount;
+            hp = ((hp += amount) > maxHP) ? maxHP : hp += amount;
             healthDisplay.UpdateHealth();
         }
-        public void Block(float amount)
+        public void AddBlock(float amount)
         {
             block += amount;
             healthDisplay.UpdateBlock();
@@ -60,8 +60,10 @@ namespace characters
         }
         public void ResetBlock(Character character)
         {
-            if(character == healthDisplay.transform.parent.gameObject.GetComponent<Character>())
+            if (character == healthDisplay.owner)
+            {
                 SetBlock(0);
+            }
         }
     }
 }

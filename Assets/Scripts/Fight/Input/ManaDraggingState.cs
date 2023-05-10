@@ -14,6 +14,10 @@ namespace fightInput
         public ManaDraggingState(Mana3D mana)
         {
             manaBeingDragged = mana;
+
+            //Remove collider when dragging
+            Object.Destroy(manaBeingDragged.GetComponent<BoxCollider>());
+
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
 
             _input.OnRightClicked += RightClicked;
@@ -88,6 +92,8 @@ namespace fightInput
 
         public override void Exit()
         {
+            if(manaBeingDragged) manaBeingDragged.gameObject.AddComponent<BoxCollider>();
+
             _input.OnRightClicked -= RightClicked;
             _input.OnLeftClicked -= LeftClicked;
             _input.OnCardMouseEnter -= MouseOverCard;

@@ -70,7 +70,6 @@ namespace cards
 
             for (int index = 0; index < _cardScriptableObject.mana.Length; index++)
             {
-                Debug.Log("adding new socket at index " + index);
                 //instantiate the socket from the prefab
                 GameObject instanitatedSocket = Instantiate(socketPrefab, manaSockets.transform, false);
 
@@ -172,7 +171,7 @@ namespace cards
             {
                 OnMouseOverEvent(this);
             }
-            Debug.Log("Mousing over card " + CardScriptableObject.name);
+            //Debug.Log("Mousing over card " + CardScriptableObject.name);
         }
         public delegate void MouseExit(Card3D card);
         public event MouseExit OnMouseExitEvent;
@@ -183,7 +182,7 @@ namespace cards
             {
                 OnMouseExitEvent(this);
             }
-            Debug.Log("Stopped mousing over card " + CardScriptableObject.name);
+            //Debug.Log("Stopped mousing over card " + CardScriptableObject.name);
         }
 
         void OnDestroy()

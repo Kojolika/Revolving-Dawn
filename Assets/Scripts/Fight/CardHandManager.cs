@@ -197,9 +197,9 @@ namespace fight
             while(size > 1)
             {
                 size--;
-                int k = rng.Next(size + 1);
-                Card3D value = deckToShuffle[k];
-                deckToShuffle[k] = deckToShuffle[size];
+                int randomIndex = rng.Next(size + 1);
+                Card3D value = deckToShuffle[randomIndex];
+                deckToShuffle[randomIndex] = deckToShuffle[size];
                 deckToShuffle[size] = value;
             }
         }

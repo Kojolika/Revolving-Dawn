@@ -9,7 +9,7 @@ public class Special : Move {
 
     Enemy_Targeting _targeting;
 
-    public override Enemy_Targeting targeting 
+    public override Enemy_Targeting Targeting 
     { 
         get =>  _targeting; 
         set => _targeting = value; 

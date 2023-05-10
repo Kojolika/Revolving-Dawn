@@ -10,7 +10,6 @@ namespace fightInput
         public class TargetingState : PlayerInputState
     {
         ChangeStateTo changeStateTo = ChangeStateTo.Targeting;
-
         Card3D currentCard;
         Enemy previousEnemy = null;
         Dragger dragger;
@@ -18,7 +17,6 @@ namespace fightInput
         int cardtarget;
         Mover mover;
         List<Character> targets = new List<Character>();
-        FightManager fightManager = _input.GetComponent<FightManager>();
         CardHandManager cardMovementManager = _input.GetComponent<CardHandManager>();
 
         public TargetingState(Card3D card)
@@ -36,7 +34,7 @@ namespace fightInput
                 case 0: //Friendly
                     dragger = currentCard.GetComponent<Dragger>();
 
-                    var player = fightManager.GetPlayer();
+                    var player = FightManager.CurrentPlayer;
                     targets.Add(player);
                     player.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
                     break;
@@ -65,7 +63,7 @@ namespace fightInput
                 case 2: //RandomEnemy
                     dragger = currentCard.GetComponent<Dragger>();
 
-                    foreach (Enemy e in fightManager.currentEnemies)
+                    foreach (Enemy e in FightManager.CurrentEnemies)
                     {
                         targets.Add(e);
                         e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
@@ -77,7 +75,7 @@ namespace fightInput
                 case 3: //AllEnemies
                     dragger = currentCard.GetComponent<Dragger>();
 
-                    foreach (Enemy e in fightManager.currentEnemies)
+                    foreach (Enemy e in FightManager.CurrentEnemies)
                     {
                         targets.Add(e);
                         e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
@@ -90,15 +88,15 @@ namespace fightInput
                     dragger = currentCard.GetComponent<Dragger>();
 
 
-                    foreach (Enemy e in fightManager.currentEnemies)
+                    foreach (Enemy e in FightManager.CurrentEnemies)
                     {
                         targets.Add(e);
 
                         e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
                     }
 
-                    targets.Add(fightManager.GetPlayer());
-                    fightManager.GetPlayer().GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
+                    targets.Add(FightManager.CurrentPlayer);
+                    FightManager.CurrentPlayer.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
 
                     break;
 

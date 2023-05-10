@@ -34,7 +34,7 @@ namespace characters
             }
             else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Block)
             {
-                target.healthDisplay.health.Block(finalAmount);
+                target.healthDisplay.health.AddBlock(finalAmount);
             }
             else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Heal)
                 target.healthDisplay.health.Heal(finalAmount);
