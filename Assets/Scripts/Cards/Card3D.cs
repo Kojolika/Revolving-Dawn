@@ -27,7 +27,7 @@ namespace cards
         [SerializeField] GameObject manaSockets; //parent object to instantiate sockets under
         [SerializeField] GameObject socketPrefab; //socket prefab to instatiate depending on the cards mana
         [SerializeField] Mana3D[] manaInSockets; //mana currently in this cards sockets, start as null for every socket
-        
+
         [SerializeField] ParticleSystem playableOutline;
         [SerializeField] ParticleSystem flash;
 
@@ -41,6 +41,7 @@ namespace cards
         void OnEnable()
         {
             PlayPlayableOutlineParticles();
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterPlayArea += EnteredPlayArea;
         }
 
         public void PopulateFromData()
@@ -220,8 +221,33 @@ namespace cards
         {
             playableOutline.Pause();
         }
-        public void PlayFlash(Color color)
+        void EnteredPlayArea()
         {
+            if (this.TryGetComponent<Dragger>(out Dragger dragger))
+            {
+                PlayFlash(Color.cyan);
+            }
+        }
+        void PlayFlash(Color color)
+        {
+            //Color is the color of the flashing that the card does
+
+            var flashMain = flash.main;
+            flashMain.startColor = color;
+
+            var flashColor = flash.colorOverLifetime;
+            Gradient newGradient = new Gradient();
+
+            newGradient.SetKeys(new GradientColorKey[]{
+                new GradientColorKey(color, 0.0f),
+                new GradientColorKey(color, 1.0f)
+            }, new GradientAlphaKey[] {
+                new GradientAlphaKey(0.5f, 0.0f), // fade out
+                new GradientAlphaKey(0.0f, 1.0f) //
+            });
+
+            flashColor.color = newGradient;
+
             flash.Play();
         }
     }

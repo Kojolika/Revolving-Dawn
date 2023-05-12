@@ -96,6 +96,8 @@ namespace fightInput
         }
         void TriggerMouseOverCard(Card3D card)
         {
+            if (isPaused) return;
+            if (!isEnabled) return;
             //Condition checks if any methods are subscribed to this event
             if (OnCardMouseEnter != null)
             {
@@ -104,6 +106,7 @@ namespace fightInput
         }
         void TriggerEnemyMouseOver(Enemy enemy)
         {
+
             if (OnEnemyMouseOver != null)
             {
                 OnEnemyMouseOver(enemy);
@@ -112,6 +115,8 @@ namespace fightInput
 
         void TriggerOnCardMouseExit(Card3D card)
         {
+            if (isPaused) return;
+            if (!isEnabled) return;
             //Condition checks if any methods are subscribed to this event
             if (OnCardMouseExit != null)
             {
@@ -238,7 +243,7 @@ namespace fightInput
             else
                 Destroy(this);
 
-            foreach(Card3D card in PlayerCardDecks.InstantiatedDeck)
+            foreach (Card3D card in PlayerCardDecks.InstantiatedDeck)
             {
                 card.OnMouseOverEvent += TriggerMouseOverCard;
                 card.OnMouseExitEvent += TriggerOnCardMouseExit;
