@@ -40,8 +40,9 @@ namespace cards
 
         void OnEnable()
         {
-            PlayPlayableOutlineParticles();
             fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterPlayArea += EnteredPlayArea;
+            fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
+            fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
         }
 
         public void PopulateFromData()
@@ -210,15 +211,21 @@ namespace cards
             OnMouseOverEvent = null;
             OnMouseExitEvent = null;
 
-            PausePlayableOutlineParticles();
+            fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
+            fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
+
         }
 
-        void PlayPlayableOutlineParticles()
+        void PlayPlayableOutlineParticles(Character character)
         {
+            if (character != Owner) return;
+
             playableOutline.Play();
         }
-        void PausePlayableOutlineParticles()
+        void PausePlayableOutlineParticles(Character character)
         {
+            if (character != Owner) return;
+
             playableOutline.Pause();
         }
         void EnteredPlayArea()

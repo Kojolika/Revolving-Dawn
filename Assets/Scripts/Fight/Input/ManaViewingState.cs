@@ -13,7 +13,7 @@ namespace fightInput
         public ManaViewingState()
         {
             _input.OnMouseExitManaArea += ExitManaArea;
-            _input.OnManaMouseOver += ManaMouseOver;
+            _input.OnMouseEnterMana3D += MouseEnterMana3D;
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
             if(manaPool.IsRotating())
                 manaPool.StopRotating();
@@ -32,13 +32,14 @@ namespace fightInput
                     Exit();
                     return new DefaultState();
             }
+            Exit();
             return this;
         }
         void ExitManaArea()
         {
             changeStateTo = ChangeStateTo.Default;
         }
-        void ManaMouseOver(Mana3D mana)
+        void MouseEnterMana3D(Mana3D mana)
         {
             currentMana = mana;
             changeStateTo = ChangeStateTo.ManaHovering;
@@ -46,7 +47,7 @@ namespace fightInput
         public override void Exit()
         {
             _input.OnMouseExitManaArea -= ExitManaArea;
-            _input.OnManaMouseOver -= ManaMouseOver;
+            _input.OnMouseEnterMana3D -= MouseEnterMana3D;
         }
 
     }

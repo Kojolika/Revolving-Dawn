@@ -9,7 +9,7 @@ namespace fightInput
         public ManaHoveringState(Mana3D mana)
         {
             currentMana = mana;
-            _input.OnNoManaMouseOver += NoManaMouseOver;
+            _input.OnMouseExitMana3D += NoManaMouseOver;
             _input.OnLeftClicked += LeftClicked;
         }
         public override PlayerInputState Transition()
@@ -42,7 +42,7 @@ namespace fightInput
         }
         public override void Exit()
         {
-            _input.OnNoManaMouseOver -= NoManaMouseOver;
+            _input.OnMouseExitMana3D -= NoManaMouseOver;
             _input.OnLeftClicked -= LeftClicked;
         }
     }
