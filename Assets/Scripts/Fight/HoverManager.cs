@@ -4,7 +4,7 @@ using characters;
 
 namespace fight
 {
-    internal class HoverManager : MonoBehaviour
+    public class HoverManager : MonoBehaviour
     {
         public Card3D currentCard;
         CardHandManager _cardHandMovementManager;

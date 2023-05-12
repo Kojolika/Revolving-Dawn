@@ -12,7 +12,6 @@ namespace fight
 {
     public class FightManager : MonoBehaviour
     {
-
         [SerializeField] static Player currentPlayer;
         public static Player CurrentPlayer { get => currentPlayer; }
         [SerializeField] static List<Enemy> currentEnemies = new List<Enemy>();
