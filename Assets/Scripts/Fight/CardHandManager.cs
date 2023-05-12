@@ -1,15 +1,17 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections;
 using UnityEngine;
 using cards;
 using utils;
 using characters;
-using System.Linq;
 
 namespace fight
 {
     public class CardHandManager : MonoBehaviour
     {
+        [SerializeField] Card3D cardPrefab;
+        GameObject cardHandGO;
         internal BezierCurve curve;
         GameObject cardSpawner;
         GameObject cardDiscarder;
@@ -39,10 +41,10 @@ namespace fight
                 OnHandUpdating(isUpdating);
             }
         }
-        public delegate void CardPlayed(Card card, List<Character> targets);
+        public delegate void CardPlayed(Card3D card, List<Character> targets);
         public event CardPlayed OnCardPlayed;
 
-        public void TriggerPlayCard(Card card, List<Character> targets)
+        public void TriggerPlayCard(Card3D card, List<Character> targets)
         {
             if (OnCardPlayed != null)
             {
@@ -59,24 +61,49 @@ namespace fight
             OnCardsDrawn += DrawCards;
             OnCardPlayed += CardPlayedEffects;
 
-            player = this.GetComponent<FightManager>().GetPlayer();
             movementCoroutines = new List<IEnumerator>();
         }
-        public void Initialize(BezierCurve curve, GameObject cardspawner, GameObject carddiscarder)
+
+        public void Initialize(BezierCurve curve, GameObject cardSpawner, GameObject cardDiscarder, GameObject cardHandGO, Player player, Card3D cardPrefab)
         {
             this.curve = curve;
-            cardSpawner = cardspawner;
-            cardDiscarder = carddiscarder;
+            this.cardSpawner = cardSpawner;
+            this.cardDiscarder = cardDiscarder;
+            this.cardHandGO = cardHandGO;
+            this.player = player;
+            this.cardPrefab = cardPrefab;
+
+            List<Card> playerDeck = this.player.GetComponent<TestDeck>().deck;
+            PlayerCardDecks.Deck = new ObservableCollection<Card>(playerDeck);
+            PlayerCardDecks.InstantiatedDeck = new ObservableCollection<Card3D>();
+            foreach (Card card in playerDeck)
+            {
+                var instantiatedCard = Instantiate(cardPrefab,this.cardHandGO.transform);
+                instantiatedCard.transform.position = this.cardSpawner.transform.position;
+                instantiatedCard.CardScriptableObject = card;
+                instantiatedCard.Owner = this.player;
+                PlayerCardDecks.InstantiatedDeck.Add(instantiatedCard);
+                instantiatedCard.gameObject.SetActive(false);
+            }
+
+            PlayerCardDecks.DrawPile = PlayerCardDecks.InstantiatedDeck;
+            Shuffle(PlayerCardDecks.InstantiatedDeck);
+
+            //These decks are only used during combat
+            //Thus are created when Player is loaded into a fight
+            PlayerCardDecks.Hand = new ObservableCollection<Card3D>();
+            PlayerCardDecks.Discard = new ObservableCollection<Card3D>();
+            PlayerCardDecks.Lost = new ObservableCollection<Card3D>();
         }
 
-        void CardPlayedEffects(Card cardBeingPlayed, List<Character> targets)
+        void CardPlayedEffects(Card3D cardBeingPlayed, List<Character> targets)
         {
-            var hand = player.playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
 
             //Remove the card from the hand, add it to the discard pile
             //Add effects for playing the card here in the future
             //Possible add new event subscribres for visual effects?
-            foreach (Card card in hand)
+            foreach (Card3D card in hand)
             {
                 if (card != cardBeingPlayed) continue;
 
@@ -89,35 +116,32 @@ namespace fight
             CreateHand();
         }
 
-        void DiscardCard(Card card)
+        void DiscardCard(Card3D card)
         {
-            var hand = player.playerCardDecks.Hand;
-            var discard = player.playerCardDecks.Discard;
-
-            hand.Remove(card);
-            discard.Add(card);
+            PlayerCardDecks.Hand.Remove(card);
+            PlayerCardDecks.Discard.Add(card);
             card.gameObject.SetActive(false);
             //In the future add an animation that transitions the card to the discard pile
         }
 
         public void DiscardHand()
         {
-            var hand = player.playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
             int handSize = hand.Count;
 
-            for(int i=handSize-1; i>=0; i--)
+            for (int i = handSize - 1; i >= 0; i--)
             {
                 var card = hand[i];
                 DiscardCard(card);
             }
-                
+
         }
         public void DrawCards(int amount)
         {
 
-            var drawPile = player.playerCardDecks.DrawPile;
-            var discardPile = player.playerCardDecks.Discard;
-            var hand = player.playerCardDecks.Hand;
+            var drawPile = PlayerCardDecks.DrawPile;
+            var discardPile = PlayerCardDecks.Discard;
+            var hand = PlayerCardDecks.Hand;
 
             for (int i = 0; i < amount; i++)
             {
@@ -127,12 +151,17 @@ namespace fight
                     {
                         // do nothing
                         // no cards to draw from
+                        Debug.Log("No cards in draw,discard or deck");
                         return;
                     }
                     else
                     {
                         //shuffle discard back into drawpile when discard is empty
-                        drawPile.AddRange(discardPile);
+                        //drawPile.AddRange(discardPile);
+                        foreach (var card in discardPile)
+                        {
+                            drawPile.Add(card);
+                        }
                         discardPile.Clear();
                         Shuffle(drawPile);
                     }
@@ -148,43 +177,31 @@ namespace fight
                 }
                 else
                 {
-                    //if not already instantiated... instiated the card
-                    //otherwise set the card to active
-                    if(cardDrawn.gameObject.scene.name == null)
-                    {
-                        cardDrawn = Instantiate(cardDrawn,
-                            cardSpawner.transform.position,
-                            cardDrawn.transform.rotation
-                        );
-                    }
-                    else 
-                    {
-                        //make it look like its drawing from the drawpile
-                        cardDrawn.transform.position = cardSpawner.transform.position;
-                        
-                        cardDrawn.gameObject.SetActive(true);
-                    }
-                    
+                    //make it look like its drawing from the drawpile
+                    cardDrawn.transform.position = cardSpawner.transform.position;
+
+                    cardDrawn.gameObject.SetActive(true);
+
+
                     hand.Add(cardDrawn);
                 }
             }
             //update hand in the players class
-            //player.playerCardDecks.Hand = hand;
             CreateHand();
         }
 
-        List<Card> Shuffle(List<Card> DeckToShuffle)
+        void Shuffle(ObservableCollection<Card3D> deckToShuffle)
         {
             var rng = new System.Random();
-            var shuffledcards = DeckToShuffle.OrderBy(a => rng.Next()).ToList();
-            return shuffledcards;
-        }
-
-        public void ShuffleDeck()
-        {
-            var drawPile = player.playerCardDecks.DrawPile;
-            var temp = Shuffle(drawPile);
-            drawPile = temp;
+            int size = deckToShuffle.Count;
+            while(size > 1)
+            {
+                size--;
+                int randomIndex = rng.Next(size + 1);
+                Card3D value = deckToShuffle[randomIndex];
+                deckToShuffle[randomIndex] = deckToShuffle[size];
+                deckToShuffle[size] = value;
+            }
         }
 
         internal void CreateHand()
@@ -193,7 +210,7 @@ namespace fight
         }
         internal IEnumerator CreateHandCurve(float speed)
         {
-            var hand = player.playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
             //failsale
             if (hand.Count < 1) yield return null;
 
@@ -205,7 +222,7 @@ namespace fight
             {
                 Vector3 newPosition = curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, i));
 
-                newPosition.z -= (float)i / 100f;
+                newPosition.z -= (float)i * .5f;
                 tasks[i - 1] = StartCoroutine(MoveCardCoroutine(hand[i - 1],
                     newPosition,
                     CardHandUtils.ReturnCardRotation(hand.Count, i),
@@ -218,11 +235,11 @@ namespace fight
             //Send event that the hand is no longer being updated
             TriggerHandUpdating(false);
         }
-        public IEnumerator MoveCardCoroutine(Card card, Vector3 newPosition, float cardRotation, float speed)
+        public IEnumerator MoveCardCoroutine(Card3D card, Vector3 newPosition, float cardRotation, float speed)
         {
-            var hand = player.playerCardDecks.Hand;
+            var hand = PlayerCardDecks.Hand;
 
-            var rotation = CardInfo.DEFAULT_CARD_ROTATION;
+            var rotation = CardConfiguration.DEFAULT_CARD_ROTATION;
             rotation.x += cardRotation;
             card.transform.rotation = Quaternion.Euler(rotation);
 

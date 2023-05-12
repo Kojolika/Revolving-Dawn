@@ -2,53 +2,68 @@
 
 namespace characters
 {
-    public class HealthSystem 
+    public class HealthSystem
     {
         float hp = 100f;
         float maxHP = 100f;
         float block = 0f;
-
-        public float GetBlockValue()
+        public HealthDisplay healthDisplay;
+        public HealthSystem(HealthDisplay healthDisplay)
         {
-            return block;
+            this.healthDisplay = healthDisplay;
+            fight.FightEvents.OnCharacterTurnStarted += ResetBlock;
         }
-        public float GetHealthValue()
-        {
-            return hp;
-        }
-        public float GetMaxHealthValue()
-        {
-            return maxHP;
-        }
+        public void OnDestroy() => fight.FightEvents.OnCharacterTurnStarted -= ResetBlock;
+        public float GetBlockValue() => block;
+        public float GetHealthValue() => hp;
+        public float GetMaxHealthValue() => maxHP;
         public void SetHealth(float amount)
         {
             hp = amount;
+            healthDisplay.UpdateHealth();
         }
         public void SetMaxHealth(float amount)
         {
             maxHP = amount;
+            healthDisplay.UpdateHealth();
         }
         public void DealDamage(float amount)
         {
             float finalAmount = 0;
 
-            if(block > amount)
+            if (block > amount)
                 block -= amount;
             else
             {
                 finalAmount = amount - block;
                 block = 0;
             }
-            
+
             hp -= finalAmount;
+            healthDisplay.UpdateHealth();
+            healthDisplay.UpdateBlock();
         }
         public void Heal(float amount)
         {
-            hp = ((hp += amount) > maxHP) ?  maxHP : hp += amount;
+            hp = ((hp += amount) > maxHP) ? maxHP : hp += amount;
+            healthDisplay.UpdateHealth();
         }
-        public void Block(float amount)
+        public void AddBlock(float amount)
         {
             block += amount;
+            healthDisplay.UpdateBlock();
+        }
+        public void SetBlock(float amount)
+        {
+            block = amount;
+            healthDisplay.UpdateBlock();
+        }
+        public void ResetBlock(Character character)
+        {
+            if (character == healthDisplay.owner)
+            {
+                SetBlock(0);
+            }
         }
     }
 }

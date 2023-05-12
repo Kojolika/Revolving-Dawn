@@ -12,10 +12,12 @@ namespace fightDamageCalc
         }
 
     }
-
+    [System.Serializable]
     public class Number
     {
+        [UnityEngine.SerializeField]
         float amount;
+        [UnityEngine.SerializeField]
         FightInfo.NumberType type;
         public Number(float number, FightInfo.NumberType type)
         {

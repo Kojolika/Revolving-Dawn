@@ -5,11 +5,12 @@ namespace characters
 {
     public class Fracture : Affect
     {
-        Tuple<TurnTime, Int16> whenStackLoss = new Tuple<TurnTime, Int16>(TurnTime.EndOfTurn, 1);
+        bool whichCharacterThisAffects = false;
+
         TurnTime whenAffectTriggers = TurnTime.Passive;
         FightInfo.NumberType numberType = FightInfo.NumberType.Block;
         AffectType affectType = AffectType.Debuff;
-        
+
         //Can the affect be applied multiple times
         bool isStackable = true;
 
@@ -23,37 +24,37 @@ namespace characters
         {
             count = amount;
         }
+
+        public override bool AffectsOtherCharactersAbilities { get => whichCharacterThisAffects; set => whichCharacterThisAffects = value; }
         public override bool IsStackable
-        { 
+        {
             get => isStackable;
             set => isStackable = value;
         }
-        public override TurnTime WhenAffectTriggers 
-        { 
+        public override TurnTime WhenAffectTriggers
+        {
             get => whenAffectTriggers;
             set => whenAffectTriggers = value;
         }
-        public override int StackSize 
-        { 
+        public override int StackSize
+        {
             get => count;
             set => count = value;
         }
-        public override FightInfo.NumberType NumberType 
-        { 
+        public override FightInfo.NumberType NumberType
+        {
             get => numberType;
             set => numberType = value;
         }
 
-        public override AffectType AffectType 
-        { 
+        public override AffectType AffectType
+        {
             get => affectType;
             set => affectType = value;
         }
-        public override Tuple<TurnTime,Int16> WhenStackLossAndAmount
-        { 
-            get => whenStackLoss; 
-            set => whenStackLoss = value;
-        }
+        public override TurnTime WhenStackLoss { get => throw new NotImplementedException(); set => throw new NotImplementedException();  }
+        public override Number[] NumbersAffected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override int StackLostAmount { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public override void Apply(Character target)
         {
@@ -61,7 +62,7 @@ namespace characters
         }
         public override Number process(Number request)
         {
-            if(request.getType() == numberType)
+            if (request.getType() == numberType)
                 request.Amount = request.Amount * fractureAmount;
             return request;
         }

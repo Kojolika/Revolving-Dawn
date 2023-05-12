@@ -6,52 +6,35 @@ namespace characters
 {
     public abstract class Character : MonoBehaviour
     {
+        float maxHealth = 50f;
+        public virtual float MaxHealth { get => maxHealth; set => maxHealth = value; }
+        Vector3 healthBarVector;
+        public virtual Vector3 healthbarPosition { get => new Vector3(0f, 1f, 0f); set => healthBarVector = value; }
+        Vector3 targetingBorderVector;
+        public virtual Vector3 targetingBorderPosition { get => Vector3.zero; set => targetingBorderVector = value; }
+
         public abstract HealthDisplay healthDisplay { get; set; }
         public virtual void InitializeHealth()
         {
-            healthDisplay.health = new HealthSystem();
-            healthDisplay.health.SetHealth(50f);
-            healthDisplay.health.SetMaxHealth(50f);
-            healthDisplay.UpdateHealth();
+            healthDisplay.health = new HealthSystem(healthDisplay);
+            healthDisplay.health.SetMaxHealth(MaxHealth);
+            healthDisplay.health.SetHealth(MaxHealth);
 
             healthDisplay.transform.localPosition = healthbarPosition;
         }
-        Vector3 healthBarVector;
-        public virtual Vector3 healthbarPosition
-        {
-            get => new Vector3(0f, 1f, 0f);
-            set => healthBarVector = value;
-        }
 
-
-        Vector3 targetingBorderVector;
-        public virtual Vector3 targetingBorderPosition
-        {
-            get => Vector3.zero;
-            set => targetingBorderVector = value;
-        }
-
-
-        //turns on shadow casting for character sprites
-        public void CastShadows()
-        {
-            this.gameObject.AddComponent<TurnOnShadows>();
-        }
-
-        public void PerformDamageNumberAction(fightDamageCalc.Number number, Character target)
+        public void PerformNumberAction(fightDamageCalc.Number number, Character target)
         {
             fightDamageCalc.Chain chain = new fightDamageCalc.Chain();
-            float finalAmount = chain.process(number, this).Amount;
+            float finalAmount = chain.process(number, this, target).Amount;
 
             if (number.getType() == fightDamageCalc.FightInfo.NumberType.Attack)
             {
                 target.healthDisplay.health.DealDamage(finalAmount);
-                target.healthDisplay.UpdateBlock();
             }
             else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Block)
             {
-                target.healthDisplay.health.Block(finalAmount);
-                target.healthDisplay.UpdateBlock();
+                target.healthDisplay.health.AddBlock(finalAmount);
             }
             else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Heal)
                 target.healthDisplay.health.Heal(finalAmount);
@@ -67,6 +50,34 @@ namespace characters
                 var newAffects = target.gameObject.AddComponent<Affects>();
                 newAffects.AddAffect(affect);
             }
+        }
+        public virtual void Awake()
+        {
+            fight.FightEvents.OnFightStarted += OnFightStart;
+            CastShadows();
+        }
+        void OnDisable()
+        {
+            fight.FightEvents.OnFightStarted -= OnFightStart;
+        }
+
+        //turns on shadow casting for character sprites
+        public void CastShadows()
+        {
+            this.gameObject.AddComponent<TurnOnShadows>();
+        }
+
+        void OnFightStart()
+        {
+            this.transform.LookAt(this.transform.position + Camera.main.transform.forward);
+            this.transform.SetParent(Characters.staticInstance.transform);
+
+            this.healthDisplay = Instantiate(Resources.Load<HealthDisplay>("Healthbar"), this.transform);
+            this.InitializeHealth();
+
+            Targeting_Border targetingBorder = this.gameObject.AddComponent<Targeting_Border>();
+            targetingBorder.border = Instantiate(Resources.Load<GameObject>("Targeting_Border"), this.transform);
+            targetingBorder.border.transform.localPosition = this.targetingBorderPosition;
         }
     }
 }

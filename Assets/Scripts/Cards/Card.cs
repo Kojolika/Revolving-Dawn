@@ -1,37 +1,75 @@
 using UnityEngine;
-using characters;
 using System.Collections.Generic;
-using TMPro;
+using characters;
+using mana;
+using utils;
+using fightDamageCalc;
 
 namespace cards
 {
-    public abstract class Card : MonoBehaviour
+    [CreateAssetMenu(fileName = "New Card", menuName = "Cards/New Card")]
+    public class Card : ScriptableObject
     {
-        public abstract void Play(List<Character> targets);
-        public abstract int GetTarget();
-        public abstract bool IsManaCharged();
-        public virtual void LoadInfo(CardScriptableObject cardSO){}
-        public Player currentPlayer;
+        public Character owner; //character that plays this card
+        public ManaType[] mana; //what mana this card uses to charge
+        public new string name; //name of the card
+        [SerializeField] public string descriptionWithReplaceables; // description of what the card does, contains words that will be replaced by number values, edit this one
+        public Sprite artwork; //card art
+        public PlayerClass @class = PlayerClass.Classless; //class of the card
+        public Targeting target;   //who the card targets
+        // Add list of Keywords in future
+        public virtual void Play(List<Character> targets) //effect of the card when played
+        {
+            foreach (Character character in targets)
+            {
+                foreach (Number number in numberValues)
+                {
+                    this.owner.PerformNumberAction(number, character);
+                }
+
+                foreach(Affect affect in affectValues)
+                {
+                    this.owner.PerformAffectAction(affect, character);
+                }
+            }
+        }
+        [Space(20)]
+        [SerializeField] public List<Number> numberValues = new List<Number>();
+        [SerializeField] protected List<Affect> affectValues = new List<Affect>();
+        [SerializeField] protected Card nextCardUpgrade = null;
+        [SerializeField] protected Card previousCard = null;
+
+        //true means transform to next card, false is transform to previous card
+        public Card Transform(bool direction)
+        {
+            if (direction)
+            {
+                if (nextCardUpgrade != null)
+                {
+                    nextCardUpgrade.previousCard = this;
+                    nextCardUpgrade.owner = this.owner;
+                }
+                return nextCardUpgrade;
+            }
+            else
+            {
+                if (previousCard != null)
+                {
+                    previousCard.nextCardUpgrade = this;
+                    previousCard.owner = this.owner;
+                }
+                return previousCard;
+            }
+        }
+
+        void OnEnable()
+        {
+            //If there is no next upgrade, there must not be any mana for an upgrade
+            if (nextCardUpgrade == null)
+            {
+                mana = new ManaType[] { };
+                Debug.LogWarning("Cannot add mana to a card that has no upgrade");
+            }
+        }
     }
-
-    enum Targeting
-    {
-        Friendly,
-        Enemy,
-        RandomEnemy,
-        AllEnemies,
-        All,
-        None
-    }
-
-    public static class CardInfo
-    {
-        public static Vector3 DEFAULT_CARD_ROTATION = new Vector3(90f,90f,-90f);
-        public static Vector3 DEFAULT_SCALE = new Vector3(0.2f,1f,0.3f);
-        public static float CAMERA_DISTANCE = Camera.main.nearClipPlane + 7;
-        public static TMP_FontAsset DEFAULT_FONT = Resources.Load<TMP_FontAsset>("DeterminationSansWebRegular-369X SDF");
-
-    }
-
 }
-

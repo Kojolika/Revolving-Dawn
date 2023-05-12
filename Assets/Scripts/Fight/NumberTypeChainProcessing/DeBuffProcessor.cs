@@ -6,22 +6,33 @@ public class DeBuffProcessor : Processor
     {
     }
 
-    public override Number process(Number request, Character target)
+    public override Number process(Number request, Character source,  Character target)
     {
-        if(target.gameObject.TryGetComponent<Affects>(out Affects affects))
+        if(target && target.gameObject.TryGetComponent<Affects>(out Affects affects))
         {
             foreach(var affect in affects.list)
             {
-                if(affect.AffectType == AffectType.Debuff)
+                if(affect.AffectType == AffectType.Debuff && affect.AffectsOtherCharactersAbilities)
                 {
                     request = affect.process(request);
                 }
             }
-            return base.process(request, target);
+        }
+        if(source && source.gameObject.TryGetComponent<Affects>(out Affects source_affects))
+        {
+            foreach(var affect in source_affects.list)
+            {
+                if(affect.AffectType == AffectType.Debuff && !affect.AffectsOtherCharactersAbilities)
+                {
+                    request = affect.process(request);
+                }
+            }
+
+            return base.process(request, source, target);
         }
         else
         {
-            return base.process(request, target);
+            return base.process(request, source, target);
         }
     }
 

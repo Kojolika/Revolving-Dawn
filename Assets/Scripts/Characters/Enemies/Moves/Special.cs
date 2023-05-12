@@ -9,7 +9,7 @@ public class Special : Move {
 
     Enemy_Targeting _targeting;
 
-    public override Enemy_Targeting targeting 
+    public override Enemy_Targeting Targeting 
     { 
         get =>  _targeting; 
         set => _targeting = value; 
@@ -21,7 +21,7 @@ public class Special : Move {
         {
             foreach(var target in targets)
             {
-                enemyUsingMove.GetComponent<Enemy>().PerformAffectAction(new Weaken(4),target);
+                enemyUsingMove.GetComponent<Enemy>().PerformAffectAction(new Weaken(2),target);
             }
         }
         else

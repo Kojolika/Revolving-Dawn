@@ -9,7 +9,7 @@ public class Block : Move {
 
     Enemy_Targeting _targeting;
 
-    public override Enemy_Targeting targeting 
+    public override Enemy_Targeting Targeting 
     { 
         get =>  _targeting; 
         set => _targeting = value; 
@@ -21,7 +21,7 @@ public class Block : Move {
         {
             foreach(var target in targets)
             {
-                enemyUsingMove.PerformDamageNumberAction(new fightDamageCalc.Number(10,fightDamageCalc.FightInfo.NumberType.Block),target);
+                enemyUsingMove.PerformNumberAction(new fightDamageCalc.Number(blockAmount,fightDamageCalc.FightInfo.NumberType.Block),target);
             }
         }
     }

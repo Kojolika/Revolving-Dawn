@@ -5,38 +5,61 @@ namespace fight
 {
     public static class FightEvents
     {
-        ///////////////////////////////////////////////////////////////////////
-        public delegate void EnemyDiedEffects(Enemy enemy);
-        public static event EnemyDiedEffects OnEnemyDiedEffects;
+        public delegate void FightStarted();
+        public static event FightStarted OnFightStarted;
 
-        public static void TriggerEnemyDied(Enemy enemy)
+        public static void TriggerFightStarted()
         {
-            if (OnEnemyDiedEffects != null)
+            if (OnFightStarted != null)
             {
-                OnEnemyDiedEffects(enemy);
+                OnFightStarted();
             }
         }
         ///////////////////////////////////////////////////////////////////////
-        public delegate void PlayerDiedEffects(Player player);
-        public static event PlayerDiedEffects OnPlayerDiedEffects;
+        public delegate void EnemyDied(Enemy enemy);
+        public static event EnemyDied OnEnemyDied;
+
+        public static void TriggerEnemyDied(Enemy enemy)
+        {
+            Debug.Log("Enemy died");
+            if (OnEnemyDied != null)
+            {
+                OnEnemyDied(enemy);
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////
+        public delegate void PlayerDied(Player player);
+        public static event PlayerDied OnPlayerDied;
 
         public static void TriggerPlayerDied(Player player)
         {
-            if (OnPlayerDiedEffects != null)
+            Debug.Log("Player Died");
+            if (OnPlayerDied != null)
             {
-                OnPlayerDiedEffects(player);
+                OnPlayerDied(player);
             }
         }
         ///////////////////////////////////////////////////////////////////////
         public delegate void FightWon();
-        public static event FightWon OnFightWonEffects;
+        public static event FightWon OnFightWon;
 
         public static void TriggerFightWon()
         {
             Debug.Log("Fight won");
-            if (OnFightWonEffects != null)
+            if (OnFightWon != null)
             {
-                OnFightWonEffects();
+                OnFightWon();
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////
+        public delegate void FightLost();
+        public static event FightLost OnFightLost;
+        public static void TriggerFightLost()
+        {
+            Debug.Log("Fight Lost");
+            if (OnFightLost != null)
+            {
+                OnFightLost();
             }
         }
 
@@ -44,8 +67,9 @@ namespace fight
         public delegate void CharacterTurnStarted(Character character);
         public static event CharacterTurnStarted OnCharacterTurnStarted;
 
-        public static void TriggerCharacterTurnStarted(Character character)
+        public static void TriggerCharacterTurnStart(Character character)
         {
+            Debug.Log("Calling turn start for: " + character);
             //trigger start of turn effects
             //No events yet, will for later effects (bleed,poison, etc.)
             if (OnCharacterTurnStarted != null)
@@ -54,10 +78,20 @@ namespace fight
             }
         }
         ///////////////////////////////////////////////////////////////////////
+        public delegate void ChracterTurnAction(Character character);
+        public static event ChracterTurnAction OnCharacterTurnAction;
+        public static void TriggerCharacterTurnAction(Character character)
+        {
+            if (OnCharacterTurnAction != null)
+            {
+                OnCharacterTurnAction(character);
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////
         public delegate void CharacterTurnEnded(Character character);
         public static event CharacterTurnEnded OnCharacterTurnEnded;
 
-        public static void TriggerCharacterTurnEnded(Character character)
+        public static void TriggerCharacterTurnEnd(Character character)
         {
             //trigger end of turn effects
             //No events yet, will for later effects (bleed,poison, etc.)

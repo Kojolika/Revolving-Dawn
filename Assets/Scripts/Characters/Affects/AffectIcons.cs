@@ -36,7 +36,7 @@ namespace characters
             GameObject newIcon = new GameObject();
 
             newIcon.AddComponent<RectTransform>();
-            newIcon.transform.parent = grid.transform;
+            newIcon.transform.SetParent(grid.transform);
             newIcon.transform.position = grid.transform.position;
             newIcon.transform.rotation = grid.transform.rotation;
             newIcon.transform.localScale = Vector3.one;
@@ -53,6 +53,9 @@ namespace characters
                 case var value when value == typeof(Fracture):
                     renderer.sprite = Resources.Load<Sprite>("affect_fracture");
                 break;
+                case var value when value == typeof(Reinforce):
+                    renderer.sprite = Resources.Load<Sprite>("affect_reinforce");
+                break;
             }
 
             //Text gameobject
@@ -61,14 +64,14 @@ namespace characters
 
             TextMeshPro text3D = textParent.AddComponent<TextMeshPro>();
     
-            text3D.transform.parent = newIcon.transform;
+            text3D.transform.SetParent(newIcon.transform);
             text3D.transform.position = newIcon.transform.position;
             text3D.transform.rotation = newIcon.transform.rotation;
             text3D.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, affectTextBoxWidthAndHeightSize);
             text3D.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, affectTextBoxWidthAndHeightSize);
             text3D.transform.localScale = Vector3.one;
 
-            text3D.font = cards.CardInfo.DEFAULT_FONT;
+            text3D.font = cards.CardConfiguration.DEFAULT_FONT;
             text3D.fontSize = affectIconFontSize;
             text3D.name = "Stack Amount";
             text3D.text = "" + affect.StackSize;
