@@ -10,8 +10,8 @@ namespace characters
     public class Player : Character
     {
         public int DrawAmount = 1;
+        public int manaAmount = 1;
         public HealthDisplay _healthDisplay;
-        //public static PlayerCardDecks playerCardDecks;
         public PlayerInputState state = null;
 
 

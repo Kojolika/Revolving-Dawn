@@ -222,7 +222,7 @@ namespace fight
             {
                 Vector3 newPosition = curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, i));
 
-                newPosition.z -= (float)i / 100f;
+                newPosition.z -= (float)i * .5f;
                 tasks[i - 1] = StartCoroutine(MoveCardCoroutine(hand[i - 1],
                     newPosition,
                     CardHandUtils.ReturnCardRotation(hand.Count, i),

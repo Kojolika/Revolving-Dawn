@@ -47,7 +47,7 @@ namespace fightInput
 
                     _input.OnEnemyMouseOver += OnEnemyMouseOver;
 
-                    Vector3 cardCenterPosition = _input.cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0.25f, CardConfiguration.CAMERA_DISTANCE));
+                    Vector3 cardCenterPosition = _input.cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0.25f, CardConfiguration.CAMERA_DISTANCE - 3f));
 
                     mover = currentCard.gameObject.AddComponent<Mover>();
                     mover.Initialize(cardCenterPosition, 40f);
@@ -174,14 +174,15 @@ namespace fightInput
             _input.OnRightClicked -= RightClicked;
             _input.OnMouseEnterCardArea -= OnEnterCardArea;
 
+            currentCard.UpdateDescription(null);
 
             //reset the hand
             _input.GetComponent<CardHandManager>().CreateHand();
 
-            foreach (Character c in targets)
+            foreach (Character character in targets)
             {
-                if(c == null) continue;
-                c.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = false;
+                if(character == null) continue;
+                character.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = false;
             }
 
             switch (cardtarget)

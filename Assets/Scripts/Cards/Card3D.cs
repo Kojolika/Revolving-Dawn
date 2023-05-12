@@ -27,6 +27,7 @@ namespace cards
         [SerializeField] GameObject manaSockets; //parent object to instantiate sockets under
         [SerializeField] GameObject socketPrefab; //socket prefab to instatiate depending on the cards mana
         [SerializeField] Mana3D[] manaInSockets; //mana currently in this cards sockets, start as null for every socket
+        [SerializeField] ParticleSystem playableOutline;
 
         public static float CAMERA_DISTANCE => Camera.main.nearClipPlane + 7;
         public static Vector3 DEFAULT_SCALE => new Vector3(0.2f, 1f, 0.3f);
@@ -35,10 +36,12 @@ namespace cards
         public Targeting GetTarget() => _cardScriptableObject.target;
         public Character Owner { get => _cardScriptableObject.owner; set => _cardScriptableObject.owner = value; }
 
-        void Start()
+        void OnEnable()
         {
-            //PopulateFromData();
+            fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
+            fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
         }
+
         public void PopulateFromData()
         {
             if (_cardScriptableObject == null) return;
@@ -57,14 +60,16 @@ namespace cards
             description.fontSize = CardConfiguration.DEFAULT_FONT_NAME_SIZE;
             UpdateDescription(null);
 
+            Owner = _cardScriptableObject.owner;
+
             manaInSockets = new Mana3D[_cardScriptableObject.mana.Length];
 
             //If sockets are already instantiated, destroy them
             if (manaSockets.transform.childCount > 0)
             {
-                for(int index = 0; index < manaSockets.transform.childCount; index++)
+                for (int index = 0; index < manaSockets.transform.childCount; index++)
                 {
-                    Destroy(manaSockets.transform.GetChild(index)); 
+                    Destroy(manaSockets.transform.GetChild(index));
                 }
             }
 
@@ -88,7 +93,22 @@ namespace cards
             for (int index = 0; index < numberValues.Count; index++)
             {
                 Number copy = numberValues[index];
-                description.text = _cardScriptableObject.descriptionWithReplaceables.Replace(copy.getType().ToString().ToUpper() + (index + 1), "" + chain.process(copy, _cardScriptableObject.owner, target).Amount);
+                float numberAffectProcessing = chain.process(copy, _cardScriptableObject.owner, target).Amount;
+                string typeOfNumberAndIndex = copy.getType().ToString().ToUpper() + (index + 1);
+
+                if (numberAffectProcessing < copy.Amount)
+                {
+                    description.text = _cardScriptableObject.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "<color=#910505>" + numberAffectProcessing + "</color>");
+                }
+                else if (numberAffectProcessing > copy.Amount)
+                {
+                    description.text = _cardScriptableObject.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "<color=#00FF00>" + numberAffectProcessing + "</color>");
+                }
+                else
+                {
+                    description.text = _cardScriptableObject.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "" + numberAffectProcessing);
+                }
+
             }
         }
         //Summary:
@@ -189,6 +209,25 @@ namespace cards
         {
             OnMouseOverEvent = null;
             OnMouseExitEvent = null;
+
+            fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
+            fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
+        }
+
+        void PlayPlayableOutlineParticles(Character character)
+        {
+            Debug.Log(character);
+            if(character != Owner) return;
+            Debug.Log("Playing...");
+            Debug.Log(Owner);
+
+            playableOutline.Play();
+        }
+        void PausePlayableOutlineParticles(Character character)
+        {
+            if(character != Owner) return;
+
+            playableOutline.Pause();
         }
     }
 }

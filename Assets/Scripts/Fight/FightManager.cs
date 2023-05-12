@@ -108,20 +108,26 @@ namespace fight
         {
             FightEvents.TriggerCharacterTurnStart(character);
             yield return new WaitForSeconds(1f);
+
+            if(character == currentPlayer)
+            {
+                playerTurn = true;
+                _playerTurnInputManager.Enable(true);
+            }
+
             FightEvents.TriggerCharacterTurnAction(character);
             yield return new WaitForSeconds(1f);
 
             //The player triggers the end turn by themselves with the end turn button
-            if (character.GetType() != typeof(Player))
+            if (character != currentPlayer)
             {
                 FightEvents.TriggerCharacterTurnEnd(character);
             }
         }
         void StartPlayerTurn()
         {
-            playerTurn = true;
+            
             StartCoroutine(TriggerCharacterTurn(currentPlayer));
-            _playerTurnInputManager.Enable(true);
             _cardHandManager.TriggerDrawCards(currentPlayer.DrawAmount);
         }
         public void EndPlayerTurn()

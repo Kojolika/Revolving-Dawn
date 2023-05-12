@@ -11,7 +11,7 @@ namespace fight
         public Camera cardCam;
 
         const float SCALE_AMOUNT = 1.5f;
-        const float MOVE_SPEED_HOVER = 8f;
+        const float MOVE_SPEED_HOVER = 10f;
         public const float MOVE_SPEED_RESET = 35f;
 
         public void Initialize(CardHandManager CHMM, Card3D card){
@@ -25,7 +25,7 @@ namespace fight
             int cardposition = hand.IndexOf(card);
             float moveAmount;
             int positionDifference;
-            float selectedCardHoverHeight = 2.25f;
+            float selectedCardHoverHeight = 1.5f;
 
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
@@ -37,8 +37,8 @@ namespace fight
                     //and scaled up for better visability
                     card.transform.rotation  = Quaternion.Euler(CardConfiguration.DEFAULT_CARD_ROTATION);
                     Vector3 p = cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0, cardCam.nearClipPlane));
-                    card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y + selectedCardHoverHeight, card.transform.position.z - .1f);
-                    card.transform.localScale = CardConfiguration.DEFAULT_SCALE * SCALE_AMOUNT;
+                    card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y + selectedCardHoverHeight, card.transform.position.z - 1f);
+                    //card.transform.localScale = CardConfiguration.DEFAULT_SCALE * SCALE_AMOUNT;
                     continue;
                 }
 
@@ -53,7 +53,7 @@ namespace fight
 
                 //Add a small z value so cards on the right area always slightly infront of the left card
                 //Gives a sense of realism to the card hand
-                NewPosition.z -= (float)i / 100f;
+                NewPosition.z -= (float)i * 0.5f;
 
                 StartCoroutine(_cardHandMovementManager.MoveCardCoroutine(hand[i],
                     NewPosition,

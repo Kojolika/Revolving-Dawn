@@ -41,3 +41,24 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: 2
+    uniqueID: 193043749
+    locked: 0
+  - name: 3
+    uniqueID: 4052337551
+    locked: 0
+  - name: 4
+    uniqueID: 3178755521
+    locked: 0
+  - name: Card
+    uniqueID: 2567604947
+    locked: 0
+  - name: CardParticles
+    uniqueID: 3418077749
+    locked: 0
+  - name: 5
+    uniqueID: 1616874711
+    locked: 0
+  - name: 6
+    uniqueID: 400123009
+    locked: 0

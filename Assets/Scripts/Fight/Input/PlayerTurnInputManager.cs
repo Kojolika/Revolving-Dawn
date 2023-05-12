@@ -11,7 +11,7 @@ namespace fightInput
         public static PlayerTurnInputManager staticInstance;
 
         public PlayerInputState state;
-        public bool isEnabled;
+        public bool isEnabled = false;
         public bool isPaused = false;
 
         public delegate void ManaMouseOver(Mana3D mana);
