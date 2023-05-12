@@ -25,7 +25,7 @@ namespace fight
             int cardposition = hand.IndexOf(card);
             float moveAmount;
             int positionDifference;
-            float selectedCardHoverHeight = 1.5f;
+            float selectedCardHoverHeight = 2.20f;
 
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
@@ -38,7 +38,7 @@ namespace fight
                     card.transform.rotation  = Quaternion.Euler(CardConfiguration.DEFAULT_CARD_ROTATION);
                     Vector3 p = cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0, cardCam.nearClipPlane));
                     card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y + selectedCardHoverHeight, card.transform.position.z - 1f);
-                    //card.transform.localScale = CardConfiguration.DEFAULT_SCALE * SCALE_AMOUNT;
+                    card.transform.localScale = CardConfiguration.DEFAULT_SCALE * SCALE_AMOUNT;
                     continue;
                 }
 

@@ -27,7 +27,9 @@ namespace cards
         [SerializeField] GameObject manaSockets; //parent object to instantiate sockets under
         [SerializeField] GameObject socketPrefab; //socket prefab to instatiate depending on the cards mana
         [SerializeField] Mana3D[] manaInSockets; //mana currently in this cards sockets, start as null for every socket
+        
         [SerializeField] ParticleSystem playableOutline;
+        [SerializeField] ParticleSystem flash;
 
         public static float CAMERA_DISTANCE => Camera.main.nearClipPlane + 7;
         public static Vector3 DEFAULT_SCALE => new Vector3(0.2f, 1f, 0.3f);
@@ -38,8 +40,7 @@ namespace cards
 
         void OnEnable()
         {
-            fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
-            fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
+            PlayPlayableOutlineParticles();
         }
 
         public void PopulateFromData()
@@ -191,7 +192,6 @@ namespace cards
             {
                 OnMouseOverEvent(this);
             }
-            //Debug.Log("Mousing over card " + CardScriptableObject.name);
         }
         public delegate void MouseExit(Card3D card);
         public event MouseExit OnMouseExitEvent;
@@ -202,7 +202,6 @@ namespace cards
             {
                 OnMouseExitEvent(this);
             }
-            //Debug.Log("Stopped mousing over card " + CardScriptableObject.name);
         }
 
         void OnDestroy()
@@ -210,24 +209,20 @@ namespace cards
             OnMouseOverEvent = null;
             OnMouseExitEvent = null;
 
-            fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
-            fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
+            PausePlayableOutlineParticles();
         }
 
-        void PlayPlayableOutlineParticles(Character character)
+        void PlayPlayableOutlineParticles()
         {
-            Debug.Log(character);
-            if(character != Owner) return;
-            Debug.Log("Playing...");
-            Debug.Log(Owner);
-
             playableOutline.Play();
         }
-        void PausePlayableOutlineParticles(Character character)
+        void PausePlayableOutlineParticles()
         {
-            if(character != Owner) return;
-
             playableOutline.Pause();
+        }
+        public void PlayFlash(Color color)
+        {
+            flash.Play();
         }
     }
 }
