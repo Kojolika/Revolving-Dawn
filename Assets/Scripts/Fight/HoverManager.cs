@@ -11,7 +11,7 @@ namespace fight
         public Camera cardCam;
 
         const float SCALE_AMOUNT = 1.5f;
-        const float MOVE_SPEED_HOVER = 10f;
+        const float MOVE_SPEED_HOVER = 8f;
         public const float MOVE_SPEED_RESET = 35f;
 
         public void Initialize(CardHandManager CHMM, Card3D card){
@@ -24,8 +24,8 @@ namespace fight
             var hand = PlayerCardDecks.Hand;
             int cardposition = hand.IndexOf(card);
             float moveAmount;
-            int positionDifference;
-            float selectedCardHoverHeight = 2.20f;
+            float positionDifference;
+            float selectedCardHoverHeight = 2.25f;
 
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
@@ -44,9 +44,13 @@ namespace fight
 
                 //Move Cards relative to their position of the selected card
                 //i.e. cards closer more farther away
-                if (i - cardposition == 0) positionDifference = 0;
-                else positionDifference = 2 / (i - cardposition);
-                moveAmount = CardHandUtils.ReturnCardPosition(hand.Count, i + 1) + positionDifference * .03f;
+                positionDifference = 2 / (i - cardposition);
+                Debug.Log("Hovered index: " +cardposition);
+                Debug.Log("this index: "+ i);
+                Debug.Log("Before pos dif: " + CardHandUtils.ReturnCardPosition(hand.Count, i + 1) );
+                Debug.Log("Pos dif: " + positionDifference);
+                moveAmount = CardHandUtils.ReturnCardPosition(hand.Count, i + 1) + (positionDifference) * .05f;
+                Debug.Log("Move amount: " + moveAmount);
 
                 //turn curve point into vector space
                 Vector3 NewPosition = _cardHandMovementManager.curve.GetPoint(moveAmount);
@@ -64,8 +68,6 @@ namespace fight
         }
         public void ResetHand(float speed)
         {
-            var hand = PlayerCardDecks.Hand;
-
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
 

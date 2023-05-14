@@ -41,8 +41,20 @@ namespace cards
         void OnEnable()
         {
             fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterPlayArea += EnteredPlayArea;
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterMana3D += MousedOverMana;
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseExitMana3D += MouseLeftMana;
+            fightInput.PlayerTurnInputManager.staticInstance.RegisterCardEvents(this);
             fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
             fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
+        }
+        void OnDisable()
+        {
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterPlayArea -= EnteredPlayArea;
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterMana3D -= MousedOverMana;
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseExitMana3D -= MouseLeftMana;
+            fightInput.PlayerTurnInputManager.staticInstance.UnregisterCardEvents(this);
+            fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
+            fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
         }
 
         public void PopulateFromData()
@@ -206,15 +218,7 @@ namespace cards
             }
         }
 
-        void OnDestroy()
-        {
-            OnMouseOverEvent = null;
-            OnMouseExitEvent = null;
 
-            fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
-            fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
-
-        }
 
         void PlayPlayableOutlineParticles(Character character)
         {
@@ -230,12 +234,72 @@ namespace cards
         }
         void EnteredPlayArea()
         {
+            //Hacky way to tell if this card is the selected card
+            //Only the selected card would have a dragger
             if (this.TryGetComponent<Dragger>(out Dragger dragger))
             {
                 PlayFlash(Color.cyan);
             }
         }
-        void PlayFlash(Color color)
+
+
+        void MousedOverMana(Mana3D mana)
+        {
+            ManaType type = mana.type;
+            foreach (ManaType manaType in this.CardScriptableObject.mana)
+            {
+                if (manaType == type)
+                {
+                    ChangeColorOfPlayableParticleOutline(type);
+                }
+            }
+        }
+        ParticleSystem.MinMaxGradient cachedGradient;
+        void MouseLeftMana()
+        {
+            var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
+            playableOutlineColorOverTime.color = cachedGradient;
+        }
+        void ChangeColorOfPlayableParticleOutline(ManaType manaType)
+        {
+            var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
+
+            Gradient newGradient = new Gradient();
+
+            Color color = ColorForManaType(manaType);
+
+            newGradient.SetKeys(new GradientColorKey[]{
+                new GradientColorKey(color, 0.0f),
+                new GradientColorKey(color, 1.0f)
+            }, new GradientAlphaKey[] {
+                new GradientAlphaKey(1f, 0.0f), // fade out
+                new GradientAlphaKey(0.0f, 1.0f) //
+            });
+
+            cachedGradient = playableOutlineColorOverTime.color;
+            playableOutlineColorOverTime.color = newGradient;
+
+            Color ColorForManaType(ManaType manaType)
+            {
+                switch (manaType)
+                {
+                    case ManaType.Red:
+                        return Color.red;
+                    case ManaType.Blue:
+                        return Color.blue;
+                    case ManaType.Green:
+                        return Color.green;
+                    case ManaType.White:
+                        return Color.white;
+                    case ManaType.Gold:
+                        return Color.yellow;
+                    case ManaType.Black:
+                        return Color.black;
+                }
+                return Color.cyan;
+            }
+        }
+        public void PlayFlash(Color color)
         {
             //Color is the color of the flashing that the card does
 
