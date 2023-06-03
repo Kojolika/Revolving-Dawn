@@ -59,6 +59,7 @@
      <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Processor.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Special.cs" />
+     <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthBarInside.cs" />
      <Compile Include="Assets\Scripts\Cards\Hand.cs" />
@@ -111,7 +112,6 @@
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
      <Compile Include="Assets\Scripts\UI\DeckViewerButton.cs" />
-     <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

@@ -15,17 +15,16 @@ namespace fight
             int numToNormalize = cardPosition;
 
             float midpoint = (handSize / 2) + 1;
-            Computations _computations = new Computations();
 
             if (cardPosition == (int)midpoint && ((handSize % 2) != 0)) rotation = 0f;
             else if (cardPosition > midpoint - 1)
             {
                 numToNormalize = cardPosition - (int)midpoint;
-                rotation = _computations.Normalize((float)numToNormalize, 0f, (float)midpoint, minAngle, maxAngle);
+                rotation = Computations.Normalize((float)numToNormalize, 0f, (float)midpoint, minAngle, maxAngle);
             }
             else
             {
-                rotation = _computations.Normalize((float)numToNormalize, 0f, (float)midpoint, minAngle, maxAngle);
+                rotation = Computations.Normalize((float)numToNormalize, 0f, (float)midpoint, minAngle, maxAngle);
                 rotation = maxAngle - rotation;
                 rotation *= -1f;
             }

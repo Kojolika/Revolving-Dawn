@@ -12,7 +12,6 @@ namespace fight
 {
     public class FightManager : MonoBehaviour
     {
-
         [SerializeField] static Player currentPlayer;
         public static Player CurrentPlayer { get => currentPlayer; }
         [SerializeField] static List<Enemy> currentEnemies = new List<Enemy>();
@@ -59,6 +58,13 @@ namespace fight
                 currentEnemies.Add(e);
             }
 
+            //Load playerinputmanager to handle player input during turns
+            _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
+            state = new PlayerInputState();
+            state.Initialize();
+            _playerTurnInputManager.state = state;
+            _playerTurnInputManager.cardCam = cardsCamAndGameArea.GetComponent<Camera>();
+            currentPlayer.SetInputState(_playerTurnInputManager.state);
 
             //Load Card manager for moving cards around
             _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
@@ -68,15 +74,7 @@ namespace fight
                 cardsCamAndGameArea.GetComponentInChildren<Hand>().gameObject,
                 currentPlayer,
                 cardPrefab
-                );
-
-            //Load playerinputmanager to handle player input during turns
-            _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
-            state = new PlayerInputState();
-            state.Initialize();
-            _playerTurnInputManager.state = state;
-            _playerTurnInputManager.cardCam = cardsCamAndGameArea.GetComponent<Camera>();
-            currentPlayer.SetInputState(_playerTurnInputManager.state);
+            );
 
             //Load inputmanager for non turn related events
             //.
@@ -109,7 +107,7 @@ namespace fight
             FightEvents.TriggerCharacterTurnStart(character);
             yield return new WaitForSeconds(1f);
 
-            if(character == currentPlayer)
+            if (character == currentPlayer)
             {
                 playerTurn = true;
                 _playerTurnInputManager.Enable(true);
@@ -126,7 +124,7 @@ namespace fight
         }
         void StartPlayerTurn()
         {
-            
+
             StartCoroutine(TriggerCharacterTurn(currentPlayer));
             _cardHandManager.TriggerDrawCards(currentPlayer.DrawAmount);
         }

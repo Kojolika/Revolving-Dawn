@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using cards;
+using characters;
 
 namespace mana
 {
@@ -12,7 +14,6 @@ namespace mana
         {
             PopulateFromData();
             StartCoroutine(RotateSelf());
-            
         }
         public void ResetScale()
         {
@@ -32,7 +33,7 @@ namespace mana
             this.transform.localScale = ManaConfiguration.DEFAULT_SCALE;
             this.GetComponent<MeshRenderer>().sharedMaterial = ManaConfiguration.GetManaColor(type);
         }
-    }
+    }   
 
     public enum ManaType
     {

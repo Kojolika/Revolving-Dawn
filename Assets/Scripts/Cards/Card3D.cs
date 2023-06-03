@@ -27,7 +27,9 @@ namespace cards
         [SerializeField] GameObject manaSockets; //parent object to instantiate sockets under
         [SerializeField] GameObject socketPrefab; //socket prefab to instatiate depending on the cards mana
         [SerializeField] Mana3D[] manaInSockets; //mana currently in this cards sockets, start as null for every socket
+
         [SerializeField] ParticleSystem playableOutline;
+        [SerializeField] ParticleSystem flash;
 
         public static float CAMERA_DISTANCE => Camera.main.nearClipPlane + 7;
         public static Vector3 DEFAULT_SCALE => new Vector3(0.2f, 1f, 0.3f);
@@ -36,10 +38,29 @@ namespace cards
         public Targeting GetTarget() => _cardScriptableObject.target;
         public Character Owner { get => _cardScriptableObject.owner; set => _cardScriptableObject.owner = value; }
 
+        //color of card outline
+        ParticleSystem.MinMaxGradient cachedGradient;
         void OnEnable()
         {
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterPlayArea += EnteredPlayArea;
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterMana3D += MousedOverMana;
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseExitMana3D += MouseLeftMana;
+            fightInput.PlayerTurnInputManager.staticInstance.RegisterCardEvents(this);
             fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
             fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
+
+            //Cache color of outline for later
+            var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
+            cachedGradient = playableOutlineColorOverTime.color;
+        }
+        void OnDisable()
+        {
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterPlayArea -= EnteredPlayArea;
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterMana3D -= MousedOverMana;
+            fightInput.PlayerTurnInputManager.staticInstance.OnMouseExitMana3D -= MouseLeftMana;
+            fightInput.PlayerTurnInputManager.staticInstance.UnregisterCardEvents(this);
+            fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
+            fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
         }
 
         public void PopulateFromData()
@@ -85,6 +106,8 @@ namespace cards
                 instanitatedSocket.transform.GetChild(0).GetComponent<Renderer>().sharedMaterial = ManaConfiguration.GetManaColor(_cardScriptableObject.mana[index]);
 
             }
+
+
         }
         public void UpdateDescription(Character target)
         {
@@ -191,7 +214,6 @@ namespace cards
             {
                 OnMouseOverEvent(this);
             }
-            //Debug.Log("Mousing over card " + CardScriptableObject.name);
         }
         public delegate void MouseExit(Card3D card);
         public event MouseExit OnMouseExitEvent;
@@ -202,32 +224,109 @@ namespace cards
             {
                 OnMouseExitEvent(this);
             }
-            //Debug.Log("Stopped mousing over card " + CardScriptableObject.name);
         }
-
-        void OnDestroy()
-        {
-            OnMouseOverEvent = null;
-            OnMouseExitEvent = null;
-
-            fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
-            fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
-        }
-
         void PlayPlayableOutlineParticles(Character character)
         {
-            Debug.Log(character);
-            if(character != Owner) return;
-            Debug.Log("Playing...");
-            Debug.Log(Owner);
+            if (character != Owner) return;
 
             playableOutline.Play();
         }
         void PausePlayableOutlineParticles(Character character)
         {
-            if(character != Owner) return;
+            if (character != Owner) return;
 
             playableOutline.Pause();
+        }
+        void EnteredPlayArea()
+        {
+            //Hacky way to tell if this card is the selected card
+            //Only the selected card would have a dragger
+            if (this.TryGetComponent<Dragger>(out Dragger dragger))
+            {
+                PlayFlash(Color.cyan);
+            }
+        }
+
+
+        void MousedOverMana(Mana3D mana)
+        {
+            ManaType type = mana.type;
+            foreach (ManaType manaType in this.CardScriptableObject.mana)
+            {
+                if (manaType == type)
+                {
+                    ChangeColorOfPlayableParticleOutline(type);
+                    PlayFlash(ColorForManaType(type));
+                }
+                
+            }
+        }
+
+        void MouseLeftMana()
+        {
+            var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
+            playableOutlineColorOverTime.color = cachedGradient;
+        }
+        void ChangeColorOfPlayableParticleOutline(ManaType manaType)
+        {
+            var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
+
+            Gradient newGradient = new Gradient();
+
+            Color color = ColorForManaType(manaType);
+
+            newGradient.SetKeys(new GradientColorKey[]{
+                new GradientColorKey(color, 0.0f),
+                new GradientColorKey(color, 1.0f)
+            }, new GradientAlphaKey[] {
+                new GradientAlphaKey(1f, 0.0f), // fade out
+                new GradientAlphaKey(0.0f, 1.0f) //
+            });
+
+            playableOutlineColorOverTime.color = newGradient;
+
+
+        }
+        public void PlayFlash(Color color)
+        {
+            //Color is the color of the flashing that the card does
+
+            var flashMain = flash.main;
+            flashMain.startColor = color;
+
+            var flashColor = flash.colorOverLifetime;
+            Gradient newGradient = new Gradient();
+
+            newGradient.SetKeys(new GradientColorKey[]{
+                new GradientColorKey(color, 0.0f),
+                new GradientColorKey(color, 1.0f)
+            }, new GradientAlphaKey[] {
+                new GradientAlphaKey(0.5f, 0.0f), // fade out
+                new GradientAlphaKey(0.0f, 1.0f) //
+            });
+
+            flashColor.color = newGradient;
+
+            flash.Play();
+        }
+        Color ColorForManaType(ManaType manaType)
+        {
+            switch (manaType)
+            {
+                case ManaType.Red:
+                    return Color.red;
+                case ManaType.Blue:
+                    return Color.blue;
+                case ManaType.Green:
+                    return Color.green;
+                case ManaType.White:
+                    return Color.white;
+                case ManaType.Gold:
+                    return Color.yellow;
+                case ManaType.Black:
+                    return Color.black;
+            }
+            return Color.cyan;
         }
     }
 }

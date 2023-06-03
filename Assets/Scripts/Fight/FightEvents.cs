@@ -69,7 +69,6 @@ namespace fight
 
         public static void TriggerCharacterTurnStart(Character character)
         {
-            Debug.Log("Calling turn start for: " + character);
             //trigger start of turn effects
             //No events yet, will for later effects (bleed,poison, etc.)
             if (OnCharacterTurnStarted != null)
