@@ -4,14 +4,14 @@ using characters;
 
 namespace fight
 {
-    internal class HoverManager : MonoBehaviour
+    public class HoverManager : MonoBehaviour
     {
         public Card3D currentCard;
         CardHandManager _cardHandMovementManager;
         public Camera cardCam;
 
         const float SCALE_AMOUNT = 1.5f;
-        const float MOVE_SPEED_HOVER = 10f;
+        const float MOVE_SPEED_HOVER = 8f;
         public const float MOVE_SPEED_RESET = 35f;
 
         public void Initialize(CardHandManager CHMM, Card3D card){
@@ -24,8 +24,8 @@ namespace fight
             var hand = PlayerCardDecks.Hand;
             int cardposition = hand.IndexOf(card);
             float moveAmount;
-            int positionDifference;
-            float selectedCardHoverHeight = 1.5f;
+            float positionDifference;
+            float selectedCardHoverHeight = 2.25f;
 
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
@@ -38,16 +38,15 @@ namespace fight
                     card.transform.rotation  = Quaternion.Euler(CardConfiguration.DEFAULT_CARD_ROTATION);
                     Vector3 p = cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0, cardCam.nearClipPlane));
                     card.transform.position = new Vector3(_cardHandMovementManager.curve.GetPoint(CardHandUtils.ReturnCardPosition(hand.Count, cardposition + 1)).x, p.y + selectedCardHoverHeight, card.transform.position.z - 1f);
-                    //card.transform.localScale = CardConfiguration.DEFAULT_SCALE * SCALE_AMOUNT;
+                    card.transform.localScale = CardConfiguration.DEFAULT_SCALE * SCALE_AMOUNT;
                     continue;
                 }
 
                 //Move Cards relative to their position of the selected card
                 //i.e. cards closer more farther away
-                if (i - cardposition == 0) positionDifference = 0;
-                else positionDifference = 2 / (i - cardposition);
-                moveAmount = CardHandUtils.ReturnCardPosition(hand.Count, i + 1) + positionDifference * .03f;
-
+                positionDifference = (1.75f) / (i - cardposition);
+                moveAmount = CardHandUtils.ReturnCardPosition(hand.Count, i + 1) + (positionDifference) * .05f;
+ 
                 //turn curve point into vector space
                 Vector3 NewPosition = _cardHandMovementManager.curve.GetPoint(moveAmount);
 
@@ -64,8 +63,6 @@ namespace fight
         }
         public void ResetHand(float speed)
         {
-            var hand = PlayerCardDecks.Hand;
-
             StopAllCoroutines();
             _cardHandMovementManager.StopAllCoroutines();
 

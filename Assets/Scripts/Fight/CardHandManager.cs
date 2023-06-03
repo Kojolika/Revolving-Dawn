@@ -78,7 +78,7 @@ namespace fight
             PlayerCardDecks.InstantiatedDeck = new ObservableCollection<Card3D>();
             foreach (Card card in playerDeck)
             {
-                var instantiatedCard = Instantiate(cardPrefab,this.cardHandGO.transform);
+                var instantiatedCard = Instantiate(cardPrefab, this.cardHandGO.transform);
                 instantiatedCard.transform.position = this.cardSpawner.transform.position;
                 instantiatedCard.CardScriptableObject = card;
                 instantiatedCard.Owner = this.player;
@@ -194,7 +194,7 @@ namespace fight
         {
             var rng = new System.Random();
             int size = deckToShuffle.Count;
-            while(size > 1)
+            while (size > 1)
             {
                 size--;
                 int randomIndex = rng.Next(size + 1);
@@ -243,9 +243,17 @@ namespace fight
             rotation.x += cardRotation;
             card.transform.rotation = Quaternion.Euler(rotation);
 
+            Vector3 originalPosition = card.transform.position;
+            float originalDistance = Vector3.Distance(originalPosition, newPosition);
+
             while (card.transform.position != newPosition)
             {
-                card.transform.position = Vector3.MoveTowards(card.transform.position, newPosition, speed * Time.deltaTime);
+                float distance = Vector3.Distance(originalPosition, newPosition);
+                float distanceNormalized = utils.Computations.Normalize(distance, 0, originalDistance, 0.1f, 1);
+                Debug.Log("Distance: " + distance + " normalized: " + distanceNormalized);
+                float localSpeed = speed * distanceNormalized;
+                Debug.Log("localspeed: " + localSpeed);
+                card.transform.position = Vector3.MoveTowards(card.transform.position, newPosition, localSpeed * Time.deltaTime);
                 yield return null;
             }
         }

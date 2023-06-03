@@ -19,7 +19,7 @@ namespace fightInput
             _input.OnRightClicked += RightClicked;
             _input.OnLeftClicked += LeftClicked;
             _input.OnCardMouseExit += NoCardMouseOver;
-            _input.OnCardMouseEnter += CardMouseOver;
+            _input.onCardMouseOver += CardMouseOver;
 
             NewCardForHoverEffects(card);
         }
@@ -74,7 +74,7 @@ namespace fightInput
             currentCard = card;
             hoverManager.cardCam = _input.cardCam;
             hoverManager.Initialize(_input.gameObject.GetComponent<CardHandManager>(), currentCard);
-            hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
+            //hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
             hoverManager.HoverCardEffects();
         }
         public override void Exit()
@@ -83,7 +83,7 @@ namespace fightInput
             _input.OnRightClicked -= RightClicked;
             _input.OnLeftClicked -= LeftClicked;
             _input.OnCardMouseExit -= NoCardMouseOver;
-            _input.OnCardMouseEnter -= CardMouseOver;
+            _input.onCardMouseOver -= CardMouseOver;
 
             GameObject.Destroy(hoverManager);
         }

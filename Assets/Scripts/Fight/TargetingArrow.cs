@@ -67,7 +67,6 @@ namespace fight
             arrowCurve.SetPoint(3, new Vector3(curveStartingPosition.x, MousePositionInWorldSpace.y + 2f, MousePositionInWorldSpace.z));
             arrowCurve.SetPoint(4, MousePositionInWorldSpace);
 
-            utils.Computations comp = new Computations();
             t = pieceSize;
             for (int i = 0; i < NUM_OF_ARROW_PIECES; i++)
             {
@@ -77,7 +76,7 @@ namespace fight
 
                 Vector3 ArrowRotation = arrowCurve.GetDirection(t);
                 //change rotation of pieces on curve so they follow the curve
-                arrowLinePieces[i].transform.rotation = Quaternion.Euler(0f, 0f, -ArrowRotation.x * comp.Normalize(i,0,NUM_OF_ARROW_PIECES,1,175f));
+                arrowLinePieces[i].transform.rotation = Quaternion.Euler(0f, 0f, -ArrowRotation.x * Computations.Normalize(i,0,NUM_OF_ARROW_PIECES,1,175f));
                 t += pieceSize;
             }
         }
