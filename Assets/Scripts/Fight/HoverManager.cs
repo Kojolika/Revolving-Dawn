@@ -44,14 +44,9 @@ namespace fight
 
                 //Move Cards relative to their position of the selected card
                 //i.e. cards closer more farther away
-                positionDifference = 2 / (i - cardposition);
-                Debug.Log("Hovered index: " +cardposition);
-                Debug.Log("this index: "+ i);
-                Debug.Log("Before pos dif: " + CardHandUtils.ReturnCardPosition(hand.Count, i + 1) );
-                Debug.Log("Pos dif: " + positionDifference);
+                positionDifference = (1.75f) / (i - cardposition);
                 moveAmount = CardHandUtils.ReturnCardPosition(hand.Count, i + 1) + (positionDifference) * .05f;
-                Debug.Log("Move amount: " + moveAmount);
-
+ 
                 //turn curve point into vector space
                 Vector3 NewPosition = _cardHandMovementManager.curve.GetPoint(moveAmount);
 

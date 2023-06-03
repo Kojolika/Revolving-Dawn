@@ -105,7 +105,7 @@ namespace fightInput
         void TriggerMouseOverCard(Card3D card)
         {
             if (!IsInputEnabled()) return;
-            Debug.Log("Mouse over card");
+
             //Condition checks if any methods are subscribed to this event    
             if (onCardMouseOver != null)
             {
@@ -115,7 +115,7 @@ namespace fightInput
         void TriggerMouseEnterCard(Card3D card)
         {
             if (!IsInputEnabled()) return;
-            Debug.Log("Mouse Entered");
+
             //Condition checks if any methods are subscribed to this event
             if (OnCardMouseEnter != null)
             {
@@ -125,7 +125,7 @@ namespace fightInput
         void TriggerMouseExitCard(Card3D card)
         {
             if (!IsInputEnabled()) return;
-            Debug.Log("Mouse exited card");
+
             //Condition checks if any methods are subscribed to this event
             if (OnCardMouseExit != null)
             {
@@ -173,8 +173,6 @@ namespace fightInput
         bool mouseEnteredMana3D = false;
         bool mouseEnteredCardHandArea = false;
         bool mouseEnteredManaArea = false;
-        bool mouseEnteredCard = false;
-        //Card3D currentCard = null;
 
         void MouseOver()
         {
@@ -190,24 +188,11 @@ namespace fightInput
             bool mouseEnteredMana3DLocalCheck = false;
             bool mouseEnteredCardHandAreaLocalCheck = false;
             bool mouseEnteredManaAreaLocalCheck = false;
-            //bool mouseEnteredCardLocalCheck = false;
 
             for (int i = 0; i < hits.Length; i++)
             {
                 RaycastHit hit = hits[i];
-                /* 
-                                if (hit.transform.gameObject.TryGetComponent<Card3D>(out Card3D card))
-                                {
-                                    if (!mouseEnteredCard || currentCard != card)
-                                    {
-                                        if (currentCard != card) TriggerMouseExitCard(currentCard);
-                                        TriggerMouseEnterCard(card);
-                                        mouseEnteredCard = true;
-                                        currentCard = card;
-                                    }
-                                    TriggerMouseOverCard(card);
-                                    mouseEnteredCardLocalCheck = true;
-                                } */
+
                 if (hit.transform.gameObject.TryGetComponent<Mana3D>(out Mana3D mana))
                 {
                     if (!mouseEnteredMana3D)
@@ -247,11 +232,6 @@ namespace fightInput
                 }
             }
 
-/*             if (!mouseEnteredCardLocalCheck && mouseEnteredCard)
-            {
-                TriggerMouseExitCard(currentCard);
-                mouseEnteredCard = false;
-            } */
             if (!mouseEnteredMana3DLocalCheck && mouseEnteredMana3D)
             {
                 TriggerMouseExitMana3D();

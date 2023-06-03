@@ -38,6 +38,8 @@ namespace cards
         public Targeting GetTarget() => _cardScriptableObject.target;
         public Character Owner { get => _cardScriptableObject.owner; set => _cardScriptableObject.owner = value; }
 
+        //color of card outline
+        ParticleSystem.MinMaxGradient cachedGradient;
         void OnEnable()
         {
             fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterPlayArea += EnteredPlayArea;
@@ -46,6 +48,10 @@ namespace cards
             fightInput.PlayerTurnInputManager.staticInstance.RegisterCardEvents(this);
             fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
             fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
+
+            //Cache color of outline for later
+            var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
+            cachedGradient = playableOutlineColorOverTime.color;
         }
         void OnDisable()
         {
@@ -100,6 +106,8 @@ namespace cards
                 instanitatedSocket.transform.GetChild(0).GetComponent<Renderer>().sharedMaterial = ManaConfiguration.GetManaColor(_cardScriptableObject.mana[index]);
 
             }
+
+
         }
         public void UpdateDescription(Character target)
         {
@@ -217,9 +225,6 @@ namespace cards
                 OnMouseExitEvent(this);
             }
         }
-
-
-
         void PlayPlayableOutlineParticles(Character character)
         {
             if (character != Owner) return;
@@ -251,10 +256,12 @@ namespace cards
                 if (manaType == type)
                 {
                     ChangeColorOfPlayableParticleOutline(type);
+                    PlayFlash(ColorForManaType(type));
                 }
+                
             }
         }
-        ParticleSystem.MinMaxGradient cachedGradient;
+
         void MouseLeftMana()
         {
             var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
@@ -276,28 +283,9 @@ namespace cards
                 new GradientAlphaKey(0.0f, 1.0f) //
             });
 
-            cachedGradient = playableOutlineColorOverTime.color;
             playableOutlineColorOverTime.color = newGradient;
 
-            Color ColorForManaType(ManaType manaType)
-            {
-                switch (manaType)
-                {
-                    case ManaType.Red:
-                        return Color.red;
-                    case ManaType.Blue:
-                        return Color.blue;
-                    case ManaType.Green:
-                        return Color.green;
-                    case ManaType.White:
-                        return Color.white;
-                    case ManaType.Gold:
-                        return Color.yellow;
-                    case ManaType.Black:
-                        return Color.black;
-                }
-                return Color.cyan;
-            }
+
         }
         public void PlayFlash(Color color)
         {
@@ -320,6 +308,25 @@ namespace cards
             flashColor.color = newGradient;
 
             flash.Play();
+        }
+        Color ColorForManaType(ManaType manaType)
+        {
+            switch (manaType)
+            {
+                case ManaType.Red:
+                    return Color.red;
+                case ManaType.Blue:
+                    return Color.blue;
+                case ManaType.Green:
+                    return Color.green;
+                case ManaType.White:
+                    return Color.white;
+                case ManaType.Gold:
+                    return Color.yellow;
+                case ManaType.Black:
+                    return Color.black;
+            }
+            return Color.cyan;
         }
     }
 }
