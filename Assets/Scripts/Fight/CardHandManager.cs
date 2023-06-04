@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 using cards;
 using utils;
 using characters;
@@ -211,7 +212,7 @@ namespace fight
         internal IEnumerator CreateHandCurve(float speed)
         {
             var hand = PlayerCardDecks.Hand;
-            //failsale
+            //failsafe
             if (hand.Count < 1) yield return null;
 
             //Send event that the hand is being updated
