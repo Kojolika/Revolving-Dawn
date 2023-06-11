@@ -1,8 +1,8 @@
 using UnityEngine;
-using System;
 using cards;
 using characters;
 using mana;
+using System;
 
 namespace fightInput
 {
@@ -15,93 +15,20 @@ namespace fightInput
         public bool isEnabled = false;
         public bool isPaused = false;
 
-        public delegate void MouseOverMana3D(Mana3D mana);
-        public event MouseOverMana3D OnMouseEnterMana3D;
-        public delegate void MouseExitMana3D();
-        public event MouseExitMana3D OnMouseExitMana3D;
-
-        public delegate void MouseEnterManaArea();
-        public event MouseEnterManaArea OnMouseEnterManaArea;
-        public delegate void MouseExitManaArea();
-        public event MouseExitManaArea OnMouseExitManaArea;
-
-        public delegate void MouseEnterPlayArea();
-        public event MouseEnterPlayArea OnMouseEnterPlayArea;
-        public delegate void MouseEnterCardArea();
-        public event MouseEnterCardArea OnMouseEnterCardArea;
+        public event Action<Mana3D> MouseEnterMana3D;
+        public event Action MouseExitMana3D;
+        public event Action MouseEnterManaArea;
+        public event Action MouseExitManaArea;
+        public event Action MouseEnterPlayArea;
+        public event Action MouseEnterCardArea;
+        public event Action LeftClicked;
+        public event Action RightClicked;
+        public event Action<Enemy> EnemyMouseOver;
 
         public delegate void CardMouseOver(Card3D card);
         public event CardMouseOver onCardMouseOver;
-        public delegate void CardMouseEnter(Card3D card);
-        public event CardMouseEnter OnCardMouseEnter;
         public delegate void CardMouseExit(Card3D card);
         public event CardMouseExit OnCardMouseExit;
-
-        public delegate void LeftClicked();
-        public event LeftClicked OnLeftClicked;
-        public delegate void LeftClickedUp();
-        public event LeftClickedUp OnLeftClickedUp;
-        public delegate void RightClicked();
-        public event RightClicked OnRightClicked;
-
-        public delegate void EnemyMouseOver(Enemy enemy);
-        public event EnemyMouseOver OnEnemyMouseOver;
-
-
-        void TriggerMouseEnteredMana(Mana3D mana)
-        {
-            if (!IsInputEnabled()) return;
-            //Condition checks if any methods are subscribed to this event
-            if (OnMouseEnterMana3D != null)
-            {
-                OnMouseEnterMana3D(mana);
-            }
-        }
-        void TriggerMouseExitMana3D()
-        {
-            if (!IsInputEnabled()) return;
-            //Condition checks if any methods are subscribed to this event
-            if (OnMouseExitMana3D != null)
-            {
-                OnMouseExitMana3D();
-            }
-        }
-        void TriggerMouseEnterManaArea()
-        {
-            if (!IsInputEnabled()) return;
-            //Condition checks if any methods are subscribed to this event
-            if (OnMouseEnterManaArea != null)
-            {
-                OnMouseEnterManaArea();
-            }
-        }
-        void TriggerMouseExitManaArea()
-        {
-            if (!IsInputEnabled()) return;
-            //Condition checks if any methods are subscribed to this event
-            if (OnMouseExitManaArea != null)
-            {
-                OnMouseExitManaArea();
-            }
-        }
-        void TriggerMouseEnterPlayArea()
-        {
-            if (!IsInputEnabled()) return;
-            //Condition checks if any methods are subscribed to this event
-            if (OnMouseEnterPlayArea != null)
-            {
-                OnMouseEnterPlayArea();
-            }
-        }
-        void TriggerMouseEnterCardArea()
-        {
-            if (!IsInputEnabled()) return;
-            //Condition checks if any methods are subscribed to this event
-            if (OnMouseEnterCardArea != null)
-            {
-                OnMouseEnterCardArea();
-            }
-        }
         void TriggerMouseOverCard(Card3D card)
         {
             if (!IsInputEnabled()) return;
@@ -112,16 +39,6 @@ namespace fightInput
                 onCardMouseOver(card);
             }
         }
-        void TriggerMouseEnterCard(Card3D card)
-        {
-            if (!IsInputEnabled()) return;
-
-            //Condition checks if any methods are subscribed to this event
-            if (OnCardMouseEnter != null)
-            {
-                OnCardMouseEnter(card);
-            }
-        }
         void TriggerMouseExitCard(Card3D card)
         {
             if (!IsInputEnabled()) return;
@@ -130,42 +47,6 @@ namespace fightInput
             if (OnCardMouseExit != null)
             {
                 OnCardMouseExit(card);
-            }
-        }
-        void TriggerEnemyMouseOver(Enemy enemy)
-        {
-            if (!IsInputEnabled()) return;
-
-            if (OnEnemyMouseOver != null)
-            {
-                OnEnemyMouseOver(enemy);
-            }
-        }
-        void TriggerLeftClicked()
-        {
-            if (!IsInputEnabled()) return;
-            //Condition checks if any methods are subscribed to this event
-            if (OnLeftClicked != null)
-            {
-                OnLeftClicked();
-            }
-        }
-        void TriggerLeftClickedUp()
-        {
-            if (!IsInputEnabled()) return;
-            //Condition checks if any methods are subscribed to this event
-            if (OnLeftClickedUp != null)
-            {
-                OnLeftClickedUp();
-            }
-        }
-        void TriggerRightClicked()
-        {
-            if (!IsInputEnabled()) return;
-            //Condition checks if any methods are subscribed to this event
-            if (OnRightClicked != null)
-            {
-                OnRightClicked();
             }
         }
 
@@ -183,7 +64,7 @@ namespace fightInput
             //localCheck bools handle if the raycast passed through an object in this raycast
             //Always set to false at the start but if they pass through and object they are set to true
             //If they are false they reset the global bool with matching name to be false
-            //In essence this allows events to called once when a mouse mouses over an object isntead of in every update loop
+            //In essence this allows events to called once when a mouse mouses over an object instead of in every update loop
             bool mouseEnteredPlayAreaLocalCheck = false;
             bool mouseEnteredMana3DLocalCheck = false;
             bool mouseEnteredCardHandAreaLocalCheck = false;
@@ -197,7 +78,7 @@ namespace fightInput
                 {
                     if (!mouseEnteredMana3D)
                     {
-                        TriggerMouseEnteredMana(mana);
+                        MouseEnterMana3D?.Invoke(mana);
                         mouseEnteredMana3D = true;
                     }
                     //Can trigger mouseOver events here for events that keep getting called
@@ -207,7 +88,7 @@ namespace fightInput
                 {
                     if (!mouseEnteredCardHandArea)
                     {
-                        TriggerMouseEnterCardArea();
+                        MouseEnterCardArea?.Invoke();
                         mouseEnteredCardHandArea = true;
                     }
                     mouseEnteredCardHandAreaLocalCheck = true;
@@ -216,7 +97,7 @@ namespace fightInput
                 {
                     if (!mouseEnteredPlayArea)
                     {
-                        TriggerMouseEnterPlayArea();
+                        MouseEnterPlayArea?.Invoke();
                         mouseEnteredPlayArea = true;
                     }
                     mouseEnteredPlayAreaLocalCheck = true;
@@ -225,7 +106,7 @@ namespace fightInput
                 {
                     if (!mouseEnteredManaArea)
                     {
-                        TriggerMouseEnterManaArea();
+                        MouseEnterManaArea?.Invoke();
                         mouseEnteredManaArea = true;
                     }
                     mouseEnteredManaAreaLocalCheck = true;
@@ -234,12 +115,12 @@ namespace fightInput
 
             if (!mouseEnteredMana3DLocalCheck && mouseEnteredMana3D)
             {
-                TriggerMouseExitMana3D();
+                MouseExitMana3D?.Invoke();
                 mouseEnteredMana3D = false;
             }
             if (!mouseEnteredManaAreaLocalCheck && mouseEnteredManaArea)
             {
-                TriggerMouseExitManaArea();
+                MouseExitManaArea?.Invoke();
                 mouseEnteredManaArea = false;
             }
             if (!mouseEnteredPlayAreaLocalCheck && mouseEnteredPlayArea)
@@ -265,22 +146,22 @@ namespace fightInput
                 if (hit.transform.gameObject.GetComponent<Enemy>())
                 {
                     currentEnemy = hit.transform.gameObject.GetComponent<Enemy>();
-                    TriggerEnemyMouseOver(currentEnemy);
+                    EnemyMouseOver?.Invoke(currentEnemy);
                     return;
                 }
             }
-            TriggerEnemyMouseOver(currentEnemy);
+            EnemyMouseOver?.Invoke(currentEnemy);
         }
         void MouseInput()
         {
 
             if (Input.GetKeyUp(KeyCode.Mouse1))
             {
-                TriggerRightClicked();
+                RightClicked?.Invoke();
             }
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                TriggerLeftClicked();
+                LeftClicked?.Invoke();
             }
         }
         public void Enable(bool value)

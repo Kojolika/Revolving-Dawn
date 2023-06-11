@@ -20,9 +20,9 @@ namespace fightInput
 
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
 
-            _input.OnRightClicked += RightClicked;
-            _input.OnLeftClicked += LeftClicked;
-            _input.OnCardMouseEnter += MouseOverCard;
+            _input.RightClicked += RightClicked;
+            _input.LeftClicked += LeftClicked;
+            _input.onCardMouseOver += MouseOverCard;
             _input.OnCardMouseExit += NoCardMouseOver;
         }
 
@@ -94,9 +94,9 @@ namespace fightInput
         {
             if(manaBeingDragged) manaBeingDragged.gameObject.AddComponent<BoxCollider>();
 
-            _input.OnRightClicked -= RightClicked;
-            _input.OnLeftClicked -= LeftClicked;
-            _input.OnCardMouseEnter -= MouseOverCard;
+            _input.RightClicked -= RightClicked;
+            _input.LeftClicked -= LeftClicked;
+            _input.onCardMouseOver -= MouseOverCard;
             _input.OnCardMouseExit -= NoCardMouseOver;
         }
     }

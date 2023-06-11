@@ -16,8 +16,8 @@ namespace fightInput
 
             currentCard = card;
 
-            _input.OnRightClicked += RightClicked;
-            _input.OnMouseEnterPlayArea += OnEnterPlayArea;
+            _input.RightClicked += RightClicked;
+            _input.MouseEnterPlayArea += OnEnterPlayArea;
 
             currentCard.transform.rotation = Quaternion.Euler(CardConfiguration.DEFAULT_CARD_ROTATION);
             newDragger = currentCard.gameObject.AddComponent<Dragger>();
@@ -45,8 +45,8 @@ namespace fightInput
         void OnEnterPlayArea() => changeStateTo = ChangeStateTo.Targeting;
         public override void Exit()
         {
-            _input.OnRightClicked -= RightClicked;
-            _input.OnMouseEnterPlayArea -= OnEnterPlayArea;
+            _input.RightClicked -= RightClicked;
+            _input.MouseEnterPlayArea -= OnEnterPlayArea;
 
             if ((int)currentCard.GetTarget() == 1 || changeStateTo == ChangeStateTo.Default)
             {

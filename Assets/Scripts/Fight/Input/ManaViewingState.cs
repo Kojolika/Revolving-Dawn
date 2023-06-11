@@ -12,8 +12,8 @@ namespace fightInput
 
         public ManaViewingState()
         {
-            _input.OnMouseExitManaArea += ExitManaArea;
-            _input.OnMouseEnterMana3D += MouseEnterMana3D;
+            _input.MouseExitManaArea += ExitManaArea;
+            _input.MouseEnterMana3D += MouseEnterMana3D;
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
             if(manaPool.IsRotating())
                 manaPool.StopRotating();
@@ -46,8 +46,8 @@ namespace fightInput
         }
         public override void Exit()
         {
-            _input.OnMouseExitManaArea -= ExitManaArea;
-            _input.OnMouseEnterMana3D -= MouseEnterMana3D;
+            _input.MouseExitManaArea -= ExitManaArea;
+            _input.MouseEnterMana3D -= MouseEnterMana3D;
         }
 
     }

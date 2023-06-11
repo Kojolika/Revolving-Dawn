@@ -23,9 +23,9 @@ namespace fightInput
         {
             currentCard = card;
 
-            _input.OnLeftClicked += LeftClicked;
-            _input.OnRightClicked += RightClicked;
-            _input.OnMouseEnterCardArea += OnEnterCardArea;
+            _input.LeftClicked += LeftClicked;
+            _input.RightClicked += RightClicked;
+            _input.MouseEnterCardArea += OnEnterCardArea;
 
 
             cardtarget = (int)card.GetTarget();
@@ -45,7 +45,7 @@ namespace fightInput
                     //Hand is still reseting
                     _input.GetComponent<CardHandManager>().StopAllCoroutines();
 
-                    _input.OnEnemyMouseOver += OnEnemyMouseOver;
+                    _input.EnemyMouseOver += OnEnemyMouseOver;
 
                     Vector3 cardCenterPosition = _input.cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0.25f, CardConfiguration.CAMERA_DISTANCE - 3f));
 
@@ -170,9 +170,9 @@ namespace fightInput
         }
         public override void Exit()
         {
-            _input.OnLeftClicked -= LeftClicked;
-            _input.OnRightClicked -= RightClicked;
-            _input.OnMouseEnterCardArea -= OnEnterCardArea;
+            _input.LeftClicked -= LeftClicked;
+            _input.RightClicked -= RightClicked;
+            _input.MouseEnterCardArea -= OnEnterCardArea;
 
             currentCard.UpdateDescription(null);
 
@@ -194,7 +194,7 @@ namespace fightInput
                 case 1: //Enemy
                     if (mover) GameObject.Destroy(mover);
 
-                    _input.OnEnemyMouseOver -= OnEnemyMouseOver;
+                    _input.EnemyMouseOver -= OnEnemyMouseOver;
 
                     GameObject.Destroy(targetingArrow);
                     break;

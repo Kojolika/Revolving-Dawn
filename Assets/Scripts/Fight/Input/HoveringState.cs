@@ -16,8 +16,8 @@ namespace fightInput
         public HoveringState(Card3D card)
         {
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
-            _input.OnRightClicked += RightClicked;
-            _input.OnLeftClicked += LeftClicked;
+            _input.RightClicked += RightClicked;
+            _input.LeftClicked += LeftClicked;
             _input.OnCardMouseExit += NoCardMouseOver;
             _input.onCardMouseOver += CardMouseOver;
 
@@ -80,8 +80,8 @@ namespace fightInput
         public override void Exit()
         {
             hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
-            _input.OnRightClicked -= RightClicked;
-            _input.OnLeftClicked -= LeftClicked;
+            _input.RightClicked -= RightClicked;
+            _input.LeftClicked -= LeftClicked;
             _input.OnCardMouseExit -= NoCardMouseOver;
             _input.onCardMouseOver -= CardMouseOver;
 

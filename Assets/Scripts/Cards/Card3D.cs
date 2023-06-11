@@ -42,9 +42,9 @@ namespace cards
         ParticleSystem.MinMaxGradient cachedGradient;
         void OnEnable()
         {
-            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterPlayArea += EnteredPlayArea;
-            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterMana3D += MousedOverMana;
-            fightInput.PlayerTurnInputManager.staticInstance.OnMouseExitMana3D += MouseLeftMana;
+            fightInput.PlayerTurnInputManager.staticInstance.MouseEnterPlayArea += EnteredPlayArea;
+            fightInput.PlayerTurnInputManager.staticInstance.MouseEnterMana3D += MousedOverMana;
+            fightInput.PlayerTurnInputManager.staticInstance.MouseExitMana3D += MouseLeftMana;
             fightInput.PlayerTurnInputManager.staticInstance.RegisterCardEvents(this);
             fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
             fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
@@ -55,9 +55,9 @@ namespace cards
         }
         void OnDisable()
         {
-            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterPlayArea -= EnteredPlayArea;
-            fightInput.PlayerTurnInputManager.staticInstance.OnMouseEnterMana3D -= MousedOverMana;
-            fightInput.PlayerTurnInputManager.staticInstance.OnMouseExitMana3D -= MouseLeftMana;
+            fightInput.PlayerTurnInputManager.staticInstance.MouseEnterPlayArea -= EnteredPlayArea;
+            fightInput.PlayerTurnInputManager.staticInstance.MouseEnterMana3D -= MousedOverMana;
+            fightInput.PlayerTurnInputManager.staticInstance.MouseExitMana3D -= MouseLeftMana;
             fightInput.PlayerTurnInputManager.staticInstance.UnregisterCardEvents(this);
             fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
             fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
