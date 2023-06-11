@@ -18,8 +18,8 @@ namespace fightInput
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
             _input.RightClicked += RightClicked;
             _input.LeftClicked += LeftClicked;
-            _input.OnCardMouseExit += NoCardMouseOver;
-            _input.onCardMouseOver += CardMouseOver;
+            _input.CardMouseExit += NoCardMouseOver;
+            _input.CardMouseOver += CardMouseOver;
 
             NewCardForHoverEffects(card);
         }
@@ -82,8 +82,8 @@ namespace fightInput
             hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
             _input.RightClicked -= RightClicked;
             _input.LeftClicked -= LeftClicked;
-            _input.OnCardMouseExit -= NoCardMouseOver;
-            _input.onCardMouseOver -= CardMouseOver;
+            _input.CardMouseExit -= NoCardMouseOver;
+            _input.CardMouseOver -= CardMouseOver;
 
             GameObject.Destroy(hoverManager);
         }

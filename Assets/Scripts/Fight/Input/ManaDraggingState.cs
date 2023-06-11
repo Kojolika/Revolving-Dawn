@@ -22,8 +22,8 @@ namespace fightInput
 
             _input.RightClicked += RightClicked;
             _input.LeftClicked += LeftClicked;
-            _input.onCardMouseOver += MouseOverCard;
-            _input.OnCardMouseExit += NoCardMouseOver;
+            _input.CardMouseOver += MouseOverCard;
+            _input.CardMouseExit += NoCardMouseOver;
         }
 
         public override PlayerInputState Transition()
@@ -96,8 +96,8 @@ namespace fightInput
 
             _input.RightClicked -= RightClicked;
             _input.LeftClicked -= LeftClicked;
-            _input.onCardMouseOver -= MouseOverCard;
-            _input.OnCardMouseExit -= NoCardMouseOver;
+            _input.CardMouseOver -= MouseOverCard;
+            _input.CardMouseExit -= NoCardMouseOver;
         }
     }
 }

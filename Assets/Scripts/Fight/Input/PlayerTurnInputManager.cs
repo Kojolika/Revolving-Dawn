@@ -25,29 +25,21 @@ namespace fightInput
         public event Action RightClicked;
         public event Action<Enemy> EnemyMouseOver;
 
-        public delegate void CardMouseOver(Card3D card);
-        public event CardMouseOver onCardMouseOver;
-        public delegate void CardMouseExit(Card3D card);
-        public event CardMouseExit OnCardMouseExit;
+        public delegate void CardMouseOverEvent(Card3D card);
+        public event CardMouseOverEvent CardMouseOver;
+        public delegate void CardMouseExitEvent(Card3D card);
+        public event CardMouseExitEvent CardMouseExit;
         void TriggerMouseOverCard(Card3D card)
         {
             if (!IsInputEnabled()) return;
 
-            //Condition checks if any methods are subscribed to this event    
-            if (onCardMouseOver != null)
-            {
-                onCardMouseOver(card);
-            }
+            CardMouseOver?.Invoke(card); 
         }
         void TriggerMouseExitCard(Card3D card)
         {
             if (!IsInputEnabled()) return;
 
-            //Condition checks if any methods are subscribed to this event
-            if (OnCardMouseExit != null)
-            {
-                OnCardMouseExit(card);
-            }
+            CardMouseExit?.Invoke(card);
         }
 
         bool mouseEnteredPlayArea = false;

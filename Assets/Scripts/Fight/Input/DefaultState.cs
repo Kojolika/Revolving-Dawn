@@ -13,7 +13,7 @@ namespace fightInput
 
         public DefaultState()
         {
-            _input.onCardMouseOver += CardMouseOver;
+            _input.CardMouseOver += CardMouseOver;
             _input.MouseEnterManaArea += MouseEnterManaArea;
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
             if(!manaPool.IsRotating())
@@ -49,7 +49,7 @@ namespace fightInput
         }
         public override void Exit()
         {
-            _input.onCardMouseOver -= CardMouseOver;
+            _input.CardMouseOver -= CardMouseOver;
             _input.MouseEnterManaArea -= MouseEnterManaArea;
         }
 
