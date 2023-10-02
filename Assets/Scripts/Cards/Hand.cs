@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace cards
+namespace Cards
 {
     public class Hand : MonoBehaviour
     {

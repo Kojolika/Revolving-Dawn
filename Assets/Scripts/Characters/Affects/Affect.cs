@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-using fightDamageCalc;
+using FightDamageCalc;
 
-namespace characters
+namespace Characters
 {
     [Serializable]
     public abstract class Affect 

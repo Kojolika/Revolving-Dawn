@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 
-namespace characters
+namespace Characters
 {
     public class Enemy_Slime : Enemy
     {

@@ -1,5 +1,5 @@
-using cards;
-using mana;
+using Cards;
+using Mana;
 using UnityEngine;
 
 namespace fightInput

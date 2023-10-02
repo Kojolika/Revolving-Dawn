@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.Collections;
-using cards;
-using characters;
+using Cards;
+using Characters;
 
-namespace mana
+namespace Mana
 {
     public class Mana3D : MonoBehaviour
     {

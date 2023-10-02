@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-namespace characters
+namespace Characters
 {
     public class HealthDisplay : MonoBehaviour
     {

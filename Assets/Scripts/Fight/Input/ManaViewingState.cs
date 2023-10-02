@@ -1,4 +1,4 @@
-using mana;
+using Mana;
 using UnityEngine;
 
 namespace fightInput

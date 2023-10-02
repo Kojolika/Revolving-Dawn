@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-namespace characters
+namespace Characters
 {
     public class Targeting_Border : MonoBehaviour
     {

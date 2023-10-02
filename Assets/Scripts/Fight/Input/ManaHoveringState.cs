@@ -1,4 +1,4 @@
-using mana;
+using Mana;
 
 namespace fightInput
 {

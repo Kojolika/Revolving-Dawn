@@ -1,10 +1,10 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
-using characters;
-using mana;
+using Characters;
+using Mana;
 
-namespace cards
+namespace Cards
 {
 
     public static class CardConfiguration

@@ -1,5 +1,5 @@
 using UnityEngine;
-using cards;
+using Cards;
 using System.Collections.Generic;
 
 public class TestDeck : MonoBehaviour {

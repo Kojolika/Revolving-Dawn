@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using characters;
+using Characters;
 
 public class Block : Move {
 
@@ -21,7 +21,7 @@ public class Block : Move {
         {
             foreach(var target in targets)
             {
-                enemyUsingMove.PerformNumberAction(new fightDamageCalc.Number(blockAmount,fightDamageCalc.FightInfo.NumberType.Block),target);
+                enemyUsingMove.PerformNumberAction(new FightDamageCalc.Number(blockAmount,FightDamageCalc.FightInfo.NumberType.Block),target);
             }
         }
     }

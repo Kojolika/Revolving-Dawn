@@ -1,5 +1,5 @@
 
-namespace fightDamageCalc
+namespace FightDamageCalc
 {
     public class FightInfo
     {
@@ -30,7 +30,7 @@ namespace fightDamageCalc
             get => amount;
             set => amount = value;
         }
-        public FightInfo.NumberType getType()
+        public FightInfo.NumberType GetDamageType()
         {
             return type;
         }

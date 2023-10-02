@@ -1,5 +1,5 @@
-using fightDamageCalc;
-using characters;
+using FightDamageCalc;
+using Characters;
 public class DeBuffProcessor : Processor
 {
     public DeBuffProcessor(Processor nextProcessor) : base(nextProcessor)

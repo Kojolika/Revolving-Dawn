@@ -1,5 +1,5 @@
-using fightDamageCalc;
-using characters;
+using FightDamageCalc;
+using Characters;
 
 public class ResistProcessor : Processor
 {

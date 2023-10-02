@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace characters
+namespace Characters
 {
     public class HealthSystem
     {

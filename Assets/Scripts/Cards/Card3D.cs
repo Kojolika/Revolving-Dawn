@@ -1,11 +1,11 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
-using characters;
-using fightDamageCalc;
-using mana;
+using Characters;
+using FightDamageCalc;
+using Mana;
 
-namespace cards
+namespace Cards
 {
     public class Card3D : MonoBehaviour
     {
@@ -111,13 +111,13 @@ namespace cards
         }
         public void UpdateDescription(Character target)
         {
-            Chain chain = new Chain();
+            ProcessingChain chain = new ProcessingChain();
             var numberValues = _cardScriptableObject.numberValues;
             for (int index = 0; index < numberValues.Count; index++)
             {
                 Number copy = numberValues[index];
-                float numberAffectProcessing = chain.process(copy, _cardScriptableObject.owner, target).Amount;
-                string typeOfNumberAndIndex = copy.getType().ToString().ToUpper() + (index + 1);
+                float numberAffectProcessing = chain.Process(copy, _cardScriptableObject.owner, target).Amount;
+                string typeOfNumberAndIndex = copy.GetDamageType().ToString().ToUpper() + (index + 1);
 
                 if (numberAffectProcessing < copy.Amount)
                 {
@@ -287,10 +287,8 @@ namespace cards
 
 
         }
-        public void PlayFlash(Color color)
+        void PlayFlash(Color color)
         {
-            //Color is the color of the flashing that the card does
-
             var flashMain = flash.main;
             flashMain.startColor = color;
 

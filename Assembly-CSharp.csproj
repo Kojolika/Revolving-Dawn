@@ -52,7 +52,7 @@
      <Compile Include="Assets\Scripts\Fight\Mana\Mana.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\ManaViewingState.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Affects.cs" />
-     <Compile Include="Assets\Scripts\Characters\Player\PlayerCardDecks.cs" />
+     <Compile Include="Assets\Scripts\Characters\Player\PlayerCardDecksManager.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\ResistProcessor.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\ManaHoveringState.cs" />
      <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconHover.cs" />

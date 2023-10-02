@@ -1,5 +1,5 @@
 using UnityEngine;
-using mana;
+using Mana;
 
 namespace fightInput
 {

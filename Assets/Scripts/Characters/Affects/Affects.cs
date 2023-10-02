@@ -3,7 +3,7 @@ using System.Linq;
 using fight;
 using UnityEngine;
 
-namespace characters
+namespace Characters
 {
     public class Affects : MonoBehaviour
     {

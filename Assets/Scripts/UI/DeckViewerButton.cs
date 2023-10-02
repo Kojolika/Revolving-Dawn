@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Collections;
 using System.Dynamic;
 using TMPro;
-using characters; 
+using Characters; 
 
 namespace UI
 {
@@ -28,17 +28,17 @@ public class DeckViewerButton : MenuButton
         switch (deckType)
         {
             case DeckType.Deck:
-                PlayerCardDecks.Deck.CollectionChanged += ChangeValue;
+                PlayerCardDecksManager.Deck.CollectionChanged += ChangeValue;
                 break;
             case DeckType.Discard:
-                PlayerCardDecks.Discard.CollectionChanged += ChangeValue;
+                PlayerCardDecksManager.Discard.CollectionChanged += ChangeValue;
                 break;
             case DeckType.Draw:
-                PlayerCardDecks.DrawPile.CollectionChanged += ChangeValue;
-                buttonText.text = "" + PlayerCardDecks.DrawPile.Count;
+                PlayerCardDecksManager.DrawPile.CollectionChanged += ChangeValue;
+                buttonText.text = "" + PlayerCardDecksManager.DrawPile.Count;
                 break;
             case DeckType.Lost:
-                PlayerCardDecks.Lost.CollectionChanged += ChangeValue;
+                PlayerCardDecksManager.Lost.CollectionChanged += ChangeValue;
                 break;
         }
     }
@@ -47,16 +47,16 @@ public class DeckViewerButton : MenuButton
         switch (deckType)
         {
             case DeckType.Deck:
-                buttonText.text = "" + characters.PlayerCardDecks.Deck.Count;
+                buttonText.text = "" + Characters.PlayerCardDecksManager.Deck.Count;
                 break;
             case DeckType.Discard:
-                buttonText.text = "" + characters.PlayerCardDecks.Discard.Count;
+                buttonText.text = "" + Characters.PlayerCardDecksManager.Discard.Count;
                 break;
             case DeckType.Draw:
-                buttonText.text = "" + characters.PlayerCardDecks.DrawPile.Count;
+                buttonText.text = "" + Characters.PlayerCardDecksManager.DrawPile.Count;
                 break;
             case DeckType.Lost:
-                buttonText.text = "" + characters.PlayerCardDecks.Lost.Count;
+                buttonText.text = "" + Characters.PlayerCardDecksManager.Lost.Count;
                 break;
         }
 
@@ -66,16 +66,16 @@ public class DeckViewerButton : MenuButton
         switch (deckType)
         {
             case DeckType.Deck:
-                PlayerCardDecks.Deck.CollectionChanged -= ChangeValue;
+                PlayerCardDecksManager.Deck.CollectionChanged -= ChangeValue;
                 break;
             case DeckType.Discard:
-                PlayerCardDecks.Discard.CollectionChanged -= ChangeValue;
+                PlayerCardDecksManager.Discard.CollectionChanged -= ChangeValue;
                 break;
             case DeckType.Draw:
-                PlayerCardDecks.DrawPile.CollectionChanged -= ChangeValue;
+                PlayerCardDecksManager.DrawPile.CollectionChanged -= ChangeValue;
                 break;
             case DeckType.Lost:
-                PlayerCardDecks.Lost.CollectionChanged -= ChangeValue;
+                PlayerCardDecksManager.Lost.CollectionChanged -= ChangeValue;
                 break;
         }
     }

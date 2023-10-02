@@ -1,7 +1,7 @@
 using System;
-using fightDamageCalc;
+using FightDamageCalc;
 
-namespace characters
+namespace Characters
 {
     public class Weaken : Affect
     {
@@ -38,7 +38,7 @@ namespace characters
         }
         public override Number process(Number request)
         {
-            if (request.getType() == numberType)
+            if (request.GetDamageType() == numberType)
             {
                 request.Amount = request.Amount * weakenAmount;
             }

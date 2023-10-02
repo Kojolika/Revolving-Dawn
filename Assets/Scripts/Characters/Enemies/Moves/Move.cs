@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using characters;
+using Characters;
 
 
 public abstract class Move

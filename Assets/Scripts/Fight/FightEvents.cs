@@ -1,4 +1,4 @@
-using characters;
+using Characters;
 using UnityEngine;
 
 namespace fight

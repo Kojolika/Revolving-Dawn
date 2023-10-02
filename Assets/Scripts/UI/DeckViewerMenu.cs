@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.ObjectModel;
-using cards;
-using characters;
+using Cards;
+using Characters;
 using TMPro;
 using System.Dynamic;
 
@@ -75,17 +75,17 @@ namespace UI
             {
                 case DeckType.Draw:
                     deckName.text = "Draw";
-                    LoadCards(PlayerCardDecks.DrawPile);
+                    LoadCards(PlayerCardDecksManager.DrawPile);
 
                     break;
                 case DeckType.Discard:
                     deckName.text = "Discard";
-                    LoadCards(PlayerCardDecks.Discard);
+                    LoadCards(PlayerCardDecksManager.Discard);
 
                     break;
                 case DeckType.Lost:
                     deckName.text = "Lost";
-                    LoadCards(PlayerCardDecks.Lost);
+                    LoadCards(PlayerCardDecksManager.Lost);
 
                     break;
                 case DeckType.Deck:

@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
-using characters;
-using mana;
+using Characters;
+using Mana;
 using utils;
-using fightDamageCalc;
+using FightDamageCalc;
 
-namespace cards
+namespace Cards
 {
     [CreateAssetMenu(fileName = "New Card", menuName = "Cards/New Card")]
     public class Card : ScriptableObject

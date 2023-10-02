@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace characters
+namespace Characters
 {
     public abstract class Character : MonoBehaviour
     {
@@ -23,20 +21,20 @@ namespace characters
             healthDisplay.transform.localPosition = healthbarPosition;
         }
 
-        public void PerformNumberAction(fightDamageCalc.Number number, Character target)
+        public void PerformNumberAction(FightDamageCalc.Number number, Character target)
         {
-            fightDamageCalc.Chain chain = new fightDamageCalc.Chain();
-            float finalAmount = chain.process(number, this, target).Amount;
+            FightDamageCalc.ProcessingChain chain = new FightDamageCalc.ProcessingChain();
+            float finalAmount = chain.Process(number, this, target).Amount;
 
-            if (number.getType() == fightDamageCalc.FightInfo.NumberType.Attack)
+            if (number.GetDamageType() == FightDamageCalc.FightInfo.NumberType.Attack)
             {
                 target.healthDisplay.health.DealDamage(finalAmount);
             }
-            else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Block)
+            else if (number.GetDamageType() == FightDamageCalc.FightInfo.NumberType.Block)
             {
                 target.healthDisplay.health.AddBlock(finalAmount);
             }
-            else if (number.getType() == fightDamageCalc.FightInfo.NumberType.Heal)
+            else if (number.GetDamageType() == FightDamageCalc.FightInfo.NumberType.Heal)
                 target.healthDisplay.health.Heal(finalAmount);
         }
         public void PerformAffectAction(Affect affect, Character target)

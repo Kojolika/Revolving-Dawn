@@ -1,5 +1,5 @@
 using UnityEngine;
-using cards;
+using Cards;
 
 namespace fightInput
 {

@@ -1,7 +1,7 @@
 using UnityEngine;
-using cards;
+using Cards;
 using fight;
-using mana;
+using Mana;
 
 namespace fightInput
 {

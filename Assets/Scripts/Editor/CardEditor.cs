@@ -1,5 +1,5 @@
 using UnityEditor;
-using cards;
+using Cards;
 
 
 // Prevents "Argument Exception: Getting control 1's position in a group with only 1 controls when doing repaint" error

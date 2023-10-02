@@ -2,9 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
-using mana;
+using Mana;
 
-namespace cards
+namespace Cards
 {
     public class Card_UI : MonoBehaviour
     {

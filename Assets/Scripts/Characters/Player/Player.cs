@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using cards;
+using Cards;
 using fightInput;
 using UnityEngine;
 
-namespace characters
+namespace Characters
 {
     //fight instantiation of the player
     public class Player : Character

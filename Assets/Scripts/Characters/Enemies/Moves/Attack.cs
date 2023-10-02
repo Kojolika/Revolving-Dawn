@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using characters;
-using fightDamageCalc;
+using Characters;
+using FightDamageCalc;
 
 public class Attack : Move {
 
@@ -17,12 +17,12 @@ public class Attack : Move {
 
     public override void execute(List<Character> targets = null)
     {
-        Chain chain = new Chain();
+        ProcessingChain chain = new ProcessingChain();
         if(targets != null)
         {
             foreach(var _target in targets)
             {
-                    float finalDamage = chain.process(new Number(damageAmount, FightInfo.NumberType.Attack), enemyUsingMove.GetComponent<Character>(), _target).Amount;
+                    float finalDamage = chain.Process(new Number(damageAmount, FightInfo.NumberType.Attack), enemyUsingMove.GetComponent<Character>(), _target).Amount;
                     _target.healthDisplay.health.DealDamage(finalDamage);
             }
         }

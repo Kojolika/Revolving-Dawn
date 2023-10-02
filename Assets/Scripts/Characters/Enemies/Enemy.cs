@@ -5,7 +5,7 @@ using UnityEditor;
 using fight;
 using System;
 
-namespace characters
+namespace Characters
 {
     public abstract class Enemy : Character
     {

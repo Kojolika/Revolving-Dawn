@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using fight;
 
-namespace mana
+namespace Mana
 {
     public class ManaPool : MonoBehaviour
     {
