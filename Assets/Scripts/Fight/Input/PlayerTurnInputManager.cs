@@ -4,12 +4,12 @@ using Characters;
 using Mana;
 using System;
 
-namespace fightInput
+namespace FightInput
 {
     public class PlayerTurnInputManager : MonoBehaviour
     {
         public Camera cardCam;
-        public static PlayerTurnInputManager staticInstance;
+        public static PlayerTurnInputManager StaticInstance;
 
         public PlayerInputState state;
         public bool isEnabled = false;
@@ -53,10 +53,10 @@ namespace fightInput
             RaycastHit[] hits;
             hits = Physics.RaycastAll(ray, 100.0F);
 
-            //localCheck bools handle if the raycast passed through an object in this raycast
-            //Always set to false at the start but if they pass through and object they are set to true
-            //If they are false they reset the global bool with matching name to be false
-            //In essence this allows events to called once when a mouse mouses over an object instead of in every update loop
+            // localCheck bools handle if the raycast passed through an object in this raycast
+            // Always set to false at the start but if they pass through and object they are set to true
+            // If they are false they reset the global bool with matching name to be false
+            // In essence this allows events to called once when a mouse mouses over an object instead of in every update loop
             bool mouseEnteredPlayAreaLocalCheck = false;
             bool mouseEnteredMana3DLocalCheck = false;
             bool mouseEnteredCardHandAreaLocalCheck = false;
@@ -66,7 +66,7 @@ namespace fightInput
             {
                 RaycastHit hit = hits[i];
 
-                if (hit.transform.gameObject.TryGetComponent<Mana3D>(out Mana3D mana))
+                if (hit.transform.gameObject.TryGetComponent(out Mana3D mana))
                 {
                     if (!mouseEnteredMana3D)
                     {
@@ -110,15 +110,18 @@ namespace fightInput
                 MouseExitMana3D?.Invoke();
                 mouseEnteredMana3D = false;
             }
+
             if (!mouseEnteredManaAreaLocalCheck && mouseEnteredManaArea)
             {
                 MouseExitManaArea?.Invoke();
                 mouseEnteredManaArea = false;
             }
+            
             if (!mouseEnteredPlayAreaLocalCheck && mouseEnteredPlayArea)
             {
                 mouseEnteredPlayArea = false;
             }
+
             if (!mouseEnteredCardHandAreaLocalCheck && mouseEnteredCardHandArea)
             {
                 mouseEnteredCardHandArea = false;
@@ -156,25 +159,22 @@ namespace fightInput
                 LeftClicked?.Invoke();
             }
         }
-        public void Enable(bool value)
-        {
-            isEnabled = value;
-        }
-        bool IsInputEnabled()
-        {
-            if (isPaused || !isEnabled) return false;
-            else return true;
-        }
+        public void Enable(bool value) => isEnabled = value;
+
+        bool IsInputEnabled() => !isPaused && isEnabled;
+
         public void RegisterCardEvents(Card3D card)
         {
             card.OnMouseOverEvent += TriggerMouseOverCard;
             card.OnMouseExitEvent += TriggerMouseExitCard;
         }
+
         public void UnregisterCardEvents(Card3D card)
         {
             card.OnMouseOverEvent -= TriggerMouseOverCard;
             card.OnMouseExitEvent -= TriggerMouseExitCard;
         }
+
         void Update()
         {
             if (!IsInputEnabled()) return;
@@ -186,8 +186,8 @@ namespace fightInput
 
         void Awake()
         {
-            if (staticInstance == null)
-                staticInstance = this;
+            if (StaticInstance == null)
+                StaticInstance = this;
             else
                 Destroy(this);
 

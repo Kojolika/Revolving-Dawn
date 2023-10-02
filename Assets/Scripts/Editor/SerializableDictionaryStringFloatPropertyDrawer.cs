@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEditor;
-using utils;
+using Utils;
 
 /// For more information on custom property drawers: https://docs.unity3d.com/Manual/editor-PropertyDrawers.html
 

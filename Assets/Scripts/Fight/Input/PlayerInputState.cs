@@ -1,7 +1,7 @@
 using UnityEngine;
 using Mana;
 
-namespace fightInput
+namespace FightInput
 {
     //Finite State Machine for player inputs and events
     public class PlayerInputState
@@ -27,7 +27,7 @@ namespace fightInput
 
         public void Initialize()
         {
-            _input = PlayerTurnInputManager.staticInstance;
+            _input = PlayerTurnInputManager.StaticInstance;
         }
     }
 }

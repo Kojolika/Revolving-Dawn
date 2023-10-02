@@ -42,10 +42,10 @@ namespace Cards
         ParticleSystem.MinMaxGradient cachedGradient;
         void OnEnable()
         {
-            fightInput.PlayerTurnInputManager.staticInstance.MouseEnterPlayArea += EnteredPlayArea;
-            fightInput.PlayerTurnInputManager.staticInstance.MouseEnterMana3D += MousedOverMana;
-            fightInput.PlayerTurnInputManager.staticInstance.MouseExitMana3D += MouseLeftMana;
-            fightInput.PlayerTurnInputManager.staticInstance.RegisterCardEvents(this);
+            FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterPlayArea += EnteredPlayArea;
+            FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterMana3D += MousedOverMana;
+            FightInput.PlayerTurnInputManager.StaticInstance.MouseExitMana3D += MouseLeftMana;
+            FightInput.PlayerTurnInputManager.StaticInstance.RegisterCardEvents(this);
             fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
             fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
 
@@ -55,10 +55,10 @@ namespace Cards
         }
         void OnDisable()
         {
-            fightInput.PlayerTurnInputManager.staticInstance.MouseEnterPlayArea -= EnteredPlayArea;
-            fightInput.PlayerTurnInputManager.staticInstance.MouseEnterMana3D -= MousedOverMana;
-            fightInput.PlayerTurnInputManager.staticInstance.MouseExitMana3D -= MouseLeftMana;
-            fightInput.PlayerTurnInputManager.staticInstance.UnregisterCardEvents(this);
+            FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterPlayArea -= EnteredPlayArea;
+            FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterMana3D -= MousedOverMana;
+            FightInput.PlayerTurnInputManager.StaticInstance.MouseExitMana3D -= MouseLeftMana;
+            FightInput.PlayerTurnInputManager.StaticInstance.UnregisterCardEvents(this);
             fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
             fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
         }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using Cards;
 using System.Collections;
 
 public class Dragger : MonoBehaviour 

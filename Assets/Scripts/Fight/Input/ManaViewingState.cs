@@ -1,7 +1,7 @@
 using Mana;
 using UnityEngine;
 
-namespace fightInput
+namespace FightInput
 {
     public class ManaViewingState : PlayerInputState
     {
@@ -15,10 +15,10 @@ namespace fightInput
             _input.MouseExitManaArea += ExitManaArea;
             _input.MouseEnterMana3D += MouseEnterMana3D;
             manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
-            if(manaPool.IsRotating())
+            if (manaPool.IsRotating())
                 manaPool.StopRotating();
         }
- 
+
         public override PlayerInputState Transition()
         {
             switch (changeStateTo)

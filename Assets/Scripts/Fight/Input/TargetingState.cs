@@ -5,7 +5,7 @@ using Characters;
 using fight;
 
 
-namespace fightInput
+namespace FightInput
 {
         public class TargetingState : PlayerInputState
     {

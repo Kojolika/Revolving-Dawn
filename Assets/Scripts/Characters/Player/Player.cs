@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Cards;
-using fightInput;
+using FightInput;
 using UnityEngine;
 
 namespace Characters

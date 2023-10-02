@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Cards;
-using utils;
+using Utils;
 using Characters;
 
 namespace fight
@@ -237,7 +237,7 @@ namespace fight
             while (card.transform.position != newPosition)
             {
                 float distance = Vector3.Distance(originalPosition, newPosition);
-                float distanceNormalized = utils.Computations.Normalize(distance, 0, originalDistance, 0.1f, 1);
+                float distanceNormalized = Utils.Computations.Normalize(distance, 0, originalDistance, 0.1f, 1);
                 Debug.Log("Distance: " + distance + " normalized: " + distanceNormalized);
                 float localSpeed = speed * distanceNormalized;
                 Debug.Log("localspeed: " + localSpeed);

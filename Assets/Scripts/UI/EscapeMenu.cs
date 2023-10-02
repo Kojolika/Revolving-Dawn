@@ -22,8 +22,9 @@ namespace UI
             MainMenu,
             Desktop
         }
-        private void Awake() {
-            if(!staticInstance)
+        private void Awake()
+        {
+            if (!staticInstance)
                 staticInstance = this;
             else
                 Destroy(this);
@@ -52,13 +53,13 @@ namespace UI
             ResetButtons();
             button.background.sprite = selected;
 
-            switch(button.buttonType)
+            switch (button.buttonType)
             {
                 case ButtonType.Resume:
-                    MenuManager.staticInstance.escapeMenu.Close();
+                    MenuManager.StaticInstance.escapeMenu.Close();
                     break;
                 case ButtonType.Settings:
-                    MenuManager.staticInstance.SettingsMenu.Open();
+                    MenuManager.StaticInstance.SettingsMenu.Open();
                     break;
                 case ButtonType.MainMenu:
                     MainMenu();
@@ -67,8 +68,8 @@ namespace UI
                     ExitToDesktop();
                     break;
             }
-            
-            
+
+
         }
         public void ResetButtons()
         {
@@ -88,14 +89,14 @@ namespace UI
             //Save Game,
             //Close Game
         }
-        void OnEnable() 
+        void OnEnable()
         {
             ResetButtons();
         }
 
         public override void HandleInput(dynamic input)
         {
-            
+
         }
     }
 }

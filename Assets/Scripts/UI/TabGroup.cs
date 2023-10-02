@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 
 namespace UI
@@ -21,8 +20,8 @@ namespace UI
             {
                 tabs = new List<TabButton>();
             }
-            if(tabs.Count == 0) OnTabSelected(button);
-            
+            if (tabs.Count == 0) OnTabSelected(button);
+
             tabs.Add(button);
         }
 
@@ -38,7 +37,6 @@ namespace UI
         }
         public void OnTabSelected(TabButton button)
         {
-            Debug.Log("calling select");
             if (selectedTab) selectedTab.menuOfTab.SetActive(false); //disable previous tab
             selectedTab = button;
             ResetTabs();
@@ -47,10 +45,11 @@ namespace UI
         }
         public void ResetTabs()
         {
-            foreach (var button in tabs)
+            foreach (var tab in tabs)
             {
-                if (selectedTab == button) continue;
-                button.background.sprite = idle;
+                if (selectedTab == tab) continue;
+
+                tab.background.sprite = idle;
             }
         }
     }

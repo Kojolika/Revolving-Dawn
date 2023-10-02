@@ -1,6 +1,6 @@
 using Mana;
 
-namespace fightInput
+namespace FightInput
 {
     public class ManaHoveringState : PlayerInputState
     {

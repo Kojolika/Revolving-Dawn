@@ -92,7 +92,7 @@ public class DeckViewerButton : MenuButton
     {
         dynamic input = new ExpandoObject();
         input.DeckType = this.deckType;
-        UI.MenuManager.staticInstance.DeckViewerMenu.Open(input);
+        UI.MenuManager.StaticInstance.DeckViewerMenu.Open(input);
     }
 
 

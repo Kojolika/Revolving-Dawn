@@ -2,7 +2,7 @@ using Cards;
 using Mana;
 using UnityEngine;
 
-namespace fightInput
+namespace FightInput
 {
     public class DefaultState : PlayerInputState
     {

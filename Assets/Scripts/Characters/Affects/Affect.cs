@@ -5,11 +5,11 @@ using FightDamageCalc;
 namespace Characters
 {
     [Serializable]
-    public abstract class Affect 
+    public abstract class Affect
     {
-        //flag; 
-        //false: buff affects self abilities
-        //true: buff affects abilities others target at self
+        // flag; 
+        // false: buff affects self abilities
+        // true: buff affects abilities others target at self
         public abstract bool AffectsOtherCharactersAbilities { get; set; }
         public abstract void Apply(Character target);
         public abstract TurnTime WhenStackLoss { get; set; }
@@ -30,8 +30,8 @@ namespace Characters
     [Flags]
     public enum TurnTime
     {
-        //Need to set numbers to be powers of 2
-        //Due to the use of bitwise shifting when assigning multiple Enum Values
+        // Need to set numbers to be powers of 2
+        // Due to the use of bitwise shifting when assigning multiple Enum Values
         None = 0,
         StartOfTurn = 1,
         EndOfTurn = 2,

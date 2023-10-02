@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-using utils;
+using Utils;
 
 [CustomEditor(typeof(BezierCurve))]
 public class BezierCurveInspector : Editor

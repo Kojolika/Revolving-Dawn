@@ -3,7 +3,7 @@ using Cards;
 using fight;
 using Mana;
 
-namespace fightInput
+namespace FightInput
 {
     public class HoveringState : PlayerInputState
     {

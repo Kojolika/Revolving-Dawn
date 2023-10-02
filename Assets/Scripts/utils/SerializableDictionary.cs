@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 
-namespace utils
+namespace Utils
 {
     [Serializable]
     public class SerializableDictionary<TKey, TValue> : ISerializationCallbackReceiver, IDictionary

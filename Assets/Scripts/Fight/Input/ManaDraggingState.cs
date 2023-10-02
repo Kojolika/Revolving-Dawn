@@ -2,7 +2,7 @@ using UnityEngine;
 using Mana;
 using Cards;
 
-namespace fightInput
+namespace FightInput
 {
     public class ManaDraggingState : PlayerInputState
     {

@@ -1,7 +1,7 @@
 using UnityEngine;
 using Cards;
 
-namespace fightInput
+namespace FightInput
 {
     public class DraggingState : PlayerInputState
     {

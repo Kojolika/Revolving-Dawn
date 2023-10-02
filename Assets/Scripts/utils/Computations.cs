@@ -1,4 +1,4 @@
-namespace utils
+namespace Utils
 {
     public class Computations
     {

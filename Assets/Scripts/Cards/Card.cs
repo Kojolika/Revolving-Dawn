@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using Characters;
 using Mana;
-using utils;
 using FightDamageCalc;
 
 namespace Cards
@@ -27,7 +26,7 @@ namespace Cards
                     this.owner.PerformNumberAction(number, character);
                 }
 
-                foreach(Affect affect in affectValues)
+                foreach (Affect affect in affectValues)
                 {
                     this.owner.PerformAffectAction(affect, character);
                 }

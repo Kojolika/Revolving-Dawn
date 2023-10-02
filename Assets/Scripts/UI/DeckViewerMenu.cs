@@ -42,10 +42,10 @@ namespace UI
                 Card_UI instance = Instantiate(card_UI, deckViewerContent.transform);
                 //instance.LoadInfo(card);
             }
-            
+
         }
         public void ExpandOrShrinkContentSize()
-        {   
+        {
             int deckSize = currentDeck.Count;
             if (deckSize < 1) return;
 
