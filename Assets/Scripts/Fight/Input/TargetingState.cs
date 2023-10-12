@@ -2,7 +2,7 @@ using UnityEngine;
 using Cards;
 using System.Collections.Generic;
 using Characters;
-using fight;
+using Fight;
 
 
 namespace FightInput

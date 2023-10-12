@@ -9,17 +9,10 @@ namespace Cards
 {
     public class Card3D : MonoBehaviour
     {
-        [SerializeField] Card _cardScriptableObject; //card object where all the data is retrieved from (the view part of MVC)
+        [SerializeField] Card cardData; //card object where all the data is retrieved from (the view part of MVC)
 
-        public Card CardScriptableObject
-        {
-            get => _cardScriptableObject;
-            set
-            {
-                _cardScriptableObject = value;
-                PopulateFromData();
-            }
-        }
+        public Card CardData => cardData;
+
         [SerializeField] new TextMeshPro name;
         [SerializeField] TextMeshPro description;
         [SerializeField] SpriteRenderer artwork;
@@ -34,9 +27,9 @@ namespace Cards
         public static float CAMERA_DISTANCE => Camera.main.nearClipPlane + 7;
         public static Vector3 DEFAULT_SCALE => new Vector3(0.2f, 1f, 0.3f);
 
-        public void Play(List<Character> targets) => _cardScriptableObject.Play(targets);
-        public Targeting GetTarget() => _cardScriptableObject.target;
-        public Character Owner { get => _cardScriptableObject.owner; set => _cardScriptableObject.owner = value; }
+        public void Play(List<Character> targets) => cardData.Play(targets);
+        public Targeting GetTarget() => cardData.target;
+        public Character Owner { get => cardData.owner; set => cardData.owner = value; }
 
         //color of card outline
         ParticleSystem.MinMaxGradient cachedGradient;
@@ -46,8 +39,8 @@ namespace Cards
             FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterMana3D += MousedOverMana;
             FightInput.PlayerTurnInputManager.StaticInstance.MouseExitMana3D += MouseLeftMana;
             FightInput.PlayerTurnInputManager.StaticInstance.RegisterCardEvents(this);
-            fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
-            fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
+            Fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
+            Fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
 
             //Cache color of outline for later
             var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
@@ -59,31 +52,35 @@ namespace Cards
             FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterMana3D -= MousedOverMana;
             FightInput.PlayerTurnInputManager.StaticInstance.MouseExitMana3D -= MouseLeftMana;
             FightInput.PlayerTurnInputManager.StaticInstance.UnregisterCardEvents(this);
-            fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
-            fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
+            Fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
+            Fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
         }
 
-        public void PopulateFromData()
+        public void Populate(Card card)
         {
-            if (_cardScriptableObject == null) return;
+            if (card == null) return;
 
-            artwork.sprite = _cardScriptableObject.artwork;
-            border.sprite = CardConfiguration.GetClassBorder(_cardScriptableObject.@class);
+            cardData = card;
 
-            name.text = _cardScriptableObject.name;
+            RemoveSockets();
+
+            artwork.sprite = card.artwork;
+            border.sprite = CardConfiguration.GetClassBorder(card.playerClass);
+
+            name.text = card.name;
             name.font = CardConfiguration.DEFAULT_FONT;
             name.color = CardConfiguration.DEFAULT_FONT_COLOR;
             name.fontSize = CardConfiguration.DEFAULT_FONT_NAME_SIZE;
 
-            description.text = _cardScriptableObject.descriptionWithReplaceables;
+            description.text = card.descriptionWithReplaceables;
             description.font = CardConfiguration.DEFAULT_FONT;
             description.color = CardConfiguration.DEFAULT_FONT_COLOR;
             description.fontSize = CardConfiguration.DEFAULT_FONT_NAME_SIZE;
             UpdateDescription(null);
 
-            Owner = _cardScriptableObject.owner;
+            Owner = card.owner;
 
-            manaInSockets = new Mana3D[_cardScriptableObject.mana.Length];
+            manaInSockets = new Mana3D[card.mana.Length];
 
             //If sockets are already instantiated, destroy them
             if (manaSockets.transform.childCount > 0)
@@ -94,7 +91,7 @@ namespace Cards
                 }
             }
 
-            for (int index = 0; index < _cardScriptableObject.mana.Length; index++)
+            for (int index = 0; index < card.mana.Length; index++)
             {
                 //instantiate the socket from the prefab
                 GameObject instanitatedSocket = Instantiate(socketPrefab, manaSockets.transform, false);
@@ -103,7 +100,7 @@ namespace Cards
                 instanitatedSocket.transform.position += new Vector3(0f, -0.45f, 0f) * index;
 
                 //set the color of the socket to the manas color
-                instanitatedSocket.transform.GetChild(0).GetComponent<Renderer>().sharedMaterial = ManaConfiguration.GetManaColor(_cardScriptableObject.mana[index]);
+                instanitatedSocket.transform.GetChild(0).GetComponent<Renderer>().sharedMaterial = ManaConfiguration.GetManaColor(cardData.mana[index]);
 
             }
 
@@ -112,42 +109,40 @@ namespace Cards
         public void UpdateDescription(Character target)
         {
             ProcessingChain chain = new ProcessingChain();
-            var numberValues = _cardScriptableObject.numberValues;
+            var numberValues = cardData.numberValues;
             for (int index = 0; index < numberValues.Count; index++)
             {
                 Number copy = numberValues[index];
-                float numberAffectProcessing = chain.Process(copy, _cardScriptableObject.owner, target).Amount;
+                float numberAffectProcessing = chain.Process(copy, cardData.owner, target).Amount;
                 string typeOfNumberAndIndex = copy.GetDamageType().ToString().ToUpper() + (index + 1);
 
                 if (numberAffectProcessing < copy.Amount)
                 {
-                    description.text = _cardScriptableObject.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "<color=#910505>" + numberAffectProcessing + "</color>");
+                    description.text = cardData.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "<color=#910505>" + numberAffectProcessing + "</color>");
                 }
                 else if (numberAffectProcessing > copy.Amount)
                 {
-                    description.text = _cardScriptableObject.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "<color=#00FF00>" + numberAffectProcessing + "</color>");
+                    description.text = cardData.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "<color=#00FF00>" + numberAffectProcessing + "</color>");
                 }
                 else
                 {
-                    description.text = _cardScriptableObject.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "" + numberAffectProcessing);
+                    description.text = cardData.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "" + numberAffectProcessing);
                 }
 
             }
         }
-        //Summary:
-        //Transform card to next or previous in chain
-        //
-        //Args:
-        //direction: true is forward transform (typically an upgrade to the card)
-        //           false is backwards transform
+        /// <summary>
+        /// Transforms card to next or previous in chain.
+        /// </summary>
+        /// <param name="direction"> 
+        /// true is forward transform (typically an upgrade to the card)
+        /// false is backwards transform
+        /// </param>   
         public void Transform(bool direction)
         {
-            if (_cardScriptableObject.Transform(direction) == null) return;
+            if (cardData.Transform(direction) == null) return;
 
-            _cardScriptableObject = _cardScriptableObject.Transform(direction);
-
-            RemoveSockets();
-            PopulateFromData();
+            Populate(cardData.Transform(direction));
         }
         public bool BindMana(Mana3D manaBeingBound)
         {
@@ -157,7 +152,7 @@ namespace Cards
             for (int index = 0; index < manaInSockets.Length; index++)
             {
                 //manaInSockets and cardScriptableObject.mana will always be same length
-                if (manaInSockets[index] == null && manaBeingBound.type == _cardScriptableObject.mana[index])
+                if (manaInSockets[index] == null && manaBeingBound.type == cardData.mana[index])
                 {
                     Transform socketTransform = manaSockets.transform.GetChild(index);
                     FitManaIntoSocket(manaBeingBound, socketTransform);
@@ -251,14 +246,14 @@ namespace Cards
         void MousedOverMana(Mana3D mana)
         {
             ManaType type = mana.type;
-            foreach (ManaType manaType in this.CardScriptableObject.mana)
+            foreach (ManaType manaType in this.CardData.mana)
             {
                 if (manaType == type)
                 {
                     ChangeColorOfPlayableParticleOutline(type);
                     PlayFlash(ColorForManaType(type));
                 }
-                
+
             }
         }
 

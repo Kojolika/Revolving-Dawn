@@ -1,7 +1,7 @@
 using Characters;
 using UnityEngine;
 
-namespace fight
+namespace Fight
 {
     public static class FightEvents
     {

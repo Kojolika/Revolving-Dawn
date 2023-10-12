@@ -11,9 +11,9 @@ namespace Characters
         public HealthSystem(HealthDisplay healthDisplay)
         {
             this.healthDisplay = healthDisplay;
-            fight.FightEvents.OnCharacterTurnStarted += ResetBlock;
+            Fight.FightEvents.OnCharacterTurnStarted += ResetBlock;
         }
-        public void OnDestroy() => fight.FightEvents.OnCharacterTurnStarted -= ResetBlock;
+        public void OnDestroy() => Fight.FightEvents.OnCharacterTurnStarted -= ResetBlock;
         public float GetBlockValue() => block;
         public float GetHealthValue() => hp;
         public float GetMaxHealthValue() => maxHP;

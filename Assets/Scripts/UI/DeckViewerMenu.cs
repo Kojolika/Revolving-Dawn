@@ -11,7 +11,7 @@ namespace UI
     public class DeckViewerMenu : Menu
     {
         DeckType deckType;
-        ObservableCollection<Card3D> currentDeck = new ObservableCollection<Card3D>();
+        ObservableCollection<Card> currentDeck = new ObservableCollection<Card>();
         DeckViewer deckViewerContent;
         [SerializeField] Card_UI card_UI;
         [SerializeField] TextMeshProUGUI deckName;
@@ -30,14 +30,14 @@ namespace UI
             else
                 Destroy(this);
         }
-        void LoadCards(ObservableCollection<Card3D> deck)
+        void LoadCards(ObservableCollection<Card> deck)
         {
             currentDeck = deck;
             int deckSize = deck.Count;
             deckViewerContent.GetComponent<DeckViewer>().deckViewerMenu = this;
             if (deckSize < 1) return;
 
-            foreach (Card3D card in deck)
+            foreach (Card card in deck)
             {
                 Card_UI instance = Instantiate(card_UI, deckViewerContent.transform);
                 //instance.LoadInfo(card);
@@ -75,17 +75,17 @@ namespace UI
             {
                 case DeckType.Draw:
                     deckName.text = "Draw";
-                    LoadCards(PlayerCardDecksManager.DrawPile);
+                    //LoadCards(PlayerCardDecksManager.DrawPile);
 
                     break;
                 case DeckType.Discard:
                     deckName.text = "Discard";
-                    LoadCards(PlayerCardDecksManager.Discard);
+                    //LoadCards(PlayerCardDecksManager.Discard);
 
                     break;
                 case DeckType.Lost:
                     deckName.text = "Lost";
-                    LoadCards(PlayerCardDecksManager.Lost);
+                    //LoadCards(PlayerCardDecksManager.Lost);
 
                     break;
                 case DeckType.Deck:

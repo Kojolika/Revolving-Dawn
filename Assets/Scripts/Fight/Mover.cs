@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace fight
+namespace Fight
 {
     public class Mover : MonoBehaviour
     {

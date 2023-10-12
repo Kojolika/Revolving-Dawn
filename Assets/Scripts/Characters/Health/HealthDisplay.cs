@@ -35,12 +35,12 @@ namespace Characters
                 //Enemies inherit from Enemy class, which inherits from Character
                 if (owner.GetType().IsSubclassOf(typeof(Enemy)))
                 { 
-                    fight.FightEvents.TriggerEnemyDied((Enemy)owner);
+                    Fight.FightEvents.TriggerEnemyDied((Enemy)owner);
                 }
                 //Player inherits from Character
                 else if(owner.GetType() == typeof(Player))
                 {
-                    fight.FightEvents.TriggerPlayerDied((Player)owner);
+                    Fight.FightEvents.TriggerPlayerDied((Player)owner);
                 }
             }
         }

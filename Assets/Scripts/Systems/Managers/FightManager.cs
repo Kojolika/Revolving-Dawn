@@ -8,7 +8,7 @@ using Utils;
 using FightInput;
 
 
-namespace fight
+namespace Fight
 {
     public class FightManager : MonoBehaviour
     {

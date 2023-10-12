@@ -1,6 +1,6 @@
 using Utils;
 
-namespace fight
+namespace Fight
 {
     public static class CardHandUtils
     {

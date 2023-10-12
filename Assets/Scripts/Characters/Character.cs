@@ -51,12 +51,12 @@ namespace Characters
         }
         public virtual void Awake()
         {
-            fight.FightEvents.OnFightStarted += OnFightStart;
+            Fight.FightEvents.OnFightStarted += OnFightStart;
             CastShadows();
         }
         void OnDisable()
         {
-            fight.FightEvents.OnFightStarted -= OnFightStart;
+            Fight.FightEvents.OnFightStarted -= OnFightStart;
         }
 
         //turns on shadow casting for character sprites

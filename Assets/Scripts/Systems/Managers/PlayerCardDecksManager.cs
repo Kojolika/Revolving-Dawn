@@ -68,8 +68,8 @@ namespace Characters
             InstantiateDeck();
         }
         /// <summary>
-        /// For each <see cref="Card3D.CardScriptableObject"/> of <see cref="deck"/>, instantiates a new <see cref="cardPrefab"/> 
-        /// with the <see cref="Card3D.CardScriptableObject"/> set to it and adds it to the collection <see cref="instantiatedDeck"/>. 
+        /// For each <see cref="Card.CardData"/> of <see cref="deck"/>, instantiates a new <see cref="cardPrefab"/> 
+        /// with the <see cref="Card.CardData"/> set to it and adds it to the collection <see cref="instantiatedDeck"/>. 
         /// Sets each card to inactive.
         /// </summary>
         static void InstantiateDeck()
@@ -77,7 +77,7 @@ namespace Characters
             foreach (var card in deck)
             {
                 var instantiatedCard = UnityEngine.GameObject.Instantiate(cardPrefab, cardHandParent.transform);
-                instantiatedCard.CardScriptableObject = card;
+                instantiatedCard.Populate(card);
                 instantiatedCard.gameObject.SetActive(false);
                 instantiatedDeck.Add(instantiatedCard);
             }
@@ -130,7 +130,7 @@ namespace Characters
         }
         //TODO: Move strictly data logic out of CardHandManager
         //Add this logic to fightmanager for when the fight starts;
-        public static void DiscardCard(Card3D card)
+        public static void DiscardCard(Card card)
         {
 
         }

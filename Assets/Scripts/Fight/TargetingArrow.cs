@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
-namespace fight
+namespace Fight
 {
     public class TargetingArrow : MonoBehaviour
     {

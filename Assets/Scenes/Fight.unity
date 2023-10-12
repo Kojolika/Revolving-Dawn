@@ -611,8 +611,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 430144961}
-  - component: {fileID: 430144960}
   - component: {fileID: 430144962}
+  - component: {fileID: 430144960}
   m_Layer: 0
   m_Name: FightManager
   m_TagString: Untagged
@@ -629,16 +629,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 430144959}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95305b674d97d254d8d25043b9de57d3, type: 3}
+  m_Script: {fileID: 11500000, guid: 8eb475a82e93c27438f827758edf3275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTurn: 1
+  playerTurn: 0
   playerPrefab: {fileID: 3637236223743574375, guid: 81628037df91d1e43ae8e5dcc6cfd5cc, type: 3}
   cardPrefab: {fileID: 7892906070732099115, guid: c578bd1fe73f1f04caa0e1d7740a9170, type: 3}
   enemyPrefabs:
-  - {fileID: 4639676414776559479, guid: b875aacc27e93ff44b72f538577a7554, type: 3}
-  - {fileID: 4639676414776559479, guid: b875aacc27e93ff44b72f538577a7554, type: 3}
-  - {fileID: 4639676414776559479, guid: b875aacc27e93ff44b72f538577a7554, type: 3}
   - {fileID: 4639676414776559479, guid: b875aacc27e93ff44b72f538577a7554, type: 3}
   playerSpawnPoint: {fileID: 784284602}
   enemySpawnPoints:
@@ -1606,7 +1603,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 430144960}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: fight.FightManager, Assembly-CSharp
         m_MethodName: EndPlayerTurn
         m_Mode: 1

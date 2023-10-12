@@ -2,7 +2,7 @@
 using Cards;
 using Characters;
 
-namespace fight
+namespace Fight
 {
     public class HoverManager : MonoBehaviour
     {
@@ -14,9 +14,9 @@ namespace fight
         const float MOVE_SPEED_HOVER = 8f;
         public const float MOVE_SPEED_RESET = 35f;
 
-        public void Initialize(CardHandManager CHMM, Card3D card){
+        public void Initialize(CardHandManager cardHandManager, Card3D card){
             currentCard = card;
-            _cardHandMovementManager = CHMM;
+            _cardHandMovementManager = cardHandManager;
         }
         public void HoverCardEffects()
         {

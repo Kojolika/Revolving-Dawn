@@ -14,24 +14,9 @@ namespace Cards
         public new string name; //name of the card
         [SerializeField] public string descriptionWithReplaceables; // description of what the card does, contains words that will be replaced by number values, edit this one
         public Sprite artwork; //card art
-        public PlayerClass @class = PlayerClass.Classless; //class of the card
+        public PlayerClass playerClass = PlayerClass.Classless; //class of the card
         public Targeting target;   //who the card targets
         // Add list of Keywords in future
-        public virtual void Play(List<Character> targets) //effect of the card when played
-        {
-            foreach (Character character in targets)
-            {
-                foreach (Number number in numberValues)
-                {
-                    this.owner.PerformNumberAction(number, character);
-                }
-
-                foreach (Affect affect in affectValues)
-                {
-                    this.owner.PerformAffectAction(affect, character);
-                }
-            }
-        }
         [Space(20)]
         [SerializeField] public List<Number> numberValues = new List<Number>();
         [SerializeField] protected List<Affect> affectValues = new List<Affect>();
@@ -68,6 +53,22 @@ namespace Cards
             {
                 mana = new ManaType[] { };
                 Debug.LogWarning("Cannot add mana to a card that has no upgrade");
+            }
+        }
+
+        public virtual void Play(List<Character> targets) //effect of the card when played
+        {
+            foreach (Character character in targets)
+            {
+                foreach (Number number in numberValues)
+                {
+                    this.owner.PerformNumberAction(number, character);
+                }
+
+                foreach (Affect affect in affectValues)
+                {
+                    this.owner.PerformAffectAction(affect, character);
+                }
             }
         }
     }

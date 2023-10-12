@@ -6,8 +6,9 @@ using Cysharp.Threading.Tasks;
 using Cards;
 using Utils;
 using Characters;
+using UnityEngine.UIElements;
 
-namespace fight
+namespace Fight
 {
     public class CardHandManager : MonoBehaviour
     {
@@ -76,8 +77,8 @@ namespace fight
             {
                 var instantiatedCard = Instantiate(cardPrefab, this.cardHandGO.transform);
                 instantiatedCard.transform.position = this.cardSpawner.transform.position;
-                instantiatedCard.CardScriptableObject = card;
-                instantiatedCard.Owner = this.player;
+                card.owner = this.player;
+                instantiatedCard.Populate(card);
                 PlayerCardDecksManager.InstantiatedDeck.Add(instantiatedCard);
                 instantiatedCard.gameObject.SetActive(false);
             }
@@ -225,8 +226,6 @@ namespace fight
         }
         public IEnumerator MoveCardCoroutine(Card3D card, Vector3 newPosition, float cardRotation, float speed)
         {
-            var hand = PlayerCardDecksManager.Hand;
-
             var rotation = CardConfiguration.DEFAULT_CARD_ROTATION;
             rotation.x += cardRotation;
             card.transform.rotation = Quaternion.Euler(rotation);
@@ -238,9 +237,7 @@ namespace fight
             {
                 float distance = Vector3.Distance(originalPosition, newPosition);
                 float distanceNormalized = Utils.Computations.Normalize(distance, 0, originalDistance, 0.1f, 1);
-                Debug.Log("Distance: " + distance + " normalized: " + distanceNormalized);
                 float localSpeed = speed * distanceNormalized;
-                Debug.Log("localspeed: " + localSpeed);
                 card.transform.position = Vector3.MoveTowards(card.transform.position, newPosition, localSpeed * Time.deltaTime);
                 yield return null;
             }

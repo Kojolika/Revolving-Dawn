@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using fight;
+using Fight;
 using UnityEngine;
 
 namespace Characters
