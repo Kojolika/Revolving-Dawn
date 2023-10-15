@@ -4,7 +4,7 @@ using UI;
 
 namespace Systems.Managers
 {
-    public class MenuManager : MonoBehaviour
+    public class MenuManager : MonoBehaviour, Systems.Managers.Base.IManager
     {
         public static MenuManager StaticInstance { get; private set; }
         public static Stack<GameObject> MenuStack = new Stack<GameObject>();

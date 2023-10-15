@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Characters;
 using FightDamageCalc;
 using Mana;
+using Systems.Managers;
 
 namespace Cards
 {
@@ -35,10 +36,10 @@ namespace Cards
         ParticleSystem.MinMaxGradient cachedGradient;
         void OnEnable()
         {
-            FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterPlayArea += EnteredPlayArea;
-            FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterMana3D += MousedOverMana;
-            FightInput.PlayerTurnInputManager.StaticInstance.MouseExitMana3D += MouseLeftMana;
-            FightInput.PlayerTurnInputManager.StaticInstance.RegisterCardEvents(this);
+            PlayerTurnInputManager.StaticInstance.MouseEnterPlayArea += EnteredPlayArea;
+            PlayerTurnInputManager.StaticInstance.MouseEnterMana3D += MousedOverMana;
+            PlayerTurnInputManager.StaticInstance.MouseExitMana3D += MouseLeftMana;
+            PlayerTurnInputManager.StaticInstance.RegisterCardEvents(this);
             Fight.FightEvents.OnCharacterTurnAction += PlayPlayableOutlineParticles;
             Fight.FightEvents.OnCharacterTurnEnded += PausePlayableOutlineParticles;
 
@@ -48,10 +49,10 @@ namespace Cards
         }
         void OnDisable()
         {
-            FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterPlayArea -= EnteredPlayArea;
-            FightInput.PlayerTurnInputManager.StaticInstance.MouseEnterMana3D -= MousedOverMana;
-            FightInput.PlayerTurnInputManager.StaticInstance.MouseExitMana3D -= MouseLeftMana;
-            FightInput.PlayerTurnInputManager.StaticInstance.UnregisterCardEvents(this);
+            PlayerTurnInputManager.StaticInstance.MouseEnterPlayArea -= EnteredPlayArea;
+            PlayerTurnInputManager.StaticInstance.MouseEnterMana3D -= MousedOverMana;
+            PlayerTurnInputManager.StaticInstance.MouseExitMana3D -= MouseLeftMana;
+            PlayerTurnInputManager.StaticInstance.UnregisterCardEvents(this);
             Fight.FightEvents.OnCharacterTurnAction -= PlayPlayableOutlineParticles;
             Fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
         }

@@ -1,5 +1,5 @@
+using Systems.Managers;
 using UnityEngine;
-using Mana;
 
 namespace FightInput
 {

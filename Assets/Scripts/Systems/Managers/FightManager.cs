@@ -10,7 +10,7 @@ using FightInput;
 
 namespace Systems.Managers
 {
-    public class FightManager : MonoBehaviour, IManager
+    public class FightManager : MonoBehaviour, Systems.Managers.Base.IManager
     {
         [SerializeField] static Player currentPlayer;
         public static Player CurrentPlayer { get => currentPlayer; }

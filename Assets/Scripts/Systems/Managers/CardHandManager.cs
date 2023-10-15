@@ -10,7 +10,7 @@ using Fight;
 
 namespace Systems.Managers
 {
-    public class CardHandManager : MonoBehaviour
+    public class CardHandManager : MonoBehaviour, Systems.Managers.Base.IManager
     {
         [SerializeField] Card3D cardPrefab;
         GameObject cardHandGO;
@@ -195,9 +195,7 @@ namespace Systems.Managers
             {
                 size--;
                 int randomIndex = rng.Next(size + 1);
-                Card3D value = deckToShuffle[randomIndex];
-                deckToShuffle[randomIndex] = deckToShuffle[size];
-                deckToShuffle[size] = value;
+                (deckToShuffle[randomIndex], deckToShuffle[size]) = (deckToShuffle[size], deckToShuffle[randomIndex]);
             }
         }
 

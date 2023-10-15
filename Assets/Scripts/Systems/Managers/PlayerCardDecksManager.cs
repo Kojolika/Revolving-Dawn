@@ -6,6 +6,7 @@ using Cards;
 
 namespace Systems.Managers
 {
+    // TODO: transform to actual manager
     public static class PlayerCardDecksManager
     {
         //DATA

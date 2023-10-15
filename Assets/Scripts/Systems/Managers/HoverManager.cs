@@ -5,7 +5,7 @@ using Fight;
 
 namespace Systems.Managers
 {
-    public class HoverManager : MonoBehaviour
+    public class HoverManager : MonoBehaviour, Systems.Managers.Base.IManager
     {
         public Card3D currentCard;
         CardHandManager _cardHandMovementManager;

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Systems.Managers.Base
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class AbstractSOManager : ScriptableObject, IManager
+    public abstract class AbstractSOManager : ScriptableObject, IManager
     {
         
     }
