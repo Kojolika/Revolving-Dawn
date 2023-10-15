@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using Cards;
 using Characters;
+using Fight;
 
-namespace Fight
+namespace Systems.Managers
 {
     public class HoverManager : MonoBehaviour
     {

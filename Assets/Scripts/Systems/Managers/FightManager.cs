@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
 using Characters;
 using Cards;
+using Fight;
 using Utils;
 using FightInput;
 
 
-namespace Fight
+namespace Systems.Managers
 {
-    public class FightManager : MonoBehaviour
+    public class FightManager : MonoBehaviour, IManager
     {
         [SerializeField] static Player currentPlayer;
         public static Player CurrentPlayer { get => currentPlayer; }

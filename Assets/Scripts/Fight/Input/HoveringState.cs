@@ -1,6 +1,6 @@
 using UnityEngine;
 using Cards;
-using Fight;
+using Systems.Managers;
 using Mana;
 
 namespace FightInput

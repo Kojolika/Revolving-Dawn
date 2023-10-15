@@ -1,8 +1,8 @@
 using UnityEngine;
-using System.Dynamic;
 using System.Collections.Generic;
+using UI;
 
-namespace UI
+namespace Systems.Managers
 {
     public class MenuManager : MonoBehaviour
     {

@@ -2,10 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Specialized;
-using System.Collections;
 using System.Dynamic;
-using TMPro;
-using Characters; 
+using Systems.Managers;
 
 namespace UI
 {
@@ -47,16 +45,16 @@ public class DeckViewerButton : MenuButton
         switch (deckType)
         {
             case DeckType.Deck:
-                buttonText.text = "" + Characters.PlayerCardDecksManager.Deck.Count;
+                buttonText.text = "" + PlayerCardDecksManager.Deck.Count;
                 break;
             case DeckType.Discard:
-                buttonText.text = "" + Characters.PlayerCardDecksManager.Discard.Count;
+                buttonText.text = "" + PlayerCardDecksManager.Discard.Count;
                 break;
             case DeckType.Draw:
-                buttonText.text = "" + Characters.PlayerCardDecksManager.DrawPile.Count;
+                buttonText.text = "" + PlayerCardDecksManager.DrawPile.Count;
                 break;
             case DeckType.Lost:
-                buttonText.text = "" + Characters.PlayerCardDecksManager.Lost.Count;
+                buttonText.text = "" + PlayerCardDecksManager.Lost.Count;
                 break;
         }
 
@@ -92,7 +90,7 @@ public class DeckViewerButton : MenuButton
     {
         dynamic input = new ExpandoObject();
         input.DeckType = this.deckType;
-        UI.MenuManager.StaticInstance.DeckViewerMenu.Open(input);
+        MenuManager.StaticInstance.DeckViewerMenu.Open(input);
     }
 
 
