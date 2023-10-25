@@ -4,6 +4,7 @@ using UI;
 
 namespace Systems.Managers
 {
+    // TODO: make it a scriptable object, no reason to be a MonoBehaviour
     public class MenuManager : MonoBehaviour, Systems.Managers.Base.IManager
     {
         public static MenuManager StaticInstance { get; private set; }
@@ -60,7 +61,7 @@ namespace Systems.Managers
                 pauseBackGroundInstance.SetActive(true);
                 instance.GetComponent<Canvas>().sortingOrder = pauseBackGroundInstance.GetComponent<Canvas>().sortingOrder + 1;
 
-                FightInput.PlayerTurnInputManager.StaticInstance.isPaused = true;
+                PlayerTurnInputManager.StaticInstance.isPaused = true;
             }
 
             instance.GetComponent<Menu>().HandleInput(input);
@@ -76,7 +77,7 @@ namespace Systems.Managers
             else
             {
                 pauseBackGroundInstance.SetActive(false);
-                FightInput.PlayerTurnInputManager.StaticInstance.isPaused = false;
+                PlayerTurnInputManager.StaticInstance.isPaused = false;
             }
         }
     }

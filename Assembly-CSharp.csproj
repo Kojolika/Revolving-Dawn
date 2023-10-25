@@ -59,6 +59,7 @@
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy_Slime.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\TargetingState.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\Base\Managers.cs" />
+     <Compile Include="Assets\Scripts\Tooling\Logging\Logger.cs" />
      <Compile Include="Assets\Scripts\Utils\Bezier.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\PlayerInputState.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
@@ -110,6 +111,7 @@
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\DeBuffProcessor.cs" />
      <Compile Include="Assets\Scripts\UI\TabButton.cs" />
      <Compile Include="Assets\Scripts\UI\Overlay.cs" />
+     <Compile Include="Assets\Scripts\Systems\Managers\Base\ScriptableObjectManagers.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\FightInfo.cs" />
      <Compile Include="Assets\Scripts\Cards\Card3D.cs" />
      <Compile Include="Assets\Scripts\UI\MenuButton.cs" />
@@ -141,15 +143,19 @@
      <Folder Include="Assets\ScriptableObjects\Cards\Warrior" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
      <Folder Include="Assets\Sprites\Characters" />
+     <Folder Include="Assets\Scripts\Utils\EditorTools" />
      <Folder Include="Assets\Hero Knight - Pixel Art" />
      <None Include="Assets\Shaders\GameArea.shader" />
      <Folder Include="Assets\TextMesh Pro\Resources\Fonts &amp; Materials" />
      <Folder Include="Assets\Scripts\Cards" />
+     <Folder Include="Assets\Data\Animations" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
      <Folder Include="Assets\Sprites\Enemy_MoveSprites" />
+     <Folder Include="Assets\Data\Systems" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
      <Folder Include="Assets\TextMesh Pro\Resources" />
      <Folder Include="Assets\Scripts\Fight\Mana" />
+     <Folder Include="Assets\Data\Systems\Managers" />
      <Folder Include="Assets\Scripts\Utils" />
      <Folder Include="Assets\Scripts\UI" />
      <Folder Include="Assets\Hero Knight - Pixel Art\ColorSwap" />
@@ -160,6 +166,8 @@
      <Folder Include="Assets\Scripts\Fight\NumberTypeChainProcessing" />
      <Folder Include="Assets\Sprites\Characters\Player" />
      <Folder Include="Assets\Sprites\Cards\Resources" />
+     <Folder Include="Assets\Scripts\Tooling" />
+     <Folder Include="Assets\Prefabs\UI\Canvas" />
      <Folder Include="Assets\Prefabs" />
      <Folder Include="Assets\Scripts\Fight\GameArea" />
      <Folder Include="Assets\Scripts\Fight\Animation" />
@@ -173,8 +181,10 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <Folder Include="Assets\Scripts\GameLoop\Startup" />
+     <Folder Include="Assets\Scripts\Tooling\Logging" />
      <Folder Include="Assets\Sprites\Particles" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+     <Folder Include="Assets\Prefabs\UI\Gameloop" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
      <Folder Include="Assets\TextMesh Pro\Shaders" />
      <Folder Include="Assets\TextMesh Pro\Resources\Style Sheets" />
@@ -198,6 +208,8 @@
      <Folder Include="Assets\Prefabs\Cards" />
      <Folder Include="Assets\Scripts\Systems\Managers" />
      <Folder Include="Assets\Shaders" />
+     <Folder Include="Assets\Data" />
+     <Folder Include="Assets\Data\Animations\GameLoop" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
      <Folder Include="Assets\Scripts\Characters\Affects" />
      <Folder Include="Assets\Materials\Resources" />

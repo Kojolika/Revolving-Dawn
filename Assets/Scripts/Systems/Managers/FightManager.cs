@@ -10,12 +10,14 @@ using FightInput;
 
 namespace Systems.Managers
 {
+    // TODO: make it a scriptable object, no reason to be a MonoBehaviour
     public class FightManager : MonoBehaviour, Systems.Managers.Base.IManager
     {
         [SerializeField] static Player currentPlayer;
-        public static Player CurrentPlayer { get => currentPlayer; }
+        public static Player CurrentPlayer => currentPlayer;
+
         [SerializeField] static List<Enemy> currentEnemies = new List<Enemy>();
-        public static List<Enemy> CurrentEnemies { get => currentEnemies; }
+        public static List<Enemy> CurrentEnemies => currentEnemies;
 
         [SerializeField] bool playerTurn;
         [SerializeField] Player playerPrefab;
@@ -45,7 +47,8 @@ namespace Systems.Managers
             cardsCamAndGameArea = Instantiate(cardsCamAndGameAreaPrefab);
 
             //Load camera for world UI
-            Instantiate(worldUICam, Camera.main.transform.position, Camera.main.transform.rotation, Camera.main.transform);
+            Instantiate(worldUICam, Camera.main.transform.position, Camera.main.transform.rotation,
+                Camera.main.transform);
 
             //Load players and enemies
             //PLAYER
@@ -82,7 +85,8 @@ namespace Systems.Managers
             //....
 
             //Load camera that handles the targetting arrow
-            arrowCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f), Quaternion.identity);
+            arrowCam = Instantiate(Resources.Load<Camera>("CardsTargetingCamera"), new Vector3(80f, 0f, 0f),
+                Quaternion.identity);
 
             FightEvents.TriggerFightStarted();
             FightEvents.OnPlayerDied += PlayerDiedCleanUp;
@@ -102,6 +106,7 @@ namespace Systems.Managers
                 _cardHandManager.TriggerDrawCards(currentPlayer.DrawAmount);
             }
         }
+
         IEnumerator TriggerCharacterTurn(Character character)
         {
             FightEvents.TriggerCharacterTurnStart(character);
@@ -122,12 +127,13 @@ namespace Systems.Managers
                 FightEvents.TriggerCharacterTurnEnd(character);
             }
         }
+
         void StartPlayerTurn()
         {
-
             StartCoroutine(TriggerCharacterTurn(currentPlayer));
             _cardHandManager.TriggerDrawCards(currentPlayer.DrawAmount);
         }
+
         public void EndPlayerTurn()
         {
             //Called by UI button click
@@ -142,14 +148,17 @@ namespace Systems.Managers
             FightEvents.TriggerCharacterTurnEnd(currentPlayer);
             StartCoroutine(StartEnemyTurn());
         }
+
         IEnumerator StartEnemyTurn()
         {
             foreach (Enemy enemy in currentEnemies)
             {
                 yield return TriggerCharacterTurn((Character)enemy);
             }
+
             StartPlayerTurn();
         }
+
         void EnemyDiedCleanUp(Enemy enemy)
         {
             currentEnemies.Remove(enemy);
@@ -160,10 +169,10 @@ namespace Systems.Managers
                 FightEvents.TriggerFightWon();
             }
         }
+
         void PlayerDiedCleanUp(Player player)
         {
             FightEvents.TriggerFightLost();
         }
     }
 }
-

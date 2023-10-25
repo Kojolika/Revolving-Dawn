@@ -5,6 +5,7 @@ using Fight;
 
 namespace Systems.Managers
 {
+    // TODO: make it a scriptable object, no reason to be a MonoBehaviour
     public class HoverManager : MonoBehaviour, Systems.Managers.Base.IManager
     {
         public Card3D currentCard;

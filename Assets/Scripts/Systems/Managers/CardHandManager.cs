@@ -10,6 +10,7 @@ using Fight;
 
 namespace Systems.Managers
 {
+    // TODO: make it a scriptable object, no reason to be a MonoBehaviour
     public class CardHandManager : MonoBehaviour, Systems.Managers.Base.IManager
     {
         [SerializeField] Card3D cardPrefab;
