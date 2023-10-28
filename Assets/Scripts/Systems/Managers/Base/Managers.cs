@@ -48,6 +48,7 @@ namespace Systems.Managers.Base
             {
                 await kvp.Value.Startup();
                 await kvp.Value.Bind(container);
+                await kvp.Value.AfterStart();
             }
         }
 

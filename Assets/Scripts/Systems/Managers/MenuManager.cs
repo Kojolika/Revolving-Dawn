@@ -1,84 +1,77 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UI;
+using System.Reflection;
+using Cysharp.Threading.Tasks;
+using Data;
+using Systems.Managers.Base;
+using UI.Menus.Common;
+using Utils.Attributes;
 
 namespace Systems.Managers
 {
-    // TODO: make it a scriptable object, no reason to be a MonoBehaviour
-    public class MenuManager : MonoBehaviour, Systems.Managers.Base.IManager
+    public class MenuManager : AbstractSOManager
     {
-        public static MenuManager StaticInstance { get; private set; }
-        public static Stack<GameObject> MenuStack = new Stack<GameObject>();
+        public static List<MenuInfo> MenuStack { get; private set; } = new List<MenuInfo>();
 
-        [SerializeField] GameObject pauseBackGround;
-        private GameObject pauseBackGroundInstance;
+        [SerializeField] private Canvas menuCanvasPrefab;
 
-        //MENUS
-        public Menu escapeMenu;
-        public Menu SettingsMenu;
-        public Menu DeckViewerMenu;
-
-
-        private void Awake()
+        private Canvas menuCanvas;
+        public override UniTask Startup()
         {
-            if (StaticInstance == null)
-            {
-                StaticInstance = this;
-                pauseBackGroundInstance = Instantiate(pauseBackGround, transform);
-                pauseBackGroundInstance.SetActive(false);
-            }
-            else
-            {
-                Destroy(this);
-            }
+            menuCanvas = Instantiate(menuCanvasPrefab);
+
+            return base.Startup();
         }
-        void Update()
+
+        public override UniTask AfterStart()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            Base.Managers.GetManagerOfType<MySceneManager>().AddObjectToNotDestroyOnLoad(menuCanvas);
+
+            return base.AfterStart();
+        }
+
+        private void Push<M, D>(M menu)
+            where M : Menu<D>
+            where D : class?
+        {
+            MenuStack.Add(new MenuInfo(typeof(M)));
+        }
+
+        public async UniTask OpenMenu<M, D>(D data)
+            where M : Menu<D>
+            where D : class?
+        {
+            string resourcePath = default;
+
+            foreach (var property in typeof(M).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
-                if (MenuStack.Count < 1)
+                var attributes = property.GetCustomAttributes(typeof(ResourcePathAttribute), true);
+                if (attributes.Length > 0)
                 {
-                    escapeMenu.GetComponentInChildren<Menu>().Open();
+                    // Since the property is static, their is no instance for the class, set obj value to null
+                    resourcePath = (string)property.GetValue(null);
                 }
-                else
-                {
-                    MenuStack.Peek().GetComponentInChildren<Menu>().Close();
-                }
-
             }
+
+            Debug.Assert(resourcePath != default, "Menu doesn't have an addressable resource path!");
+
+            menu.Populate(data);
+
+            await menu.PopulateAsync(data);
+
+            Push<M, D>(menu);
         }
-        public void OpenMenu(GameObject menu, dynamic input = null)
+
+
+        public class MenuInfo
         {
-            var instance = Instantiate(menu, transform);
-
-            if (MenuStack.Count > 0)
+            public MenuInfo(System.Type type)
             {
-                instance.GetComponent<Canvas>().sortingOrder = MenuStack.Peek().GetComponent<Canvas>().sortingOrder + 1;
-                MenuStack.Peek().gameObject.SetActive(false);
-            }
-            else
-            {
-                pauseBackGroundInstance.SetActive(true);
-                instance.GetComponent<Canvas>().sortingOrder = pauseBackGroundInstance.GetComponent<Canvas>().sortingOrder + 1;
-
-                PlayerTurnInputManager.StaticInstance.isPaused = true;
+                this.type = type;
             }
 
-            instance.GetComponent<Menu>().HandleInput(input);
-            MenuStack.Push(instance);
-        }
-        public void CloseMenu()
-        {
-            var menu = MenuStack.Pop();
-            Destroy(menu);
-
-            if (MenuStack.Count > 0)
-                MenuStack.Peek().gameObject.SetActive(true);
-            else
-            {
-                pauseBackGroundInstance.SetActive(false);
-                PlayerTurnInputManager.StaticInstance.isPaused = false;
-            }
+            public System.Type type;
+            public int SortingOrder;
         }
     }
 }

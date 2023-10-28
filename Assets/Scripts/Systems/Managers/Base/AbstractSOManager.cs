@@ -2,7 +2,6 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Zenject;
-using Logger = Tooling.Logging.Logger;
 
 namespace Systems.Managers.Base
 {
@@ -14,6 +13,15 @@ namespace Systems.Managers.Base
         /// </summary>
         /// <returns>UniTask so the operation can be async.</returns>
         public virtual UniTask Startup()
+        {
+            return UniTask.CompletedTask;
+        }
+        /// <summary>
+        /// Method that's called after all startups have completed, used to ensure that all initializations
+        /// are done before referencing something a manager may create on startup.
+        /// </summary>
+        /// <returns></returns>
+        public virtual UniTask AfterStart()
         {
             return UniTask.CompletedTask;
         }
