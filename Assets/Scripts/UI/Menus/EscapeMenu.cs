@@ -8,7 +8,8 @@ namespace UI.Menus
     {
         public static string ResourcePath => "EscapeMenu";
 
-        [Header("Buttons")] [SerializeField] private MyButton resumeButton;
+        [Header("Buttons")] 
+        [SerializeField] private MyButton resumeButton;
         [SerializeField] private MyButton settingsButton;
         [SerializeField] private MyButton mainMenuButton;
         [SerializeField] private MyButton closeGameButton;

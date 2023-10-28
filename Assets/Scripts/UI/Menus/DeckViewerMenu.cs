@@ -1,35 +1,31 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using Cards;
-using Characters;
 using TMPro;
 using System.Dynamic;
+using UI.Menus.Common;
 
 namespace UI
 {
-    public class DeckViewerMenu : Menu<null>
+    public class DeckViewerMenu : Menu<DeckViewerMenu.DeckViewerData>
     {
-        DeckType deckType;
+        public class DeckViewerData
+        {
+            public List<Card> cardList;
+        }
+
         ObservableCollection<Card> currentDeck = new ObservableCollection<Card>();
         DeckViewer deckViewerContent;
         [SerializeField] Card_UI card_UI;
         [SerializeField] TextMeshProUGUI deckName;
 
-        DeckViewerMenu staticInstance;
-
-        public override ExpandoObject MenuInput { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-
-        void Awake()
+        public override void Populate(DeckViewerData data)
         {
-            if (staticInstance == null)
-            {
-                staticInstance = this;
-                deckViewerContent = staticInstance.gameObject.GetComponentInChildren<DeckViewer>();
-            }
-            else
-                Destroy(this);
+            throw new System.NotImplementedException();
         }
+
         void LoadCards(ObservableCollection<Card> deck)
         {
             currentDeck = deck;
@@ -42,8 +38,8 @@ namespace UI
                 Card_UI instance = Instantiate(card_UI, deckViewerContent.transform);
                 //instance.LoadInfo(card);
             }
-
         }
+
         public void ExpandOrShrinkContentSize()
         {
             int deckSize = currentDeck.Count;
@@ -66,33 +62,6 @@ namespace UI
             {
                 contentRect.sizeDelta += new Vector2(0, distance);
                 contentRect.anchoredPosition3D -= new Vector3(0, contentRect.position.y + (distance / 2), 0);
-            }
-        }
-        public override void HandleInput(dynamic input)
-        {
-            this.deckType = input.DeckType;
-            switch (deckType)
-            {
-                case DeckType.Draw:
-                    deckName.text = "Draw";
-                    //LoadCards(PlayerCardDecksManager.DrawPile);
-
-                    break;
-                case DeckType.Discard:
-                    deckName.text = "Discard";
-                    //LoadCards(PlayerCardDecksManager.Discard);
-
-                    break;
-                case DeckType.Lost:
-                    deckName.text = "Lost";
-                    //LoadCards(PlayerCardDecksManager.Lost);
-
-                    break;
-                case DeckType.Deck:
-                    deckName.text = "Current Deck";
-                    //LoadCards(PlayerCardDecks.Deck);
-
-                    break;
             }
         }
     }

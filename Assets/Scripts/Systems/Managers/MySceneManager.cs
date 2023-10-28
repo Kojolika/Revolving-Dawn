@@ -62,9 +62,7 @@ namespace Systems.Managers
             
             Logger.Log("Loading scene " + index);
 
-            SceneManager.LoadSceneAsync((int)index);
-
-            await UniTask.Delay(TimeSpan.FromSeconds(5));
+            await SceneManager.LoadSceneAsync((int)index);
 
             LoadingCanvas.gameObject.SetActive(false);
         }

@@ -12,7 +12,7 @@ namespace Data
         }
     }
 
-    public class Null : IHaveAddressableKey
+    public class Null
     {
     }
 }

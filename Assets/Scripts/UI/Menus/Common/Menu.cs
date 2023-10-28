@@ -1,35 +1,24 @@
 using Cysharp.Threading.Tasks;
 using Data;
-using Systems.Managers;
 using UnityEngine;
-using Utils.Attributes;
-using Logger = Tooling.Logging.Logger;
+using Utils.Extensions.GameObject;
+
 
 namespace UI.Menus.Common
 {
-    [RequireComponent(typeof(MenuHandle))]
-    public abstract class Menu<D> : MonoBehaviour, Data.IPopulateData<D> where D : class?, IHaveAddressableKey
+    public abstract class Menu<TData> : MonoBehaviour, IHaveAddressableKey, Data.IPopulateData<TData> where TData : class?
     {
-        private static MenuManager MenuManager;
         public MenuHandle menuHandle { get; private set; }
-
-        [Zenject.Inject]
-        void Construct(MenuManager menuManager)
-        {
-            MenuManager = menuManager;
-            Logger.Log("Injected menu manager");
-        }
 
         private void Awake()
         {
-            menuHandle = GetComponent<MenuHandle>();
+            menuHandle = gameObject.GetOrAddComponent<MenuHandle>();
             menuHandle.Menu = gameObject;
         }
 
-        public static void Open(D data) => _ = MenuManager.OpenMenu<Menu<D>, D>(data);
-        public abstract void Populate(D data);
+        public abstract void Populate(TData data);
 
-        public virtual async UniTask PopulateAsync(D data)
+        public virtual async UniTask PopulateAsync(TData data)
         {
             await UniTask.CompletedTask;
         }

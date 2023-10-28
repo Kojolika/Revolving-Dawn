@@ -2,13 +2,16 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
-using Data;
 using Systems.Managers.Base;
 using UI.Menus.Common;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using Utils.Attributes;
+using Logger = Tooling.Logging.Logger;
 
 namespace Systems.Managers
 {
+    [CreateAssetMenu(menuName = "RevolvingDawn/Systems/Managers/" + nameof(MenuManager), fileName = nameof(MenuManager))]
     public class MenuManager : AbstractSOManager
     {
         public static List<MenuInfo> MenuStack { get; private set; } = new List<MenuInfo>();
@@ -16,6 +19,7 @@ namespace Systems.Managers
         [SerializeField] private Canvas menuCanvasPrefab;
 
         private Canvas menuCanvas;
+
         public override UniTask Startup()
         {
             menuCanvas = Instantiate(menuCanvasPrefab);
@@ -23,55 +27,59 @@ namespace Systems.Managers
             return base.Startup();
         }
 
-        public override UniTask AfterStart()
-        {
-            Base.Managers.GetManagerOfType<MySceneManager>().AddObjectToNotDestroyOnLoad(menuCanvas);
+        private void Push(MenuInfo menuInfo) => MenuStack.Add(menuInfo);
 
-            return base.AfterStart();
-        }
-
-        private void Push<M, D>(M menu)
-            where M : Menu<D>
-            where D : class?
-        {
-            MenuStack.Add(new MenuInfo(typeof(M)));
-        }
-
-        public async UniTask OpenMenu<M, D>(D data)
-            where M : Menu<D>
-            where D : class?
+        public async UniTask OpenMenu<TMenu, TData>(TData data)
+            where TMenu : Menu<TData>
+            where TData : class?
         {
             string resourcePath = default;
 
-            foreach (var property in typeof(M).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            foreach (var property in typeof(TMenu).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
+                Logger.Log("Prop: " + property);
                 var attributes = property.GetCustomAttributes(typeof(ResourcePathAttribute), true);
-                if (attributes.Length > 0)
+                foreach (var atr in attributes)
                 {
-                    // Since the property is static, their is no instance for the class, set obj value to null
-                    resourcePath = (string)property.GetValue(null);
+                    Logger.Log("Attribute" + atr);
                 }
+
+                // Since the property is static, their is no instance for the class, set obj value to null
+                resourcePath = (string)property.GetValue(typeof(TMenu));
             }
 
-            Debug.Assert(resourcePath != default, "Menu doesn't have an addressable resource path!");
+            Logger.Log("Path :" + resourcePath);
+
+            Debug.Assert(resourcePath != default, typeof(TMenu) + " doesn't have an addressable resource path!");
+            var operationHandle = Addressables.LoadAssetAsync<GameObject>(resourcePath);
+
+            await UniTask.WaitWhile(() => operationHandle.Status != AsyncOperationStatus.Failed
+                                          || operationHandle.Status != AsyncOperationStatus.Succeeded);
+
+            var menuGo = Instantiate(operationHandle.Result, menuCanvas.transform);
+            var menu = menuGo.GetComponent<TMenu>();
+            Debug.Assert(menu != null, "Loaded menu doesn't have a component " + typeof(TMenu));
 
             menu.Populate(data);
-
             await menu.PopulateAsync(data);
 
-            Push<M, D>(menu);
+            Push(new MenuInfo(menu.menuHandle, typeof(TMenu), operationHandle));
         }
 
 
         public class MenuInfo
         {
-            public MenuInfo(System.Type type)
-            {
-                this.type = type;
-            }
-
-            public System.Type type;
+            public MenuHandle MenuHandle;
+            public System.Type Type;
+            public AsyncOperationHandle AsyncOperationHandle;
             public int SortingOrder;
+
+            public MenuInfo(MenuHandle menuHandle, System.Type type, AsyncOperationHandle asyncOperationHandle)
+            {
+                MenuHandle = menuHandle;
+                Type = type;
+                AsyncOperationHandle = asyncOperationHandle;
+            }
         }
     }
 }
