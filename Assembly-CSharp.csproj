@@ -51,6 +51,9 @@
      <Compile Include="Assets\Scripts\Characters\Affects\Affect.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Buffs\Reinforce.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthDisplay.cs" />
+     <Compile Include="Assets\Scripts\Tooling\Logging\MyLogger.cs" />
+     <Compile Include="Assets\Scripts\UI\Menus\Common\IHaveCloseOperation.cs" />
+     <Compile Include="Assets\Scripts\UI\Menus\Common\IMenuHandle.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\DeckViewerMenu.cs" />
      <Compile Include="Assets\Scripts\Cards\Hand.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
@@ -95,6 +98,7 @@
      <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Block.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\SubMenus\SettingsMenu.cs" />
+     <Compile Include="Assets\Scripts\Utils\Extensions\MonoBehaviour\MonoBehaviourExtensions.cs" />
      <Compile Include="Assets\Scripts\Utils\SerializableDictionary.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\Common\Menu.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\Base\IManager.cs" />
@@ -139,7 +143,6 @@
      <Folder Include="Assets\TextMesh Pro\Sprites" />
      <Folder Include="Assets\Sprites\UI" />
      <Folder Include="Assets\Scripts\UI\Menus" />
-     <Folder Include="Assets\Scripts\Utils\Extensions" />
      <Folder Include="Assets\TextMesh Pro\Resources\Sprite Assets" />
      <Folder Include="Assets\Scripts\Characters\Affects\Buffs" />
      <Folder Include="Assets\Hero Knight - Pixel Art\Sprites" />
@@ -155,7 +158,6 @@
      <Folder Include="Assets\Hero Knight - Pixel Art" />
      <None Include="Assets\Shaders\GameArea.shader" />
      <Folder Include="Assets\TextMesh Pro\Resources\Fonts &amp; Materials" />
-     <Folder Include="Assets\Scripts\UI\Menus\Common" />
      <Folder Include="Assets\Scripts\Cards" />
      <Folder Include="Assets\Data\Animations" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
@@ -196,7 +198,6 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <Folder Include="Assets\Scripts\GameLoop\Startup" />
-     <Folder Include="Assets\Scripts\Tooling\Logging" />
      <Folder Include="Assets\Sprites\Particles" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
      <Folder Include="Assets\Prefabs\UI\Gameloop" />

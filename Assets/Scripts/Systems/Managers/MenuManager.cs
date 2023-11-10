@@ -8,8 +8,8 @@ using UI.Menus.Common;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Utils.Attributes;
-using Utils.Extensions.MonoBehaviour;
 using Zenject;
+using Tooling.Logging;
 
 namespace Systems.Managers
 {
@@ -106,9 +106,7 @@ namespace Systems.Managers
             MenuStackUpdated?.Invoke();
         }
 
-        public async UniTask<TMenu> Open<TMenu, TData>(TData openData)
-            where TMenu : Menu<TData>
-            where TData : class?
+        public async UniTask<TMenu> Open<TMenu, TData>(TData openData) where TMenu : Menu<TData>
         {
             var (menu, operationHandle) = LoadMenu<TMenu, TData>();
 
@@ -133,9 +131,7 @@ namespace Systems.Managers
             return instantiatedMenu;
         }
 
-        (TMenu, AsyncOperationHandle operationHandle) LoadMenu<TMenu, TData>()
-            where TMenu : Menu<TData>
-            where TData : class?
+        (TMenu, AsyncOperationHandle operationHandle) LoadMenu<TMenu, TData>() where TMenu : Menu<TData>
         {
             MyLogger.Log("Creating menu for type " + typeof(TMenu).Name);
 

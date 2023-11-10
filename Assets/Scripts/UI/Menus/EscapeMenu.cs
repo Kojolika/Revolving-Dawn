@@ -1,13 +1,15 @@
 using UnityEngine;
 using UI.Common;
 using UI.Menus.Common;
+using Utils.Attributes;
 
 namespace UI.Menus
 {
     public class EscapeMenu : Menu<Data.Null>
     {
-        public static string ResourcePath => "EscapeMenu";
-
+        [ResourcePath]
+        public string ResourcePath => nameof(EscapeMenu);
+        
         [Header("Buttons")] 
         [SerializeField] private MyButton resumeButton;
         [SerializeField] private MyButton settingsButton;
@@ -23,14 +25,14 @@ namespace UI.Menus
 
         public void MainMenu()
         {
-            //Save Game,
-            //Load Main Menu
+            // Save Game,
+            // Load Main Menu
         }
 
         public void ExitToDesktop()
         {
-            //Save Game,
-            //Close Game
+            // Save Game,
+            // Close Game
         }
     }
 }

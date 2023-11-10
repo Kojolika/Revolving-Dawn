@@ -1,16 +1,17 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using Cards;
 using TMPro;
-using System.Dynamic;
 using UI.Menus.Common;
+using Utils.Attributes;
 
 namespace UI
 {
     public class DeckViewerMenu : Menu<DeckViewerMenu.DeckViewerData>
-    {
+    {        
+        [ResourcePath]
+        public string ResourcePath => nameof(DeckViewerMenu);
         public class DeckViewerData
         {
             public List<Card> cardList;
@@ -20,6 +21,7 @@ namespace UI
         DeckViewer deckViewerContent;
         [SerializeField] Card_UI card_UI;
         [SerializeField] TextMeshProUGUI deckName;
+
 
         public override void Populate(DeckViewerData data)
         {

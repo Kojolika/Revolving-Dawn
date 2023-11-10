@@ -1,19 +1,24 @@
 using Cysharp.Threading.Tasks;
-using Data;
+using Systems.Managers;
 using UnityEngine;
-using Utils.Extensions.GameObject;
-
 
 namespace UI.Menus.Common
 {
-    public abstract class Menu<TData> : MonoBehaviour, IHaveAddressableKey, Data.IPopulateData<TData> where TData : class?
+    public abstract class Menu<TData> : MonoBehaviour, IMenuHandle, Data.IPopulateData<TData>
     {
-        public MenuHandle menuHandle { get; private set; }
+        /// <summary>
+        /// Unfortunately we cannot create static abstract properties with the current C# version.
+        /// Thus this is more of a reminder that each menu must create a static <see cref="ResourcePath"/>
+        /// property with the <see cref="Utils.Attributes.ResourcePathAttribute"/> to be loaded correctly.
+        /// </summary>
+        static string ResourcePath { get; }
 
-        private void Awake()
+        private MenuManager menuManager;
+
+        [Zenject.Inject]
+        void Construct(MenuManager menuManager)
         {
-            menuHandle = gameObject.GetOrAddComponent<MenuHandle>();
-            menuHandle.Menu = gameObject;
+            this.menuManager = menuManager;
         }
 
         public abstract void Populate(TData data);
@@ -23,8 +28,6 @@ namespace UI.Menus.Common
             await UniTask.CompletedTask;
         }
 
-        public virtual void Close()
-        {
-        }
+        protected void Close() => _ = menuManager.Close(this);
     }
 }

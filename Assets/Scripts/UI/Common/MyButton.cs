@@ -42,7 +42,7 @@ namespace UI.Common
             background = GetComponent<Image>();
         }
 
-        private void Start()
+        private void Awake()
         {
             background = GetComponent<Image>();
         }
