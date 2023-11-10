@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Systems.Managers.Base;
+using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Logger = Tooling.Logging.Logger;
 using Object = UnityEngine.Object;
 
 namespace Systems.Managers
@@ -12,25 +12,11 @@ namespace Systems.Managers
     [CreateAssetMenu(menuName = "RevolvingDawn/Systems/Managers/" + nameof(MySceneManager), fileName = nameof(MySceneManager))]
     public class MySceneManager : AbstractSOManager
     {
-        [SerializeField] private Canvas loadingCanvasPrefab;
-        [SerializeField] private Animator defaultLoadingAnimPrefab;
+        [SerializeField] private Canvas loadingCanvas;
+        [SerializeField] private Animator defaultLoadingAnim;
 
-        private Canvas loadingCanvas;
-        private Canvas LoadingCanvas
-        {
-            get
-            {
-                if (loadingCanvas == null)
-                {
-                    loadingCanvas = Instantiate(loadingCanvasPrefab);
-                    Instantiate(defaultLoadingAnimPrefab, loadingCanvas.transform);
-                    AddObjectToNotDestroyOnLoad(loadingCanvas);
-                }
+        public List<Object> dontDestroyOnLoadObjects { get; private set; } = new List<Object>();
 
-                return loadingCanvas;
-            }
-            set => loadingCanvas = value;
-        }
         /// <summary>
         /// Scene indexes in the build settings.
         /// </summary>
@@ -41,7 +27,23 @@ namespace Systems.Managers
             Fight = 2,
         }
 
-        public List<Object> dontDestroyOnLoadObjects { get; private set; } = new List<Object>();
+        [Zenject.Inject]
+        void Construct(Canvas loadingCanvas, Animator defaultLoadingAnim)
+        {
+            this.loadingCanvas = loadingCanvas;
+            this.defaultLoadingAnim = defaultLoadingAnim;
+        }
+
+        public override UniTask Startup()
+        {
+            AddObjectToNotDestroyOnLoad(loadingCanvas);
+            AddObjectToNotDestroyOnLoad(defaultLoadingAnim);
+            
+            defaultLoadingAnim.transform.SetParent(loadingCanvas.transform);
+            defaultLoadingAnim.transform.localPosition = Vector3.zero;
+
+            return base.Startup();
+        }
 
         public void AddObjectToNotDestroyOnLoad(Object obj)
         {
@@ -49,22 +51,18 @@ namespace Systems.Managers
             dontDestroyOnLoadObjects.Add(obj);
         }
 
-        public override UniTask Startup()
-        {
-            Logger.Log("Starting...");
-
-            return base.Startup();
-        }
-
         public async UniTask LoadScene(SceneIndex index)
         {
-            LoadingCanvas.gameObject.SetActive(true);
-            
-            Logger.Log("Loading scene " + index);
+            loadingCanvas.gameObject.SetActive(true);
+
+            MyLogger.Log("Loading scene " + index);
 
             await SceneManager.LoadSceneAsync((int)index);
 
-            LoadingCanvas.gameObject.SetActive(false);
+            // So we can actually see it load
+            await UniTask.Delay(TimeSpan.FromSeconds(2));
+
+            loadingCanvas.gameObject.SetActive(false);
         }
     }
 }

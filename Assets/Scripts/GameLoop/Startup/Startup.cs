@@ -1,14 +1,26 @@
 ﻿using Cysharp.Threading.Tasks;
 using Systems.Managers;
 using Systems.Managers.Base;
+using Tooling.Logging;
 using UI.Menus;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace GameLoop.Startup
 {
     public class Startup : MonoBehaviour
     {
         [SerializeField] private ScriptableObjectManagers scriptableObjectManagers;
+
+        private MySceneManager sceneManager;
+        private MenuManager menuManager;
+
+        [Zenject.Inject]
+        void Construct(MySceneManager sceneManager, MenuManager menuManager)
+        {
+            this.sceneManager = sceneManager;
+            this.menuManager = menuManager;
+        }
 
         private void Awake()
         {
@@ -17,13 +29,20 @@ namespace GameLoop.Startup
 
         private async UniTask DoStartup()
         {
-            Tooling.Logging.Logger.Log("Initialing managers...");
-            await Managers.InitializeManagers(scriptableObjectManagers.SOManagers);
+            MyLogger.Log("Booting up Addressables");
+            var addressableHandle = Addressables.InitializeAsync();
+            await UniTask.WaitUntil(() => addressableHandle.IsDone);
 
-            Tooling.Logging.Logger.Log("Loading Escape");
-            await Managers.GetManagerOfType<MySceneManager>().LoadScene(MySceneManager.SceneIndex.MainMenu);
+            MyLogger.Log("Waiting for the dependency injection object graph is constructed...");
+            await UniTask.WaitWhile(() => sceneManager == null && menuManager == null);
+            
+            MyLogger.Log("Booting up managers...");
+            await Managers.InitializeManagers();
 
-            _ = Managers.GetManagerOfType<MenuManager>().OpenMenu<EscapeMenu, Data.Null>(null);
+            MyLogger.Log("Loading Main Menu...");
+            await sceneManager.LoadScene(MySceneManager.SceneIndex.MainMenu);
+
+            EscapeMenu escapeMenu = await menuManager.Open<EscapeMenu, Data.Null>(null);
         }
     }
 }

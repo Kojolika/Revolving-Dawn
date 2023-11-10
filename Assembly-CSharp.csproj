@@ -61,7 +61,6 @@
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy_Slime.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\TargetingState.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\Base\Managers.cs" />
-     <Compile Include="Assets\Scripts\Tooling\Logging\Logger.cs" />
      <Compile Include="Assets\Scripts\Utils\Bezier.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\PlayerInputState.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
