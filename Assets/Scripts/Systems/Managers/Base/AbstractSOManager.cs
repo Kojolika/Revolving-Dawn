@@ -25,14 +25,5 @@ namespace Systems.Managers.Base
         {
             return UniTask.CompletedTask;
         }
-
-        /// <summary>
-        /// Used to bind manager to a type for Zenject dependency injection.
-        /// </summary>
-        /// <param name="diContainer">The container it this manager binds to.</param>
-        public virtual UniTask Bind(DiContainer diContainer)
-        {
-            return UniTask.CompletedTask;
-        }
     }
 }

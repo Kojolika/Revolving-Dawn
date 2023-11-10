@@ -106,7 +106,9 @@ namespace Systems.Managers
             MenuStackUpdated?.Invoke();
         }
 
-        public async UniTask<TMenu> Open<TMenu, TData>(TData openData) where TMenu : Menu<TData>
+        public async UniTask<TMenu> Open<TMenu, TData>(TData openData)
+            where TMenu : Menu<TData>
+            where TData : class?
         {
             var (menu, operationHandle) = LoadMenu<TMenu, TData>();
 
@@ -131,7 +133,9 @@ namespace Systems.Managers
             return instantiatedMenu;
         }
 
-        (TMenu, AsyncOperationHandle operationHandle) LoadMenu<TMenu, TData>() where TMenu : Menu<TData>
+        (TMenu, AsyncOperationHandle operationHandle) LoadMenu<TMenu, TData>()
+            where TMenu : Menu<TData>
+            where TData : class?
         {
             MyLogger.Log("Creating menu for type " + typeof(TMenu).Name);
 
