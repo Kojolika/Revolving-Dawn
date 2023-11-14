@@ -7,6 +7,4 @@ namespace Characters
     {
         public GameObject border;
     }
-
-
 }

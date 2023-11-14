@@ -1,4 +1,3 @@
-
 namespace FightDamageCalc
 {
     public class FightInfo
@@ -10,15 +9,14 @@ namespace FightDamageCalc
             Block,
             Heal
         }
-
     }
+
     [System.Serializable]
     public class Number
     {
-        [UnityEngine.SerializeField]
-        float amount;
-        [UnityEngine.SerializeField]
-        FightInfo.NumberType type;
+        [UnityEngine.SerializeField] float amount;
+        [UnityEngine.SerializeField] FightInfo.NumberType type;
+
         public Number(float number, FightInfo.NumberType type)
         {
             this.amount = number;
@@ -30,6 +28,7 @@ namespace FightDamageCalc
             get => amount;
             set => amount = value;
         }
+
         public FightInfo.NumberType GetDamageType()
         {
             return type;

@@ -33,7 +33,6 @@ namespace Systems.Managers
 
         public UniTask Startup()
         {
-            sceneManager.AddObjectToNotDestroyOnLoad(menuCanvas);
             MenuStackUpdated += OnMenuStackUpdated;
 
             return UniTask.CompletedTask;

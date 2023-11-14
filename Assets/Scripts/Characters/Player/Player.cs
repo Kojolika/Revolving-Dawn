@@ -18,16 +18,32 @@ namespace Characters
         Vector3 _healthBarPosition = new Vector3(0f, -0.05f, 0f);
         Vector3 _targetingBorderPosition = new Vector3(0f, .15f, 0f);
 
-        public override HealthDisplay healthDisplay { get => _healthDisplay; set => _healthDisplay = value; }
-        public override Vector3 targetingBorderPosition { get => _targetingBorderPosition; set => _targetingBorderPosition = value; }
-        public override Vector3 healthbarPosition { get => _healthBarPosition; set => _healthBarPosition = value; }
+        public override HealthDisplay healthDisplay
+        {
+            get => _healthDisplay;
+            set => _healthDisplay = value;
+        }
+
+        public override Vector3 targetingBorderPosition
+        {
+            get => _targetingBorderPosition;
+            set => _targetingBorderPosition = value;
+        }
+
+        public override Vector3 healthbarPosition
+        {
+            get => _healthBarPosition;
+            set => _healthBarPosition = value;
+        }
 
 
         public override void InitializeHealth()
         {
             base.InitializeHealth();
         }
+
         public void SetInputState(PlayerInputState state) => this.state = state;
+
         void HandleInput()
         {
             if (state == null) return;
@@ -37,6 +53,7 @@ namespace Characters
 
             Debug.Log(state);
         }
+
         void Update()
         {
             HandleInput();

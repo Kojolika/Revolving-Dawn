@@ -5,13 +5,31 @@ namespace Characters
     public abstract class Character : MonoBehaviour
     {
         float maxHealth = 50f;
-        public virtual float MaxHealth { get => maxHealth; set => maxHealth = value; }
+
+        public virtual float MaxHealth
+        {
+            get => maxHealth;
+            set => maxHealth = value;
+        }
+
         Vector3 healthBarVector;
-        public virtual Vector3 healthbarPosition { get => new Vector3(0f, 1f, 0f); set => healthBarVector = value; }
+
+        public virtual Vector3 healthbarPosition
+        {
+            get => new Vector3(0f, 1f, 0f);
+            set => healthBarVector = value;
+        }
+
         Vector3 targetingBorderVector;
-        public virtual Vector3 targetingBorderPosition { get => Vector3.zero; set => targetingBorderVector = value; }
+
+        public virtual Vector3 targetingBorderPosition
+        {
+            get => Vector3.zero;
+            set => targetingBorderVector = value;
+        }
 
         public abstract HealthDisplay healthDisplay { get; set; }
+
         public virtual void InitializeHealth()
         {
             healthDisplay.health = new HealthSystem(healthDisplay);
@@ -37,6 +55,7 @@ namespace Characters
             else if (number.GetDamageType() == FightDamageCalc.FightInfo.NumberType.Heal)
                 target.healthDisplay.health.Heal(finalAmount);
         }
+
         public void PerformAffectAction(Affect affect, Character target)
         {
             if (target.gameObject.TryGetComponent<Affects>(out Affects affects))
@@ -49,11 +68,13 @@ namespace Characters
                 newAffects.AddAffect(affect);
             }
         }
+
         public virtual void Awake()
         {
             Fight.FightEvents.OnFightStarted += OnFightStart;
             CastShadows();
         }
+
         void OnDisable()
         {
             Fight.FightEvents.OnFightStarted -= OnFightStart;

@@ -51,16 +51,15 @@
      <Compile Include="Assets\Scripts\Characters\Affects\Affect.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Buffs\Reinforce.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthDisplay.cs" />
-     <Compile Include="Assets\Scripts\Tooling\Logging\MyLogger.cs" />
-     <Compile Include="Assets\Scripts\UI\Menus\Common\IHaveCloseOperation.cs" />
-     <Compile Include="Assets\Scripts\UI\Menus\Common\IMenuHandle.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\DeckViewerMenu.cs" />
      <Compile Include="Assets\Scripts\Cards\Hand.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\HoveringState.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\ManaViewingState.cs" />
      <Compile Include="Assets\Scripts\UI\Common\MyButton.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy.cs" />
+     <Compile Include="Assets\Scripts\UI\Menus\Common\IMenuHandle.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\EscapeMenu.cs" />
+     <Compile Include="Assets\Scripts\Tooling\Logging\MyLogger.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Enemy_Slime.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\TargetingState.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\Base\Managers.cs" />
@@ -68,22 +67,29 @@
      <Compile Include="Assets\Scripts\Fight\Input\PlayerInputState.cs" />
      <Compile Include="Assets\Scripts\Fight\TargetingArrow.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
+     <Compile Include="Assets\Scripts\Zenject\Installers\AnimatorInstaller.cs" />
+     <Compile Include="Assets\Scripts\Characters\Player\Run\CurrentRunDefinition.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\Common\MenuHandle.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
+     <Compile Include="Assets\Scripts\Data\MapDefinition.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\CardHandManager.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\DraggingState.cs" />
      <Compile Include="Assets\Scripts\Cards\Card_UI.cs" />
+     <Compile Include="Assets\Scripts\Zenject\Installers\ManagerInstaller.cs" />
+     <Compile Include="Assets\Scripts\UI\Menus\MainMenu.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\TestDeck.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\PlayerCardDecksManager.cs" />
      <Compile Include="Assets\Scripts\UI\Common\TabGroup.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\ManaHoveringState.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Processor.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Fracture.cs" />
+     <Compile Include="Assets\Scripts\Characters\Player\View\PlayerView.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\RoundingProcessor.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\FightManager.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\DeckViewer.cs" />
      <Compile Include="Assets\Samples\Addressables\1.21.18\Addressables Utility\AddressablesUtility.cs" />
+     <Compile Include="Assets\Scripts\Systems\Managers\PlayerDataManager.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\MenuManager.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\MySceneManager.cs" />
      <Compile Include="Assets\Scripts\Utils\Attributes\ResourcePathAttribute.cs" />
@@ -95,10 +101,10 @@
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Attack.cs" />
      <Compile Include="Assets\Scripts\GameLoop\Startup\Startup.cs" />
      <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconTwirl.cs" />
+     <Compile Include="Assets\Scripts\UI\Menus\CharacterSelection.cs" />
      <Compile Include="Assets\Scripts\Fight\GameArea\CardSpawner.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Block.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\SubMenus\SettingsMenu.cs" />
-     <Compile Include="Assets\Scripts\Utils\Extensions\MonoBehaviour\MonoBehaviourExtensions.cs" />
      <Compile Include="Assets\Scripts\Utils\SerializableDictionary.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\Common\Menu.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\Base\IManager.cs" />
@@ -106,6 +112,7 @@
      <Compile Include="Assets\Scripts\Utils\Computations.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\ManaDraggingState.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Chain.cs" />
+     <Compile Include="Assets\Scripts\Zenject\Installers\CanvasInstaller.cs" />
      <Compile Include="Assets\Scripts\Fight\Dragger.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\ResistProcessor.cs" />
      <Compile Include="Assets\Scripts\Fight\Mana\Mana.cs" />
@@ -115,14 +122,20 @@
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\BuffProcessor.cs" />
      <Compile Include="Assets\Scripts\Shading\TurnOnShadows.cs" />
      <Compile Include="Assets\Scripts\Fight\CardHandUtils.cs" />
+     <Compile Include="Assets\Scripts\Zenject\Installers\MainInstaller.cs" />
+     <Compile Include="Assets\Scripts\Characters\Player\PlayerMVC.cs" />
      <Compile Include="Assets\Scripts\UI\Common\TabButton.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\DeBuffProcessor.cs" />
+     <Compile Include="Assets\Scripts\Data\LevelDefinition.cs" />
      <Compile Include="Assets\Scripts\UI\Overlay.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\Base\ScriptableObjectManagers.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\FightInfo.cs" />
+     <Compile Include="Assets\Scripts\Utils\Extensions\MonoBehaviour\MonoBehaviourExtensions.cs" />
+     <Compile Include="Assets\Scripts\UI\Menus\Common\IHaveCloseOperation.cs" />
      <Compile Include="Assets\Scripts\Cards\Card3D.cs" />
      <Compile Include="Assets\Scripts\UI\MenuButton.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthSystem.cs" />
+     <Compile Include="Assets\Scripts\Characters\CharacterMVC.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\PlayerTurnInputManager.cs" />
      <Compile Include="Assets\Scripts\Fight\Mana\Mana3D.cs" />
      <Compile Include="Assets\Scripts\Fight\Mover.cs" />
@@ -131,6 +144,8 @@
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Move.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Weaken.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Affects.cs" />
+     <Compile Include="Assets\Scripts\Systems\Managers\SaveManager.cs" />
+     <Compile Include="Assets\Scripts\Characters\Player\Model\PlayerDefinition.cs" />
      <Compile Include="Assets\Scripts\Fight\Mana\ManaPool.cs" />
      <Compile Include="Assets\Scripts\Fight\Animation\EnemyMoveIconHover.cs" />
      <Compile Include="Assets\Scripts\Data\IPopulateData.cs" />
@@ -143,7 +158,9 @@
      <Folder Include="Assets\TextMesh Pro\Sprites" />
      <Folder Include="Assets\Sprites\UI" />
      <Folder Include="Assets\Scripts\UI\Menus" />
+     <Folder Include="Assets\Scripts\Utils\Extensions" />
      <Folder Include="Assets\TextMesh Pro\Resources\Sprite Assets" />
+     <Folder Include="Assets\ScriptableObjects\Zenject" />
      <Folder Include="Assets\Scripts\Characters\Affects\Buffs" />
      <Folder Include="Assets\Hero Knight - Pixel Art\Sprites" />
      <Folder Include="Assets\Materials\Particles" />
@@ -154,19 +171,22 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
      <Folder Include="Assets\Sprites\Characters" />
      <Folder Include="Assets\Scripts\Data" />
+     <Folder Include="Assets\Scripts\Characters\Player\View" />
      <Folder Include="Assets\Scripts\Utils\EditorTools" />
+     <Folder Include="Assets\Resources" />
      <Folder Include="Assets\Hero Knight - Pixel Art" />
      <None Include="Assets\Shaders\GameArea.shader" />
      <Folder Include="Assets\TextMesh Pro\Resources\Fonts &amp; Materials" />
+     <Folder Include="Assets\Scripts\UI\Menus\Common" />
      <Folder Include="Assets\Scripts\Cards" />
-     <Folder Include="Assets\Data\Animations" />
+     <Folder Include="Assets\ScriptableObjects\Animations" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
      <Folder Include="Assets\Sprites\Enemy_MoveSprites" />
-     <Folder Include="Assets\Data\Systems" />
+     <Folder Include="Assets\ScriptableObjects\Systems" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
      <Folder Include="Assets\TextMesh Pro\Resources" />
      <Folder Include="Assets\Scripts\Fight\Mana" />
-     <Folder Include="Assets\Data\Systems\Managers" />
+     <Folder Include="Assets\ScriptableObjects\Systems\Managers" />
      <Folder Include="Assets\AddressableAssetsData\AssetGroups\Schemas" />
      <Folder Include="Assets\Scripts\Utils" />
      <Folder Include="Assets\Scripts\UI" />
@@ -174,6 +194,7 @@
      <Folder Include="Assets\Scripts\Fight" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <Folder Include="Assets\Sprites" />
+     <Folder Include="Assets\Scripts\Zenject\Installers" />
      <Folder Include="Assets\Samples\Addressables\1.21.18\Addressables Utility" />
      <Folder Include="Assets\TextMesh Pro" />
      <Folder Include="Assets\Scripts\Fight\NumberTypeChainProcessing" />
@@ -182,8 +203,10 @@
      <Folder Include="Assets\Sprites\Cards\Resources" />
      <Folder Include="Assets\Scripts\Tooling" />
      <Folder Include="Assets\Prefabs\UI\Canvas" />
+     <Folder Include="Assets\Scripts\Characters\Player\Run" />
      <Folder Include="Assets\Scripts\UI\Common" />
      <Folder Include="Assets\Prefabs" />
+     <Folder Include="Assets\Prefabs\Zenject" />
      <Folder Include="Assets\Scripts\Fight\GameArea" />
      <Folder Include="Assets\Scripts\UI\Menus\SubMenus" />
      <Folder Include="Assets\Scripts\Fight\Animation" />
@@ -198,6 +221,7 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <Folder Include="Assets\Scripts\GameLoop\Startup" />
+     <Folder Include="Assets\Scripts\Tooling\Logging" />
      <Folder Include="Assets\Sprites\Particles" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
      <Folder Include="Assets\Prefabs\UI\Gameloop" />
@@ -205,6 +229,7 @@
      <Folder Include="Assets\TextMesh Pro\Shaders" />
      <Folder Include="Assets\TextMesh Pro\Resources\Style Sheets" />
      <Folder Include="Assets\TextMesh Pro\Fonts" />
+     <Folder Include="Assets\Prefabs\Zenject\SceneContexts" />
      <Folder Include="Assets\Samples" />
      <Folder Include="Assets\Scripts\Characters\Enemies\Moves" />
      <Folder Include="Assets\Sprites\Characters\Affects" />
@@ -225,15 +250,18 @@
      <Folder Include="Assets\Scripts\Shading" />
      <Folder Include="Assets\Sprites\Cards" />
      <Folder Include="Assets\Prefabs\Cards" />
+     <Folder Include="Assets\Scripts\Characters\Player\Controller" />
      <Folder Include="Assets\Scripts\Systems\Managers" />
      <Folder Include="Assets\Shaders" />
-     <Folder Include="Assets\Data" />
-     <Folder Include="Assets\Data\Animations\GameLoop" />
+     <Folder Include="Assets\ScriptableObjects\Animations\GameLoop" />
+     <Folder Include="Assets\Scripts\Characters\Player\Model" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
      <Folder Include="Assets\Scripts\Characters\Affects" />
+     <Folder Include="Assets\Scripts\Zenject" />
      <Folder Include="Assets\Materials\Resources" />
      <Folder Include="Assets\Scripts\Characters\Affects\Debuffs" />
      <Folder Include="Assets\Prefabs\UI" />
+     <Folder Include="Assets\Scripts\Utils\Extensions\MonoBehaviour" />
      <Folder Include="Assets\Hero Knight - Pixel Art\Animations" />
      <Folder Include="Assets\Prefabs\Characters" />
      <Folder Include="Assets\Scripts\Fight\Input" />
@@ -260,6 +288,7 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
      <Folder Include="Assets\Samples\Addressables\1.21.18" />
      <None Include="Assets\Hero Knight - Pixel Art\ColorSwap\Sprites-ColorSwap.shader" />
+     <Folder Include="Assets\Prefabs\UI\Text" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\2022.3.11f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
@@ -512,17 +541,8 @@
      <Reference Include="Zenject-usage">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Assets\Plugins\Zenject\Source\Usage\Zenject-usage.dll</HintPath>
      </Reference>
-     <Reference Include="Zenject.ReflectionBaking.Mono.Cecil.Pdb">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Assets\Plugins\Zenject\OptionalExtras\ReflectionBaking\Lib\Zenject.ReflectionBaking.Mono.Cecil.Pdb.dll</HintPath>
-     </Reference>
-     <Reference Include="Zenject.ReflectionBaking.Mono.Cecil.Rocks">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Assets\Plugins\Zenject\OptionalExtras\ReflectionBaking\Lib\Zenject.ReflectionBaking.Mono.Cecil.Rocks.dll</HintPath>
-     </Reference>
-     <Reference Include="Zenject.ReflectionBaking.Mono.Cecil.Mdb">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Assets\Plugins\Zenject\OptionalExtras\ReflectionBaking\Lib\Zenject.ReflectionBaking.Mono.Cecil.Mdb.dll</HintPath>
-     </Reference>
-     <Reference Include="Zenject.ReflectionBaking.Mono.Cecil">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Assets\Plugins\Zenject\OptionalExtras\ReflectionBaking\Lib\Zenject.ReflectionBaking.Mono.Cecil.dll</HintPath>
+     <Reference Include="Newtonsoft.Json">
+     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\Newtonsoft.Json.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.iOS.Extensions.Xcode">
      <HintPath>C:\Program Files\2022.3.11f1\Editor\Data\PlaybackEngines\iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -914,6 +934,12 @@
      <Reference Include="System.Xml.XPath.XDocument">
      <HintPath>C:\Program Files\2022.3.11f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\Facades\System.Xml.XPath.XDocument.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.Timeline">
+     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Addressables.Editor">
+     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
+     </Reference>
      <Reference Include="Unity.AI.Navigation">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.dll</HintPath>
      </Reference>
@@ -922,6 +948,9 @@
      </Reference>
      <Reference Include="UniTask.TextMeshPro">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.TextMeshPro.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.AI.Navigation.Updater">
+     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Updater.dll</HintPath>
      </Reference>
      <Reference Include="Unity.ResourceManager">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.ResourceManager.dll</HintPath>
@@ -938,8 +967,14 @@
      <Reference Include="UniTask.Addressables">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.Addressables.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.TextMeshPro">
+     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+     </Reference>
      <Reference Include="UnityEditor.UI">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.TextMeshPro.Editor">
+     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
      </Reference>
      <Reference Include="UnityEngine.UI">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
@@ -947,35 +982,20 @@
      <Reference Include="Unity.Rider.Editor">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
      </Reference>
-     <Reference Include="UniTask.Linq">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.Linq.dll</HintPath>
-     </Reference>
-     <Reference Include="Unity.Timeline">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
-     </Reference>
-     <Reference Include="Unity.Addressables.Editor">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
-     </Reference>
-     <Reference Include="Unity.AI.Navigation.Updater">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Updater.dll</HintPath>
-     </Reference>
-     <Reference Include="Unity.TextMeshPro">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
-     </Reference>
-     <Reference Include="Unity.TextMeshPro.Editor">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
-     </Reference>
-     <Reference Include="Unity.AI.Navigation.Editor">
-     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Editor.dll</HintPath>
-     </Reference>
      <Reference Include="UniTask">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.dll</HintPath>
      </Reference>
      <Reference Include="Unity.AI.Navigation.Editor.ConversionSystem">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Editor.ConversionSystem.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.AI.Navigation.Editor">
+     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Editor.dll</HintPath>
+     </Reference>
      <Reference Include="Unity.ScriptableBuildPipeline.Editor">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+     </Reference>
+     <Reference Include="UniTask.Linq">
+     <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.Linq.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Addressables">
      <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
@@ -989,14 +1009,6 @@
     <ProjectReference Include="Zenject.csproj">
       <Project>{e0458bf1-17f2-dc1e-c7a5-5e7442a97ee7}</Project>
       <Name>Zenject</Name>
-    </ProjectReference>
-    <ProjectReference Include="Zenject-ReflectionBaking-Editor.csproj">
-      <Project>{2c4bea22-72eb-7b36-2e82-847c75dba1a6}</Project>
-      <Name>Zenject-ReflectionBaking-Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Zenject-PoolMonitor-Editor.csproj">
-      <Project>{9a174643-aecd-6158-88c3-e3a7dc3ad80f}</Project>
-      <Name>Zenject-PoolMonitor-Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

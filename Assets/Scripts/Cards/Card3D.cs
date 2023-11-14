@@ -30,10 +30,16 @@ namespace Cards
 
         public void Play(List<Character> targets) => cardData.Play(targets);
         public Targeting GetTarget() => cardData.target;
-        public Character Owner { get => cardData.owner; set => cardData.owner = value; }
+
+        public Character Owner
+        {
+            get => cardData.owner;
+            set => cardData.owner = value;
+        }
 
         //color of card outline
         ParticleSystem.MinMaxGradient cachedGradient;
+
         void OnEnable()
         {
             PlayerTurnInputManager.StaticInstance.MouseEnterPlayArea += EnteredPlayArea;
@@ -47,6 +53,7 @@ namespace Cards
             var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
             cachedGradient = playableOutlineColorOverTime.color;
         }
+
         void OnDisable()
         {
             PlayerTurnInputManager.StaticInstance.MouseEnterPlayArea -= EnteredPlayArea;
@@ -102,11 +109,9 @@ namespace Cards
 
                 //set the color of the socket to the manas color
                 instanitatedSocket.transform.GetChild(0).GetComponent<Renderer>().sharedMaterial = ManaConfiguration.GetManaColor(cardData.mana[index]);
-
             }
-
-
         }
+
         public void UpdateDescription(Character target)
         {
             ProcessingChain chain = new ProcessingChain();
@@ -129,9 +134,9 @@ namespace Cards
                 {
                     description.text = cardData.descriptionWithReplaceables.Replace(typeOfNumberAndIndex, "" + numberAffectProcessing);
                 }
-
             }
         }
+
         /// <summary>
         /// Transforms card to next or previous in chain.
         /// </summary>
@@ -145,6 +150,7 @@ namespace Cards
 
             Populate(cardData.Transform(direction));
         }
+
         public bool BindMana(Mana3D manaBeingBound)
         {
             bool readyToTransform = true;
@@ -177,6 +183,7 @@ namespace Cards
 
             return binded;
         }
+
         public List<ManaType> UnBindAndReturnMana()
         {
             List<ManaType> manaTypesToBeUnbound = new List<ManaType>();
@@ -200,6 +207,7 @@ namespace Cards
         }
 
         public delegate void MouseOver(Card3D card);
+
         public event MouseOver OnMouseOverEvent;
 
         //OnMouseEnter is a unity event that is called whenever the mouse first enters a gameobject with a collider
@@ -211,7 +219,9 @@ namespace Cards
                 OnMouseOverEvent(this);
             }
         }
+
         public delegate void MouseExit(Card3D card);
+
         public event MouseExit OnMouseExitEvent;
 
         void OnMouseExit()
@@ -221,18 +231,21 @@ namespace Cards
                 OnMouseExitEvent(this);
             }
         }
+
         void PlayPlayableOutlineParticles(Character character)
         {
             if (character != Owner) return;
 
             playableOutline.Play();
         }
+
         void PausePlayableOutlineParticles(Character character)
         {
             if (character != Owner) return;
 
             playableOutline.Pause();
         }
+
         void EnteredPlayArea()
         {
             //Hacky way to tell if this card is the selected card
@@ -254,7 +267,6 @@ namespace Cards
                     ChangeColorOfPlayableParticleOutline(type);
                     PlayFlash(ColorForManaType(type));
                 }
-
             }
         }
 
@@ -263,6 +275,7 @@ namespace Cards
             var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
             playableOutlineColorOverTime.color = cachedGradient;
         }
+
         void ChangeColorOfPlayableParticleOutline(ManaType manaType)
         {
             var playableOutlineColorOverTime = playableOutline.colorOverLifetime;
@@ -271,18 +284,19 @@ namespace Cards
 
             Color color = ColorForManaType(manaType);
 
-            newGradient.SetKeys(new GradientColorKey[]{
+            newGradient.SetKeys(new GradientColorKey[]
+            {
                 new GradientColorKey(color, 0.0f),
                 new GradientColorKey(color, 1.0f)
-            }, new GradientAlphaKey[] {
+            }, new GradientAlphaKey[]
+            {
                 new GradientAlphaKey(1f, 0.0f), // fade out
                 new GradientAlphaKey(0.0f, 1.0f) //
             });
 
             playableOutlineColorOverTime.color = newGradient;
-
-
         }
+
         void PlayFlash(Color color)
         {
             var flashMain = flash.main;
@@ -291,10 +305,12 @@ namespace Cards
             var flashColor = flash.colorOverLifetime;
             Gradient newGradient = new Gradient();
 
-            newGradient.SetKeys(new GradientColorKey[]{
+            newGradient.SetKeys(new GradientColorKey[]
+            {
                 new GradientColorKey(color, 0.0f),
                 new GradientColorKey(color, 1.0f)
-            }, new GradientAlphaKey[] {
+            }, new GradientAlphaKey[]
+            {
                 new GradientAlphaKey(0.5f, 0.0f), // fade out
                 new GradientAlphaKey(0.0f, 1.0f) //
             });
@@ -303,6 +319,7 @@ namespace Cards
 
             flash.Play();
         }
+
         Color ColorForManaType(ManaType manaType)
         {
             switch (manaType)
@@ -320,6 +337,7 @@ namespace Cards
                 case ManaType.Black:
                     return Color.black;
             }
+
             return Color.cyan;
         }
     }

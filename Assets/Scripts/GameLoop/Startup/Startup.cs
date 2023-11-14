@@ -10,8 +10,6 @@ namespace GameLoop.Startup
 {
     public class Startup : MonoBehaviour
     {
-        [SerializeField] private ScriptableObjectManagers scriptableObjectManagers;
-
         private MySceneManager sceneManager;
         private MenuManager menuManager;
 
@@ -35,14 +33,14 @@ namespace GameLoop.Startup
 
             MyLogger.Log("Waiting for the dependency injection object graph is constructed...");
             await UniTask.WaitWhile(() => sceneManager == null && menuManager == null);
-            
+
             MyLogger.Log("Booting up managers...");
             await Managers.InitializeManagers();
 
             MyLogger.Log("Loading Main Menu...");
             await sceneManager.LoadScene(MySceneManager.SceneIndex.MainMenu);
 
-            EscapeMenu escapeMenu = await menuManager.Open<EscapeMenu, Data.Null>(null);
+            _ = await menuManager.Open<MainMenu, Data.Null>(null);
         }
     }
 }

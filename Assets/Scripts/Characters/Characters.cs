@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Characters
@@ -8,9 +6,10 @@ namespace Characters
     {
         //Used to group characters in the scene under one GameObject
         public static Characters staticInstance;
+
         void Awake()
         {
-            if(staticInstance == null)
+            if (staticInstance == null)
             {
                 staticInstance = this;
             }
@@ -18,5 +17,4 @@ namespace Characters
                 Destroy(this);
         }
     }
-
 }
