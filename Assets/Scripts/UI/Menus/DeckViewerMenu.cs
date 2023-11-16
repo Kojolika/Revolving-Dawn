@@ -5,6 +5,7 @@ using Cards;
 using TMPro;
 using UI.Menus.Common;
 using Utils.Attributes;
+using Data.Definitions;
 
 namespace UI
 {
@@ -14,10 +15,10 @@ namespace UI
         public string ResourcePath => nameof(DeckViewerMenu);
         public class DeckViewerData
         {
-            public List<Card> cardList;
+            public List<CardDefinition> cardList;
         }
 
-        ObservableCollection<Card> currentDeck = new ObservableCollection<Card>();
+        ObservableCollection<CardDefinition> currentDeck = new ObservableCollection<CardDefinition>();
         DeckViewer deckViewerContent;
         [SerializeField] Card_UI card_UI;
         [SerializeField] TextMeshProUGUI deckName;
@@ -28,14 +29,14 @@ namespace UI
             throw new System.NotImplementedException();
         }
 
-        void LoadCards(ObservableCollection<Card> deck)
+        void LoadCards(ObservableCollection<CardDefinition> deck)
         {
             currentDeck = deck;
             int deckSize = deck.Count;
             deckViewerContent.GetComponent<DeckViewer>().deckViewerMenu = this;
             if (deckSize < 1) return;
 
-            foreach (Card card in deck)
+            foreach (CardDefinition card in deck)
             {
                 Card_UI instance = Instantiate(card_UI, deckViewerContent.transform);
                 //instance.LoadInfo(card);

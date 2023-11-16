@@ -1,5 +1,8 @@
 ﻿#if UNITY_EDITOR
 using System;
+using System.Linq;
+using Systems.Managers;
+using Tooling.Logging;
 using UnityEditor;
 using UnityEngine;
 using Utils.Attributes;
@@ -9,16 +12,20 @@ namespace Scripts.Utils.Editor
     [CustomPropertyDrawer(typeof(ScriptableObjectIdReferenceAttribute))]
     public class ScriptableObjectIdReferenceAttribute : PropertyDrawer
     {
+        StaticDataManager staticDataManager = new();
+        int currentIndex = 0;
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            GUI.enabled = false;
-            if (string.IsNullOrEmpty(property.stringValue))
-            {
-                property.stringValue = Guid.NewGuid().ToString();
+            var assets = staticDataManager.CreateAssetDictionary();
+
+            var stringIds = assets.Values.SelectMany(value => value.Keys).ToArray();
+
+            foreach(var id in stringIds){
+                MyLogger.Log($"ID: {id}");
             }
 
-            EditorGUI.PropertyField(position, property, label, true);
-            GUI.enabled = true;
+            currentIndex = EditorGUILayout.Popup(currentIndex, stringIds);
         }
     }
 }

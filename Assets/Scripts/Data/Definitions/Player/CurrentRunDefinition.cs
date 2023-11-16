@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Cards;
 using Data;
 using Newtonsoft.Json;
+using Data.Definitions;
 
 namespace Characters.Player2.Run
 {
@@ -18,7 +18,7 @@ namespace Characters.Player2.Run
         public readonly int Gold;
         
         [JsonProperty("deck")]
-        public readonly List<Card> Deck;
+        public readonly List<CardDefinition> Deck;
 
         // TODO: add items
         //public readonly List<Item> Items;

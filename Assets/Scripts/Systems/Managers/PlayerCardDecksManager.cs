@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Data.Definitions;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using System;
@@ -11,8 +11,8 @@ namespace Systems.Managers
     {
         //DATA
         //Used for out of combat
-        static ObservableCollection<Card> deck;
-        public static ObservableCollection<Card> Deck { get => deck; set => deck = value; }
+        static ObservableCollection<CardDefinition> deck;
+        public static ObservableCollection<CardDefinition> Deck { get => deck; set => deck = value; }
 
 
         //Only used for combat
@@ -69,8 +69,8 @@ namespace Systems.Managers
             InstantiateDeck();
         }
         /// <summary>
-        /// For each <see cref="Card.CardData"/> of <see cref="deck"/>, instantiates a new <see cref="cardPrefab"/> 
-        /// with the <see cref="Card.CardData"/> set to it and adds it to the collection <see cref="instantiatedDeck"/>. 
+        /// For each <see cref="CardDefinition.CardData"/> of <see cref="deck"/>, instantiates a new <see cref="cardPrefab"/> 
+        /// with the <see cref="CardDefinition.CardData"/> set to it and adds it to the collection <see cref="instantiatedDeck"/>. 
         /// Sets each card to inactive.
         /// </summary>
         static void InstantiateDeck()
@@ -131,7 +131,7 @@ namespace Systems.Managers
         }
         //TODO: Move strictly data logic out of CardHandManager
         //Add this logic to fightmanager for when the fight starts;
-        public static void DiscardCard(Card card)
+        public static void DiscardCard(CardDefinition card)
         {
 
         }

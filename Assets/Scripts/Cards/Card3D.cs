@@ -5,14 +5,15 @@ using Characters;
 using FightDamageCalc;
 using Mana;
 using Systems.Managers;
+using Data.Definitions;
 
 namespace Cards
 {
     public class Card3D : MonoBehaviour
     {
-        [SerializeField] Card cardData; //card object where all the data is retrieved from (the view part of MVC)
+        [SerializeField] CardDefinition cardData; //card object where all the data is retrieved from (the view part of MVC)
 
-        public Card CardData => cardData;
+        public CardDefinition CardData => cardData;
 
         [SerializeField] new TextMeshPro name;
         [SerializeField] TextMeshPro description;
@@ -64,7 +65,7 @@ namespace Cards
             Fight.FightEvents.OnCharacterTurnEnded -= PausePlayableOutlineParticles;
         }
 
-        public void Populate(Card card)
+        public void Populate(CardDefinition card)
         {
             if (card == null) return;
 

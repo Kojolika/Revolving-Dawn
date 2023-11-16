@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using Mana;
+using Data.Definitions;
 
 namespace Cards
 {
     public class Card_UI : MonoBehaviour
     {
-        Card card;
+        CardDefinition card;
         List<(ManaType, Mana3D)> ManaOfSockets { get; set; }
         GameObject sockets;
         GameObject border;
@@ -16,7 +17,7 @@ namespace Cards
         TextMeshProUGUI nameText;
         TextMeshProUGUI descriptionText;
 
-        public void Populate(Card card)
+        public void Populate(CardDefinition card)
         {
             this.card = card;
             border.GetComponent<Image>().sprite = CardConfiguration.GetClassBorder(card.playerClass);

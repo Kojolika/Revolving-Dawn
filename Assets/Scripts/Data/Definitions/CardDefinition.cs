@@ -4,13 +4,16 @@ using Characters;
 using Data.Definitions.Player;
 using Mana;
 using FightDamageCalc;
+using Cards;
 using Utils.Attributes;
 
-namespace Cards
+namespace Data.Definitions
 {
     [CreateAssetMenu(fileName = "New Card", menuName = "Cards/New Card")]
-    public class Card : ScriptableObject
+    public class CardDefinition : ScriptableObject
     {
+        [ScriptableObjectId]
+        public string ID;
         public Character owner; //character that plays this card
         public ManaType[] mana; //what mana this card uses to charge
         public new string name; //name of the card
@@ -29,16 +32,16 @@ namespace Cards
         protected List<Affect> affectValues = new List<Affect>();
 
         [SerializeField]
-        protected Card nextCardUpgrade = null;
+        protected CardDefinition nextCardUpgrade = null;
 
         [SerializeField]
-        protected Card previousCard = null;
+        protected CardDefinition previousCard = null;
 
-        [SerializeField] 
-        private ClassDefinition classId;
+        [ScriptableObjectIdReference] 
+        public string classId;
 
         //true means transform to next card, false is transform to previous card
-        public Card Transform(bool direction)
+        public CardDefinition Transform(bool direction)
         {
             if (direction)
             {

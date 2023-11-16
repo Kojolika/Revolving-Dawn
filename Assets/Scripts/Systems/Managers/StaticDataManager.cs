@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Systems.Managers.Base;
 using Tooling.Logging;
 using UnityEditor;
 using UnityEngine;
+using Utils.Attributes;
 using Object = UnityEngine.Object;
 
 namespace Systems.Managers
@@ -12,7 +14,7 @@ namespace Systems.Managers
     {
         private static readonly string ScriptableObjectsAssetPath = "Assets/ScriptableObjects";
 
-        public Dictionary<System.Type, Dictionary<string, ScriptableObject>> Assets { get; private set; } = new();
+        public Dictionary<Type, Dictionary<string, ScriptableObject>> Assets { get; private set; } = new();
 
         /// <summary>
         /// Iterate through the folder at <see cref="ScriptableObjectsAssetPath"/> and instantiate a copy of each
@@ -21,7 +23,16 @@ namespace Systems.Managers
         /// </summary>
         public UniTask Startup()
         {
+            Assets = CreateAssetDictionary();
+
+            return UniTask.CompletedTask;
+        }
+
+        public Dictionary<Type, Dictionary<string, ScriptableObject>> CreateAssetDictionary()
+        {
             MyLogger.Log($"Searching in {ScriptableObjectsAssetPath}");
+
+            Dictionary<Type, Dictionary<string, ScriptableObject>> Assets = default;
 
             var ids = AssetDatabase.FindAssets($"t:{nameof(ScriptableObject)}", new[] { "Assets/ScriptableObjects" });
             foreach (var id in ids)
@@ -32,14 +43,31 @@ namespace Systems.Managers
 
                 // Create a new instance in case the value of the scriptableObject changes at runtime
                 var newAssetInstance = Object.Instantiate(asset);
-                
-                //TODO: use reflection to find ScriptableObjectIdAttribute
-                // make this into its own function so we can get this value for the ScriptableObjectIdReferenceAttribute
 
-                MyLogger.Log($"Adding new asset {newAssetInstance} for type {assetType.Name} with guid {id}");
+                string guid = default;
+
+                //TODO: use reflection to find ScriptableObjectIdAttribute
+                foreach (var field in assetType.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+                {
+                    var attributes = field.GetCustomAttributes(false);
+                    foreach (var attribute in attributes)
+                    {
+                        if(attribute is ScriptableObjectIdAttribute idAttribute){
+                            MyLogger.Log("Found ScriptableObjectIdReferenceAttribute");
+                            guid = (string)field.GetValue(newAssetInstance);
+                        }
+                    }
+                }
+
+                if(guid == default){
+                    MyLogger.LogError($"No id asset found for {newAssetInstance} of type {assetType}");
+                    throw new Exception();
+                }
+
+                MyLogger.Log($"Adding new asset {newAssetInstance} for type {assetType.Name} with guid {guid}");
                 if (Assets.ContainsKey(assetType))
                 {
-                    Assets[assetType].Add(id, newAssetInstance);
+                    Assets[assetType].Add(guid, newAssetInstance);
                 }
                 else
                 {
@@ -47,13 +75,13 @@ namespace Systems.Managers
                         assetType,
                         new Dictionary<string, ScriptableObject>()
                         {
-                            { id, newAssetInstance }
+                            { guid, newAssetInstance }
                         }
                     );
                 }
             }
 
-            return UniTask.CompletedTask;
+            return Assets;
         }
     }
 }

@@ -155,6 +155,7 @@
      <Compile Include="Assets\Scripts\Data\IPopulateData.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\StaticDataManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Characters.cs" />
+     <Compile Include="Assets\Scripts\Data\Definitions\CardDefinition.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Scripts\Utils\Extensions\GameObject" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

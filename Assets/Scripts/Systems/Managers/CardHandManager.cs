@@ -6,6 +6,7 @@ using Cards;
 using Utils;
 using Characters;
 using Fight;
+using Data.Definitions;
 
 
 namespace Systems.Managers
@@ -71,10 +72,10 @@ namespace Systems.Managers
             this.player = player;
             this.cardPrefab = cardPrefab;
 
-            List<Card> playerDeck = this.player.GetComponent<TestDeck>().deck;
-            PlayerCardDecksManager.Deck = new ObservableCollection<Card>(playerDeck);
+            List<CardDefinition> playerDeck = this.player.GetComponent<TestDeck>().deck;
+            PlayerCardDecksManager.Deck = new ObservableCollection<CardDefinition>(playerDeck);
             PlayerCardDecksManager.InstantiatedDeck = new ObservableCollection<Card3D>();
-            foreach (Card card in playerDeck)
+            foreach (CardDefinition card in playerDeck)
             {
                 var instantiatedCard = Instantiate(cardPrefab, this.cardHandGO.transform);
                 instantiatedCard.transform.position = this.cardSpawner.transform.position;

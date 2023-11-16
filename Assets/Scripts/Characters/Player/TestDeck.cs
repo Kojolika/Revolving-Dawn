@@ -1,8 +1,8 @@
 using UnityEngine;
-using Cards;
+using Data.Definitions;
 using System.Collections.Generic;
 
 public class TestDeck : MonoBehaviour {
-    public List<Card> deck;
+    public List<CardDefinition> deck;
     
 }
