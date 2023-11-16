@@ -17,10 +17,11 @@ MonoBehaviour:
   name: Bash
   descriptionWithReplaceables: Deal ATTACK1 damage
   artwork: {fileID: 21300000, guid: 43e72cc9bd51c4547bd8aeaa0d30abbb, type: 3}
-  class: 0
+  playerClass: 4
   target: 1
   numberValues:
   - amount: 6
     type: 1
   nextCardUpgrade: {fileID: 11400000, guid: aeb328fba0621de4d8052623ab344f88, type: 2}
   previousCard: {fileID: 0}
+  classId: {fileID: 11400000, guid: 21eb657c736b1e445b4fdc4c04bcb338, type: 2}

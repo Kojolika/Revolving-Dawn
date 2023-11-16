@@ -1,5 +1,6 @@
 ﻿using System;
 using Data;
+using Systems.Managers;
 using UI.Common;
 using UI.Menus.Common;
 using UnityEngine;
@@ -14,6 +15,14 @@ namespace UI.Menus
         [SerializeField] private MyButton playButton;
         [SerializeField] private MyButton settingsButton;
         [SerializeField] private MyButton quitButton;
+
+        private PlayerDataManager playerDataManager;
+
+        [Zenject.Inject]
+        void Construct(PlayerDataManager playerDataManager)
+        {
+            this.playerDataManager = playerDataManager;
+        }
 
         private void Awake()
         {
@@ -31,6 +40,12 @@ namespace UI.Menus
         {
             // If continuing load current fight or load current map
             // otherwise open character selection
+            if (playerDataManager.CurrentPlayerDefinition.CurrentRun == null)
+            {
+                // open character selection
+            }
+            
+            // otherwise continue run
         }
 
         void OpenSettings()
@@ -39,7 +54,7 @@ namespace UI.Menus
 
         void QuitGame()
         {
-            
+            Application.Quit();
         }
     }
 }

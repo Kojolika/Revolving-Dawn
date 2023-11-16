@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Characters;
+using Data.Definitions.Player;
 using Mana;
 using FightDamageCalc;
+using Utils.Attributes;
 
 namespace Cards
 {
@@ -15,13 +17,25 @@ namespace Cards
         [SerializeField] public string descriptionWithReplaceables; // description of what the card does, contains words that will be replaced by number values, edit this one
         public Sprite artwork; //card art
         public PlayerClass playerClass = PlayerClass.Classless; //class of the card
-        public Targeting target;   //who the card targets
+
+        public Targeting target; //who the card targets
+
         // Add list of Keywords in future
         [Space(20)]
-        [SerializeField] public List<Number> numberValues = new List<Number>();
-        [SerializeField] protected List<Affect> affectValues = new List<Affect>();
-        [SerializeField] protected Card nextCardUpgrade = null;
-        [SerializeField] protected Card previousCard = null;
+        [SerializeField]
+        public List<Number> numberValues = new List<Number>();
+
+        [SerializeField]
+        protected List<Affect> affectValues = new List<Affect>();
+
+        [SerializeField]
+        protected Card nextCardUpgrade = null;
+
+        [SerializeField]
+        protected Card previousCard = null;
+
+        [SerializeField] 
+        private ClassDefinition classId;
 
         //true means transform to next card, false is transform to previous card
         public Card Transform(bool direction)
@@ -33,6 +47,7 @@ namespace Cards
                     nextCardUpgrade.previousCard = this;
                     nextCardUpgrade.owner = this.owner;
                 }
+
                 return nextCardUpgrade;
             }
             else
@@ -42,6 +57,7 @@ namespace Cards
                     previousCard.nextCardUpgrade = this;
                     previousCard.owner = this.owner;
                 }
+
                 return previousCard;
             }
         }

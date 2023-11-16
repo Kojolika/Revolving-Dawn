@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -46,11 +48,12 @@ namespace Tooling.Logging
 
         private static string FormatLog(string message, string filePath)
         {
+            var fileName = GetFileNameFromFilePath(filePath);
+            var uniqueColor = Options.GetFilenameColor(fileName);
             var currentStackFrame = stackTrace.GetFrame(0);
-            var logMessage = "<b><color=" + Options.FilenameColor + "> ["
-                             + GetFileNameFromFilePath(filePath)
-                             + "]</color></b> "
-                             + message;
+            var logMessage = $"<b><color={uniqueColor}><size=25>@</size></color>" +
+                             $"<color={Options.FilenameColor}> [{fileName}]</color></b>" +
+                             $"{message}";
 
             if (currentStackFrame.GetMethod() is MethodInfo methodInfo)
             {
@@ -93,6 +96,9 @@ namespace Tooling.Logging
         {
             internal const string NameSpaceColor = "white";
             internal const string FilenameColor = "#1fa734ff";
+
+            internal static string GetFilenameColor(string fileName)
+                => $"#{Convert.ToString(fileName.GetHashCode(), 16)}";
         }
     }
 }

@@ -37,7 +37,6 @@ namespace Systems.Managers
         public override UniTask Startup()
         {
             AddObjectToNotDestroyOnLoad(loadingCanvas);
-            AddObjectToNotDestroyOnLoad(defaultLoadingAnim);
             
             defaultLoadingAnim.transform.SetParent(loadingCanvas.transform);
             defaultLoadingAnim.transform.localPosition = Vector3.zero;
