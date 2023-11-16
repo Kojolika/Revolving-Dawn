@@ -2,12 +2,13 @@ using UnityEngine;
 using System.Collections;
 using Cards;
 using Characters;
+using Data.Definitions;
 
 namespace Mana
 {
     public class Mana3D : MonoBehaviour
     {
-        [SerializeField] Mana manaScriptableObject;
+        [SerializeField] ManaDefinition manaScriptableObject;
         public ManaType type;
         bool rotating = true;
         void Start()

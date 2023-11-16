@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bd996e4535038d40b961a9682f8e4f2, type: 3}
   m_Name: Cripple
   m_EditorClassIdentifier: 
-  ID: e0cbaf0a-2f71-4834-bc78-a41f7e9b51b1
+  ID:
+    value: 447c25b7-252a-41ed-816d-bb2426632650
   owner: {fileID: 0}
   mana: 03000000
   name: Cripple
@@ -25,4 +26,4 @@ MonoBehaviour:
     type: 1
   nextCardUpgrade: {fileID: 11400000, guid: c52141a4ba9fdd042a901d79b91e82a5, type: 2}
   previousCard: {fileID: 11400000, guid: 549affe624a391f47b1bf71b64835200, type: 2}
-  classId: {fileID: 0}
+  classId: 5d4d584f-d471-4cdf-80be-eacfbef41ad4

@@ -12,17 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bd996e4535038d40b961a9682f8e4f2, type: 3}
   m_Name: Defend
   m_EditorClassIdentifier: 
-  ID: f6c83ed1-03d1-4cc4-b023-3797f95b5588
+  ID:
+    value: e7995281-7ca5-46bf-ae74-1aae189b6a84
   owner: {fileID: 0}
   mana: 01000000
   name: Defend
   descriptionWithReplaceables: Gain BLOCK1 block
   artwork: {fileID: 21300000, guid: 4024798ef8e3da84f96ea6b0774e6ebb, type: 3}
   playerClass: 4
-  target: 0
+  target: 1
   numberValues:
   - amount: 6
     type: 2
   nextCardUpgrade: {fileID: 11400000, guid: aeb328fba0621de4d8052623ab344f88, type: 2}
   previousCard: {fileID: 11400000, guid: aeb328fba0621de4d8052623ab344f88, type: 2}
-  classId: {fileID: 0}
+  classId: d3b397c9-64b2-44bf-8e11-cd0b2f8280e1

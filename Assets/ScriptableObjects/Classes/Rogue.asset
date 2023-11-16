@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f275e19ae084b20abf75acacefa4eb4, type: 3}
   m_Name: Rogue
   m_EditorClassIdentifier: 
-  ID: 552d38f4-fb8a-4a43-916f-37c76539374d
-  Name: Rogue
-  CharacterAsset: 
+  ID:
+    value: 5ee63d8a-6fbf-4085-bd9c-6b58c1a2894c
+  Name:
+    value: Rogue
+  CharacterAsset:
+    value: 

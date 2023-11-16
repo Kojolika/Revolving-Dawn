@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Utils;
 using Utils.Attributes;
 
 namespace Data.Definitions.Player
@@ -7,12 +8,12 @@ namespace Data.Definitions.Player
     public class ClassDefinition : ScriptableObject
     {
         [ScriptableObjectId]
-        public string ID;
+        public ReadOnly<string> ID;
 
         [SerializeField]
-        public string Name;
+        public ReadOnly<string> Name;
 
         [SerializeField]
-        public string CharacterAsset;
+        public ReadOnly<string> CharacterAsset;
     }
 }

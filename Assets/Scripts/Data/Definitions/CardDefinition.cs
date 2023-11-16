@@ -6,6 +6,7 @@ using Mana;
 using FightDamageCalc;
 using Cards;
 using Utils.Attributes;
+using Utils;
 
 namespace Data.Definitions
 {
@@ -13,7 +14,7 @@ namespace Data.Definitions
     public class CardDefinition : ScriptableObject
     {
         [ScriptableObjectId]
-        public string ID;
+        public ReadOnly<string> ID;
         public Character owner; //character that plays this card
         public ManaType[] mana; //what mana this card uses to charge
         public new string name; //name of the card

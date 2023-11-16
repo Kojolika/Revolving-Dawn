@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d17351f08bd85445afe2bb8cb747fc4, type: 3}
   m_Name: Black
   m_EditorClassIdentifier: 
+  ID:
+    value: 1dd080d7-762e-4858-b7c0-73aece28108b
   type: 5
+  Name:
+    value: Black

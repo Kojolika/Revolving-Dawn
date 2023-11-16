@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f275e19ae084b20abf75acacefa4eb4, type: 3}
   m_Name: Warrior
   m_EditorClassIdentifier: 
-  ID: 696db49d-0670-42e9-974d-8d20f8d2365e
-  Name: Warrior
-  CharacterAsset: class_warrior
-  FavoriteColor: red
+  ID:
+    value: d3b397c9-64b2-44bf-8e11-cd0b2f8280e1
+  Name:
+    value: Warrior
+  CharacterAsset:
+    value: class_warrior

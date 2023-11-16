@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f275e19ae084b20abf75acacefa4eb4, type: 3}
   m_Name: Mage
   m_EditorClassIdentifier: 
-  ID: bf80ab5c-e5d6-4e66-956c-62494edbfc3b
-  Name: Mage
-  CharacterAsset: 
+  ID:
+    value: c6be11ad-4392-4efc-8084-d40f822260a4
+  Name:
+    value: Mage
+  CharacterAsset:
+    value: 
