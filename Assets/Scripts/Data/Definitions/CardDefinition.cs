@@ -13,7 +13,7 @@ namespace Data.Definitions
     [CreateAssetMenu(fileName = "New Card", menuName = "Cards/New Card")]
     public class CardDefinition : ScriptableObject
     {
-        [ScriptableObjectId]
+        [PrimaryKey]
         public ReadOnly<string> ID;
         public Character owner; //character that plays this card
         public ManaType[] mana; //what mana this card uses to charge
@@ -38,7 +38,7 @@ namespace Data.Definitions
         [SerializeField]
         protected CardDefinition previousCard = null;
 
-        [ScriptableObjectIdReference] 
+        [ForeignKey] 
         public string classId;
 
         //true means transform to next card, false is transform to previous card

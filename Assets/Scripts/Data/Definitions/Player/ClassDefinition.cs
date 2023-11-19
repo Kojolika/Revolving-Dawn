@@ -7,7 +7,7 @@ namespace Data.Definitions.Player
     [CreateAssetMenu(menuName = "RevolvingDawn/Data/" + nameof(ClassDefinition), fileName = nameof(ClassDefinition))]
     public class ClassDefinition : ScriptableObject
     {
-        [ScriptableObjectId]
+        [PrimaryKey]
         public ReadOnly<string> ID;
 
         [SerializeField]

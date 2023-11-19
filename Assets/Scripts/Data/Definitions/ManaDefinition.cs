@@ -9,7 +9,7 @@ namespace Data.Definitions
     [CreateAssetMenu(fileName = "Mana", menuName = "Mana/New Mana")]
     public class ManaDefinition : ScriptableObject
     {
-        [ScriptableObjectId]
+        [PrimaryKey]
         public ReadOnly<string> ID;
         
         [Obsolete]

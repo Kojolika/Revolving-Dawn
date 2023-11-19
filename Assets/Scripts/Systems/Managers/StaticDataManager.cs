@@ -52,7 +52,7 @@ namespace Systems.Managers
                     var attributes = field.GetCustomAttributes(false);
                     foreach (var attribute in attributes)
                     {
-                        if (attribute is ScriptableObjectIdAttribute idAttribute)
+                        if (attribute is PrimaryKeyAttribute idAttribute)
                         {
                             var value = field.GetValue(newAssetInstance);
                             if (value is ReadOnly<string> readOnlyString)

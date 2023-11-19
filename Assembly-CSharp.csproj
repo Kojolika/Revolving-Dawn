@@ -72,7 +72,6 @@
      <Compile Include="Assets\Scripts\Zenject\Installers\ManagerInstaller.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\MainMenu.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\TestDeck.cs" />
-     <Compile Include="Assets\Scripts\Utils\Attributes\ScriptableObjectIdAttribute.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\PlayerCardDecksManager.cs" />
      <Compile Include="Assets\Scripts\UI\Common\TabGroup.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\ManaHoveringState.cs" />
@@ -85,12 +84,12 @@
      <Compile Include="Assets\Scripts\UI\Menus\DeckViewer.cs" />
      <Compile Include="Assets\Samples\Addressables\1.21.18\Addressables Utility\AddressablesUtility.cs" />
      <Compile Include="Assets\Scripts\Data\Definitions\CardDefinition.cs" />
-     <Compile Include="Assets\Scripts\Utils\Attributes\ScriptableObjectIdReferenceAttribute.cs" />
      <Compile Include="Assets\Scripts\Data\Definitions\ManaDefinition.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\PlayerDataManager.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\MenuManager.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\MySceneManager.cs" />
      <Compile Include="Assets\Scripts\Utils\Attributes\ResourcePathAttribute.cs" />
+     <Compile Include="Assets\Scripts\Utils\Attributes\PrimaryKeyAttribute.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\Base\AbstractSOManager.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\HoverManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemies\Moves\Special.cs" />
@@ -114,6 +113,7 @@
      <Compile Include="Assets\Scripts\Zenject\Installers\CanvasInstaller.cs" />
      <Compile Include="Assets\Scripts\Fight\Dragger.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\ResistProcessor.cs" />
+     <Compile Include="Assets\Scripts\Utils\Attributes\ForeignKeyAttribute.cs" />
      <Compile Include="Assets\Scripts\Data\Definitions\Map\MapDefinition.cs" />
      <Compile Include="Assets\Scripts\Fight\FightEvents.cs" />
      <Compile Include="Assets\Scripts\Fight\Input\DefaultState.cs" />
@@ -125,6 +125,7 @@
      <Compile Include="Assets\Scripts\UI\Common\TabButton.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\DeBuffProcessor.cs" />
      <Compile Include="Assets\Scripts\UI\Overlay.cs" />
+     <Compile Include="Assets\Scripts\Data\IModel.cs" />
      <Compile Include="Assets\Scripts\Data\Definitions\Player\CurrentRunDefinition.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\Base\ScriptableObjectManagers.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\FightInfo.cs" />
@@ -150,6 +151,7 @@
      <Compile Include="Assets\Scripts\Data\IPopulateData.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\StaticDataManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Characters.cs" />
+     <Compile Include="Assets\Scripts\Utils\Editor\ReadOnlyDrawer.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
