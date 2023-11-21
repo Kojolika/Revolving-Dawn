@@ -141,7 +141,6 @@ namespace Systems.Managers
                 {
                     if (attribute is ResourcePathAttribute)
                     {
-                        MyLogger.Log("Found ResourcePathAttribute");
                         // static property, no instance to get the property from
                         var propVal = property.GetValue(null);
                         if (propVal is string resourcePath)

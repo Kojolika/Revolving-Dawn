@@ -13,8 +13,8 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638357419906593960
-    m_Hash: 2462517276
+      ticks: 638361730018783095
+    m_Hash: 298729041
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
@@ -25,9 +25,9 @@ m_ResolvedPackages:
 - packageId: com.cysharp.unitask@https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask
   testable: 0
   isDirectDependency: 1
-  version: 2.3.3
+  version: 2.5.0
   source: 5
-  resolvedPath: C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\PackageCache\com.cysharp.unitask@f2773f585e
+  resolvedPath: C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\PackageCache\com.cysharp.unitask@5cc97c7f00
   assetPath: Packages/com.cysharp.unitask
   name: com.cysharp.unitask
   displayName: UniTask

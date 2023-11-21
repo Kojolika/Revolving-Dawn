@@ -27,10 +27,6 @@ namespace GameLoop.Startup
 
         private async UniTask DoStartup()
         {
-            MyLogger.Log("Booting up Addressables");
-            var addressableHandle = Addressables.InitializeAsync();
-            await UniTask.WaitUntil(() => addressableHandle.IsDone);
-
             MyLogger.Log("Waiting for the dependency injection object graph is constructed...");
             await UniTask.WaitWhile(() => sceneManager == null && menuManager == null);
 

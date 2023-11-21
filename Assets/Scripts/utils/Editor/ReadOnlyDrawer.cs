@@ -10,8 +10,7 @@ namespace Data.Utils.Editor
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            
-            EditorGUILayout.PropertyField(property, label);
+            EditorGUILayout.PropertyField(property, new GUIContent($"[ReadOnly] {label}"));
         }
     }
 }

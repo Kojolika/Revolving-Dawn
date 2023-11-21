@@ -10,6 +10,7 @@ using Utils;
 
 namespace Data.Definitions
 {
+    [System.Serializable]
     [CreateAssetMenu(fileName = "New Card", menuName = "Cards/New Card")]
     public class CardDefinition : ScriptableObject
     {
@@ -32,13 +33,14 @@ namespace Data.Definitions
         [SerializeField]
         protected List<Affect> affectValues = new List<Affect>();
 
+        //TODO: convert to foreign key
         [SerializeField]
         protected CardDefinition nextCardUpgrade = null;
-
+        //TODO: convert to foreign key
         [SerializeField]
         protected CardDefinition previousCard = null;
 
-        [ForeignKey] 
+        [ForeignKey(typeof(ClassDefinition))] 
         public string classId;
 
         //true means transform to next card, false is transform to previous card

@@ -552,6 +552,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4497248201769832183}
     m_Modifications:
+    - target: {fileID: 4488032324306000211, guid: 9d4383d6f7d4c2b4a87603ca67adaed0, type: 3}
+      propertyPath: m_text
+      value: Settings
+      objectReference: {fileID: 0}
     - target: {fileID: 6575228035292031808, guid: 9d4383d6f7d4c2b4a87603ca67adaed0, type: 3}
       propertyPath: m_text
       value: 'Settings
@@ -671,6 +675,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4497248201769832183}
     m_Modifications:
+    - target: {fileID: 4488032324306000211, guid: 9d4383d6f7d4c2b4a87603ca67adaed0, type: 3}
+      propertyPath: m_text
+      value: Play
+      objectReference: {fileID: 0}
     - target: {fileID: 6575228035292031808, guid: 9d4383d6f7d4c2b4a87603ca67adaed0, type: 3}
       propertyPath: m_text
       value: 'Play
@@ -904,6 +912,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4497248201769832183}
     m_Modifications:
+    - target: {fileID: 4488032324306000211, guid: 9d4383d6f7d4c2b4a87603ca67adaed0, type: 3}
+      propertyPath: m_text
+      value: Quit
+      objectReference: {fileID: 0}
     - target: {fileID: 6575228035292031808, guid: 9d4383d6f7d4c2b4a87603ca67adaed0, type: 3}
       propertyPath: m_text
       value: 'Quit

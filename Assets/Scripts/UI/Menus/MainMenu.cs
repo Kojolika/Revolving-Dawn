@@ -1,5 +1,6 @@
 ﻿using System;
 using Data;
+using Data.Definitions.Player;
 using Systems.Managers;
 using UI.Common;
 using UI.Menus.Common;
@@ -17,11 +18,15 @@ namespace UI.Menus
         [SerializeField] private MyButton quitButton;
 
         private PlayerDataManager playerDataManager;
+        private MenuManager menuManager;
+        private StaticDataManager staticDataManager;
 
         [Zenject.Inject]
-        void Construct(PlayerDataManager playerDataManager)
+        void Construct(PlayerDataManager playerDataManager, MenuManager menuManager, StaticDataManager staticDataManager)
         {
             this.playerDataManager = playerDataManager;
+            this.menuManager = menuManager;
+            this.staticDataManager = staticDataManager;
         }
 
         private void Awake()
@@ -42,9 +47,13 @@ namespace UI.Menus
             // otherwise open character selection
             if (playerDataManager.CurrentPlayerDefinition.CurrentRun == null)
             {
-                // open character selection
+                _ = menuManager.Open<CharacterSelect, CharacterSelect.Data>(
+                    new CharacterSelect.Data(
+                        staticDataManager.GetAllAssetsForType<ClassDefinition>()
+                    )
+                );
             }
-            
+
             // otherwise continue run
         }
 

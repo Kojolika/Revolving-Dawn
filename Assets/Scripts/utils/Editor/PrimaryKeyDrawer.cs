@@ -51,7 +51,7 @@ namespace Scripts.Utils.Editor
             property.serializedObject.Update();
 
             //EditorGUILayout.PropertyField(property);
-            EditorGUI.TextField(position, label, stringValue);
+            EditorGUI.TextField(position, $"[Primary Key] {label}", stringValue);
 
             GUI.enabled = true;
         }

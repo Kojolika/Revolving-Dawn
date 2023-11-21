@@ -11,7 +11,7 @@ using FightInput;
 namespace Systems.Managers
 {
     // TODO: make it a scriptable object, no reason to be a MonoBehaviour
-    public class FightManager : MonoBehaviour, Systems.Managers.Base.IManager
+    public class FightManager : MonoBehaviour, Base.IPartTimeManager
     {
         [SerializeField] static Player currentPlayer;
         public static Player CurrentPlayer => currentPlayer;

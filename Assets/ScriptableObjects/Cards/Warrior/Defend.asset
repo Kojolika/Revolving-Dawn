@@ -26,4 +26,4 @@ MonoBehaviour:
     type: 2
   nextCardUpgrade: {fileID: 11400000, guid: aeb328fba0621de4d8052623ab344f88, type: 2}
   previousCard: {fileID: 11400000, guid: aeb328fba0621de4d8052623ab344f88, type: 2}
-  classId: d3b397c9-64b2-44bf-8e11-cd0b2f8280e1
+  classId: c6be11ad-4392-4efc-8084-d40f822260a4

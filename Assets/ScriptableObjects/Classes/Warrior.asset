@@ -16,5 +16,8 @@ MonoBehaviour:
     value: d3b397c9-64b2-44bf-8e11-cd0b2f8280e1
   Name:
     value: Warrior
-  CharacterAsset:
-    value: class_warrior
+  Description:
+    value: Here is a great and beautifully written description about the Warrior
+      class and how it has so many exciting themes.
+  characterSprite:
+    value: {fileID: 21300000, guid: d1ee13283cbbd2e409b03a6d2b373c01, type: 3}

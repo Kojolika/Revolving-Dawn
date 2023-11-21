@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
-using UnityEngine.Serialization;
 
 namespace UI.Common
 {
@@ -10,17 +9,24 @@ namespace UI.Common
     /// Core button class used throughout the project, common functionality across all buttons can be found here.
     /// </summary>
     [RequireComponent(typeof(Image))]
-    public class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+    public class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPointerUpHandler
     {
         [SerializeField] private Sprite clickedSprite;
         [SerializeField] private Sprite enteredSprite;
         [SerializeField] private Sprite regularSprite;
         [SerializeField] private Image background;
 
+        public Label buttonText;
+
         /// <summary>
         /// Event is triggered when this button is pressed.
         /// </summary>
         public event Action Pressed;
+
+        /// <summary>
+        /// Event is triggered when a press is released.
+        /// </summary>
+        public event Action Released;
 
         /// <summary>
         /// Event is triggered when a pointer hovers over this button.
@@ -82,6 +88,16 @@ namespace UI.Common
             Exited?.Invoke();
         }
 
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (shouldHandleOwnImage)
+            {
+                SetImage(regularSprite);
+            }
+
+            Released?.Invoke();
+        }
+
         private void OnDestroy()
         {
             // Remove all event listeners, creating a new delegate effectively
@@ -90,5 +106,7 @@ namespace UI.Common
             Entered = delegate { };
             Exited = delegate { };
         }
+
+
     }
 }

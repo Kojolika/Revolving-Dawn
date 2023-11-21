@@ -8,7 +8,7 @@ using FightInput;
 namespace Systems.Managers
 {
     // TODO: make it a scriptable object, no reason to be a MonoBehaviour
-    public class PlayerTurnInputManager : MonoBehaviour, Systems.Managers.Base.IManager
+    public class PlayerTurnInputManager : MonoBehaviour, Base.IPartTimeManager
     {
     public Camera cardCam;
     public static PlayerTurnInputManager StaticInstance;

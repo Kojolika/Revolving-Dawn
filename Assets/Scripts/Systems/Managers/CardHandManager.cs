@@ -12,7 +12,7 @@ using Data.Definitions;
 namespace Systems.Managers
 {
     // TODO: make it a scriptable object, no reason to be a MonoBehaviour
-    public class CardHandManager : MonoBehaviour, Systems.Managers.Base.IManager
+    public class CardHandManager : MonoBehaviour, Base.IPartTimeManager
     {
         [SerializeField] Card3D cardPrefab;
         GameObject cardHandGO;

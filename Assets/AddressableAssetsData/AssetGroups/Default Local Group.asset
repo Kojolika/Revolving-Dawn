@@ -32,8 +32,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d1ee13283cbbd2e409b03a6d2b373c01
-    m_Address: class_warrior
+  - m_GUID: 6d8d3d623dbde1b43aa737841443db60
+    m_Address: placeholder-character
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cedf1387dc9bc8f4b8d9ff925314c924
+    m_Address: CharacterSelect
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

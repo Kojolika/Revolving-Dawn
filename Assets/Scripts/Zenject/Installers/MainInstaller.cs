@@ -21,7 +21,11 @@ namespace Zenject.Installers
             var managerTypes = AppDomain.CurrentDomain
                 .GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
-                .Where(type => !type.IsAbstract && !type.IsInterface && typeof(IManager).IsAssignableFrom(type))
+                .Where(type
+                    => !type.IsAbstract
+                        && !type.IsInterface
+                        && typeof(IManager).IsAssignableFrom(type)
+                        && !typeof(IPartTimeManager).IsAssignableFrom(type))
                 .ToArray();
 
             List<IManager> managers = new List<IManager>();
@@ -31,18 +35,18 @@ namespace Zenject.Installers
                 {
                     return;
                 }
-                
+
                 MyLogger.Log($"Creating manager {managerType.Name}...");
                 IManager newManagerInstance = typeof(ScriptableObject).IsAssignableFrom(managerType)
                     ? ScriptableObject.CreateInstance(managerType) as IManager
                     : Activator.CreateInstance(managerType) as IManager;
-                
+
                 Managers.RegisterManager(managerType, newManagerInstance);
 
                 Container.BindInterfacesAndSelfTo(managerType)
                     .FromInstance(newManagerInstance)
                     .AsSingle();
-                
+
                 // when using an instance not created with Container, must queue it for inject
                 // in order for that instance to get its DI dependencies
                 Container.QueueForInject(newManagerInstance);
