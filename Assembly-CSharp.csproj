@@ -159,6 +159,7 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
+     <None Include="Assets\Packages\QuikGraph.2.5.0\lib\net45\QuikGraph.xml" />
      <None Include="Assets\Shaders\GameArea.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
@@ -434,6 +435,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="QuikGraph">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Assets\Packages\QuikGraph.2.5.0\lib\net45\QuikGraph.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
         <HintPath>C:\Program Files\2022.3.11f1\Editor\Data\PlaybackEngines\iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -825,11 +829,8 @@
     <Reference Include="System.Xml.XPath.XDocument">
         <HintPath>C:\Program Files\2022.3.11f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\Facades\System.Xml.XPath.XDocument.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Timeline">
-        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Addressables.Editor">
-        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
+    <Reference Include="NuGetForUnity">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\NuGetForUnity.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AI.Navigation">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.dll</HintPath>
@@ -839,9 +840,6 @@
     </Reference>
     <Reference Include="UniTask.TextMeshPro">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.AI.Navigation.Updater">
-        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Updater.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ResourceManager">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.ResourceManager.dll</HintPath>
@@ -858,14 +856,8 @@
     <Reference Include="UniTask.Addressables">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.Addressables.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.TextMeshPro">
-        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.UI">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro.Editor">
-        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
@@ -873,23 +865,38 @@
     <Reference Include="Unity.Rider.Editor">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="UniTask.Linq">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Timeline">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Addressables.Editor">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.AI.Navigation.Updater">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Updater.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro.Editor">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.AI.Navigation.Editor">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="UniTask">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AI.Navigation.Editor.ConversionSystem">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Editor.ConversionSystem.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.AI.Navigation.Editor">
-        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.AI.Navigation.Editor.dll</HintPath>
+    <Reference Include="Unity.VSCode.Editor">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ScriptableBuildPipeline.Editor">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="UniTask.Linq">
-        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VSCode.Editor">
-        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
