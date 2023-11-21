@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Data;
+using Data.Definitions.Map;
 using Newtonsoft.Json;
 using Data.Definitions;
 

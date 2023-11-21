@@ -12,7 +12,7 @@ namespace UI.Common.DisplayElements
         [SerializeField] Label description;
         [SerializeField] MyButton selectbutton;
 
-
+        public MyButton SelectButton => selectbutton;
         public static readonly string PlaceholderCharacterKey = "placeholder-character";
 
         private AddressablesManager addressablesManager;

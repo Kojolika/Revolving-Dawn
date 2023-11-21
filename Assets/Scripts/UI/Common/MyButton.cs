@@ -98,15 +98,16 @@ namespace UI.Common
             Released?.Invoke();
         }
 
-        private void OnDestroy()
+        public void ClearEventListeners()
         {
             // Remove all event listeners, creating a new delegate effectively
             // clear the list of event listeners
             Pressed = delegate { };
+            Released = delegate { };
             Entered = delegate { };
             Exited = delegate { };
         }
 
-
+        private void OnDestroy() => ClearEventListeners();
     }
 }

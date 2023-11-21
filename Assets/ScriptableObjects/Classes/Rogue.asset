@@ -16,5 +16,7 @@ MonoBehaviour:
     value: 5ee63d8a-6fbf-4085-bd9c-6b58c1a2894c
   Name:
     value: Rogue
-  CharacterAsset:
-    value: 
+  Description:
+    value: A thief in the night, like a fart in the wind.
+  characterSprite:
+    value: {fileID: 0}

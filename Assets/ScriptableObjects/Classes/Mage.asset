@@ -16,5 +16,7 @@ MonoBehaviour:
     value: c6be11ad-4392-4efc-8084-d40f822260a4
   Name:
     value: Mage
-  CharacterAsset:
-    value: 
+  Description:
+    value: Magical powers of magic.
+  characterSprite:
+    value: {fileID: 0}

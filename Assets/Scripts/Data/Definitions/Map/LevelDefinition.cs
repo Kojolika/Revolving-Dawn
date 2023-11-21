@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Data
+namespace Data.Definitions.Map
 {
     [System.Serializable]
     public class LevelDefinition

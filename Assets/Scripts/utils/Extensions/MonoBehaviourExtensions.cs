@@ -10,7 +10,7 @@ namespace Utils.Extensions
 
             if (component == null)
             {
-                component ??= monoBehaviour.gameObject.AddComponent<T>();
+                component = monoBehaviour.gameObject.AddComponent<T>();
             }
 
             return component;

@@ -40,6 +40,7 @@
     <Analyzer Include="C:\Program Files\2022.3.11f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Data\Definitions\Map\NodeDefinition.cs" />
      <Compile Include="Assets\Scripts\Cards\CardConfiguration.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\AffectIcons.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Affect.cs" />
@@ -67,6 +68,7 @@
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
      <Compile Include="Assets\Scripts\Zenject\Installers\AnimatorInstaller.cs" />
      <Compile Include="Assets\Scripts\Utils\ReadOnly.cs" />
+     <Compile Include="Assets\Scripts\Data\Definitions\Map\EdgeDefinition.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\Common\MenuHandle.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\CardHandManager.cs" />
@@ -82,9 +84,11 @@
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\Processor.cs" />
      <Compile Include="Assets\Scripts\Characters\Affects\Debuffs\Fracture.cs" />
      <Compile Include="Assets\Scripts\Characters\Player\View\PlayerView.cs" />
+     <Compile Include="Assets\Scripts\Systems\Managers\Map\MapFactory.cs" />
      <Compile Include="Assets\Scripts\Characters\Targeting_Border.cs" />
      <Compile Include="Assets\Scripts\Fight\NumberTypeChainProcessing\RoundingProcessor.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\FightManager.cs" />
+     <Compile Include="Assets\Scripts\UI\Menus\MapView.cs" />
      <Compile Include="Assets\Scripts\UI\Menus\DeckViewer.cs" />
      <Compile Include="Assets\Samples\Addressables\1.21.18\Addressables Utility\AddressablesUtility.cs" />
      <Compile Include="Assets\Scripts\Data\Definitions\CardDefinition.cs" />
@@ -141,6 +145,7 @@
      <Compile Include="Assets\Scripts\Cards\Card3D.cs" />
      <Compile Include="Assets\Scripts\UI\MenuButton.cs" />
      <Compile Include="Assets\Scripts\UI\Common\Label.cs" />
+     <Compile Include="Assets\Scripts\UI\DisplayElements\NodeDisplayElement.cs" />
      <Compile Include="Assets\Scripts\Characters\Health\HealthSystem.cs" />
      <Compile Include="Assets\Scripts\Characters\CharacterMVC.cs" />
      <Compile Include="Assets\Scripts\Systems\Managers\PlayerTurnInputManager.cs" />
@@ -864,6 +869,9 @@
     </Reference>
     <Reference Include="Unity.Rider.Editor">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+        <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UniTask.Linq">
         <HintPath>C:\Users\amm98\OneDrive\Documents\Unity_Dev\Revolving-Dawn\Library\ScriptAssemblies\UniTask.Linq.dll</HintPath>
