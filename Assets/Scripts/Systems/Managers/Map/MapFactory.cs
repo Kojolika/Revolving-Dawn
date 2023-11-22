@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using QuikGraph.Utils;
+using Utils.Extensions;
 
 namespace Systems.Map
 {
@@ -20,19 +21,19 @@ namespace Systems.Map
             MyLogger.Log($"Creating graph of dimension {dimension}, with nodes {numNodes} and paths {numPaths}");
             var graph = new AdjacencyGraph<NodeDefinition, EdgeDefinition>();
 
-            var startNode = new NodeDefinition(
+            var startNode = new NodeDefinition(0,
                 Mathf.FloorToInt(dimension.x / 2),
                 Mathf.FloorToInt(YStartAndEndPadding * dimension.y)
             );
             graph.AddVertex(startNode);
 
-            var endNode = new NodeDefinition(
+            var endNode = new NodeDefinition(1,
                 Mathf.FloorToInt(dimension.x / 2),
                 Mathf.FloorToInt(dimension.y * (1 - YStartAndEndPadding))
             );
             graph.AddVertex(endNode);
 
-            for (int index = 0; index < numNodes - 2; index++)
+            for (int index = 2; index < numNodes; index++)
             {
                 System.Random randomGen = new();
                 int x = randomGen.Next(
@@ -43,14 +44,14 @@ namespace Systems.Map
                     Mathf.FloorToInt(dimension.y * YRegularNodePadding),
                     Mathf.FloorToInt(dimension.y * (1 - YRegularNodePadding))
                 );
-                graph.AddVertex(new NodeDefinition(x, y));
+                graph.AddVertex(new NodeDefinition(index, x, y));
             }
 
             foreach (var vertex1 in graph.Vertices)
             {
                 int numEdgesToAdd = 2;
                 Dictionary<float, NodeDefinition> distanceLookup = new();
-                foreach (var vertex2 in graph.Vertices.Except(new List<NodeDefinition>() { vertex1 }))
+                                foreach (var vertex2 in graph.Vertices.Except(new List<NodeDefinition>() { vertex1 }))
                 {
                     float distance = Vector2.Distance(
                         new Vector2(vertex1.X, vertex1.Y),

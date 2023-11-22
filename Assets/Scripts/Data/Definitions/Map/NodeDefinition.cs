@@ -5,7 +5,7 @@ namespace Data.Definitions.Map
     [System.Serializable]
     public class NodeDefinition
     {
-        public NodeDefinition(int x, int y)
+        public NodeDefinition(int id, int x, int y)
         {
             X = x;
             Y = y;
