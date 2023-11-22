@@ -73,3 +73,7 @@ crashlytics-build.properties
 
 #
 Temp/*
+Library/ArtifactDB
+Library/ArtifactDB-lock
+Library/SourceAssetDB
+Library/SourceAssetDB-lock

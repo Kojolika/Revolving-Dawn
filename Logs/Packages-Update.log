@@ -52,3 +52,11 @@ Update Mode: updateDependencies
 
 The following packages were added:
   com.unity.ai.navigation@1.1.5
+
+=== Wed Nov 22 14:16:43 2023
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.collab-proxy from version 2.1.0 to 2.2.0
