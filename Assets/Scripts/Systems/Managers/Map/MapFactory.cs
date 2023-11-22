@@ -51,7 +51,7 @@ namespace Systems.Map
             {
                 int numEdgesToAdd = 2;
                 Dictionary<float, NodeDefinition> distanceLookup = new();
-                                foreach (var vertex2 in graph.Vertices.Except(new List<NodeDefinition>() { vertex1 }))
+                foreach (var vertex2 in graph.Vertices.Except(new List<NodeDefinition>() { vertex1 }))
                 {
                     float distance = Vector2.Distance(
                         new Vector2(vertex1.X, vertex1.Y),
@@ -66,7 +66,7 @@ namespace Systems.Map
 
                     float highestMin = distanceLookup.Keys.Max();
 
-                    if (distance < highestMin)
+                    if (distance < highestMin && vertex2.X > vertex1.X)
                     {
                         distanceLookup.Remove(highestMin);
                         distanceLookup[distance] = vertex2;
