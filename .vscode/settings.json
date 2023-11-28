@@ -22,7 +22,7 @@
         "**/*.ma": true,
         "**/*.MA": true,
         "**/*.mat": true,
-        "**/*.meta": true,
+        "**/*.meta": false,
         "**/*.mid": true,
         "**/*.midi": true,
         "**/*.obj": true,
@@ -48,5 +48,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "workbench.colorTheme": "Default Dark Modern"
+    "workbench.colorTheme": "Default Dark Modern",
+    "explorer.excludeGitIgnore": true
 }
