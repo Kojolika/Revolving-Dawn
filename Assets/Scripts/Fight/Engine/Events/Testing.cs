@@ -15,6 +15,7 @@ public class Program
   public interface IBattleEvent
   {
     void Execute();
+    string Log();
   }
 
   public abstract class BattleEvent<S,T> : IBattleEvent
@@ -30,6 +31,7 @@ public class Program
 
     public abstract void Execute(S source, T target);
     public void Execute() => Execute(Source, Target);
+    public abstract string Log();
   }
 
   public abstract class BattleEvent<T> : IBattleEvent
@@ -43,15 +45,14 @@ public class Program
 
     public abstract void Execute(T target);
     public void Execute() => Execute(Target);
+    public abstract string Log();
   }
 
   public class BattleStartedEvent : BattleEvent<Fightmanager>
   {
     public BattleStartedEvent(Fightmanager target) : base(target){} 
-    public override void Execute(Fightmanager target)
-    {
-      Console.Write("Fight started!");
-    }
+    public override void Execute(Fightmanager target){ }
+    public override string Log() => "Fight started!";
   }
 
   public class DealDamageEvent : BattleEvent<IHealth>
@@ -64,8 +65,29 @@ public class Program
 
     public override void Execute(IHealth target)
     {
+      var relevantBuffs = target.Buffs
+        .Where(buff => buff is ITriggerableBuff<DealDamageEvent>)
+        .Select(buff => buff as ITriggerableBuff<DealDamageEvent>);
+        
+      foreach(var buff in relevantBuffs)
+      {
+        buff.Apply(this);
+      }
+
       target.DealDamage(Amount);
     }
+
+    public override string Log() => $"{Target} is dealt {Amount} damage";
+  }
+
+  public class DealDamageFromCharacterEvent : DealDamageEvent
+  {
+    public Character Source { get; private set; }
+    public DealDamageFromCharacterEvent(Character source, IHealth target, ulong amount) : base(target, amount)
+    {
+      Source = source;
+    }
+    public override string Log() => $"Character {Source} deals {Amount} damage to {Target}";
   }
 
   public class TurnStarted : BattleEvent<Character>
@@ -73,12 +95,15 @@ public class Program
     public TurnStarted(Character target) : base(target) { }
 
     public override void Execute(Character target) { }
+
+    public override string Log() => $"{Target.Name}'s turn started!";
   }
 
   public class BattleEngine
   {
     public bool IsRunning { get; private set; }
     private Queue<IBattleEvent> battleEventQueue;
+    public event Action<IBattleEvent> EventOccurred;
 
     public void Run()
     {
@@ -99,7 +124,9 @@ public class Program
       {
         if(battleEventQueue.Count > 0)
         {
-          battleEventQueue.Dequeue().Execute();
+          var latestEvent = battleEventQueue.Dequeue();
+          latestEvent.Execute();
+          Console.Write(latestEvent.Log());
         }
         else
         {
@@ -120,7 +147,7 @@ public class Program
       Engine = new BattleEngine();
     }
 
-    public void StartCombat()
+    public void StartCombat(PlayerHero player, List<Enemy> enemies)
     {
       Engine.Run();
       Engine.AddEvent(new BattleStartedEvent(this));
@@ -129,6 +156,7 @@ public class Program
 
   public interface IBuff
   {
+    string Name { get; }
     ulong MaxStackSize { get; }
     ulong CurrentStackSize { get; }
   }
@@ -141,31 +169,29 @@ public class Program
 
   public interface ITriggerableBuff<T> : IBuff where T : IBattleEvent
   {
-    T TriggerByEvent { get; }
-    void Apply();
+    void Apply(T triggeredByEvent);
   }
 
   public class Block : IStackableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
   {
+    public string Name => "Block";
     public ulong MaxStackSize { get; private set; }
     public ulong CurrentStackSize { get; private set; }
 
     public TurnStarted StacklossEvent { get; private set; }
     public ulong AmountLostPerEvent { get; private set; }
 
-    public DealDamageEvent TriggerByEvent { get; private set; }
-
-    public void Apply()
+    public void Apply(DealDamageEvent triggeredByEvent)
     {
-
+      
     }
   }
 
   public interface IHealth
   {
-    void DealDamage(ulong x);
-    void Heal(ulong x);
-    void GainBlock(ulong x);
+    List<IBuff> Buffs { get; }
+    void DealDamage(ulong amount);
+    void Heal(ulong amount);
   }
 
   public class Health
@@ -225,27 +251,17 @@ public class Program
 
   public abstract class Character : IHealth
   {
+    public abstract string Name { get; }
     public Health Health { get; set; }
     public List<IBuff> Buffs { get; set; }
-    
-    public void DealDamage(ulong amount)
-    {
-      
-    }
 
-    public void Heal(ulong amount)
-    {
-
-    }
-
-    public void GainBlock(ulong amount)
-    {
-
-    }
+    public void DealDamage(ulong amount) => Health.RemoveHealth(amount);
+    public void Heal(ulong amount) => Health.AddHealth(amount);
   }
 
   public class PlayerHero : Character
   {
+    public override string Name => Enum.GetName(typeof(PlayerClass), Class);
     public PlayerClass Class { get; private set; }
 
   }
@@ -265,7 +281,7 @@ public class Program
 
   public class Slime : Enemy
   {
-
+    public override string Name => "Slime";
   }
 }
 
