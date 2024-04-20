@@ -50,8 +50,29 @@ public class Program
     public BattleStartedEvent(Fightmanager target) : base(target){} 
     public override void Execute(Fightmanager target)
     {
-
+      Console.Write("Fight started!");
     }
+  }
+
+  public class DealDamageFromCharacterEvent : BattleEvent<Character, IHealth>
+  {
+    public ulong Amount { get; private set; }
+    public DealDamageFromCharacterEvent(Character source, IHealth target, ulong amount) : base(source, target)
+    {
+      Amount = amount;
+    }
+
+    public override void Execute(Character source, IHealth target)
+    {
+      target.DealDamage(Amount);
+    }
+  }
+
+  public class TurnStarted : BattleEvent<Character>
+  {
+    public TurnStarted(Character target) : base(target) { }
+
+    public override void Execute(Character target) { }
   }
 
   public interface IHealth
@@ -112,5 +133,26 @@ public class Program
       Engine.AddEvent(new BattleStartedEvent(this));
     }
   }
+
+  public abstract class Character
+  {
+
+  }
+
+  public class PlayerHero : Character
+  {
+    
+  }
+
+  public abstract class Enemy : Character
+  {
+
+  }
+
+  public class Slime : Enemy
+  {
+
+  }
 }
+
 }
