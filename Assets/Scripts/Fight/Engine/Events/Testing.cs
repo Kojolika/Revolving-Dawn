@@ -197,11 +197,14 @@ public class Program
     }
   }
 
-  public interface IHealth
+  public interface IHealth : IBuffable
   {
-    List<IBuff> Buffs { get; }
     void DealDamage(ulong amount);
     void Heal(ulong amount);
+  }
+  public interface IBuffable
+  {
+    List<IBuff> Buffs { get; }
   }
 
   public class Health
@@ -271,16 +274,18 @@ public class Program
 
   public class PlayerHero : Character
   {
-    public override string Name => Enum.GetName(typeof(PlayerClass), Class);
+    public override string Name => Class.Name;
     public PlayerClass Class { get; private set; }
   }
 
-  public enum PlayerClass
+  public abstract class PlayerClass
   {
-    Warrior,
-    Rogue,
-    Priest,
-    Mage
+    public abstract string Name { get; }
+  }
+  
+  public class Warrior : PlayerClass
+  {
+    public override string Name => "Warrior";
   }
 
   public abstract class Enemy : Character
