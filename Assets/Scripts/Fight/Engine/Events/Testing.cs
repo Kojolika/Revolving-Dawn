@@ -57,7 +57,7 @@ public class Program
 
   public class DealDamageEvent : BattleEvent<IHealth>
   {
-    public ulong Amount { get; private set; }
+    public ulong Amount { get; set; }
     public DealDamageEvent(IHealth target, ulong amount) : base(target)
     {
       Amount = amount;
@@ -181,9 +181,19 @@ public class Program
     public TurnStarted StacklossEvent { get; private set; }
     public ulong AmountLostPerEvent { get; private set; }
 
-    public void Apply(DealDamageEvent triggeredByEvent)
+    public void Apply(DealDamageEvent dealDamageEvent)
     {
-      
+      try
+      {
+        checked
+        {
+          dealDamageEvent.Amount -= CurrentStackSize;
+        }
+      }
+      catch (OverflowException e)
+      {
+        dealDamageEvent.Amount = 0;
+      }
     }
   }
 
@@ -263,7 +273,6 @@ public class Program
   {
     public override string Name => Enum.GetName(typeof(PlayerClass), Class);
     public PlayerClass Class { get; private set; }
-
   }
 
   public enum PlayerClass
