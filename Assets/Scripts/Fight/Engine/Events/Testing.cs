@@ -1,6 +1,6 @@
-namespace Fight.Events
+namespace Testing
 {
-using System;
+  using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,15 +54,15 @@ public class Program
     }
   }
 
-  public class DealDamageFromCharacterEvent : BattleEvent<Character, IHealth>
+  public class DealDamageEvent : BattleEvent<IHealth>
   {
     public ulong Amount { get; private set; }
-    public DealDamageFromCharacterEvent(Character source, IHealth target, ulong amount) : base(source, target)
+    public DealDamageEvent(IHealth target, ulong amount) : base(target)
     {
       Amount = amount;
     }
 
-    public override void Execute(Character source, IHealth target)
+    public override void Execute(IHealth target)
     {
       target.DealDamage(Amount);
     }
@@ -73,13 +73,6 @@ public class Program
     public TurnStarted(Character target) : base(target) { }
 
     public override void Execute(Character target) { }
-  }
-
-  public interface IHealth
-  {
-    void DealDamage(ulong x);
-    void Heal(ulong x);
-    void GainBlock(ulong x);
   }
 
   public class BattleEngine
@@ -134,14 +127,135 @@ public class Program
     }
   }
 
-  public abstract class Character
+  public interface IBuff
   {
+    ulong MaxStackSize { get; }
+    ulong CurrentStackSize { get; }
+  }
 
+  public interface IStackableBuff<T> : IBuff where T : IBattleEvent
+  {
+    T StacklossEvent { get; }
+    ulong AmountLostPerEvent { get; }
+  }
+
+  public interface ITriggerableBuff<T> : IBuff where T : IBattleEvent
+  {
+    T TriggerByEvent { get; }
+    void Apply();
+  }
+
+  public class Block : IStackableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
+  {
+    public ulong MaxStackSize { get; private set; }
+    public ulong CurrentStackSize { get; private set; }
+
+    public TurnStarted StacklossEvent { get; private set; }
+    public ulong AmountLostPerEvent { get; private set; }
+
+    public DealDamageEvent TriggerByEvent { get; private set; }
+
+    public void Apply()
+    {
+
+    }
+  }
+
+  public interface IHealth
+  {
+    void DealDamage(ulong x);
+    void Heal(ulong x);
+    void GainBlock(ulong x);
+  }
+
+  public class Health
+  {
+    public ulong MaxHealth { get; private set; }
+    public ulong CurrentHealth { get; private set; }
+
+    public Health(ulong currentHealth, ulong maxHealth)
+    {
+      CurrentHealth = currentHealth;
+      MaxHealth = maxHealth;
+    }
+
+    public void SetHealth(ulong amount) => CurrentHealth = Math.Min(MaxHealth, amount);
+    
+
+    public void AddHealth(ulong amount)
+    {
+      ulong finalHealth = default;
+      try
+      {
+        checked
+        {
+          finalHealth = CurrentHealth + amount;
+          finalHealth = Math.Min(MaxHealth, finalHealth);
+        }
+      }
+      catch (OverflowException e)
+      {
+        finalHealth = Math.Min(MaxHealth, ulong.MaxValue);
+      }
+      CurrentHealth = finalHealth;
+    }
+
+    public void RemoveHealth(ulong amount)
+    {
+      ulong finalHealth = default;
+      try
+      {
+        checked
+        {
+          finalHealth = CurrentHealth - amount;
+        }
+      }
+      catch (OverflowException e)
+      {
+        finalHealth = 0;
+      }
+      CurrentHealth = finalHealth;
+    }
+  }
+
+  public class Player
+  {
+    public PlayerHero Hero { get; private set; }
+  }
+
+  public abstract class Character : IHealth
+  {
+    public Health Health { get; set; }
+    public List<IBuff> Buffs { get; set; }
+    
+    public void DealDamage(ulong amount)
+    {
+      
+    }
+
+    public void Heal(ulong amount)
+    {
+
+    }
+
+    public void GainBlock(ulong amount)
+    {
+
+    }
   }
 
   public class PlayerHero : Character
   {
-    
+    public PlayerClass Class { get; private set; }
+
+  }
+
+  public enum PlayerClass
+  {
+    Warrior,
+    Rogue,
+    Priest,
+    Mage
   }
 
   public abstract class Enemy : Character
