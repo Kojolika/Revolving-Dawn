@@ -1,7 +1,8 @@
-namespace Testing 
+namespace Testing
 {
     using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 
 public class Program
@@ -194,16 +195,10 @@ public class Program
 
   public interface IBuff
   {
-    void Apply();
-  }
-
-  public abstract class Buff<D> : RuntimeModel<D>, IBuff where D : ScriptableObject 
-  {
 
   }
 
-
-  public class Block : Buff<BlockDefinition>, IStackableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
+  public class Block : RuntimeModel<BlockDefinition>, IStackableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
   {
     [SerializedField] BlockDefinition definition;
 
@@ -242,6 +237,65 @@ public class Program
             }
         }
   }
-}
+  public interface IBattleAnimation
+  {
+    Task PlayAnimation(IBattleEvent battleEvent);
+  }
+  
+  public abstract class BattleAnimation<E> : ScriptableObject, IBattleAnimation where E : IBattleEvent
+  {
+    public async Task PlayAnimation(IBattleEvent battleEvent) => await PlayAnimation(battleEvent);
+    public abstract Task PlayAnimation(E battleEvent);
+  }
 
+  public class DealDamageAnimation : BattleAnimation<DealDamageEvent>
+  {
+    // [SerializedField] Animation anim1;
+    // [SerializedField] Animation anim2;
+    // ...
+    public override Task PlayAnimation(DealDamageEvent dealDamageEvent)
+    {
+      // Play all animations
+      return Task.CompletedTask;
+    }
+  }
+
+  public class BattleAnimationEngine : MonoBehaviour
+  {
+      public bool IsRunning { get; private set; }
+      private Queue<IBattleAnimation> battleAnimationQueue;
+      private Queue<IBattleEvent> battleEventQueue;  
+
+      public void Run(Queue<IBattleEvent> battleEvents = null)
+      {
+          battleAnimationQueue = new Queue<IBattleAnimation>();
+          IsRunning = true;
+          EngineLoop();
+      }
+
+      public void Stop()
+      {
+          battleAnimationQueue.Clear();
+          IsRunning = false;
+      }
+
+      async void EngineLoop()
+      {
+          while (IsRunning)
+          {
+              if (battleAnimationQueue.Count > 0)
+              {
+                  var latestEvent = battleEventQueue.Dequeue();
+                  await (battleAnimationQueue.Dequeue().PlayAnimation(latestEvent));
+              }
+              else
+              {
+                  await Task.Delay(500);
+              }
+          }
+      }
+
+      public void AddEvent(IBattleEvent battleEvent) => battleEventQueue.Enqueue(battleEvent);
+  }
+}
 }
