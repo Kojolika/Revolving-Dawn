@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fight.Events;
+using Tooling.Logging;
 
 namespace Fight
 {
@@ -31,7 +32,7 @@ namespace Fight
                 {
                     var latestEvent = battleEventQueue.Dequeue();
                     latestEvent.Execute();
-                    Console.Write(latestEvent.Log());
+                    MyLogger.Log(latestEvent.Log());
                 }
                 else
                 {

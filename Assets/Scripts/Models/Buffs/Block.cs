@@ -11,7 +11,6 @@ namespace Models.Buffs
         // TODO: Below values should be defined elsewhere
         // Probably in a scriptableObject for game wide settings
         public ulong MaxStackSize { get; private set; }
-        public TurnStarted StacklossEvent { get; private set; }
         public ulong AmountLostPerEvent { get; private set; }
 
         public Block(ulong currentStack) => CurrentStackSize = currentStack;
@@ -25,9 +24,24 @@ namespace Models.Buffs
                     dealDamageEvent.Amount -= CurrentStackSize;
                 }
             }
-            catch (OverflowException e)
+            catch (OverflowException)
             {
                 dealDamageEvent.Amount = 0;
+            }
+        }
+
+        public void OnEventTriggered(TurnStarted StacklossEvent)
+        {
+            try
+            {
+                checked
+                {
+                    CurrentStackSize -= AmountLostPerEvent;
+                }
+            }
+            catch (OverflowException)
+            {
+                CurrentStackSize = 0;
             }
         }
     }
