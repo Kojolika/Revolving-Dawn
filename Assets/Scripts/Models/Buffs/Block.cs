@@ -1,19 +1,17 @@
 using Fight.Events;
 using System;
+using UnityEngine;
 
 namespace Models.Buffs
 {
-    public class Block : IStackableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
+    public class Block : RuntimeModel<BlockDefinition>, IStackableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
     {
-        public string Name => "Block";
+        [SerializeField] BlockDefinition definition;
+
+        public override BlockDefinition Definition => definition;
         public ulong CurrentStackSize { get; private set; }
 
-        // TODO: Below values should be defined elsewhere
-        // Probably in a scriptableObject for game wide settings
-        public ulong MaxStackSize { get; private set; }
-        public ulong AmountLostPerEvent { get; private set; }
-
-        public Block(ulong currentStack) => CurrentStackSize = currentStack;
+        public Block(ulong currentStackSize) => CurrentStackSize = currentStackSize;
 
         public void Apply(DealDamageEvent dealDamageEvent)
         {
@@ -36,7 +34,7 @@ namespace Models.Buffs
             {
                 checked
                 {
-                    CurrentStackSize -= AmountLostPerEvent;
+                    CurrentStackSize -= Definition.AmountLostPerEvent;
                 }
             }
             catch (OverflowException)

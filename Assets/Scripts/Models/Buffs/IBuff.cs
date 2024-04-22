@@ -2,8 +2,11 @@ namespace Models.Buffs
 {
     public interface IBuff
     {
+
+    }
+
+    public interface IBuffDefinition
+    {
         string Name { get; }
-        ulong MaxStackSize { get; }
-        ulong CurrentStackSize { get; }
     }
 }
