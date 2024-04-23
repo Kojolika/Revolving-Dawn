@@ -6,7 +6,7 @@ namespace Fight.Animations
 {
     public abstract class BattleAnimation<E> : ScriptableObject, IBattleAnimation where E : IBattleEvent
     {
-        public async UniTask PlayAnimation(IBattleEvent battleEvent) => await PlayAnimation(battleEvent);
-        public abstract UniTask PlayAnimation(E battleEvent);
+        public async UniTask Play(IBattleEvent battleEvent) => await Play(battleEvent);
+        public abstract UniTask Play(E battleEvent);
     }
 }

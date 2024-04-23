@@ -11,11 +11,9 @@ using Utils;
 namespace Data.Definitions
 {
     [System.Serializable]
-    [CreateAssetMenu(fileName = "New Card", menuName = "Cards/New Card")]
+    //[CreateAssetMenu(fileName = "New Card", menuName = "Cards/New Card")]
     public class CardDefinition : ScriptableObject
     {
-        [PrimaryKey]
-        public ReadOnly<string> ID;
         public Character owner; //character that plays this card
         public ManaType[] mana; //what mana this card uses to charge
         public new string name; //name of the card
@@ -39,9 +37,6 @@ namespace Data.Definitions
         //TODO: convert to foreign key
         [SerializeField]
         protected CardDefinition previousCard = null;
-
-        [ForeignKey(typeof(ClassDefinition))] 
-        public string classId;
 
         //true means transform to next card, false is transform to previous card
         public CardDefinition Transform(bool direction)

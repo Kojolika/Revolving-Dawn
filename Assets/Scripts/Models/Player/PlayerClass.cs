@@ -1,7 +1,10 @@
+using UnityEngine;
+
 namespace Models.Player
 {
-    public abstract class PlayerClass
+    [CreateAssetMenu(fileName = "New Player Class", menuName = "Player/Classes")]
+    public class PlayerClass
     {
-        public abstract string Name { get; }
+        public string Name { get; private set; }
     }
 }

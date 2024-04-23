@@ -5,6 +5,6 @@ namespace Fight.Animations
 {
     public interface IBattleAnimation
     {
-        UniTask PlayAnimation(IBattleEvent battleEvent);
+        UniTask Play(IBattleEvent battleEvent);
     }
 }
