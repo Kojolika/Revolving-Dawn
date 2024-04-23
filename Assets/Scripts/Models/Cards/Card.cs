@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Models.Player;
 using Models.Cards;
+using Utils.Attributes;
 
 namespace Models
 {
@@ -14,9 +15,9 @@ namespace Models
         public List<Models.Mana> Manas => manas;
         public Sprite Artwork => artwork;
         public PlayerClass Class => @class;
-        public Card NextCard => nextCard; 
+        public Card NextCard => nextCard;
         public Card PreviousCard => previousCard;
-        public List<CardAffect> PlayAffects => playAffects;
+        public List<ICardAffect> PlayAffects => playAffects;
 
         #endregion
 
@@ -26,6 +27,6 @@ namespace Models
         [SerializeField] private PlayerClass @class;
         [SerializeField] private Card nextCard;
         [SerializeField] private Card previousCard;
-        [SerializeField] private List<CardAffect> playAffects;
+        [SerializeReference, OfType(typeof(ICardAffect))] private List<ICardAffect> playAffects;
     }
 }

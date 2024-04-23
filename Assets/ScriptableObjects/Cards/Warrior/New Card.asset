@@ -15,10 +15,16 @@ MonoBehaviour:
   name: 
   manas: []
   artwork: {fileID: 0}
-  nextCard: {fileID: 0}
+  nextCard: {fileID: 11400000}
   previousCard: {fileID: 0}
   playAffects:
-  - Test: {fileID: 11400000, guid: 8ba9ea334631e0a4eb07d6172b518ef3, type: 2}
-    arg: 15
-  - Test: {fileID: 11400000, guid: 8ba9ea334631e0a4eb07d6172b518ef3, type: 2}
-    arg: 20
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

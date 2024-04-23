@@ -4,27 +4,33 @@ using Models.Buffs;
 using System.Linq;
 using UnityEngine;
 using System;
+using Fight.Events;
 
 namespace Models.Cards
 {
     [Serializable]
-    public class CardAffect
+    public abstract class CardAffect<T> : ICardAffect where T : CardAffectDefinition
     {
-        [SerializeField] private CardAffectDefinition cardAffect;
-        [SerializeField] private ulong[] args;
+        [SerializeField] private T cardAffectDefinition;
         [SerializeField] private Targeting targeting;
-        
+
         public Targeting Targeting => targeting;
 
-        public void Execute(List<IBuffable> targets) => cardAffect.Execute(targets, args);
-        public void Execute(List<IHealth> targets) => cardAffect.Execute(targets, args);
+        public abstract List<IBattleEvent> Execute(List<IBuffable> targets);
+        public abstract List<IBattleEvent> Execute(List<IHealth> targets);
     }
 
     public abstract class CardAffectDefinition : ScriptableObject
     {
-        public abstract string Description(params ulong[] args);
-        public virtual void Execute(List<IBuffable> targets, params ulong[] args)
+        public abstract string Description { get; }
+        public virtual List<IBattleEvent> Execute(List<IBuffable> targets)
             => Execute(targets.Select(target => target as IHealth).ToList());
-        public abstract void Execute(List<IHealth> targets, params ulong[] args);
+        public abstract List<IBattleEvent> Execute(List<IHealth> targets);
+    }
+
+    public interface ICardAffect
+    {
+        List<IBattleEvent> Execute(List<IBuffable> targets);
+        List<IBattleEvent> Execute(List<IHealth> targets);
     }
 }

@@ -27,7 +27,7 @@ namespace Models
             finalHealth = Math.Min(MaxHealth, finalHealth);
           }
         }
-        catch (OverflowException e)
+        catch (OverflowException)
         {
           finalHealth = Math.Min(MaxHealth, ulong.MaxValue);
         }
@@ -44,7 +44,7 @@ namespace Models
             finalHealth = CurrentHealth - amount;
           }
         }
-        catch (OverflowException e)
+        catch (OverflowException)
         {
           finalHealth = 0;
         }

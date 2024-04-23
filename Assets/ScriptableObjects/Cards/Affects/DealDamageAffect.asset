@@ -9,6 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adc82a1be0dc566438f13ccd729b87fb, type: 3}
+  m_Script: {fileID: 0}
   m_Name: DealDamageAffect
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp:Models:DealDamageAffectDefinition
+  amount: 0
