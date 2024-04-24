@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Models.Player;
-using Models.Cards;
-using Utils.Attributes;
+using Models.CardAffects;
 
 namespace Models
 {

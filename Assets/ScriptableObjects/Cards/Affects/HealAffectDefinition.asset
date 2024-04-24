@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: b457406c572cd2a47bff0e2327b3c092, type: 3}
   m_Name: HealAffectDefinition
-  m_EditorClassIdentifier: Assembly-CSharp:Models:HealAffectDefinition
+  m_EditorClassIdentifier: 

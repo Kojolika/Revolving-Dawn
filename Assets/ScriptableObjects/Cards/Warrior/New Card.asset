@@ -19,14 +19,23 @@ MonoBehaviour:
   previousCard: {fileID: 0}
   playAffects:
   - cardAffect:
-      rid: 6899908816096985136
-    cardAffectDefinition: {fileID: 11400000, guid: 8ba9ea334631e0a4eb07d6172b518ef3, type: 2}
+      rid: 6899908818284314656
+    cardAffectDefinition: {fileID: 11400000, guid: 747598a6941aafa408c727bb0defe385, type: 2}
+  - cardAffect:
+      rid: 6899908818284314657
+    cardAffectDefinition: {fileID: 11400000, guid: 175e57ffcad364348a2791913d5e9447, type: 2}
   references:
     version: 2
     RefIds:
-    - rid: 6899908816096985136
-      type: {class: DealDamageAffect, ns: Models, asm: Assembly-CSharp}
+    - rid: 6899908818284314656
+      type: {class: HealAffect, ns: Models.CardAffects, asm: Assembly-CSharp}
       data:
         targeting: 0
-        amount: 7
-        TEST: 0
+        healAmount: 0
+        Object: {fileID: 7739828324288329235, guid: 568e6ea500d64c149a35c33501d9ed46, type: 3}
+        cardDefinition: {fileID: 11400000, guid: 549affe624a391f47b1bf71b64835200, type: 2}
+    - rid: 6899908818284314657
+      type: {class: DealDamageAffect, ns: Models.CardAffects, asm: Assembly-CSharp}
+      data:
+        targeting: 0
+        amount: 0

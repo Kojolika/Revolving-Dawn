@@ -1,13 +1,10 @@
-using Models.Cards;
+using Models.CardAffects;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using System.Data.SqlClient;
 using System;
 using System.Linq;
-using ModestTree;
 using UnityEngine;
-using Models;
 using System.Collections.Generic;
 using Tooling.Logging;
 
@@ -15,19 +12,27 @@ using Tooling.Logging;
 public class CardAffectDrawer : PropertyDrawer
 {
     /// <summary>
-    /// This must match the <see cref="ICardAffect"/> field of the <see cref="CardAffectContainer"/> class.  
+    /// This must match the <see cref="ICardAffect"/> field name of the <see cref="CardAffectContainer"/> class.  
     /// </summary>
     const string CardAffectVariableName = "cardAffect";
 
+    
+    
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
         var root = new VisualElement();
+        var individualCardAffectValueContainer = new VisualElement();
         var label = new Label("Card Affect");
         var definitionProperty = property.FindPropertyRelative("cardAffectDefinition");
         var cardAffectDefinition = new PropertyField(definitionProperty);
         cardAffectDefinition.RegisterValueChangeCallback((SerializedPropertyChangeEvent evt) =>
         {
             CardAffectDefinition newValue = evt.changedProperty.objectReferenceValue as CardAffectDefinition;
+            if(root.Contains(individualCardAffectValueContainer))
+            {
+                root.Remove(individualCardAffectValueContainer);
+            }
+            individualCardAffectValueContainer = new VisualElement();
             if (newValue == null)
             {
                 return;
@@ -56,13 +61,8 @@ public class CardAffectDrawer : PropertyDrawer
             var cardAffectType = cardAffectTypes[0];
             var cardAffectInstance = Activator.CreateInstance(cardAffectType);
             var serializedProperty = property.FindPropertyRelative(CardAffectVariableName);
-            Debug.Log($"serializedProperty is {serializedProperty}");
-            var visitedNodes = new HashSet<uint>();
-            bool visitChild = default;
             do
             {
-                visitChild = false;
-
                 Debug.Log($"\tFound {serializedProperty.propertyPath} (type {serializedProperty.propertyType})" +
                     $"(depth {serializedProperty.depth})");
 
@@ -74,15 +74,17 @@ public class CardAffectDrawer : PropertyDrawer
                     serializedProperty.managedReferenceValue = cardAffectInstance;
                     serializedProperty.serializedObject.ApplyModifiedProperties();
                 }
-                if (!visitedNodes.Contains(serializedProperty.contentHash))
+
+                if (serializedProperty.propertyPath.Contains($".{CardAffectVariableName}."))
                 {
                     var propertyField = new PropertyField(serializedProperty);
                     propertyField.BindProperty(serializedProperty);
-                    root.Add(propertyField);
-                    visitedNodes.Add(serializedProperty.contentHash);
+                    individualCardAffectValueContainer.Add(propertyField);
                 }
             }
             while (serializedProperty.Next(true));
+
+            root.Add(individualCardAffectValueContainer);
         });
 
         root.Add(label);

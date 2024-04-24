@@ -6,7 +6,7 @@ using UnityEngine;
 using System;
 using Fight.Events;
 
-namespace Models.Cards
+namespace Models.CardAffects
 {
     [Serializable]
     public class CardAffectContainer
