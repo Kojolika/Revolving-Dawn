@@ -9,9 +9,21 @@ using Fight.Events;
 namespace Models.Cards
 {
     [Serializable]
+    public class CardAffectContainer
+    {
+        [SerializeReference] private ICardAffect cardAffect;
+        [SerializeField] private CardAffectDefinition cardAffectDefinition;
+    }
+
+    public interface ICardAffect
+    {
+        List<IBattleEvent> Execute(List<IBuffable> targets);
+        List<IBattleEvent> Execute(List<IHealth> targets);
+    }
+
+    [Serializable]
     public abstract class CardAffect<T> : ICardAffect where T : CardAffectDefinition
     {
-        [SerializeField] private T cardAffectDefinition;
         [SerializeField] private Targeting targeting;
 
         public Targeting Targeting => targeting;
@@ -26,11 +38,5 @@ namespace Models.Cards
         public virtual List<IBattleEvent> Execute(List<IBuffable> targets)
             => Execute(targets.Select(target => target as IHealth).ToList());
         public abstract List<IBattleEvent> Execute(List<IHealth> targets);
-    }
-
-    public interface ICardAffect
-    {
-        List<IBattleEvent> Execute(List<IBuffable> targets);
-        List<IBattleEvent> Execute(List<IHealth> targets);
     }
 }

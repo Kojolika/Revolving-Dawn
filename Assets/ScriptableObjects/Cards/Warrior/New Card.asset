@@ -18,13 +18,15 @@ MonoBehaviour:
   nextCard: {fileID: 11400000}
   previousCard: {fileID: 0}
   playAffects:
-  - rid: -2
-  - rid: -2
-  - rid: -2
-  - rid: -2
-  - rid: -2
+  - cardAffect:
+      rid: 6899908816096985136
+    cardAffectDefinition: {fileID: 11400000, guid: 8ba9ea334631e0a4eb07d6172b518ef3, type: 2}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 6899908816096985136
+      type: {class: DealDamageAffect, ns: Models, asm: Assembly-CSharp}
+      data:
+        targeting: 0
+        amount: 7
+        TEST: 0

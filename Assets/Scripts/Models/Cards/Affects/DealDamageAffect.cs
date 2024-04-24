@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Cards;
 using Fight.Events;
 using Models.Buffs;
 using Models.Cards;
@@ -10,7 +8,7 @@ using UnityEngine;
 
 namespace Models
 {
-    [CreateAssetMenu(menuName = "Cards/CardAffects/DealDamageAffect", fileName = "DealDamageAffect")]
+    [CreateAssetMenu(menuName = "Cards/CardAffects/" + nameof(DealDamageAffectDefinition), fileName = nameof(DealDamageAffectDefinition))]
     public class DealDamageAffectDefinition : CardAffectDefinition
     {
         [SerializeField] ulong amount;

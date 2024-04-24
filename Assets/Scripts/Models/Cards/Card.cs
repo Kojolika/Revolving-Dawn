@@ -17,7 +17,7 @@ namespace Models
         public PlayerClass Class => @class;
         public Card NextCard => nextCard;
         public Card PreviousCard => previousCard;
-        public List<ICardAffect> PlayAffects => playAffects;
+        public List<CardAffectContainer> PlayAffects => playAffects;
 
         #endregion
 
@@ -27,6 +27,6 @@ namespace Models
         [SerializeField] private PlayerClass @class;
         [SerializeField] private Card nextCard;
         [SerializeField] private Card previousCard;
-        [SerializeReference, OfType(typeof(ICardAffect))] private List<ICardAffect> playAffects;
+        [SerializeField] private List<CardAffectContainer> playAffects;
     }
 }
