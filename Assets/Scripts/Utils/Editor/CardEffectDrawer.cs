@@ -23,7 +23,6 @@ public class CardEffectDrawer : PropertyDrawer
     {
         var root = new VisualElement();
         var individualCardEffectValueContainer = new VisualElement();
-        var label = new Label("Card Effect");
         var definitionProperty = property.FindPropertyRelative(CardEffectDefinitionVariableName);
         var cardEffectDefinition = new PropertyField(definitionProperty);
 
@@ -102,7 +101,6 @@ public class CardEffectDrawer : PropertyDrawer
             root.Add(individualCardEffectValueContainer);
         });
 
-        root.Add(label);
         root.Add(cardEffectDefinition);
 
         return root;
