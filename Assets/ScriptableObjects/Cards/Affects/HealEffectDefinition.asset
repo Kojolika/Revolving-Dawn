@@ -9,7 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47b8aef4a5051754c81654a6c1e7f051, type: 3}
-  m_Name: DealDamageAffectDefinition
+  m_Script: {fileID: 11500000, guid: b457406c572cd2a47bff0e2327b3c092, type: 3}
+  m_Name: HealEffectDefinition
   m_EditorClassIdentifier: 
-  amount: 0

@@ -4,12 +4,13 @@ using Fight.Events;
 using Models.Buffs;
 using UnityEngine;
 
-namespace Models.CardAffects
+namespace Models.CardEffects
 {
     [Serializable]
-    public class DealDamageAffect : CardAffect<DealDamageAffectDefinition>
+    public class DealDamageEffect : CardEffect<DealDamageEffectDefinition>
     {
         [SerializeField] ulong amount;
+
         public override List<IBattleEvent> Execute(List<IBuffable> targets)
         {
             throw new System.NotImplementedException();

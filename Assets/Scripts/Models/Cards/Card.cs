@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Models.Player;
-using Models.CardAffects;
+using Models.CardEffects;
 
 namespace Models
 {
@@ -16,7 +16,7 @@ namespace Models
         public PlayerClass Class => @class;
         public Card NextCard => nextCard;
         public Card PreviousCard => previousCard;
-        public List<CardAffectContainer> PlayAffects => playAffects;
+        public List<CardEffectContainer> PlayEffects => playEffects;
 
         #endregion
 
@@ -26,6 +26,6 @@ namespace Models
         [SerializeField] private PlayerClass @class;
         [SerializeField] private Card nextCard;
         [SerializeField] private Card previousCard;
-        [SerializeField] private List<CardAffectContainer> playAffects;
+        [SerializeField] private List<CardEffectContainer> playEffects;
     }
 }
