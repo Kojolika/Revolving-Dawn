@@ -44,24 +44,25 @@ public class AmountLostDrawer : PropertyDrawer
         enumPropertyField.BindProperty(lostTypeProperty);
         root.Add(enumPropertyField);
 
+        var amountPropertyField = new PropertyField(amountProperty);
+        amountPropertyField.BindProperty(amountProperty);
+        root.Add(amountPropertyField);
+
         enumPropertyField.RegisterValueChangeCallback((SerializedPropertyChangeEvent evt) =>
         {
-            var changedProperty = evt.changedProperty;
-
-            if (root.Contains(amountContainer))
-            {
-                root.Remove(amountContainer);
-            }
             /// <summary>
             /// 0 is <see cref="LostType.Amount"/>
             /// 1 is <see cref="LostType.All"/>
             /// </summary>
-            if (changedProperty.enumValueFlag == 0)
+            if (evt.changedProperty.enumValueFlag == 0)
             {
-                var amountPropertyField = new PropertyField(amountProperty);
-                amountPropertyField.BindProperty(amountProperty);
-                amountContainer.Add(amountPropertyField);
-                root.Add(amountContainer);
+                amountPropertyField.SetEnabled(true);
+                amountPropertyField.style.visibility = Visibility.Visible;
+            }
+            else
+            {
+                amountPropertyField.SetEnabled(false);
+                amountPropertyField.style.visibility = Visibility.Hidden;
             }
         });
     }
