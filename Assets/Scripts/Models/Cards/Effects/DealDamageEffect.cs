@@ -1,15 +1,16 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
 using Fight.Events;
 using System.Linq;
+using UnityEngine;
 
 namespace Models.CardEffects
 {
-    [CreateAssetMenu(menuName = "Cards/CardAffects/" + nameof(DealDamageEffectDefinition), fileName = nameof(DealDamageEffectDefinition))]
-    public class DealDamageEffectDefinition : CardEffectDefinition
+    [Serializable]
+    public class DealDamageEffect : CardEffect
     {
         [SerializeField] ulong amount;
-        public override string Description => $"Deal {amount} damage.";
+
         public override List<IBattleEvent> Execute(List<IHealth> targets) => Execute(targets, amount);
 
         List<IBattleEvent> Execute(List<IHealth> targets, ulong amount)

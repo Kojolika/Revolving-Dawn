@@ -1,10 +1,12 @@
 using System;
 using UnityEngine;
 using FightDamageCalc;
+using Models.Buffs;
 
 namespace Characters
 {
-    public class Reinforce : Affect
+    [Serializable]
+    public class Reinforce : Affect, IBuff
     {
         [SerializeField] bool affectsOtherCharactersAbilities = true;
         [SerializeField] TurnTime whenStackLoss = TurnTime.StartOfTurn;
@@ -23,6 +25,7 @@ namespace Characters
         {
             count = amount;
         }
+        public Reinforce() { }
 
         public override bool AffectsOtherCharactersAbilities { get => affectsOtherCharactersAbilities; set => affectsOtherCharactersAbilities = value; }
         public override bool IsStackable { get => isStackable; set => isStackable = value; }

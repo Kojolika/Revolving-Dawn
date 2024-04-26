@@ -19,7 +19,7 @@ namespace Fight.Events
               .Select(buff => buff as ITriggerableBuff<DealDamageEvent>);
 
             foreach (var buff in relevantBuffs)
-            {
+            {   
                 buff.Apply(this);
             }
 

@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(CardEffectContainer))]
+/* [CustomPropertyDrawer(typeof(CardEffectContainer))]
 public class CardEffectDrawer : PropertyDrawer
 {
     /// <summary>
@@ -105,4 +105,4 @@ public class CardEffectDrawer : PropertyDrawer
 
         return root;
     }
-}
+} */

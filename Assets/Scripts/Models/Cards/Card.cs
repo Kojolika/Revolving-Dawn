@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using Models.Player;
 using Models.CardEffects;
+using Utils.Attributes;
+using Models.Buffs;
 
 namespace Models
 {
@@ -27,5 +29,6 @@ namespace Models
         [SerializeField] private Card nextCard;
         [SerializeField] private Card previousCard;
         [SerializeField] private List<CardEffectContainer> playEffects;
+        [SerializeReference, DisplayInterface(typeof(IBuff))] private IBuff buff;
     }
 }

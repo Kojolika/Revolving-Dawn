@@ -19,20 +19,36 @@ MonoBehaviour:
   previousCard: {fileID: 0}
   playEffects:
   - cardEffect:
-      rid: 4729516860548055042
-    cardEffectDefinition: {fileID: 11400000, guid: 83ac8c3ffedcad044917d2cdb14fd467, type: 2}
+      rid: 4729516871732166748
   - cardEffect:
-      rid: 4729516860548055043
-    cardEffectDefinition: {fileID: 11400000, guid: c41d1f40abcb0f347ba3bb6555d4efe4, type: 2}
+      rid: 4729516871732166750
+  - cardEffect:
+      rid: 4729516871732166751
+  buff:
+    rid: 4729516871732166656
   references:
     version: 2
     RefIds:
-    - rid: 4729516860548055042
-      type: {class: HealAffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+    - rid: 4729516871732166656
+      type: {class: Block, ns: Models.Buffs, asm: Assembly-CSharp}
+      data:
+        definition: {fileID: 0}
+    - rid: 4729516871732166748
+      type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 0
-        healAmount: 0
-    - rid: 4729516860548055043
+        buff:
+          rid: 4729516871732166749
+    - rid: 4729516871732166749
+      type: {class: Block, ns: Models.Buffs, asm: Assembly-CSharp}
+      data:
+        definition: {fileID: 0}
+    - rid: 4729516871732166750
+      type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+      data:
+        targeting: 0
+        amount: 0
+    - rid: 4729516871732166751
       type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 0

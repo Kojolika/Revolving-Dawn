@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Models.Buffs
 {
+    [Serializable]
     public class Block : RuntimeModel<BlockDefinition>, IStackableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
     {
         [SerializeField] BlockDefinition definition;
@@ -12,6 +13,10 @@ namespace Models.Buffs
         public ulong CurrentStackSize { get; private set; }
 
         public Block(ulong currentStackSize) => CurrentStackSize = currentStackSize;
+        public Block()
+        {
+
+        }
 
         public void Apply(DealDamageEvent dealDamageEvent)
         {
