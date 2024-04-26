@@ -1,3 +1,6 @@
+using System.Linq;
+using Models.Buffs;
+
 namespace Fight.Events
 {
     public abstract class BattleEvent<S, T> : IBattleEvent

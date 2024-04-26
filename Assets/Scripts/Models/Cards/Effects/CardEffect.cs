@@ -7,24 +7,23 @@ using System;
 using Fight.Events;
 using Utils.Attributes;
 
-/// <summary>
-/// It may seem a little strange how we have the card effect classes set up here.
-/// But there is a particular reason for it.
-/// This has been designed in a specfic way which allows us add any type of <see cref="CardEffect"/> to
-/// a <see cref="Models.Card.Card"/> in the inspector.
-/// This way we can assemble cards like building blocks by adding any effect we want to them. 
-/// </summary>
+
 namespace Models.CardEffects
 {
     /// <summary>
-    /// This class is the one we see have attached to <see cref="Models.Card"/>,
-    /// using a custom propety drawers (<see cref="CardEffectDrawer"/>)
+    /// This has been designed in a specfic way which allows us add any type of <see cref="ICardEffect"/> to
+    /// a <see cref="Models.Card.Card"/> in the inspector.
+    /// This way we can assemble cards like building blocks by adding any effect we want to them. 
+    /// </summary>
+
+    /// <summary>
+    /// This class is a wrapper around <see cref="ICardEffect"/> so we can create lists of them
+    /// in the inspector. (see <see cref="DisplayInterfaceAttribute"/> for more details)
     /// </summary>
     [Serializable]
-    public class CardEffectContainer
+    public class CardEffectWrapper
     {
         [SerializeReference, DisplayInterface(typeof(ICardEffect))] private ICardEffect cardEffect;
-
         public ICardEffect CardEffect => cardEffect;
     }
 
@@ -38,11 +37,8 @@ namespace Models.CardEffects
     }
 
     /// <summary>
-    /// This is where the variable effects of the card effect are defined. 
-    /// This way different cards can have different stats for each card effect.
-    /// Note: we only allow one derived type for each T.
+    /// Stats and effects of each card event are defined here.
     /// </summary>
-    /// <typeparam name="T">The static definition for this card effect.</typeparam>
     [Serializable]
     public abstract class CardEffect : ICardEffect
     {

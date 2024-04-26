@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ModestTree;
@@ -7,7 +8,6 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Utils;
 using Utils.Attributes;
 
 namespace Data.Utils.Editor
@@ -97,7 +97,7 @@ namespace Data.Utils.Editor
             }
 
             var endProperty = serializedProperty.GetEndProperty();
-
+            var visitedProperties = new HashSet<uint>();
             do
             {
                 // Only display the property once
@@ -113,6 +113,7 @@ namespace Data.Utils.Editor
                     && !serializedProperty.propertyPath.Contains("m_FileID")
                     && !serializedProperty.propertyPath.Contains($"m_PathID"))
                 {
+                    MyLogger.Log($"Displaying {serializedProperty.propertyPath}");
                     var propertyField = new PropertyField(serializedProperty);
                     propertyField.BindProperty(serializedProperty);
                     displayContainer.Add(propertyField);

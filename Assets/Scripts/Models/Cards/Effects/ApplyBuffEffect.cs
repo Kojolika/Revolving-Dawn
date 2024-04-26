@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fight.Events;
 using Models.Buffs;
 using UnityEngine;
@@ -12,8 +13,6 @@ namespace Models.CardEffects
     {
         [SerializeReference, DisplayInterface(typeof(IBuff))] IBuff buff;
         public override List<IBattleEvent> Execute(List<IHealth> targets)
-        {
-            throw new System.NotImplementedException();
-        }
+            => targets.Select(target => new ApplyBuffEvent(target, buff) as IBattleEvent).ToList();
     }
 }

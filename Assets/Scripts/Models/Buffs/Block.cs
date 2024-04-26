@@ -5,17 +5,16 @@ using UnityEngine;
 namespace Models.Buffs
 {
     [Serializable]
-    public class Block : RuntimeModel<BlockDefinition>, IStackableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
+    public class Block : StackableBuff<TurnStarted, BlockDefinition>, ITriggerableBuff<DealDamageEvent>
     {
         [SerializeField] BlockDefinition definition;
+        [SerializeField] ulong stackSize;
 
         public override BlockDefinition Definition => definition;
-        public ulong CurrentStackSize { get; private set; }
-
-        public Block(ulong currentStackSize) => CurrentStackSize = currentStackSize;
-        public Block()
+        public override ulong StackSize
         {
-
+            get => stackSize;
+            set => stackSize = value;
         }
 
         public void Apply(DealDamageEvent dealDamageEvent)
@@ -24,27 +23,12 @@ namespace Models.Buffs
             {
                 checked
                 {
-                    dealDamageEvent.Amount -= CurrentStackSize;
+                    dealDamageEvent.Amount -= stackSize;
                 }
             }
             catch (OverflowException)
             {
                 dealDamageEvent.Amount = 0;
-            }
-        }
-
-        public void OnEventTriggered(TurnStarted StacklossEvent)
-        {
-            try
-            {
-                checked
-                {
-                    CurrentStackSize -= Definition.AmountLostPerEvent;
-                }
-            }
-            catch (OverflowException)
-            {
-                CurrentStackSize = 0;
             }
         }
     }
