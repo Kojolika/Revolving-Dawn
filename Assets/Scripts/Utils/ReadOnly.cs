@@ -7,10 +7,6 @@ namespace Utils
         private T value;
         public T Value => value;
 
-        public static implicit operator T(ReadOnly<T> instance)
-        {
-            return (instance.value);
-        }
+        public static implicit operator T(ReadOnly<T> instance) => instance.value;
     }
-
 }

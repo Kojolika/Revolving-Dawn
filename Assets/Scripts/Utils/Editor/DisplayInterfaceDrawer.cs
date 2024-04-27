@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using ModestTree;
-using Tooling.Logging;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
