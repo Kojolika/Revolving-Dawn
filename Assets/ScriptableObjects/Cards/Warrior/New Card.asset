@@ -17,11 +17,34 @@ MonoBehaviour:
   artwork: {fileID: 0}
   nextCard: {fileID: 0}
   previousCard: {fileID: 0}
-  playEffects: []
-  buff:
-    rid: -2
+  playEffects:
+  - cardEffect:
+      rid: 4729516912778674180
+  - cardEffect:
+      rid: 4729516912778674186
+  - cardEffect:
+      rid: 4729516912778674187
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 4729516912778674180
+      type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+      data:
+        targeting: 0
+        buff:
+          rid: 4729516912778674185
+    - rid: 4729516912778674185
+      type: {class: Block, ns: Models.Buffs, asm: Assembly-CSharp}
+      data:
+        definition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
+        stackSize: 10
+    - rid: 4729516912778674186
+      type: {class: HealEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+      data:
+        targeting: 0
+        healAmount: 3
+    - rid: 4729516912778674187
+      type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+      data:
+        targeting: 0
+        amount: 1
