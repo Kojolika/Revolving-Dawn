@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f275e19ae084b20abf75acacefa4eb4, type: 3}
   m_Name: Mage
   m_EditorClassIdentifier: 
-  ID:
-    value: c6be11ad-4392-4efc-8084-d40f822260a4
   Name:
     value: Mage
   Description:
     value: Magical powers of magic.
   characterSprite:
-    value: {fileID: 0}
+    value: {fileID: 21300000, guid: 6d8d3d623dbde1b43aa737841443db60, type: 3}

@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f275e19ae084b20abf75acacefa4eb4, type: 3}
   m_Name: Rogue
   m_EditorClassIdentifier: 
-  ID:
-    value: 5ee63d8a-6fbf-4085-bd9c-6b58c1a2894c
   Name:
     value: Rogue
   Description:
     value: A thief in the night, like a fart in the wind.
   characterSprite:
-    value: {fileID: 0}
+    value: {fileID: 21300000, guid: 6d8d3d623dbde1b43aa737841443db60, type: 3}

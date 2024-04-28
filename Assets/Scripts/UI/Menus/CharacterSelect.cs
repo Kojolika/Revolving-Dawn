@@ -68,7 +68,7 @@ namespace UI.Menus
             MyLogger.Log("Generating map...");
             MapFactory mapFactory = new MapFactory();
 
-            Vector2 graphDimensions = new Vector2(500, 1000);
+            Vector2 graphDimensions = new Vector2(500, 3000);
 
             _ = menuManager.Open<MapView, MapView.Data>(
                 new MapView.Data(
