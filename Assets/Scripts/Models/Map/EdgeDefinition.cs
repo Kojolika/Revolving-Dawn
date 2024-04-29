@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using QuikGraph;
 
-namespace Data.Definitions.Map
+namespace Models.Map
 {
     [System.Serializable]
     public class EdgeDefinition : IEdge<NodeDefinition>
@@ -12,9 +12,6 @@ namespace Data.Definitions.Map
             this.source = source;
             this.target = target;
         }
-
-        [JsonProperty("edge_id")]
-        public readonly int EdgeID;
 
         [JsonProperty("source_vertex")]
         public readonly NodeDefinition source;

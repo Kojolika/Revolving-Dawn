@@ -14,6 +14,7 @@ namespace Data.Utils.Editor
         {
             var root = new VisualElement();
             var value = property.FindPropertyRelative("value");
+            MyLogger.Log($"Prop: {value.name}, {value.propertyPath}, {value.type}");
             var propertyField = new PropertyField(value);
             propertyField.BindProperty(value);
             propertyField.label = $"[ReadOnly] {property.displayName}";

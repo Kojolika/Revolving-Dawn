@@ -1,4 +1,4 @@
-using Data.Definitions.Map;
+using Models.Map;
 using UI.Common;
 using UnityEngine;
 
@@ -8,15 +8,9 @@ namespace UI.DisplayElements
     {
         [SerializeField] Label label;
 
-        NodeDefinition currentData;
-
-        public int X => currentData.X;
-        public int Y => currentData.Y;
-
         public override void Populate(NodeDefinition data)
         {
-            label.SetText($"({data.X},{data.Y})");
-            currentData = data;
+            label.SetText($"({data.LevelDefinition.Level})");
         }
     }
 }

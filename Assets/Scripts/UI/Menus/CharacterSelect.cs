@@ -8,6 +8,7 @@ using Tooling.Logging;
 using UI.Common;
 using Systems.Map;
 using Systems.Managers;
+using Settings;
 
 namespace UI.Menus
 {
@@ -33,11 +34,13 @@ namespace UI.Menus
         List<ClassDisplayElement> classDisplayElements = new();
         ClassDefinition selectedclass;
         MenuManager menuManager;
+        MapSettings mapSettings;
 
         [Zenject.Inject]
-        void Construct(MenuManager menuManager)
+        void Construct(MenuManager menuManager, MapSettings mapSettings)
         {
             this.menuManager = menuManager;
+            this.mapSettings = mapSettings;
         }
 
         public override void Populate(Data data)
@@ -66,15 +69,11 @@ namespace UI.Menus
         void SaveSelectionAndGenerateRun()
         {
             MyLogger.Log("Generating map...");
-            MapFactory mapFactory = new MapFactory();
-
-            Vector2 graphDimensions = new Vector2(500, 3000);
-
             _ = menuManager.Open<MapView, MapView.Data>(
-                new MapView.Data(
-                    mapFactory.Create(graphDimensions, 50, 4),
-                    graphDimensions
-                )
+                new MapView.Data()
+                {
+                    MapDefinition = new MapFactory().Create(mapSettings)
+                }
             );
         }
     }

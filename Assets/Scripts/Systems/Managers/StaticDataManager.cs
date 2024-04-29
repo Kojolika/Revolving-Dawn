@@ -69,7 +69,9 @@ namespace Systems.Managers
                 // Create a new instance in case the value of the scriptableObject changes at runtime
                 var newAssetInstance = Object.Instantiate(asset);
 
-                string assetId = $"{assetPath}/{asset.name}";
+                string assetId = assetPath;
+
+                MyLogger.Log($"Adding asset {assetId}");
 
                 if (Assets.ContainsKey(assetType))
                 {
