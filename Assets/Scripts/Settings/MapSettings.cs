@@ -6,8 +6,16 @@ namespace Settings
     [CreateAssetMenu(fileName = "New Map Settings", menuName = "RevolvingDawn/Settings/Map")]
     public class MapSettings : ScriptableObject
     {
-        public ReadOnly<int> NumberOfLevels;
-        public ReadOnly<int> NumberOfNodes;
-        public ReadOnly<int> NumberOfPaths;
+        [SerializeField] private int xDimension;
+        [SerializeField] private int yDimension;
+        [SerializeField] private int numberOfLevels;
+        [SerializeField] private int numberOfNodes;
+        [SerializeField] private int numberOfPaths;
+
+        public int NumberOfLevels => numberOfLevels;
+        public int NumberOfNodes => numberOfNodes;
+        public int NumberOfPaths => numberOfPaths;
+        public int XDimension => xDimension;
+        public int YDimension => yDimension;
     }
 }

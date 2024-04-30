@@ -6,7 +6,9 @@ namespace Models.Map
     [System.Serializable]
     public class NodeDefinition
     {
-        public readonly LevelDefinition LevelDefinition;
-        public readonly List<NodeDefinition> NextNodes;
+        public int Y;
+        public int X;
+        public LevelDefinition LevelDefinition;
+        public List<NodeDefinition> NextNodes;
     }
 }

@@ -10,7 +10,7 @@ namespace Models.Map
     public class LevelDefinition : ScriptableObject
     {
         [JsonProperty("level")]
-        public ReadOnly<int> Level;
+        public int Level;
 
         public List<Enemy> PossibleEnemies;
     }

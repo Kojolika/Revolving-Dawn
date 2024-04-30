@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bb560009b78c8f4ebd93a091ed7c998, type: 3}
   m_Name: Default Map Settings
   m_EditorClassIdentifier: 
-  NumberOfLevels:
-    value: 10
-  NumberOfNodes:
-    value: 50
-  NumberOfPaths:
-    value: 3
+  xDimension: 500
+  yDimension: 1000
+  numberOfLevels: 10
+  numberOfNodes: 50
+  numberOfPaths: 3

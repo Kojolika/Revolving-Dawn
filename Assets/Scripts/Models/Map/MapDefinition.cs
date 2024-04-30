@@ -7,9 +7,12 @@ namespace Models.Map
     public class MapDefinition
     {
         [JsonProperty("map_name")]
-        public readonly string Name;
+        public string Name;
         
         [JsonProperty("map_levels")]
-        public readonly List<NodeDefinition> Nodes;
+        public List<NodeDefinition> Nodes;
+
+        public int XDimension;
+        public int YDimension;
     }
 }
