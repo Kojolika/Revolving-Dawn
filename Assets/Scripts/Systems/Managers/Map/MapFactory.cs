@@ -18,18 +18,18 @@ namespace Systems.Map
             var numLevels = mapSettings.NumberOfLevels;
             var xDimension = mapSettings.XDimension;
             var yDimension = mapSettings.YDimension;
+            var edgePadding = mapSettings.EdgePadding;
             var nodes = new List<NodeDefinition>();
 
             MyLogger.Log($"Creating map of with {numNodes} nodes, {numLevels} levels, {numPaths} paths, and dimensions of ({xDimension},{yDimension})");
 
-            var numXRegions = xDimension / numNodes; //10
-            var numYRegions = yDimension / numNodes; //20
-            (int x, int y) regionSize = (xDimension / numXRegions, yDimension / numYRegions);
-            MyLogger.Log($"Region size: {regionSize}");
+            var adjustedYDimension = yDimension - (edgePadding * 4);
+            var area = xDimension * adjustedYDimension;
+            var regionArea = area / numNodes;
+            int sqrtRegionArea = (int)Math.Sqrt(regionArea);
+            (int x, int y) regionDimensions = (sqrtRegionArea, sqrtRegionArea);
+            (int x, int y) numberOfRegions = (xDimension / regionDimensions.x, adjustedYDimension / regionDimensions.y);
 
-            // The first and last level will be on their own tier,
-            // subtract these from the total space
-            var adjustedYDimension = yDimension - (regionSize.y * 2);
             var randomNumGenerator = new System.Random();
 
             for (int i = 0; i < numNodes; i++)
@@ -40,8 +40,8 @@ namespace Systems.Map
                     newNode = new NodeDefinition()
                     {
                         X = xDimension / 2,
-                        Y = regionSize.y / 2,
-                        LevelDefinition = new LevelDefinition() { Level = 1 }
+                        Y = edgePadding,
+                        LevelDefinition = new LevelDefinition() { Level = 0 }
                     };
                 }
                 else if (i == numNodes - 1)
@@ -49,25 +49,34 @@ namespace Systems.Map
                     newNode = new NodeDefinition()
                     {
                         X = xDimension / 2,
-                        Y = (regionSize.y / 2) + adjustedYDimension,
-                        LevelDefinition = new LevelDefinition() { Level = 1 }
+                        Y = yDimension - edgePadding,
+                        LevelDefinition = new LevelDefinition() { Level = 9 }
                     };
                 }
                 else
                 {
-                    int numRows = xDimension / regionSize.x;
-                    int xOffset = i % numRows * regionSize.x;
-                    int yOffset = Mathf.FloorToInt(i / numRows) * regionSize.y;
+                    int xOffset = i % numberOfRegions.x * regionDimensions.x;
+                    int yOffset = (int)((float)i / numberOfRegions.x) * regionDimensions.y;
+
 
                     newNode = new NodeDefinition()
                     {
-                        X = randomNumGenerator.Next(regionSize.x) + xOffset,
-                        Y = randomNumGenerator.Next(regionSize.y) + yOffset,
+                        X = randomNumGenerator.Next(regionDimensions.x) + xOffset,
+                        Y = randomNumGenerator.Next(regionDimensions.y) + yOffset + (edgePadding * 2),
                         LevelDefinition = new LevelDefinition() { Level = 1 }
                     };
                 }
 
                 nodes.Add(newNode);
+            }
+
+            for (int i = 0; i < nodes.Count(); i++)
+            {
+                var node = nodes[i];
+                if (i + 1< nodes.Count())
+                {
+                    node.NextNodes = new List<NodeDefinition>() { nodes[i + 1] };
+                }
             }
 
 

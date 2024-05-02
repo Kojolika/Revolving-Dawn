@@ -10,7 +10,7 @@ namespace UI.DisplayElements
 
         public override void Populate(NodeDefinition data)
         {
-            label.SetText($"({data.LevelDefinition.Level})");
+            label.SetText($"{data.LevelDefinition.Level}:({data.X},{data.Y})");
         }
     }
 }
