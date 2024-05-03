@@ -31,12 +31,12 @@ namespace UI.Menus
 
         private Dictionary<NodeDefinition, NodeDisplayElement> nodeElementsLookup = new();
 
-        public override void Populate(Data data)
+        public override async void Populate(Data data)
         {
             var mapSize = mapContainer.rect.size;
 
             nodeElementsLookup.Clear();
-            for (int i = data.MapDefinition.Nodes.Count() - 1; i >= 0; i--)
+            for (int i = 0; i < data.MapDefinition.Nodes.Count(); i++)
             {
                 var node = data.MapDefinition.Nodes[i];
                 float xNodeDataNormalized = Utils.Computations.Normalize(node.X, 0, data.MapDefinition.XDimension, 0, 1);
@@ -52,20 +52,25 @@ namespace UI.Menus
                 // we can position like this due to the anchoring of the nodeDisplayElementRoot
                 (newNode.transform as RectTransform).anchoredPosition = new Vector2(xPos, yPos);
                 newNode.gameObject.SetActive(true);
-
-                if (node.NextNodes.IsNullOrEmpty())
+            }
+            foreach (var node in nodeElementsLookup)
+            {
+                var nodeDef = node.Key;
+                if (nodeDef.NextNodes.IsNullOrEmpty())
                 {
                     continue;
                 }
 
-                foreach (var nextNode in node.NextNodes)
+                var nodeElement = node.Value;
+                foreach (var nextNode in nodeDef.NextNodes)
                 {
+                    var nodeElementTransform = nodeElement.transform;
                     var nextNodeTransform = nodeElementsLookup[nextNode].transform;
                     var newLine = Instantiate(lineDisplayElement, lineContainer);
                     var newlineTransform = newLine.transform;
-                    (newlineTransform as RectTransform).anchoredPosition = new Vector2(xPos, yPos);
+                    (newlineTransform as RectTransform).anchoredPosition = new Vector2(nodeElementTransform.position.x, nodeElementTransform.position.y);
 
-                    var position1 = (Vector2)newNode.transform.position;
+                    var position1 = (Vector2)nodeElementTransform.position;
                     var position2 = (Vector2)nextNodeTransform.position;
                     var distance = Vector2.Distance(position1, position2) / 2;
                     (newlineTransform as RectTransform).sizeDelta = new Vector2(lineDisplayElement.rect.size.x, distance);

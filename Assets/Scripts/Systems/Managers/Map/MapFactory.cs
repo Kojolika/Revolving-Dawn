@@ -67,13 +67,20 @@ namespace Systems.Map
                 nodes.Add(newNode);
             }
 
-            var arrangedByY = nodes.OrderBy(node => node.Y).ToList();
             for (int i = 0; i < nodes.Count(); i++)
             {
+                
                 var node = nodes[i];
-                if (i + 1 < nodes.Count())
+                MyLogger.Log($"======For Node {node.X}, {node.Y}======");
+                node.NextNodes = nodes
+                    .Where(n => n.Y > node.Y)
+                    .OrderBy(n => Mathf.Sqrt(Mathf.Pow(n.X - node.X, 2) + Mathf.Pow(n.Y - node.Y, 2)))
+                    .Take(5)
+                    .ToList();
+
+                foreach (var n in node.NextNodes)
                 {
-                    node.NextNodes = new List<NodeDefinition>() { nodes[i + 1] };
+                    MyLogger.Log($"Next node: {n.X}, {n.Y}");
                 }
             }
 
