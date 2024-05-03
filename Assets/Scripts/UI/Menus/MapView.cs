@@ -64,15 +64,15 @@ namespace UI.Menus
                 var nodeElement = node.Value;
                 foreach (var nextNode in nodeDef.NextNodes)
                 {
-                    var nodeElementTransform = nodeElement.transform;
+                    var nodeElementTransform = nodeElement.transform as RectTransform;
                     var nextNodeTransform = nodeElementsLookup[nextNode].transform;
                     var newLine = Instantiate(lineDisplayElement, lineContainer);
                     var newlineTransform = newLine.transform;
-                    (newlineTransform as RectTransform).anchoredPosition = new Vector2(nodeElementTransform.position.x, nodeElementTransform.position.y);
+                    (newlineTransform as RectTransform).anchoredPosition = new Vector2(nodeElementTransform.anchoredPosition.x, nodeElementTransform.anchoredPosition.y);
 
                     var position1 = (Vector2)nodeElementTransform.position;
                     var position2 = (Vector2)nextNodeTransform.position;
-                    var distance = Vector2.Distance(position1, position2) / 2;
+                    var distance = Vector2.Distance(position1, position2);
                     (newlineTransform as RectTransform).sizeDelta = new Vector2(lineDisplayElement.rect.size.x, distance);
 
                     var finalVector = position1 - position2;

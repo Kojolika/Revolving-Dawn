@@ -24,11 +24,12 @@ namespace Systems.Map
             MyLogger.Log($"Creating map of with {numNodes} nodes, {numLevels} levels, {numPaths} paths, and dimensions of ({xDimension},{yDimension})");
 
             var adjustedYDimension = yDimension - (edgePadding * 4);
-            var area = xDimension * adjustedYDimension;
+            var adjustedXDimension = xDimension - (edgePadding * 2);
+            var area = adjustedXDimension * adjustedYDimension;
             var regionArea = area / numNodes;
             int sqrtRegionArea = (int)Math.Sqrt(regionArea);
             (int x, int y) regionDimensions = (sqrtRegionArea, sqrtRegionArea);
-            (int x, int y) numberOfRegions = (xDimension / regionDimensions.x, adjustedYDimension / regionDimensions.y);
+            (int x, int y) numberOfRegions = (adjustedXDimension / regionDimensions.x, adjustedYDimension / regionDimensions.y);
 
             var randomNumGenerator = new System.Random();
 
