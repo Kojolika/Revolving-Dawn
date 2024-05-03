@@ -41,7 +41,6 @@ namespace Systems.Map
                     {
                         X = xDimension / 2,
                         Y = edgePadding,
-                        LevelDefinition = new LevelDefinition() { Level = 0 }
                     };
                 }
                 else if (i == numNodes - 1)
@@ -50,7 +49,6 @@ namespace Systems.Map
                     {
                         X = xDimension / 2,
                         Y = yDimension - edgePadding,
-                        LevelDefinition = new LevelDefinition() { Level = 9 }
                     };
                 }
                 else
@@ -63,17 +61,17 @@ namespace Systems.Map
                     {
                         X = randomNumGenerator.Next(regionDimensions.x) + xOffset,
                         Y = randomNumGenerator.Next(regionDimensions.y) + yOffset + (edgePadding * 2),
-                        LevelDefinition = new LevelDefinition() { Level = 1 }
                     };
                 }
 
                 nodes.Add(newNode);
             }
 
+            var arrangedByY = nodes.OrderBy(node => node.Y).ToList();
             for (int i = 0; i < nodes.Count(); i++)
             {
                 var node = nodes[i];
-                if (i + 1< nodes.Count())
+                if (i + 1 < nodes.Count())
                 {
                     node.NextNodes = new List<NodeDefinition>() { nodes[i + 1] };
                 }

@@ -8,7 +8,6 @@ namespace Models.Map
     {
         public int Y;
         public int X;
-        public LevelDefinition LevelDefinition;
         public List<NodeDefinition> NextNodes;
     }
 }

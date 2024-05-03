@@ -33,7 +33,7 @@ namespace UI.Menus
 
         public override void Populate(Data data)
         {
-            var mapSize = mapContainer.rect.size;           
+            var mapSize = mapContainer.rect.size;
 
             nodeElementsLookup.Clear();
             for (int i = data.MapDefinition.Nodes.Count() - 1; i >= 0; i--)
@@ -48,8 +48,6 @@ namespace UI.Menus
                 var newNode = Instantiate(nodeDisplayElementRoot, nodeContainer);
                 newNode.Populate(node);
                 nodeElementsLookup.Add(node, newNode);
-
-                //await UpdateAfterEnable();
 
                 // we can position like this due to the anchoring of the nodeDisplayElementRoot
                 (newNode.transform as RectTransform).anchoredPosition = new Vector2(xPos, yPos);
@@ -72,24 +70,23 @@ namespace UI.Menus
                     var distance = Vector2.Distance(position1, position2) / 2;
                     (newlineTransform as RectTransform).sizeDelta = new Vector2(lineDisplayElement.rect.size.x, distance);
 
-                     var dot = Vector3.Dot(position1, position2);
-                    var magnitude = position1.magnitude * position2.magnitude;
-                    var angle = Mathf.Acos(dot / magnitude) * Mathf.Rad2Deg;
-                    //var angle = Mathf.Atan2(position2.y - position1.y, position2.x - position1.x) * Mathf.Rad2Deg;
-                    newlineTransform.eulerAngles = new Vector3(newlineTransform.rotation.x, newlineTransform.rotation.y, angle);
-                    MyLogger.Log($"Angle : {angle}, distance : {distance}, for node {node.X},{node.Y}");
+                    var finalVector = position1 - position2;
+                    var downVector = new Vector2(0, finalVector.y);
+                    var angle = Mathf.Acos(downVector.magnitude / finalVector.magnitude) * Mathf.Rad2Deg;
+                    // since we are using right triangles to caluclate the angle
+                    // we need to reflect the angle across the y axis in this case
+                    if (position2.y > position1.y)
+                    {
+                        angle = 180 - angle;
+                    }
+                    // and reflect the angle across the x axis in this case
+                    if (position2.x < position1.x)
+                    {
+                        angle = -angle;
+                    }
 
-                    var lineRenderer = newNode.GetOrAddComponent<LineRenderer>();
-                    lineRenderer.SetPositions(new Vector3[] { position1, position2 });
-                    lineRenderer.alignment = LineAlignment.View;
-                    lineRenderer.startWidth = 20;
+                    newlineTransform.rotation = Quaternion.Euler(0, 0, angle);
                 }
-            }
-
-            async UniTask UpdateAfterEnable()
-            {
-                await UniTask.WaitWhile(() => !gameObject.activeInHierarchy || gameObject == null);
-                await UniTask.WaitForEndOfFrame(this);
             }
         }
     }
