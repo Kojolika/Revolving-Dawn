@@ -72,7 +72,7 @@ namespace UI.Menus
 
                     var position1 = (Vector2)nodeElementTransform.position;
                     var position2 = (Vector2)nextNodeTransform.position;
-                    var distance = Vector2.Distance(position1, position2);
+                    var distance = Vector2.Distance(position1, position2) / 2;
                     (newlineTransform as RectTransform).sizeDelta = new Vector2(lineDisplayElement.rect.size.x, distance);
 
                     var finalVector = position1 - position2;

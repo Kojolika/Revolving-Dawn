@@ -60,7 +60,7 @@ namespace Systems.Map
 
                     newNode = new NodeDefinition()
                     {
-                        X = randomNumGenerator.Next(regionDimensions.x) + xOffset,
+                        X = randomNumGenerator.Next(regionDimensions.x) + xOffset + edgePadding,
                         Y = randomNumGenerator.Next(regionDimensions.y) + yOffset + (edgePadding * 2),
                     };
                 }
