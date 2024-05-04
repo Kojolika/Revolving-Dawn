@@ -8,6 +8,7 @@ namespace Models.Map
     {
         public int Y;
         public int X;
+        public bool IsBoss = false;
         public List<NodeDefinition> NextNodes;
     }
 }
