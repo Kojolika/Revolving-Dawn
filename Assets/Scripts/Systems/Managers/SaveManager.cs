@@ -48,16 +48,23 @@ namespace Systems.Managers
             MyLogger.Log($"Loading from {PlayerSaveFilePath}");
             if (File.Exists(PlayerSaveFilePath))
             {
-                JObject saveJson = JObject.Parse(await File.ReadAllTextAsync(PlayerSaveFilePath));
-
-                if (saveJson.TryGetValue(PlayerDataJsonObjectName, out JToken playerData))
+                try
                 {
-                    PlayerDefinition playerDefinition = saveJson.ToObject<PlayerDefinition>();
-
-                    if (playerDefinition != null)
+                    JObject saveJson = JObject.Parse(await File.ReadAllTextAsync(PlayerSaveFilePath));
+                    if (saveJson.TryGetValue(PlayerDataJsonObjectName, out JToken playerData))
                     {
-                        return playerDefinition;
+                        PlayerDefinition playerDefinition = playerData.ToObject<PlayerDefinition>();
+
+                        if (playerDefinition != null)
+                        {
+                            return playerDefinition;
+                        }
                     }
+                }
+                catch (JsonReaderException e)
+                {
+                    MyLogger.LogError($"Error reading save file: {e.Message}");
+                    return null;
                 }
             }
 

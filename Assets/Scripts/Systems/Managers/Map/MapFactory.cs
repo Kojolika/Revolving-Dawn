@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Settings;
 using System;
 using Utils.Extensions;
+using UnityEditor.Experimental.GraphView;
 
 namespace Systems.Map
 {
@@ -72,7 +73,6 @@ namespace Systems.Map
             var visitedEdges = new HashSet<(NodeDefinition, NodeDefinition)>();
             for (int i = 0; i < numPaths; i++)
             {
-                MyLogger.Log("");
                 var node = nodes[0];
                 while (!node.IsBoss)
                 {
@@ -88,19 +88,20 @@ namespace Systems.Map
                         break;
                     }
 
+                    var closestNodeCoordinates = new NodeDefinition.Coordinate(closestNode.X, closestNode.Y);
                     if (node.NextNodes.IsNullOrEmpty())
                     {
-                        node.NextNodes = new List<NodeDefinition>() { closestNode };
+                        node.NextNodes = new List<NodeDefinition.Coordinate>() { closestNodeCoordinates };
                     }
                     else
                     {
-                        node.NextNodes.Add(closestNode);
+                        node.NextNodes.Add(closestNodeCoordinates);
                     }
                     visitedEdges.Add((node, closestNode));
                     node = closestNode;
                 }
             }
-            
+
             // filter nodes that dont have any connections
             nodes = nodes.Where(node => !node.NextNodes.IsNullOrEmpty() || node.IsBoss).ToList();
 

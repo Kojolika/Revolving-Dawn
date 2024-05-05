@@ -7,7 +7,7 @@ using Models.Buffs;
 
 namespace Models
 {
-    [CreateAssetMenu(fileName = "New Card", menuName = "Cards/New Card")]
+    [CreateAssetMenu(fileName = "New Card", menuName = "RevolvingDawn/Cards/New Card")]
     public class Card : ScriptableObject
     {
         #region Public Accessors
@@ -15,7 +15,7 @@ namespace Models
         public string Name => name;
         public List<Models.Mana> Manas => manas;
         public Sprite Artwork => artwork;
-        public PlayerClass Class => @class;
+        public PlayerClassDefinition Class => @class;
         public Card NextCard => nextCard;
         public Card PreviousCard => previousCard;
         public List<CardEffectWrapper> PlayEffects => playEffects;
@@ -25,7 +25,7 @@ namespace Models
         [SerializeField] private new string name;
         [SerializeField] private List<Models.Mana> manas;
         [SerializeField] private Sprite artwork;
-        [SerializeField] private PlayerClass @class;
+        [SerializeField] private PlayerClassDefinition @class;
         [SerializeField] private Card nextCard;
         [SerializeField] private Card previousCard;
         [SerializeField] private List<CardEffectWrapper> playEffects;

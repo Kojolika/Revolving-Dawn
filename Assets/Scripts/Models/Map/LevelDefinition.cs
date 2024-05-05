@@ -12,6 +12,7 @@ namespace Models.Map
         [JsonProperty("level")]
         public int Level;
 
+        [JsonProperty("enemies")]
         public List<Enemy> PossibleEnemies;
     }
 }

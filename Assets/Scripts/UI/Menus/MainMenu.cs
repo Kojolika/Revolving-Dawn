@@ -1,6 +1,5 @@
-﻿using System;
-using Data;
-using Data.Definitions.Player;
+﻿using Data;
+using Models.Player;
 using Systems.Managers;
 using UI.Common;
 using UI.Menus.Common;
@@ -45,16 +44,21 @@ namespace UI.Menus
         {
             // If continuing load current fight or load current map
             // otherwise open character selection
-            if (playerDataManager.CurrentPlayerDefinition.CurrentRun == null)
+
+            var currentRun = playerDataManager.CurrentPlayerDefinition.CurrentRun;
+            if (currentRun == null)
             {
                 _ = menuManager.Open<CharacterSelect, CharacterSelect.Data>(
                     new CharacterSelect.Data(
-                        staticDataManager.GetAllAssetsForType<ClassDefinition>()
+                        staticDataManager.GetAllAssetsForType<PlayerClassDefinition>()
                     )
                 );
             }
-
-            // otherwise continue run
+            // TODO: add if current fight is not null load fight
+            else if (currentRun.CurrentMap != null)
+            {   
+                _ = menuManager.Open<MapView, MapView.Data>(new MapView.Data() { MapDefinition = currentRun.CurrentMap });
+            }
         }
 
         void OpenSettings()

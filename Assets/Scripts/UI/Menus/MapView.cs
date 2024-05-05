@@ -29,9 +29,10 @@ namespace UI.Menus
         [SerializeField] private NodeDisplayElement nodeDisplayElementRoot;
         [SerializeField] private RectTransform lineDisplayElement;
 
-        private Dictionary<NodeDefinition, NodeDisplayElement> nodeElementsLookup = new();
+        private Dictionary<NodeDefinition.Coordinate, NodeDisplayElement> nodeElementsLookup = new();
+        private Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeDefinitionsLookup = new();
 
-        public override async void Populate(Data data)
+        public override void Populate(Data data)
         {
             var mapSize = mapContainer.rect.size;
 
@@ -47,21 +48,23 @@ namespace UI.Menus
 
                 var newNode = Instantiate(nodeDisplayElementRoot, nodeContainer);
                 newNode.Populate(node);
-                nodeElementsLookup.Add(node, newNode);
+                var coordinates = new NodeDefinition.Coordinate(node.X, node.Y);
+                nodeElementsLookup.Add(coordinates, newNode);
+                nodeDefinitionsLookup.Add(coordinates, node);
 
                 // we can position like this due to the anchoring of the nodeDisplayElementRoot
                 (newNode.transform as RectTransform).anchoredPosition = new Vector2(xPos, yPos);
                 newNode.gameObject.SetActive(true);
             }
-            foreach (var node in nodeElementsLookup)
+            foreach (var coordinate in nodeElementsLookup)
             {
-                var nodeDef = node.Key;
+                var nodeDef = nodeDefinitionsLookup[coordinate.Key];
                 if (nodeDef.NextNodes.IsNullOrEmpty())
                 {
                     continue;
                 }
 
-                var nodeElement = node.Value;
+                var nodeElement = coordinate.Value;
                 foreach (var nextNode in nodeDef.NextNodes)
                 {
                     var nodeElementTransform = nodeElement.transform as RectTransform;

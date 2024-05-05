@@ -8,11 +8,14 @@ namespace Models.Map
     {
         [JsonProperty("map_name")]
         public string Name;
-        
-        [JsonProperty("map_levels")]
+
+        [JsonProperty("map_nodes")]
         public List<NodeDefinition> Nodes;
 
+        [JsonProperty("x_dimension")]
         public int XDimension;
+
+        [JsonProperty("y_dimension")]
         public int YDimension;
     }
 }

@@ -9,21 +9,21 @@ namespace Characters.Player2.Run
     public class RunDefinition
     {
         [JsonProperty("player_name")]
-        public string Name { get; }
-        
-        [JsonProperty("health")]
-        public readonly CharacterMVC.IHealth Health;
-        
-        [JsonProperty("gold")]
-        public readonly int Gold;
-        
-        [JsonProperty("deck")]
-        public readonly List<CardDefinition> Deck;
+        public string Name;
 
-        // TODO: add items
-        //public readonly List<Item> Items;
-        
+        [JsonProperty("gold")]
+        public int Gold;
+
+        [JsonProperty("deck")]
+        public List<CardDefinition> Deck;
+
         [JsonProperty("current_map")]
-        public readonly MapDefinition CurrentMap;
+        public MapDefinition CurrentMap;
+
+        [JsonProperty("current_node")]
+        public NodeDefinition CurrentMapNode;
+
+        [JsonProperty("current_level")]
+        public LevelDefinition CurrentLevel;
     }
 }

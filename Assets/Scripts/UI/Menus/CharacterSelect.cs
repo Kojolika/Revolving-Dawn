@@ -9,6 +9,7 @@ using UI.Common;
 using Systems.Map;
 using Systems.Managers;
 using Settings;
+using Models.Player;
 
 namespace UI.Menus
 {
@@ -16,9 +17,9 @@ namespace UI.Menus
     {
         public class Data
         {
-            public List<ClassDefinition> Classes;
+            public List<PlayerClassDefinition> Classes;
 
-            public Data(List<ClassDefinition> classes)
+            public Data(List<PlayerClassDefinition> classes)
             {
                 Classes = classes;
             }
@@ -32,14 +33,16 @@ namespace UI.Menus
         [SerializeField] MyButton playButton;
 
         List<ClassDisplayElement> classDisplayElements = new();
-        ClassDefinition selectedclass;
+        PlayerClassDefinition selectedclass;
         MenuManager menuManager;
+        PlayerDataManager playerDataManager;
         MapSettings mapSettings;
 
         [Zenject.Inject]
-        void Construct(MenuManager menuManager, MapSettings mapSettings)
+        void Construct(MenuManager menuManager, PlayerDataManager playerDataManager, MapSettings mapSettings)
         {
             this.menuManager = menuManager;
+            this.playerDataManager = playerDataManager;
             this.mapSettings = mapSettings;
         }
 
@@ -66,13 +69,14 @@ namespace UI.Menus
             playButton.Pressed += SaveSelectionAndGenerateRun;
         }
 
-        void SaveSelectionAndGenerateRun()
+        async void SaveSelectionAndGenerateRun()
         {
             MyLogger.Log("Generating map...");
+            await playerDataManager.StartNewRun();
             _ = menuManager.Open<MapView, MapView.Data>(
                 new MapView.Data()
                 {
-                    MapDefinition = new MapFactory().Create(mapSettings)
+                    MapDefinition = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentMap
                 }
             );
         }

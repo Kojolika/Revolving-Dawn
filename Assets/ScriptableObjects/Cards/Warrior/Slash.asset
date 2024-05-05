@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a3d1e2a98ac8ca4da9ba55be9c0aa7d, type: 3}
+  m_Name: Slash
+  m_EditorClassIdentifier: 
+  name: 
+  manas: []
+  artwork: {fileID: 0}
+  class: {fileID: 11400000, guid: cb928e790e6382a4cbc364a9596de11f, type: 2}
+  nextCard: {fileID: 0}
+  previousCard: {fileID: 0}
+  playEffects:
+  - cardEffect:
+      rid: 4729516912778674187
+  references:
+    version: 2
+    RefIds:
+    - rid: 4729516912778674187
+      type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+      data:
+        targeting: 1
+        amount: 5

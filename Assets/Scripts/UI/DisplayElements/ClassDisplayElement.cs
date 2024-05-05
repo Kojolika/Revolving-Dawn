@@ -1,11 +1,11 @@
-using Data.Definitions.Player;
+using Models.Player;
 using Systems.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.Common.DisplayElements
 {
-    public class ClassDisplayElement : DisplayElement<ClassDefinition>
+    public class ClassDisplayElement : DisplayElement<PlayerClassDefinition>
     {
         [SerializeField] Image classImage;
         [SerializeField] Label className;
@@ -23,12 +23,12 @@ namespace UI.Common.DisplayElements
             this.addressablesManager = addressablesManager;
         }
 
-        public override async void Populate(ClassDefinition data)
+        public override async void Populate(PlayerClassDefinition data)
         {
             className.SetText(data.Name);
             description.SetText(data.Description);
 
-            var classSprite = data.characterSprite;
+            var classSprite = data.CharacterAvatar;
 
             classImage.sprite = classSprite != null
                 ? classSprite

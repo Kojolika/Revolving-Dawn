@@ -10,41 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a3d1e2a98ac8ca4da9ba55be9c0aa7d, type: 3}
-  m_Name: New Card
+  m_Name: Rock
   m_EditorClassIdentifier: 
-  name: 
+  name: Rock
   manas: []
   artwork: {fileID: 0}
+  class: {fileID: 11400000, guid: 8156b1235ce98284e94af0ead9297338, type: 2}
   nextCard: {fileID: 0}
   previousCard: {fileID: 0}
   playEffects:
   - cardEffect:
-      rid: 4729516912778674180
-  - cardEffect:
-      rid: 4729516912778674186
-  - cardEffect:
-      rid: 4729516912778674187
+      rid: 3824536954595180550
   references:
     version: 2
     RefIds:
-    - rid: 4729516912778674180
+    - rid: 3824536954595180550
       type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 0
         buff:
-          rid: 4729516912778674185
-    - rid: 4729516912778674185
+          rid: 3824536954595180551
+    - rid: 3824536954595180551
       type: {class: Block, ns: Models.Buffs, asm: Assembly-CSharp}
       data:
         definition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
-        stackSize: 10
-    - rid: 4729516912778674186
-      type: {class: HealEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
-      data:
-        targeting: 0
-        healAmount: 3
-    - rid: 4729516912778674187
-      type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
-      data:
-        targeting: 0
-        amount: 1
+        stackSize: 1

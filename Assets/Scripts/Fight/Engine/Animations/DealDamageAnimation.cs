@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Fight.Animations
 {
-    [CreateAssetMenu(menuName = "Fight/Animations/" + nameof(DealDamageAnimation), fileName = "New " + nameof(DealDamageAnimation))]
+    [CreateAssetMenu(menuName = "RevolvingDawn/Fight/Animations/" + nameof(DealDamageAnimation), fileName = "New " + nameof(DealDamageAnimation))]
     public class DealDamageAnimation : BattleAnimation<DealDamageEvent>
     {
         [SerializeField] Animation anim1;

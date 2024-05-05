@@ -3,7 +3,7 @@ using Utils;
 
 namespace Settings
 {
-    [CreateAssetMenu(fileName = "New Map Settings", menuName = "RevolvingDawn/Settings/Map")]
+    [CreateAssetMenu(fileName = "New " + nameof(MapSettings), menuName = "RevolvingDawn/Settings/Map")]
     public class MapSettings : ScriptableObject
     {
         [Tooltip("The number of nodes to generate for the map. Each node will be an enemy,event,shop,etc. that the player can travel to")]
