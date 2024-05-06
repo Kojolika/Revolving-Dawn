@@ -1,5 +1,6 @@
 using Models.Player;
 using Systems.Managers;
+using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,6 @@ namespace UI.Common.DisplayElements
         [SerializeField] MyButton selectbutton;
 
         public MyButton SelectButton => selectbutton;
-        public static readonly string PlaceholderCharacterKey = "placeholder-character";
 
         private AddressablesManager addressablesManager;
 
@@ -28,10 +28,11 @@ namespace UI.Common.DisplayElements
             className.SetText(data.Name);
             description.SetText(data.Description);
 
+            MyLogger.Log($"Char av key: {data.CharacterAvatar}");
             classImage.sprite = await addressablesManager.LoadGenericAsset<Sprite>(
-                    data.CharacterAvatar ?? PlaceholderCharacterKey,
-                    () => gameObject == null
-                );
-        }
+                data.CharacterAvatar,
+                () => gameObject == null
+            );
+        } 
     }
 }

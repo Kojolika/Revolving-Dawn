@@ -30,10 +30,10 @@ namespace Models.Player
         [JsonProperty("card_border")]
         private string cardBorder;
 
-        public string Name => name;
-        public List<Card> StartingDeck => startingDeck;
-        public string Description => description;
-        public string CharacterAvatar => characterAvatar;
-        public string CardBorder => cardBorder;
+        [JsonIgnore] public string Name => name;
+        [JsonIgnore] public List<Card> StartingDeck => startingDeck;
+        [JsonIgnore] public string Description => description;
+        [JsonIgnore] public string CharacterAvatar => characterAvatar;
+        [JsonIgnore] public string CardBorder => cardBorder;
     }
 }

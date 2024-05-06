@@ -17,5 +17,5 @@ MonoBehaviour:
   - {fileID: 0}
   description: Here is a great and beautifully written description about the Warrior
     class and how it has so many exciting themes
-  characterAvatar: affect_fracture
+  characterAvatar: class_warrior
   cardBorder: 

@@ -15,5 +15,5 @@ MonoBehaviour:
   name: Classless
   startingDeck: []
   description: Classless
-  characterAvatar: {fileID: 21300000, guid: 6d8d3d623dbde1b43aa737841443db60, type: 3}
-  cardBorder: {fileID: 21300000, guid: 6af42a237ab01c94dbf849795a6c9fb1, type: 3}
+  characterAvatar: placeholder-character
+  cardBorder: 
