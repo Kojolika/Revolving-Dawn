@@ -28,12 +28,8 @@ namespace UI.Common.DisplayElements
             className.SetText(data.Name);
             description.SetText(data.Description);
 
-            var classSprite = data.CharacterAvatar;
-
-            classImage.sprite = classSprite != null
-                ? classSprite
-                : await addressablesManager.LoadGenericAsset<Sprite>(
-                    PlaceholderCharacterKey,
+            classImage.sprite = await addressablesManager.LoadGenericAsset<Sprite>(
+                    data.CharacterAvatar ?? PlaceholderCharacterKey,
                     () => gameObject == null
                 );
         }

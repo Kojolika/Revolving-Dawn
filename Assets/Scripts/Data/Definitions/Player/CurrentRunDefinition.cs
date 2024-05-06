@@ -2,6 +2,7 @@
 using Models.Map;
 using Newtonsoft.Json;
 using Data.Definitions;
+using Models.Player;
 
 namespace Characters.Player2.Run
 {
@@ -13,6 +14,9 @@ namespace Characters.Player2.Run
 
         [JsonProperty("gold")]
         public int Gold;
+
+        [JsonProperty("player_class")]
+        public PlayerClassDefinition PlayerClass;
 
         [JsonProperty("deck")]
         public List<CardDefinition> Deck;

@@ -2,7 +2,6 @@
 using Models.Characters;
 using Newtonsoft.Json;
 using UnityEngine;
-using Utils;
 
 namespace Models.Map
 {

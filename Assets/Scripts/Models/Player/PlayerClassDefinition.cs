@@ -1,21 +1,39 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
+using Utils.Attributes;
 
 namespace Models.Player
 {
-    [CreateAssetMenu(fileName = "New " + nameof(PlayerClassDefinition), menuName = "RevolvingDawn/Player/Classes")]
+    [System.Serializable, CreateAssetMenu(fileName = "New " + nameof(PlayerClassDefinition), menuName = "RevolvingDawn/Player/Classes")]
     public class PlayerClassDefinition : ScriptableObject
     {
-        [SerializeField] private new string name;
-        [SerializeField] private List<Card> startingDeck;
-        [SerializeField] private string description;
-        [SerializeField] private Sprite characterAvatar;
-        [SerializeField] private Sprite cardBorder;
-        
+        [SerializeField]
+        [JsonProperty("name")]
+        private new string name;
+
+        [SerializeField]
+        [JsonProperty("startingDeck")]
+        private List<Card> startingDeck;
+
+        [SerializeField]
+        [JsonProperty("description")]
+        private string description;
+
+        [SerializeField]
+        [AddressableAsset(typeof(Sprite))]
+        [JsonProperty("character_avatar")]
+        private string characterAvatar;
+
+        [SerializeField]
+        [AddressableAsset(typeof(Sprite))]
+        [JsonProperty("card_border")]
+        private string cardBorder;
+
         public string Name => name;
         public List<Card> StartingDeck => startingDeck;
         public string Description => description;
-        public Sprite CharacterAvatar => characterAvatar;
-        public Sprite CardBorder => cardBorder;
+        public string CharacterAvatar => characterAvatar;
+        public string CardBorder => cardBorder;
     }
 }

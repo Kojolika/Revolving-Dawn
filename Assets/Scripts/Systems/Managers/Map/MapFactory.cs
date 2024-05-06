@@ -2,12 +2,10 @@ using Models.Map;
 using UnityEngine;
 using Tooling.Logging;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using Settings;
 using System;
 using Utils.Extensions;
-using UnityEditor.Experimental.GraphView;
 
 namespace Systems.Map
 {
@@ -78,7 +76,8 @@ namespace Systems.Map
                 {
                     var closestNode = nodes
                         .Where(n => !visitedEdges.Contains((node, n)))
-                        .Where(n => n.Y > node.Y)
+                        // only choose nodes higher up be a certain percentage
+                        .Where(n => n.Y > node.Y && n.Y -  node.Y > regionDimensions.y * 0.25f)
                         // order by nearest nodes
                         .OrderBy(n => Mathf.Sqrt(Mathf.Pow(n.X - node.X, 2) + Mathf.Pow(n.Y - node.Y, 2)))
                         .FirstOrDefault();

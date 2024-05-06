@@ -1,6 +1,7 @@
 ﻿using Characters.Model;
 using Cysharp.Threading.Tasks;
 using Models.Map;
+using Models.Player;
 using Settings;
 using Systems.Managers.Base;
 using Systems.Map;
@@ -43,7 +44,7 @@ namespace Systems.Managers
             await saveManager.Save(CurrentPlayerDefinition);
         }
 
-        public async UniTask StartNewRun()
+        public async UniTask StartNewRun(PlayerClassDefinition playerClass)
         {
             var newMap = new MapFactory().Create(mapSettings);
             CurrentPlayerDefinition.CurrentRun = new Characters.Player2.Run.RunDefinition()
@@ -51,7 +52,8 @@ namespace Systems.Managers
                 Name = "Test",
                 Gold = 0,
                 CurrentMap = newMap,
-                CurrentMapNode = newMap.Nodes[0]
+                CurrentMapNode = newMap.Nodes[0],
+                PlayerClass = playerClass
             };
 
             await saveManager.Save(CurrentPlayerDefinition);
