@@ -17,7 +17,11 @@ MonoBehaviour:
   - {fileID: 0}
   description: Here is a great and beautifully written description about the Warrior
     class and how it has so many exciting themes
-  characterAvatarKey: class_warrior
+  characterAvatarKey:
+    m_AssetGUID: d1ee13283cbbd2e409b03a6d2b373c01
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   cardBorderKey:
     m_AssetGUID: 199ea291b8dc10749814c60df5e5232a
     m_SubObjectName: 

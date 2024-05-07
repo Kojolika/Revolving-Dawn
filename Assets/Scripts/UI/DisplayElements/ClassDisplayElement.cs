@@ -6,6 +6,7 @@ using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
 namespace UI.Common.DisplayElements
@@ -19,28 +20,25 @@ namespace UI.Common.DisplayElements
 
         public MyButton SelectButton => selectbutton;
 
-        private AddressablesManager addressablesManager;
+        private AssetReference classImageReference;
 
-        [Zenject.Inject]
-        void Construct(AddressablesManager addressablesManager)
-        {
-            this.addressablesManager = addressablesManager;
-        }
-
-        public override async void Populate(PlayerClassDefinition data)
+        public override void Populate(PlayerClassDefinition data)
         {
             className.SetText(data.Name);
             description.SetText(data.Description);
 
-            MyLogger.Log($"key: {data.CharacterAvatarKey}");
+            classImageReference = data.CharacterAvatarKey;
 
-            await UniTask.WaitUntil(() => addressablesManager != null);
+            var asyncOperationHandle = classImageReference.LoadAssetAsync<Sprite>();
+            asyncOperationHandle.Completed += (assetHandle) =>
+            {
+                classImage.sprite = assetHandle.Result;
+            };
+        }
 
-            _ = addressablesManager.LoadGenericAsset<Sprite>(
-                data.CharacterAvatarKey,
-                () => gameObject == null,
-                (asset) => classImage.sprite = Instantiate(asset)
-            );
+        private void OnDestroy()
+        {
+            classImageReference?.ReleaseAsset();
         }
     }
 }
