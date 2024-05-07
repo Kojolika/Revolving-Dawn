@@ -1,7 +1,11 @@
+using Cysharp.Threading.Tasks;
 using Models.Player;
 using Systems.Managers;
 using Tooling.Logging;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace UI.Common.DisplayElements
@@ -28,11 +32,15 @@ namespace UI.Common.DisplayElements
             className.SetText(data.Name);
             description.SetText(data.Description);
 
-            MyLogger.Log($"Char av key: {data.CharacterAvatar}");
-            classImage.sprite = await addressablesManager.LoadGenericAsset<Sprite>(
-                data.CharacterAvatar,
-                () => gameObject == null
+            MyLogger.Log($"key: {data.CharacterAvatarKey}");
+
+            await UniTask.WaitUntil(() => addressablesManager != null);
+
+            _ = addressablesManager.LoadGenericAsset<Sprite>(
+                data.CharacterAvatarKey,
+                () => gameObject == null,
+                (asset) => classImage.sprite = Instantiate(asset)
             );
-        } 
+        }
     }
 }

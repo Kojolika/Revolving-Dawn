@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Utils.Attributes;
 
 namespace Models.Player
@@ -23,17 +24,16 @@ namespace Models.Player
         [SerializeField]
         [AddressableAsset(typeof(Sprite))]
         [JsonProperty("character_avatar")]
-        private string characterAvatar;
+        private string characterAvatarKey;
 
         [SerializeField]
-        [AddressableAsset(typeof(Sprite))]
         [JsonProperty("card_border")]
-        private string cardBorder;
+        private AssetReferenceSprite cardBorderKey;
 
         [JsonIgnore] public string Name => name;
         [JsonIgnore] public List<Card> StartingDeck => startingDeck;
         [JsonIgnore] public string Description => description;
-        [JsonIgnore] public string CharacterAvatar => characterAvatar;
-        [JsonIgnore] public string CardBorder => cardBorder;
+        [JsonIgnore] public string CharacterAvatarKey => characterAvatarKey;
+        [JsonIgnore] public AssetReferenceSprite CardBorderKey => cardBorderKey;
     }
 }

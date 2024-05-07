@@ -1,3 +1,4 @@
+using Tooling.Logging;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -15,6 +16,8 @@ public class AddressableAssetDrawer : PropertyDrawer
         var attr = attribute as AddressableAssetAttribute;
 
         var root = new VisualElement();
+
+        MyLogger.Log($" IS array? {property.isArray}");
 
         var objectField = new ObjectField
         {
@@ -57,12 +60,12 @@ public class AddressableAssetDrawer : PropertyDrawer
                 && AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(guid) is AddressableAssetEntry addressableAssetEntry
                 && addressableAssetEntry != null)
             {
-                var addressableKey = addressableAssetEntry.address;
                 propertyField.visible = true;
 
                 property.serializedObject.Update();
-                property.stringValue = addressableKey;
+                property.stringValue = addressableAssetEntry.address;
                 property.serializedObject.ApplyModifiedProperties();
+                MyLogger.Log($"array size: {property.arraySize}");
 
                 addressableAssetAddressMissingLabel.visible = false;
             }

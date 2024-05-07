@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Classless
   startingDeck: []
   description: Classless
-  characterAvatar: placeholder-character
-  cardBorder: 
+  characterAvatarKey: test234
+  cardBorderKey:
+    m_AssetGUID: 6af42a237ab01c94dbf849795a6c9fb1
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
