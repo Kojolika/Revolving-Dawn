@@ -40,16 +40,14 @@ namespace Systems.Map
                 {
                     newNode = new NodeDefinition()
                     {
-                        X = xDimension / 2,
-                        Y = edgePadding,
+                        Coord = new NodeDefinition.Coordinate(xDimension / 2, edgePadding)
                     };
                 }
                 else if (i == numNodes - 1)
                 {
                     newNode = new NodeDefinition()
                     {
-                        X = xDimension / 2,
-                        Y = yDimension - edgePadding,
+                        Coord = new NodeDefinition.Coordinate(xDimension / 2, yDimension - edgePadding),
                         IsBoss = true
                     };
                 }
@@ -60,8 +58,10 @@ namespace Systems.Map
 
                     newNode = new NodeDefinition()
                     {
-                        X = Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.x - (regionPadding / 2) - 1), 1) + xOffset + edgePadding,
-                        Y = Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.y - (regionPadding / 2) - 1), 1) + yOffset + (edgePadding * 2),
+                        Coord = new NodeDefinition.Coordinate(
+                            Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.x - (regionPadding / 2) - 1), 1) + xOffset + edgePadding,
+                            Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.y - (regionPadding / 2) - 1), 1) + yOffset + (edgePadding * 2)
+                        )
                     };
                 }
 
@@ -77,9 +77,9 @@ namespace Systems.Map
                     var closestNode = nodes
                         .Where(n => !visitedEdges.Contains((node, n)))
                         // only choose nodes higher up be a certain percentage
-                        .Where(n => n.Y > node.Y && n.Y -  node.Y > regionDimensions.y * 0.25f)
+                        .Where(n => n.Coord.y > node.Coord.y && n.Coord.y - node.Coord.y > regionDimensions.y * 0.25f)
                         // order by nearest nodes
-                        .OrderBy(n => Mathf.Sqrt(Mathf.Pow(n.X - node.X, 2) + Mathf.Pow(n.Y - node.Y, 2)))
+                        .OrderBy(n => Mathf.Sqrt(Mathf.Pow(n.Coord.x - node.Coord.x, 2) + Mathf.Pow(n.Coord.y - node.Coord.y, 2)))
                         .FirstOrDefault();
 
                     if (closestNode == null)
@@ -87,7 +87,7 @@ namespace Systems.Map
                         break;
                     }
 
-                    var closestNodeCoordinates = new NodeDefinition.Coordinate(closestNode.X, closestNode.Y);
+                    var closestNodeCoordinates = closestNode.Coord;
                     if (node.NextNodes.IsNullOrEmpty())
                     {
                         node.NextNodes = new List<NodeDefinition.Coordinate>() { closestNodeCoordinates };
@@ -103,6 +103,20 @@ namespace Systems.Map
 
             // filter nodes that dont have any connections
             nodes = nodes.Where(node => !node.NextNodes.IsNullOrEmpty() || node.IsBoss).ToList();
+
+            // Remove nextNodes that were filtered out from above
+            var coords = nodes.Select(node => node.Coord);
+            foreach (var node in nodes)
+            {
+                if (node.NextNodes.IsNullOrEmpty())
+                {
+                    continue;
+                }
+
+                node.NextNodes = node.NextNodes
+                    .Where(coord => coords.Contains(coord))
+                    .ToList();
+            }
 
             return new MapDefinition()
             {

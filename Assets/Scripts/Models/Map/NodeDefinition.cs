@@ -7,11 +7,8 @@ namespace Models.Map
     [Serializable]
     public class NodeDefinition
     {
-        [JsonProperty("x")]
-        public int Y;
-
-        [JsonProperty("y")]
-        public int X;
+        [JsonProperty("coordinate")]
+        public Coordinate Coord;
 
         [JsonProperty("isBoss")]
         public bool IsBoss = false;

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bb560009b78c8f4ebd93a091ed7c998, type: 3}
   m_Name: Default Map Settings
   m_EditorClassIdentifier: 
-  numberOfNodes: 50
-  numberOfPaths: 5
+  numberOfNodes: 80
+  numberOfPaths: 3
   xDimension: 500
-  yDimension: 1000
+  yDimension: 2000
   edgePadding: 50
-  regionPadding: 20
+  regionPadding: 0

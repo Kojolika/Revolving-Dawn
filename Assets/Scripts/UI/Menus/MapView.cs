@@ -40,15 +40,15 @@ namespace UI.Menus
             for (int i = 0; i < data.MapDefinition.Nodes.Count(); i++)
             {
                 var node = data.MapDefinition.Nodes[i];
-                float xNodeDataNormalized = Utils.Computations.Normalize(node.X, 0, data.MapDefinition.XDimension, 0, 1);
-                float yNodeDataNormalized = Utils.Computations.Normalize(node.Y, 0, data.MapDefinition.YDimension, 0, 1);
+                float xNodeDataNormalized = Utils.Computations.Normalize(node.Coord.x, 0, data.MapDefinition.XDimension, 0, 1);
+                float yNodeDataNormalized = Utils.Computations.Normalize(node.Coord.y, 0, data.MapDefinition.YDimension, 0, 1);
 
                 int xPos = Mathf.FloorToInt(mapSize.x * xNodeDataNormalized);
                 int yPos = Mathf.FloorToInt(mapSize.y * yNodeDataNormalized);
 
                 var newNode = Instantiate(nodeDisplayElementRoot, nodeContainer);
                 newNode.Populate(node);
-                var coordinates = new NodeDefinition.Coordinate(node.X, node.Y);
+                var coordinates = new NodeDefinition.Coordinate(node.Coord.x, node.Coord.y);
                 nodeElementsLookup.Add(coordinates, newNode);
                 nodeDefinitionsLookup.Add(coordinates, node);
 
