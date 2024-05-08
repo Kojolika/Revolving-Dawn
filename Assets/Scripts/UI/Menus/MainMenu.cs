@@ -1,9 +1,11 @@
-﻿using Data;
+﻿using System.Collections.Generic;
+using Data;
 using Models.Player;
 using Systems.Managers;
 using UI.Common;
 using UI.Menus.Common;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Utils.Attributes;
 
 namespace UI.Menus
@@ -19,13 +21,15 @@ namespace UI.Menus
         private PlayerDataManager playerDataManager;
         private MenuManager menuManager;
         private StaticDataManager staticDataManager;
+        List<AssetReferenceT<PlayerClassDefinition>> playerClassReferences;
 
         [Zenject.Inject]
-        void Construct(PlayerDataManager playerDataManager, MenuManager menuManager, StaticDataManager staticDataManager)
+        void Construct(PlayerDataManager playerDataManager, MenuManager menuManager, StaticDataManager staticDataManager, List<AssetReferenceT<PlayerClassDefinition>> playerClassReferences)
         {
             this.playerDataManager = playerDataManager;
             this.menuManager = menuManager;
             this.staticDataManager = staticDataManager;
+            this.playerClassReferences = playerClassReferences;
         }
 
         private void Awake()
