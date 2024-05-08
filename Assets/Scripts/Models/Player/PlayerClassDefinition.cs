@@ -23,16 +23,16 @@ namespace Models.Player
 
         [SerializeField]
         [JsonProperty("character_avatar")]
-        private AssetReference characterAvatarKey;
+        private AssetReferenceSprite characterAvatarReference;
 
         [SerializeField]
         [JsonProperty("card_border")]
-        private AssetReference cardBorderKey;
+        private AssetReferenceSprite cardBorderReference;
 
         [JsonIgnore] public string Name => name;
         [JsonIgnore] public List<Card> StartingDeck => startingDeck;
         [JsonIgnore] public string Description => description;
-        [JsonIgnore] public AssetReference CharacterAvatarKey => characterAvatarKey;
-        [JsonIgnore] public AssetReference CardBorderKey => cardBorderKey;
+        [JsonIgnore] public AssetReferenceSprite CharacterAvatarReference => characterAvatarReference;
+        [JsonIgnore] public AssetReferenceSprite CardBorderReference => cardBorderReference;
     }
 }

@@ -27,7 +27,7 @@ namespace UI.Common.DisplayElements
             className.SetText(data.Name);
             description.SetText(data.Description);
 
-            classImageReference = data.CharacterAvatarKey;
+            classImageReference = data.CharacterAvatarReference;
 
             var asyncOperationHandle = classImageReference.LoadAssetAsync<Sprite>();
             asyncOperationHandle.Completed += (assetHandle) =>

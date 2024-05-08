@@ -4,19 +4,20 @@ using UnityEngine.AddressableAssets;
 
 namespace Serialization
 {
-    public class AssetReferenceConverter : JsonConverter<AssetReference>
+    public class AssetReferenceConverter : JsonConverter
     {
-        public override AssetReference ReadJson(JsonReader reader, Type objectType, AssetReference existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override bool CanConvert(Type objectType)
+            => typeof(AssetReference).IsAssignableFrom(objectType);
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var assetGuid = (string)reader.Value;
-            AssetReference assetReference = new AssetReference(assetGuid);
-
-            return assetReference;
+            return Activator.CreateInstance(objectType, assetGuid);
         }
 
-        public override void WriteJson(JsonWriter writer, AssetReference value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteValue(value.AssetGUID);
+            writer.WriteValue((value as AssetReference).AssetGUID);
         }
     }
 }
