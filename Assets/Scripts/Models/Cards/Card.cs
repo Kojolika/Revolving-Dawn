@@ -2,8 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Models.Player;
 using Models.CardEffects;
-using Utils.Attributes;
-using Models.Buffs;
+using Models.Mana;
 
 namespace Models
 {
@@ -13,7 +12,7 @@ namespace Models
         #region Public Accessors
 
         public string Name => name;
-        public List<Models.Mana> Manas => manas;
+        public List<ManaDefinition> Manas => manas;
         public Sprite Artwork => artwork;
         public PlayerClassDefinition Class => @class;
         public Card NextCard => nextCard;
@@ -23,7 +22,7 @@ namespace Models
         #endregion
 
         [SerializeField] private new string name;
-        [SerializeField] private List<Models.Mana> manas;
+        [SerializeField] private List<ManaDefinition> manas;
         [SerializeField] private Sprite artwork;
         [SerializeField] private PlayerClassDefinition @class;
         [SerializeField] private Card nextCard;
