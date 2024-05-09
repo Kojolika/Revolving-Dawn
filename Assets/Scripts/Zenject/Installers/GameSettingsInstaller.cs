@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using Data;
 using Models.Player;
 using Settings;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Zenject;
 
 [CreateAssetMenu(fileName = "GameSettingsInstaller", menuName = "Installers/GameSettingsInstaller")]
@@ -14,7 +12,7 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
     #endregion
 
     #region Asset Data
-    [SerializeField] private List<AssetReferenceT<PlayerClassDefinition>> playerClassDefinitions;
+    [SerializeField] private StaticDataReference<PlayerClassDefinition> playerClassDefinitions;
 
     #endregion
 

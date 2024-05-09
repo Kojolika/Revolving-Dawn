@@ -15,6 +15,6 @@ MonoBehaviour:
   numberOfNodes: 80
   numberOfPaths: 3
   xDimension: 500
-  yDimension: 2000
+  yDimension: 1000
   edgePadding: 50
-  regionPadding: 0
+  regionPadding: 15

@@ -18,11 +18,6 @@ namespace UI.Menus
         public class Data
         {
             public List<PlayerClassDefinition> Classes;
-
-            public Data(List<PlayerClassDefinition> classes)
-            {
-                Classes = classes;
-            }
         }
 
         [ResourcePath]
