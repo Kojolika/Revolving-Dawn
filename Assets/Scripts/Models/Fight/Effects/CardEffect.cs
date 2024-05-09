@@ -11,26 +11,26 @@ using Utils.Attributes;
 namespace Models.CardEffects
 {
     /// <summary>
-    /// This has been designed in a specfic way which allows us add any type of <see cref="ICardEffect"/> to
+    /// This has been designed in a specfic way which allows us add any type of <see cref="ICombatEffect"/> to
     /// a <see cref="Models.Card.Card"/> in the inspector.
     /// This way we can assemble cards like building blocks by adding any effect we want to them. 
     /// </summary>
 
     /// <summary>
-    /// This class is a wrapper around <see cref="ICardEffect"/> so we can create lists of them
+    /// This class is a wrapper around <see cref="ICombatEffect"/> so we can create lists of them
     /// in the inspector. (see <see cref="DisplayInterfaceAttribute"/> for more details)
     /// </summary>
     [Serializable]
-    public class CardEffectWrapper
+    public class CombatEffectWrapper
     {
-        [SerializeReference, DisplayInterface(typeof(ICardEffect))] private ICardEffect cardEffect;
-        public ICardEffect CardEffect => cardEffect;
+        [SerializeReference, DisplayInterface(typeof(ICombatEffect))] private ICombatEffect combatEffect;
+        public ICombatEffect CombatEffect => combatEffect;
     }
 
     /// <summary>
     /// Using an interface allows us to create a list of classes in the inspector.
     /// </summary>
-    public interface ICardEffect
+    public interface ICombatEffect
     {
         List<IBattleEvent> Execute(List<IBuffable> targets);
         List<IBattleEvent> Execute(List<IHealth> targets);
@@ -40,7 +40,7 @@ namespace Models.CardEffects
     /// Stats and effects of each card event are defined here.
     /// </summary>
     [Serializable]
-    public abstract class CardEffect : ICardEffect
+    public abstract class CombatEffect : ICombatEffect
     {
         [SerializeField] private Targeting targeting;
         public Targeting Targeting => targeting;

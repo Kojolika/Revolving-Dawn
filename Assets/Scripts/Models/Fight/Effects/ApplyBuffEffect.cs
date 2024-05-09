@@ -9,7 +9,7 @@ using Utils.Attributes;
 namespace Models.CardEffects
 {
     [Serializable]
-    public class ApplyBuffEffect : CardEffect
+    public class ApplyBuffEffect : CombatEffect
     {
         [SerializeReference, DisplayInterface(typeof(IBuff))] IBuff buff;
         public override List<IBattleEvent> Execute(List<IHealth> targets)

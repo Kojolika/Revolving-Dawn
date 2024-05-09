@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Models.CardEffects
 {
     [Serializable]
-    public class DealDamageEffect : CardEffect
+    public class DealDamageEffect : CombatEffect
     {
         [SerializeField] ulong amount;
 

@@ -17,7 +17,7 @@ namespace Models
         public PlayerClassDefinition Class => @class;
         public Card NextCard => nextCard;
         public Card PreviousCard => previousCard;
-        public List<CardEffectWrapper> PlayEffects => playEffects;
+        public List<CombatEffectWrapper> PlayEffects => playEffects;
 
         #endregion
 
@@ -27,6 +27,6 @@ namespace Models
         [SerializeField] private PlayerClassDefinition @class;
         [SerializeField] private Card nextCard;
         [SerializeField] private Card previousCard;
-        [SerializeField] private List<CardEffectWrapper> playEffects;
+        [SerializeField] private List<CombatEffectWrapper> playEffects;
     }
 }

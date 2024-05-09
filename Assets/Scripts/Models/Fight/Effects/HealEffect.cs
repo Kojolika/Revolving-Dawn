@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Models.CardEffects
 {
     [Serializable]
-    public class HealEffect : CardEffect
+    public class HealEffect : CombatEffect
     {
         [SerializeField] private ulong healAmount;
 

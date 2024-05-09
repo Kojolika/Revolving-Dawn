@@ -20,13 +20,13 @@ MonoBehaviour:
   nextCard: {fileID: 0}
   previousCard: {fileID: 0}
   playEffects:
-  - cardEffect:
-      rid: 3824537062225215499
+  - combatEffect:
+      rid: 2151913798751748109
   references:
     version: 2
     RefIds:
-    - rid: 3824537062225215499
+    - rid: 2151913798751748109
       type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
-        targeting: 1
-        amount: 6
+        targeting: 0
+        amount: 5
