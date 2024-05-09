@@ -99,7 +99,7 @@ namespace Data.Utils.Editor
 
             // Start iterating upon the first managedReference
             serializedProperty.Next(true);
-
+            var visitedProperties = new HashSet<uint>();
             do
             {
                 // Only display the property once
@@ -113,20 +113,30 @@ namespace Data.Utils.Editor
                 // we don't care to include that in the inspector
                 if (serializedProperty.propertyPath.Contains($"{propName}.")
                     && !serializedProperty.propertyPath.Contains("m_FileID")
-                    && !serializedProperty.propertyPath.Contains($"m_PathID"))
+                    && !serializedProperty.propertyPath.Contains($"m_PathID")
+                    && !visitedProperties.Contains(serializedProperty.contentHash))
                 {
                     var propertyField = new PropertyField(serializedProperty);
                     propertyField.BindProperty(serializedProperty);
                     displayContainer.Add(propertyField);
+                    visitedProperties.Add(serializedProperty.contentHash);
                 }
             }
-            while (serializedProperty.Next(serializedProperty.propertyType != SerializedPropertyType.ManagedReference || !DoesPropertyHaveAttribute(serializedProperty)));
+            while (serializedProperty.Next(
+                // Don't enter children of other DisplayInterface properties see DoesPropertyHaveAttribute() commment
+                (serializedProperty.propertyType != SerializedPropertyType.ManagedReference || !DoesPropertyHaveAttribute(serializedProperty))
+                // Don't enter children of strings, it would display the array of ascii characters in the inspector
+                && serializedProperty.propertyType != SerializedPropertyType.String
+                )
+            );
 
             root.Add(displayContainer);
         }
 
         /// <summary>
         /// Checks to see a property has a <see cref="DisplayInterfaceAttribute"/>.
+        /// We perform this check as we do not want to render properties with <see cref="DisplayInterfaceAttribute"/>
+        /// because those properties will be rendered by their own draw call from this property drawer
         /// </summary>
         /// <param name="property">Property to check.</param>
         /// <returns>True if the property has a <see cref="DisplayInterfaceAttribute"/></returns>
