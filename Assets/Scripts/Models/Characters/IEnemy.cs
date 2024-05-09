@@ -1,6 +1,6 @@
 namespace Models.Characters
 {
-    public abstract class Enemy : Character
+    public interface IEnemy
     {
 
     }

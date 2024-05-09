@@ -21,12 +21,12 @@ MonoBehaviour:
   previousCard: {fileID: 0}
   playEffects:
   - cardEffect:
-      rid: 4729516912778674187
+      rid: 3824537062225215499
   references:
     version: 2
     RefIds:
-    - rid: 4729516912778674187
+    - rid: 3824537062225215499
       type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 1
-        amount: 5
+        amount: 6

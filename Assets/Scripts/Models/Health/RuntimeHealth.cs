@@ -1,24 +1,27 @@
 using System;
 using System.Collections.Generic;
 using Models.Buffs;
+using UnityEngine;
 
-namespace Models
+namespace Models.Health
 {
-  public class Health : IHealth
+  [Serializable]
+  public class RuntimeHealth : RuntimeModel<HealthDefinition>, IHealth
   {
-    public ulong MaxHealth { get; private set; }
+    public ulong MaxHealth => healthDefinition.maxHealth;
     public ulong CurrentHealth { get; private set; }
+    public List<IBuff> Buffs { get; private set; }
 
-    public List<IBuff> Buffs => throw new NotImplementedException();
+    [SerializeField] private HealthDefinition healthDefinition;
+    public override HealthDefinition Definition => healthDefinition;
 
-    public Health(ulong currentHealth, ulong maxHealth)
+    public RuntimeHealth(ulong currentHealth, HealthDefinition healthDefinition)
     {
       CurrentHealth = currentHealth;
-      MaxHealth = maxHealth;
+      this.healthDefinition = healthDefinition;
     }
 
     public void SetHealth(ulong amount) => CurrentHealth = Math.Min(MaxHealth, amount);
-
 
     public void AddHealth(ulong amount)
     {

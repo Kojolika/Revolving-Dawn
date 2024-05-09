@@ -6,15 +6,11 @@ namespace Models.Mana
     [CreateAssetMenu(fileName = nameof(ManaDefinition), menuName = "RevolvingDawn/Mana/New " + nameof(ManaDefinition))]
     public class ManaDefinition : ScriptableObject
     {
-        [SerializeField]
-        [JsonProperty("name")]
-        private new string name;
+        public string Name => name;
+        public Color Color => color;
 
-        [SerializeField]
-        [JsonProperty("color")]
-        private Color color;
+        [SerializeField] private new string name;
 
-        [JsonIgnore] public string Name => name;
-        [JsonIgnore] public Color Color => color;
+        [SerializeField] private Color color;
     }
 }

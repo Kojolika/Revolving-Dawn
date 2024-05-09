@@ -1,7 +1,10 @@
+using Models.Health;
+using UnityEngine;
+
 namespace Models.Characters
 {
-    public class Slime : Enemy
+    [System.Serializable]
+    public class Slime : Character, IEnemy
     {
-        public override string Name => "Slime";
     }
 }
