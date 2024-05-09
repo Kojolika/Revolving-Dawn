@@ -76,8 +76,7 @@ namespace Systems.Map
                 {
                     var closestNode = nodes
                         .Where(n => !visitedEdges.Contains((node, n)))
-                        // only choose nodes higher up be a certain percentage
-                        .Where(n => n.Coord.y > node.Coord.y && n.Coord.y - node.Coord.y > regionDimensions.y * 0.25f)
+                        .Where(n => n.Coord.y > node.Coord.y)
                         // order by nearest nodes
                         .OrderBy(n => Mathf.Sqrt(Mathf.Pow(n.Coord.x - node.Coord.x, 2) + Mathf.Pow(n.Coord.y - node.Coord.y, 2)))
                         .FirstOrDefault();
