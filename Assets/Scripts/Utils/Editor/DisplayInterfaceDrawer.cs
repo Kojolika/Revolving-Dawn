@@ -10,6 +10,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Attributes;
+using Tooling.Logging;
 
 namespace Data.Utils.Editor
 {
@@ -86,10 +87,13 @@ namespace Data.Utils.Editor
             var serializedProperty = property.Copy();
             var propName = serializedProperty.name;
 
+            MyLogger.Log($"propertyType: {serializedProperty.propertyType}, name: {serializedProperty.name}, type: {serializedProperty.type}");
+
             if (serializedProperty.propertyType == SerializedPropertyType.ManagedReference
                 && serializedProperty.name == propName
                 && serializedProperty.type != $"managedReference<{type.Name}>")
             {
+                MyLogger.Log($"Creating new instance");
                 serializedProperty.serializedObject.Update();
                 serializedProperty.managedReferenceValue = Activator.CreateInstance(type);
                 serializedProperty.serializedObject.ApplyModifiedProperties();
@@ -99,6 +103,7 @@ namespace Data.Utils.Editor
 
             // Start iterating upon the first managedReference
             serializedProperty.Next(true);
+
             var visitedProperties = new HashSet<uint>();
             do
             {
@@ -122,12 +127,12 @@ namespace Data.Utils.Editor
                     visitedProperties.Add(serializedProperty.contentHash);
                 }
             }
-            while (serializedProperty.Next(
+            while (
+                serializedProperty.Next(
                 // Don't enter children of other DisplayInterface properties see DoesPropertyHaveAttribute() commment
                 (serializedProperty.propertyType != SerializedPropertyType.ManagedReference || !DoesPropertyHaveAttribute(serializedProperty))
                 // Don't enter children of strings, it would display the array of ascii characters in the inspector
-                && serializedProperty.propertyType != SerializedPropertyType.String
-                )
+                && serializedProperty.propertyType != SerializedPropertyType.String)
             );
 
             root.Add(displayContainer);

@@ -9,9 +9,9 @@ namespace Models.Characters
     public class EnemyDefinition : ScriptableObject
     {
         [SerializeField] private HealthDefinition healthDefinition;
-        [SerializeField] private List<CombatEffectWrapper> enemyMoves;
+        [SerializeField] private List<EnemyMove> enemyMoves;
 
-        public List<CombatEffectWrapper> EnemyMoves => enemyMoves;
+        public List<EnemyMove> EnemyMoves => enemyMoves;
         public HealthDefinition HealthDefinition => healthDefinition;
     }
 }
