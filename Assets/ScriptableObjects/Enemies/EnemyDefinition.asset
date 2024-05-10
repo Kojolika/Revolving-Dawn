@@ -19,26 +19,21 @@ MonoBehaviour:
     enemyMoves:
     - combatEffect:
         rid: 3824537085224157220
-  - moveIntentSprite: {fileID: 21300000, guid: 74fdc7ee74478604dab6857ff5cc204c, type: 3}
-    enemyMoves:
-    - combatEffect:
-        rid: 3824537085224157222
+  test:
+  - rid: 2151913820080832521
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2151913820080832521
+      type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+      data:
+        targeting: 0
+        buff:
+          rid: -2
     - rid: 3824537085224157220
       type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 1
         amount: 7
-    - rid: 3824537085224157222
-      type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
-      data:
-        targeting: 0
-        buff:
-          rid: 3824537085224157223
-    - rid: 3824537085224157223
-      type: {class: Block, ns: Models.Buffs, asm: Assembly-CSharp}
-      data:
-        definition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
-        stackSize: 10

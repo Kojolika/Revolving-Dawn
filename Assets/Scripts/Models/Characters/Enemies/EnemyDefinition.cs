@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Models.CardEffects;
 using Models.Health;
 using UnityEngine;
+using Utils.Attributes;
 
 namespace Models.Characters
 {
@@ -10,6 +11,9 @@ namespace Models.Characters
     {
         [SerializeField] private HealthDefinition healthDefinition;
         [SerializeField] private List<EnemyMove> enemyMoves;
+
+        [SerializeReference, DisplayInterface(typeof(ICombatEffect))] private List<ICombatEffect> test;
+        
 
         public List<EnemyMove> EnemyMoves => enemyMoves;
         public HealthDefinition HealthDefinition => healthDefinition;

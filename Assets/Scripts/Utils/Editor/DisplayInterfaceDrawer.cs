@@ -19,6 +19,27 @@ namespace Data.Utils.Editor
     {
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
+            var isIEnumberable = typeof(IEnumerable).IsAssignableFrom(fieldInfo.FieldType);
+            if (isIEnumberable)
+            {
+                var root = new VisualElement();
+                do
+                {
+                    MyLogger.Log($"Prop path: {property.propertyPath}, prop type {property.propertyType}");
+                    root.Add(DrawSingleElement(property));
+                }
+                while (property.Next(false));
+
+                return root;
+            }
+            else
+            {
+                return DrawSingleElement(property);
+            }
+        }
+
+        public VisualElement DrawSingleElement(SerializedProperty property)
+        {
             var root = new VisualElement();
             var interfaceType = (attribute as DisplayInterfaceAttribute).Type;
             var derivedTypes = AppDomain.CurrentDomain
@@ -40,6 +61,7 @@ namespace Data.Utils.Editor
             var label = $"Select an {interfaceType.Name}";
             var regex = new Regex(@"(?<=managedReference<)[^>]+");
             var currentType = property.type;
+            MyLogger.Log($"Current type: {currentType}");
 
             string defaultSelection;
             if (regex.IsMatch(currentType))
@@ -74,6 +96,7 @@ namespace Data.Utils.Editor
 
         public void DisplayConcreteType(Type type, VisualElement root, VisualElement displayContainer, SerializedProperty property)
         {
+            MyLogger.Log($"Displaying type...");
             if (root.Contains(displayContainer))
             {
                 displayContainer.Clear();
@@ -87,13 +110,13 @@ namespace Data.Utils.Editor
             var serializedProperty = property.Copy();
             var propName = serializedProperty.name;
 
-            MyLogger.Log($"propertyType: {serializedProperty.propertyType}, name: {serializedProperty.name}, type: {serializedProperty.type}");
+            MyLogger.Log($"Prop path: {serializedProperty.propertyPath}");
 
             if (serializedProperty.propertyType == SerializedPropertyType.ManagedReference
                 && serializedProperty.name == propName
                 && serializedProperty.type != $"managedReference<{type.Name}>")
             {
-                MyLogger.Log($"Creating new instance");
+                MyLogger.Log($"Creating instance");
                 serializedProperty.serializedObject.Update();
                 serializedProperty.managedReferenceValue = Activator.CreateInstance(type);
                 serializedProperty.serializedObject.ApplyModifiedProperties();
@@ -121,6 +144,7 @@ namespace Data.Utils.Editor
                     && !serializedProperty.propertyPath.Contains($"m_PathID")
                     && !visitedProperties.Contains(serializedProperty.contentHash))
                 {
+                    MyLogger.Log($"adding prop");
                     var propertyField = new PropertyField(serializedProperty);
                     propertyField.BindProperty(serializedProperty);
                     displayContainer.Add(propertyField);
