@@ -6,7 +6,7 @@ using Models.Buffs;
 namespace Characters
 {
     [Serializable]
-    public class Reinforce : Affect, IBuff
+    public class Reinforce : Affect
     {
         [SerializeField] bool affectsOtherCharactersAbilities = true;
         [SerializeField] TurnTime whenStackLoss = TurnTime.StartOfTurn;

@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Attributes;
 using Tooling.Logging;
+using UnityEngine.Serialization;
 
 namespace Data.Utils.Editor
 {
@@ -18,27 +19,6 @@ namespace Data.Utils.Editor
     public class DisplayInterfaceDrawer : PropertyDrawer
     {
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
-        {
-            var isIEnumberable = typeof(IEnumerable).IsAssignableFrom(fieldInfo.FieldType);
-            if (isIEnumberable)
-            {
-                var root = new VisualElement();
-                do
-                {
-                    MyLogger.Log($"Prop path: {property.propertyPath}, prop type {property.propertyType}");
-                    root.Add(DrawSingleElement(property));
-                }
-                while (property.Next(false));
-
-                return root;
-            }
-            else
-            {
-                return DrawSingleElement(property);
-            }
-        }
-
-        public VisualElement DrawSingleElement(SerializedProperty property)
         {
             var root = new VisualElement();
             var interfaceType = (attribute as DisplayInterfaceAttribute).Type;
@@ -58,10 +38,8 @@ namespace Data.Utils.Editor
             }
 
             var defaultDisplayType = derivedTypes.FirstOrDefault();
-            var label = $"Select an {interfaceType.Name}";
             var regex = new Regex(@"(?<=managedReference<)[^>]+");
             var currentType = property.type;
-            MyLogger.Log($"Current type: {currentType}");
 
             string defaultSelection;
             if (regex.IsMatch(currentType))
@@ -74,13 +52,9 @@ namespace Data.Utils.Editor
                 defaultSelection = defaultDisplayType.Name;
             }
 
-            var dropdown = new DropdownField(label, derivedTypes.Select(type => type.Name).ToList(), defaultSelection);
-            StyleDropdown(dropdown);
-            root.Add(dropdown);
-
-            var typeDisplay = new VisualElement();
-            StyleInterfaceElement(root);
-            DisplayConcreteType(defaultDisplayType, root, typeDisplay, property);
+            var dropdownLabel = $"Select an {interfaceType.Name}";
+            var dropdown = new DropdownField(dropdownLabel, derivedTypes.Select(type => type.Name).ToList(), defaultSelection);
+            var propertyField = DisplayConcreteType(defaultDisplayType, property);
 
             dropdown.RegisterCallback((ChangeEvent<string> evt) =>
             {
@@ -88,139 +62,34 @@ namespace Data.Utils.Editor
                     .Where(type => type.Name == evt.newValue)
                     .FirstOrDefault();
 
-                DisplayConcreteType(newType, root, typeDisplay, property);
+                propertyField = DisplayConcreteType(newType, property);
             });
+
+            StyleDropdown(dropdown);
+            root.Add(dropdown);
+            root.Add(propertyField);
 
             return root;
         }
 
-        public void DisplayConcreteType(Type type, VisualElement root, VisualElement displayContainer, SerializedProperty property)
+        public PropertyField DisplayConcreteType(Type type, SerializedProperty property)
         {
-            MyLogger.Log($"Displaying type...");
-            if (root.Contains(displayContainer))
-            {
-                displayContainer.Clear();
-            }
-
             if (type == null)
             {
-                return;
+                return null;
             }
 
-            var serializedProperty = property.Copy();
-            var propName = serializedProperty.name;
-
-            MyLogger.Log($"Prop path: {serializedProperty.propertyPath}");
-
-            if (serializedProperty.propertyType == SerializedPropertyType.ManagedReference
-                && serializedProperty.name == propName
-                && serializedProperty.type != $"managedReference<{type.Name}>")
+            if (property.propertyType == SerializedPropertyType.ManagedReference
+                && (property.managedReferenceId == ManagedReferenceUtility.RefIdNull || property.type != $"managedReference<{type.Name}>"))
             {
-                MyLogger.Log($"Creating instance");
-                serializedProperty.serializedObject.Update();
-                serializedProperty.managedReferenceValue = Activator.CreateInstance(type);
-                serializedProperty.serializedObject.ApplyModifiedProperties();
+                property.serializedObject.Update();
+                property.managedReferenceValue = Activator.CreateInstance(type);
+                property.serializedObject.ApplyModifiedProperties();
             }
 
-            var endProperty = serializedProperty.GetEndProperty();
-
-            // Start iterating upon the first managedReference
-            serializedProperty.Next(true);
-
-            var visitedProperties = new HashSet<uint>();
-            do
-            {
-                // Only display the property once
-                if (SerializedProperty.EqualContents(endProperty, serializedProperty))
-                {
-                    break;
-                }
-
-                // Only display the object
-                // m_FileID and m_PathID would be displayed for object references but
-                // we don't care to include that in the inspector
-                if (serializedProperty.propertyPath.Contains($"{propName}.")
-                    && !serializedProperty.propertyPath.Contains("m_FileID")
-                    && !serializedProperty.propertyPath.Contains($"m_PathID")
-                    && !visitedProperties.Contains(serializedProperty.contentHash))
-                {
-                    MyLogger.Log($"adding prop");
-                    var propertyField = new PropertyField(serializedProperty);
-                    propertyField.BindProperty(serializedProperty);
-                    displayContainer.Add(propertyField);
-                    visitedProperties.Add(serializedProperty.contentHash);
-                }
-            }
-            while (
-                serializedProperty.Next(
-                // Don't enter children of other DisplayInterface properties see DoesPropertyHaveAttribute() commment
-                (serializedProperty.propertyType != SerializedPropertyType.ManagedReference || !DoesPropertyHaveAttribute(serializedProperty))
-                // Don't enter children of strings, it would display the array of ascii characters in the inspector
-                && serializedProperty.propertyType != SerializedPropertyType.String)
-            );
-
-            root.Add(displayContainer);
-        }
-
-        /// <summary>
-        /// Checks to see a property has a <see cref="DisplayInterfaceAttribute"/>.
-        /// We perform this check as we do not want to render properties with <see cref="DisplayInterfaceAttribute"/>
-        /// because those properties will be rendered by their own draw call from this property drawer
-        /// </summary>
-        /// <param name="property">Property to check.</param>
-        /// <returns>True if the property has a <see cref="DisplayInterfaceAttribute"/></returns>
-        bool DoesPropertyHaveAttribute(SerializedProperty property)
-        {
-            var targetObjectType = property.serializedObject.targetObject.GetType();
-            string[] objectPropertyNames = property.propertyPath.Split('.');
-            for (int i = 0; i < objectPropertyNames.Length; i++)
-            {
-                string propName = objectPropertyNames[i];
-
-                if (i + 1 < objectPropertyNames.Length && objectPropertyNames[i + 1] == "Array"
-                    && i + 2 < objectPropertyNames.Length && objectPropertyNames[i + 2].StartsWith("data["))
-                {
-                    i += 2;
-                }
-
-                var fieldInfo = targetObjectType.GetField(propName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-
-                if (fieldInfo != null)
-                {
-                    if (fieldInfo.FieldType.IsInterface && fieldInfo.GetCustomAttribute<DisplayInterfaceAttribute>() != null)
-                    {
-                        return true;
-                    }
-
-                    // Check if object is array, get array type
-                    targetObjectType = fieldInfo.FieldType.GetElementType() ?? fieldInfo.FieldType;
-
-                    // otherwise if the object is an IEnumerable, find the type of IEnumerable
-                    if (typeof(IEnumerable).IsAssignableFrom(targetObjectType))
-                    {
-                        if (targetObjectType.IsGenericType() && typeof(IEnumerable<>) == targetObjectType.GetGenericTypeDefinition())
-                        {
-                            targetObjectType = targetObjectType.GetGenericArguments()[0];
-                        }
-                        else
-                        {
-                            foreach (var iType in targetObjectType.GetInterfaces())
-                            {
-                                if (iType.IsGenericType() && typeof(IEnumerable<>) == iType.GetGenericTypeDefinition())
-                                {
-                                    targetObjectType = iType.GetGenericArguments()[0];
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return false;
+            var propertyField = new PropertyField(property);
+            propertyField.BindProperty(property);
+            return propertyField;
         }
 
         void StyleDropdown(VisualElement dropdown)

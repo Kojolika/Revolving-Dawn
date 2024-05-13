@@ -12,7 +12,7 @@ namespace Models.Characters
         [SerializeField] private HealthDefinition healthDefinition;
         
         public string Name => name;
-        public List<IBuff> Buffs { get; set; }
+        public List<Buff> Buffs { get; set; }
         public RuntimeHealth Health
         {
             get

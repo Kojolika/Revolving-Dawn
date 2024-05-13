@@ -12,27 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a3d1e2a98ac8ca4da9ba55be9c0aa7d, type: 3}
   m_Name: Block
   m_EditorClassIdentifier: 
-  name: 
+  name: Block
   manas:
   - {fileID: 11400000, guid: db0d8289709d075419d8283e0629229b, type: 2}
-  artwork: {fileID: 21300000, guid: 4024798ef8e3da84f96ea6b0774e6ebb, type: 3}
+  artwork: {fileID: 0}
   class: {fileID: 11400000, guid: cb928e790e6382a4cbc364a9596de11f, type: 2}
   nextCard: {fileID: 0}
   previousCard: {fileID: 0}
   playEffects:
-  - combatEffect:
-      rid: 2151913798751748105
+  - rid: 3824537153553563652
   references:
     version: 2
     RefIds:
-    - rid: 2151913798751748105
+    - rid: 3824537153553563652
       type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 0
         buff:
-          rid: 2151913798751748106
-    - rid: 2151913798751748106
-      type: {class: Block, ns: Models.Buffs, asm: Assembly-CSharp}
-      data:
-        definition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
-        stackSize: 5
+          buffDefinition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
+          stacksize: 6

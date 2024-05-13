@@ -77,16 +77,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: df88fc480d970124b90c885c88743c21
-    m_Address: card_slash
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 800bb8b75bced384981baaac7271f2b8
-    m_Address: card_block
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3788ab0c79ab5ed46b258ba64fadb02d, type: 2}
   m_SchemaSet:

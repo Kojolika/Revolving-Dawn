@@ -14,15 +14,11 @@ namespace Fight.Events
 
         public override void Execute(IHealth target)
         {
-            var relevantBuffs = target.Buffs
-                .Where(buff => buff is ITriggerableBuff<HealEvent>)
-                .Select(buff => buff as ITriggerableBuff<HealEvent>);
+            target.Buffs
+                .Where(buff => buff.Definition is ITriggerableBuff<HealEvent>)
+                .ToList()
+                .ForEach(buff => buff.EventOccured(this));
 
-            foreach (var buff in relevantBuffs)
-            {
-                buff.Apply(this);
-            }
-            
             target.Heal(Amount);
         }
 

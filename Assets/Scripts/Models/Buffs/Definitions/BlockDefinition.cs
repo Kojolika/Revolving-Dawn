@@ -1,17 +1,39 @@
-using UnityEngine;
+using Fight.Events;
 
 namespace Models.Buffs
 {
-    [CreateAssetMenu(fileName = "New " + nameof(BlockDefinition), menuName = "RevolvingDawn/Buffs/" + nameof(BlockDefinition))]
-    public class BlockDefinition : BuffDefinition, IStackableBuffDefinition
+    public class BlockDefinition : BuffDefinition, ITriggerableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
     {
-        [SerializeField] new string name;
-        [SerializeField] AmountLost<ulong> amountLostPerEvent;
-        [SerializeField] ulong maxStackSize;
-        [SerializeField] Sprite icon;
+        public ulong Apply(TurnStarted turnEndedEvent, ulong currentStackSize) => 0;
 
-        public override string Name => name;
-        public ulong MaxStackSize => maxStackSize;
-        public AmountLost<ulong> AmountLostPerEvent => amountLostPerEvent;
+        public ulong Apply(DealDamageEvent dealDamageEvent, ulong currentStackSize)
+        {
+            var cachedDamageAmount = dealDamageEvent.Amount;
+            try
+            {
+                checked
+                {
+                    dealDamageEvent.Amount -= currentStackSize;
+                }
+            }
+            catch (System.OverflowException)
+            {
+                dealDamageEvent.Amount = 0;
+            }
+
+            try
+            {
+                checked
+                {
+                    currentStackSize -= cachedDamageAmount;
+                }
+            }
+            catch (System.OverflowException)
+            {
+                currentStackSize = 0;
+            }
+
+            return currentStackSize;
+        }
     }
 }

@@ -4,8 +4,8 @@ namespace Fight.Events
 {
     public class ApplyBuffEvent : BattleEvent<IBuffable>
     {
-        IBuff Buff { get; set; }
-        public ApplyBuffEvent(IBuffable target, IBuff buff) : base(target)
+        Buff Buff { get; set; }
+        public ApplyBuffEvent(IBuffable target, Buff buff) : base(target)
         {
             Buff = buff;
         }

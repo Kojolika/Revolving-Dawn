@@ -10,7 +10,7 @@ namespace Models.Health
   {
     public ulong MaxHealth => healthDefinition.maxHealth;
     public ulong CurrentHealth { get; private set; }
-    public List<IBuff> Buffs { get; private set; }
+    public List<Buff> Buffs { get; private set; }
 
     [SerializeField] private HealthDefinition healthDefinition;
     public override HealthDefinition Definition => healthDefinition;

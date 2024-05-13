@@ -5,28 +5,10 @@ using System.Linq;
 using UnityEngine;
 using System;
 using Fight.Events;
-using Utils.Attributes;
 
 
 namespace Models.CardEffects
 {
-    /// <summary>
-    /// This has been designed in a specfic way which allows us add any type of <see cref="ICombatEffect"/> to
-    /// a <see cref="Models.Card.Card"/> in the inspector.
-    /// This way we can assemble cards like building blocks by adding any effect we want to them. 
-    /// </summary>
-
-    /// <summary>
-    /// This class is a wrapper around <see cref="ICombatEffect"/> so we can create lists of them
-    /// in the inspector. (see <see cref="DisplayInterfaceAttribute"/> for more details)
-    /// </summary>
-    [Serializable]
-    public class CombatEffectWrapper
-    {
-        [SerializeReference, DisplayInterface(typeof(ICombatEffect))] private ICombatEffect combatEffect;
-        public ICombatEffect CombatEffect => combatEffect;
-    }
-
     /// <summary>
     /// Using an interface allows us to create a list of classes in the inspector.
     /// </summary>

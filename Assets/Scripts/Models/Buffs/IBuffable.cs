@@ -4,6 +4,6 @@ namespace Models.Buffs
 {
     public interface IBuffable
     {
-        List<IBuff> Buffs { get; }
+        List<Buff> Buffs { get; }
     }
 }

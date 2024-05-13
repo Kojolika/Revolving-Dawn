@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Models.Player;
 using Models.CardEffects;
 using Models.Mana;
+using Utils.Attributes;
 
 namespace Models
 {
@@ -17,7 +18,7 @@ namespace Models
         public PlayerClassDefinition Class => @class;
         public Card NextCard => nextCard;
         public Card PreviousCard => previousCard;
-        public List<CombatEffectWrapper> PlayEffects => playEffects;
+        public List<ICombatEffect> PlayEffects => playEffects;
 
         #endregion
 
@@ -27,6 +28,6 @@ namespace Models
         [SerializeField] private PlayerClassDefinition @class;
         [SerializeField] private Card nextCard;
         [SerializeField] private Card previousCard;
-        [SerializeField] private List<CombatEffectWrapper> playEffects;
+        [SerializeReference, DisplayInterface(typeof(ICombatEffect))] private List<ICombatEffect> playEffects;
     }
 }

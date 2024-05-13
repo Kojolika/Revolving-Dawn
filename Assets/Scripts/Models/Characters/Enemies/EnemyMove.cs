@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Models.CardEffects;
 using UnityEngine;
+using Utils.Attributes;
 
 namespace Models.Characters
 {
@@ -8,9 +9,9 @@ namespace Models.Characters
     public class EnemyMove
     {
         [SerializeField] private Sprite moveIntentSprite;
-        [SerializeField] private List<CombatEffectWrapper> enemyMoves;
+        [SerializeReference, DisplayInterface(typeof(ICombatEffect))] private List<ICombatEffect> enemyMoves;
 
         public Sprite MoveIntentSprite => moveIntentSprite;
-        public List<CombatEffectWrapper> EnemyMoves => enemyMoves;
+        public List<ICombatEffect> EnemyMoves => enemyMoves;
     }
 }
