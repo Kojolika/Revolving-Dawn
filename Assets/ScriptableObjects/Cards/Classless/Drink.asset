@@ -19,12 +19,11 @@ MonoBehaviour:
   nextCard: {fileID: 0}
   previousCard: {fileID: 0}
   playEffects:
-  - cardEffect:
-      rid: 3824536954595180549
+  - rid: 2151913888259506179
   references:
     version: 2
     RefIds:
-    - rid: 3824536954595180549
+    - rid: 2151913888259506179
       type: {class: HealEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 0

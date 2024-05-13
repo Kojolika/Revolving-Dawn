@@ -7,8 +7,7 @@ namespace Models.Map
     [System.Serializable]
     public class EnemyQuantity
     {
-        [SerializeReference, DisplayInterface(typeof(IEnemy))]
-        public IEnemy Enemy;
+        public EnemyDefinition Enemy;
 
         [Header("Below range specifies the number of enemies that can spawn.")]
         [Header(" If the amount varies select a range. With min <= max")]
