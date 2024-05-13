@@ -1,7 +1,9 @@
 using Fight.Events;
+using UnityEngine;
 
 namespace Models.Buffs
 {
+    [CreateAssetMenu(fileName = nameof(BlockDefinition), menuName = "RevolvingDawn/Buffs/" + nameof(BlockDefinition))]
     public class BlockDefinition : BuffDefinition, ITriggerableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
     {
         public ulong Apply(TurnStarted turnEndedEvent, ulong currentStackSize) => 0;
