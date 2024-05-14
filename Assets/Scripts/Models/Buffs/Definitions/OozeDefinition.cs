@@ -7,13 +7,14 @@ namespace Models.Buffs
     [CreateAssetMenu(fileName = nameof(OozeDefinition), menuName = "RevolvingDawn/Buffs/" + nameof(OozeDefinition))]
     public class OozeDefinition : BuffDefinition, ITriggerableBuff<TurnStarted>
     {
-        public ulong Apply(TurnStarted triggeredByEvent, ulong currentStackSize)
+        public BuffTriggeredEvent<TurnStarted> GenerateTriggeredEvent(TurnStarted triggeredByEvent, Buff buff)
         {
             if (triggeredByEvent.Target is PlayerHero playerHero)
             {
                 playerHero.Decks.DowngradeCard(null);
             }
-            return currentStackSize--;
+
+            return new BuffTriggeredEvent<TurnStarted>(triggeredByEvent, buff, buff.StackSize - 1);
         }
     }
 }

@@ -2,19 +2,24 @@ using Models.Buffs;
 
 namespace Fight.Events
 {
-    public class BuffTriggeredEvent<TBuff, TEvent> : BattleEvent<TBuff>
+    public class BuffTriggeredEvent<TEvent> : BattleEvent<TEvent>
         where TEvent : IBattleEvent
-        where TBuff : Buff, ITriggerableBuff<TEvent>
     {
-        public BuffTriggeredEvent(TBuff target) : base(target)
-        {
+        public Buff Buff { get; set; }
+        public ulong StackSizeAfterTrigger { get; set; }
 
+
+        public BuffTriggeredEvent(TEvent target, Buff buff, ulong stackSizeAfterTrigger) : base(target)
+        {
+            Buff = buff;
+            StackSizeAfterTrigger = stackSizeAfterTrigger;
         }
 
-        public override void Execute(TBuff target)
+        public override void Execute(TEvent target, BattleEngine battleEngine)
         {
-
+            Buff.SetStackSize(this);
         }
-        public override string Log() => $"Buff {Target.Definition.name} triggered off of {nameof(TEvent)}";
+
+        public override string Log() => $"Buff {Buff.Definition.name} triggered off of {nameof(TEvent)}";
     }
 }

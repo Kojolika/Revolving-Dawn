@@ -10,7 +10,7 @@ namespace Fight.Events
             Buff = buff;
         }
 
-        public override void Execute(IBuffable target)
+        public override void Execute(IBuffable target, BattleEngine battleEngine)
         {
             target.Buffs.Add(Buff);
         }

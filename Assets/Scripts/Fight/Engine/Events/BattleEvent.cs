@@ -14,8 +14,8 @@ namespace Fight.Events
             Target = target;
         }
 
-        public abstract void Execute(S source, T target);
-        public void Execute() => Execute(Source, Target);
+        public abstract void Execute(S source, T target, BattleEngine battleEngine);
+        public void Execute(BattleEngine battleEngine) => Execute(Source, Target, battleEngine);
         public abstract string Log();
     }
 
@@ -28,8 +28,8 @@ namespace Fight.Events
             Target = target;
         }
 
-        public abstract void Execute(T target);
-        public void Execute() => Execute(Target);
+        public abstract void Execute(T target, BattleEngine battleEngine);
+        public void Execute(BattleEngine battleEngine) => Execute(Target, battleEngine);
         public abstract string Log();
     }
 }

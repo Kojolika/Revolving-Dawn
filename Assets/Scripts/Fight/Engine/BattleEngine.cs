@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fight.Events;
 using Tooling.Logging;
@@ -9,11 +10,11 @@ namespace Fight
     public class BattleEngine
     {
         public bool IsRunning { get; private set; }
-        private Queue<IBattleEvent> battleEventQueue;
+        private List<IBattleEvent> battleEventQueue;
 
         public void Run()
         {
-            battleEventQueue = new Queue<IBattleEvent>();
+            battleEventQueue = new List<IBattleEvent>();
             IsRunning = true;
             EngineLoop();
         }
@@ -24,14 +25,25 @@ namespace Fight
             IsRunning = false;
         }
 
+        public void InsertAfterEvent(IBattleEvent battleEventInQueue, IBattleEvent battleEventToInsert)
+        {
+            var indexOfEvent = battleEventQueue.IndexOf(battleEventInQueue);
+            if (indexOfEvent < 0)
+            {
+                return;
+            }
+
+            battleEventQueue.Insert(indexOfEvent, battleEventToInsert);
+        }
+
         async void EngineLoop()
         {
             while (IsRunning)
             {
                 if (battleEventQueue.Count > 0)
                 {
-                    var latestEvent = battleEventQueue.Dequeue();
-                    latestEvent.Execute();
+                    var latestEvent = battleEventQueue.First();
+                    latestEvent.Execute(this);
                     MyLogger.Log(latestEvent.Log());
                 }
                 else
@@ -41,6 +53,6 @@ namespace Fight
             }
         }
 
-        public void AddEvent(IBattleEvent battleEvent) => battleEventQueue.Enqueue(battleEvent);
+        public void AddEvent(IBattleEvent battleEvent) => battleEventQueue.Add(battleEvent);
     }
 }

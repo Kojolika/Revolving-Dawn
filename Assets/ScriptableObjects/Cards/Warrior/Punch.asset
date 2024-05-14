@@ -10,24 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a3d1e2a98ac8ca4da9ba55be9c0aa7d, type: 3}
-  m_Name: Block
+  m_Name: Punch
   m_EditorClassIdentifier: 
-  name: Block
+  name: Punch
   manas:
-  - {fileID: 11400000, guid: db0d8289709d075419d8283e0629229b, type: 2}
-  artwork: {fileID: 21300000, guid: 4024798ef8e3da84f96ea6b0774e6ebb, type: 3}
+  - {fileID: 11400000, guid: cf92ef4110406784cb00b29170e2560c, type: 2}
+  artwork: {fileID: 0}
   class: {fileID: 11400000, guid: cb928e790e6382a4cbc364a9596de11f, type: 2}
-  nextCard: {fileID: 0}
+  nextCard: {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
   previousCard: {fileID: 0}
   playEffects:
-  - rid: 3824537153553563652
+  - rid: 3824537162088710145
   references:
     version: 2
     RefIds:
-    - rid: 3824537153553563652
-      type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+    - rid: 3824537162088710145
+      type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
-        targeting: 0
-        buff:
-          buffDefinition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
-          stacksize: 6
+        targeting: 1
+        amount: 5

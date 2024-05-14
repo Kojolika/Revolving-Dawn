@@ -13,13 +13,20 @@ namespace Models.Buffs
         public ulong StackSize => stacksize;
         public override BuffDefinition Definition => buffDefinition;
 
-        public void EventOccured<T>(T battleEvent) where T : IBattleEvent
+        public BuffTriggeredEvent<TEvent> EventOccured<TEvent>(TEvent battleEvent) where TEvent : IBattleEvent
         {
-            if (Definition is ITriggerableBuff<T> triggerableBuff)
+            if (buffDefinition is ITriggerableBuff<TEvent> triggerableBuff)
             {
-                stacksize = triggerableBuff.Apply(battleEvent, stacksize);
+                return triggerableBuff.GenerateTriggeredEvent(battleEvent, this);
             }
+
+            return null;
         }
+
+        public void SetStackSize<TEvent>(BuffTriggeredEvent<TEvent> buffTriggeredEvent) 
+            where TEvent : IBattleEvent 
+            => stacksize = buffTriggeredEvent.StackSizeAfterTrigger;
+
     }
 
     [Serializable]

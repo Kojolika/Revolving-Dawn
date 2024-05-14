@@ -8,7 +8,7 @@ namespace Fight.Events
         {
         }
 
-        public override void Execute(CardDefinition target)
+        public override void Execute(CardDefinition target, BattleEngine battleEngine)
         {
             throw new System.NotImplementedException();
         }

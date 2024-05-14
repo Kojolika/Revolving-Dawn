@@ -1,10 +1,8 @@
 using Models;
-using System.Linq;
-using Models.Buffs;
 
 namespace Fight.Events
 {
-    public class HealEvent : BattleEvent<IHealth>
+    public class HealEvent : BattleEventTargettingIBuffable<IHealth>
     {
         public ulong Amount { get; set; }
         public HealEvent(IHealth target, ulong amount) : base(target)
@@ -12,13 +10,9 @@ namespace Fight.Events
             Amount = amount;
         }
 
-        public override void Execute(IHealth target)
+        public override void Execute(IHealth target, BattleEngine battleEngine)
         {
-            target.Buffs
-                .Where(buff => buff.Definition is ITriggerableBuff<HealEvent>)
-                .ToList()
-                .ForEach(buff => buff.EventOccured(this));
-
+            base.Execute(target, battleEngine);
             target.Heal(Amount);
         }
 

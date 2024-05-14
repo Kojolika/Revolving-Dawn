@@ -6,7 +6,7 @@ namespace Fight.Events
     {
         public TurnStarted(Character target) : base(target) { }
 
-        public override void Execute(Character target) { }
+        public override void Execute(Character target, BattleEngine battleEngine) { }
 
         public override string Log() => $"{Target.Name}'s turn started!";
     }

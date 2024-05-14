@@ -1,10 +1,8 @@
 using Models;
-using Models.Buffs;
-using System.Linq;
 
 namespace Fight.Events
 {
-    public class DealDamageEvent : BattleEvent<IHealth>
+    public class DealDamageEvent : BattleEventTargettingIBuffable<IHealth>
     {
         public ulong Amount { get; set; }
         public DealDamageEvent(IHealth target, ulong amount) : base(target)
@@ -12,9 +10,9 @@ namespace Fight.Events
             Amount = amount;
         }
 
-        public override void Execute(IHealth target)
+        public override void Execute(IHealth target, BattleEngine battleEngine)
         {
-            target.Buffs.ForEach(buff => buff.EventOccured(this));
+            base.Execute(target, battleEngine);
             target.DealDamage(Amount);
         }
 
