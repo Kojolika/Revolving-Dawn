@@ -1,5 +1,5 @@
 using QuikGraph;
-using Data.Definitions.Map;
+using Models.Map;
 using Utils.Attributes;
 using UnityEngine;
 using UI.DisplayElements;
@@ -8,6 +8,8 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Utils.Extensions;
+using System.Linq;
+using System;
 
 namespace UI.Menus
 {
@@ -15,78 +17,86 @@ namespace UI.Menus
     {
         public class Data
         {
-            public AdjacencyGraph<NodeDefinition, EdgeDefinition> Map;
-
-            public Vector2 GraphDimenions;
-
-            public Data(AdjacencyGraph<NodeDefinition, EdgeDefinition> map, Vector2 graphDimensions)
-            {
-                Map = map;
-                GraphDimenions = graphDimensions;
-            }
+            public MapDefinition MapDefinition;
+            public NodeDefinition CurrentNode;
         }
 
         [ResourcePath]
         public static string ResourcePath => nameof(MapView);
 
-        [SerializeField] RectTransform mapContainer;
-        [SerializeField] NodeDisplayElement nodeDisplayElementRoot;
+        [SerializeField] private RectTransform mapContainer;
+        [SerializeField] private RectTransform nodeContainer;
+        [SerializeField] private RectTransform lineContainer;
+        [SerializeField] private NodeDisplayElement nodeDisplayElementRoot;
+        [SerializeField] private RectTransform lineDisplayElement;
 
+        private Dictionary<NodeDefinition.Coordinate, NodeDisplayElement> nodeElementsLookup = new();
+        private Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeDefinitionsLookup = new();
 
-        Dictionary<NodeDefinition, NodeDisplayElement> nodeElementsLookup = new();
-
-        public override async void Populate(Data data)
+        public override void Populate(Data data)
         {
             var mapSize = mapContainer.rect.size;
 
             nodeElementsLookup.Clear();
-            foreach (var nodeData in data.Map.Vertices)
+            for (int i = 0; i < data.MapDefinition.Nodes.Count(); i++)
             {
-                float xNodeDataNormalized = Utils.Computations.Normalize(nodeData.X, 0, data.GraphDimenions.x, 0, 1);
-                float yNodeDataNormalized = Utils.Computations.Normalize(nodeData.Y, 0, data.GraphDimenions.y, 0, 1);
+                var node = data.MapDefinition.Nodes[i];
+                float xNodeDataNormalized = Utils.Computations.Normalize(node.Coord.x, 0, data.MapDefinition.XDimension, 0, 1);
+                float yNodeDataNormalized = Utils.Computations.Normalize(node.Coord.y, 0, data.MapDefinition.YDimension, 0, 1);
 
                 int xPos = Mathf.FloorToInt(mapSize.x * xNodeDataNormalized);
                 int yPos = Mathf.FloorToInt(mapSize.y * yNodeDataNormalized);
 
-                var newNode = Instantiate(nodeDisplayElementRoot, mapContainer);
-                newNode.Populate(nodeData);
-                nodeElementsLookup.Add(nodeData, newNode);
-
-                await UpdateAfterEnable();
+                var newNode = Instantiate(nodeDisplayElementRoot, nodeContainer);
+                newNode.Populate(new NodeDisplayElement.Data{ Definition = node, CurrentPlayerNode = data.CurrentNode});
+                var coordinates = new NodeDefinition.Coordinate(node.Coord.x, node.Coord.y);
+                nodeElementsLookup.Add(coordinates, newNode);
+                nodeDefinitionsLookup.Add(coordinates, node);
 
                 // we can position like this due to the anchoring of the nodeDisplayElementRoot
                 (newNode.transform as RectTransform).anchoredPosition = new Vector2(xPos, yPos);
                 newNode.gameObject.SetActive(true);
             }
-
-            foreach (var edge in data.Map.Edges)
+            foreach (var coordinate in nodeElementsLookup)
             {
-                if (nodeElementsLookup.TryGetValue(edge.Source, out var node1) && nodeElementsLookup.TryGetValue(edge.Target, out var node2))
+                var nodeDef = nodeDefinitionsLookup[coordinate.Key];
+                if (nodeDef.NextNodes.IsNullOrEmpty())
                 {
-                    var lineRenderer = node1.GetOrAddComponent<LineRenderer>();
-                    lineRenderer.startColor = Color.white;
-                    lineRenderer.endColor = Color.white;
+                    continue;
+                }
 
-                    lineRenderer.startWidth = 20f;
-                    lineRenderer.endWidth = 20f;
+                var nodeElement = coordinate.Value;
+                foreach (var nextNode in nodeDef.NextNodes)
+                {
+                    var nodeElementTransform = nodeElement.transform as RectTransform;
+                    var nextNodeTransform = nodeElementsLookup[nextNode].transform;
+                    var newLine = Instantiate(lineDisplayElement, lineContainer);
+                    var newlineTransform = newLine.transform;
+                    (newlineTransform as RectTransform).anchoredPosition = new Vector2(nodeElementTransform.anchoredPosition.x, nodeElementTransform.anchoredPosition.y);
 
-                    lineRenderer.SetPosition(0, node1.transform.position);
-                    lineRenderer.SetPosition(1, node2.transform.position);
+                    var position1 = (Vector2)nodeElementTransform.position;
+                    var position2 = (Vector2)nextNodeTransform.position;
+                    var distance = Vector2.Distance(position1, position2) / 2;
+                    (newlineTransform as RectTransform).sizeDelta = new Vector2(lineDisplayElement.rect.size.x, distance);
+
+                    var finalVector = position1 - position2;
+                    var downVector = new Vector2(0, finalVector.y);
+                    var angle = Mathf.Acos(downVector.magnitude / finalVector.magnitude) * Mathf.Rad2Deg;
+                    // since we are using right triangles to caluclate the angle
+                    // we need to reflect the angle across the y axis in this case
+                    if (position2.y > position1.y)
+                    {
+                        angle = 180 - angle;
+                    }
+                    // and reflect the angle across the x axis in this case
+                    if (position2.x < position1.x)
+                    {
+                        angle = -angle;
+                    }
+
+                    newlineTransform.rotation = Quaternion.Euler(0, 0, angle);
                 }
             }
-
-            async UniTask UpdateAfterEnable()
-            {
-                await UniTask.WaitWhile(() => !gameObject.activeInHierarchy || gameObject == null);
-                await UniTask.WaitForEndOfFrame(this);
-            }
-        }
-
-        void Update()
-        {
-
-            MyLogger.Log($"Mapsize {mapContainer.rect.size.x},{mapContainer.rect.size.y}");
-
         }
     }
 }

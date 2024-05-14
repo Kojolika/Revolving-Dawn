@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Characters.Model
 {
     [System.Serializable]
-    public class PlayerDefinition : CharacterMVC.IModel
+    public class PlayerDefinition 
     {
         public PlayerDefinition(int id)
         {
@@ -12,9 +12,9 @@ namespace Characters.Model
         }
 
         [JsonProperty("player_id")] 
-        public int ID { get; }
+        public int ID;
         
         [JsonProperty("current_run")] 
-        public RunDefinition CurrentRun { get; private set; }
+        public RunDefinition CurrentRun;
     }
 }

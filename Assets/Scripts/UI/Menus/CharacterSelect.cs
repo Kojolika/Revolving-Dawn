@@ -8,6 +8,8 @@ using Tooling.Logging;
 using UI.Common;
 using Systems.Map;
 using Systems.Managers;
+using Settings;
+using Models.Player;
 
 namespace UI.Menus
 {
@@ -15,12 +17,7 @@ namespace UI.Menus
     {
         public class Data
         {
-            public List<ClassDefinition> Classes;
-
-            public Data(List<ClassDefinition> classes)
-            {
-                Classes = classes;
-            }
+            public List<PlayerClassDefinition> Classes;
         }
 
         [ResourcePath]
@@ -31,13 +28,17 @@ namespace UI.Menus
         [SerializeField] MyButton playButton;
 
         List<ClassDisplayElement> classDisplayElements = new();
-        ClassDefinition selectedclass;
+        PlayerClassDefinition selectedclass;
         MenuManager menuManager;
+        PlayerDataManager playerDataManager;
+        MapSettings mapSettings;
 
         [Zenject.Inject]
-        void Construct(MenuManager menuManager)
+        void Construct(MenuManager menuManager, PlayerDataManager playerDataManager, MapSettings mapSettings)
         {
             this.menuManager = menuManager;
+            this.playerDataManager = playerDataManager;
+            this.mapSettings = mapSettings;
         }
 
         public override void Populate(Data data)
@@ -63,18 +64,16 @@ namespace UI.Menus
             playButton.Pressed += SaveSelectionAndGenerateRun;
         }
 
-        void SaveSelectionAndGenerateRun()
+        async void SaveSelectionAndGenerateRun()
         {
             MyLogger.Log("Generating map...");
-            MapFactory mapFactory = new MapFactory();
-
-            Vector2 graphDimensions = new Vector2(500, 1000);
-
+            await playerDataManager.StartNewRun(selectedclass);
             _ = menuManager.Open<MapView, MapView.Data>(
-                new MapView.Data(
-                    mapFactory.Create(graphDimensions, 50, 4),
-                    graphDimensions
-                )
+                new MapView.Data()
+                {
+                    MapDefinition = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentMap,
+                    CurrentNode = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentMapNode
+                }
             );
         }
     }

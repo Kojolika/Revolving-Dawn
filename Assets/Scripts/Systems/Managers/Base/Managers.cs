@@ -11,11 +11,16 @@ namespace Systems.Managers.Base
 
         internal static async UniTask InitializeManagers()
         {
+            var startTasks = new List<UniTask>();
+            var afterStartTasks = new List<UniTask>();
             foreach (var kvp in ManagerInstances)
             {
-                await kvp.Value.Startup();
-                await kvp.Value.AfterStart();
+                startTasks.Add(kvp.Value.Startup());
+                afterStartTasks.Add(kvp.Value.AfterStart());
             }
+
+            await UniTask.WhenAll(startTasks);
+            await UniTask.WhenAll(afterStartTasks);
         }
 
         public static void RegisterManager(Type type, IManager manager)

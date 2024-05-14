@@ -1,11 +1,11 @@
-using Data.Definitions.Player;
-using Systems.Managers;
+using Models.Player;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace UI.Common.DisplayElements
 {
-    public class ClassDisplayElement : DisplayElement<ClassDefinition>
+    public class ClassDisplayElement : DisplayElement<PlayerClassDefinition>
     {
         [SerializeField] Image classImage;
         [SerializeField] Label className;
@@ -13,29 +13,26 @@ namespace UI.Common.DisplayElements
         [SerializeField] MyButton selectbutton;
 
         public MyButton SelectButton => selectbutton;
-        public static readonly string PlaceholderCharacterKey = "placeholder-character";
 
-        private AddressablesManager addressablesManager;
+        private AssetReference classImageReference;
 
-        [Zenject.Inject]
-        void Construct(AddressablesManager addressablesManager)
-        {
-            this.addressablesManager = addressablesManager;
-        }
-
-        public override async void Populate(ClassDefinition data)
+        public override void Populate(PlayerClassDefinition data)
         {
             className.SetText(data.Name);
             description.SetText(data.Description);
 
-            var classSprite = data.characterSprite;
+            classImageReference = data.CharacterAvatarReference;
 
-            classImage.sprite = classSprite != null
-                ? classSprite
-                : await addressablesManager.LoadGenericAsset<Sprite>(
-                    PlaceholderCharacterKey,
-                    () => gameObject == null
-                );
+            var asyncOperationHandle = classImageReference.LoadAssetAsync<Sprite>();
+            asyncOperationHandle.Completed += (assetHandle) =>
+            {
+                classImage.sprite = assetHandle.Result;
+            };
+        }
+
+        private void OnDestroy()
+        {
+            classImageReference?.ReleaseAsset();
         }
     }
 }

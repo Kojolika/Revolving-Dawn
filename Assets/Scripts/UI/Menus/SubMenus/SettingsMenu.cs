@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace UI.Menus.SubMenus
 {
-    public class SettingsMenu : MonoBehaviour, IPopulateData<Data.Null>
+    public class SettingsMenu : MonoBehaviour
     {
         [SerializeField] private TabGroup tabGroup;
         
-        public void Populate(Null data)
+        public void Populate()
         {
         }
     }

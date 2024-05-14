@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b140f5980ef4d284bbe6252ab0ffcf29, type: 3}
+  m_Name: Warrior
+  m_EditorClassIdentifier: 
+  name: Warrior
+  startingDeck:
+  - {fileID: 0}
+  description: Here is a great and beautifully written description about the Warrior
+    class and how it has so many exciting themes
+  characterAvatarReference:
+    m_AssetGUID: d1ee13283cbbd2e409b03a6d2b373c01
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  cardBorderReference:
+    m_AssetGUID: 199ea291b8dc10749814c60df5e5232a
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0

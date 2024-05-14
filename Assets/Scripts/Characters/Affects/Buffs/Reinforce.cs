@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
 using FightDamageCalc;
+using Models.Buffs;
 
 namespace Characters
 {
+    [Serializable]
     public class Reinforce : Affect
     {
         [SerializeField] bool affectsOtherCharactersAbilities = true;
@@ -23,6 +25,7 @@ namespace Characters
         {
             count = amount;
         }
+        public Reinforce() { }
 
         public override bool AffectsOtherCharactersAbilities { get => affectsOtherCharactersAbilities; set => affectsOtherCharactersAbilities = value; }
         public override bool IsStackable { get => isStackable; set => isStackable = value; }

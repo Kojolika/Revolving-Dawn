@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using Cards;
-using Characters;
-using Data.Definitions;
+using Models.Mana;
 
 namespace Mana
 {
@@ -30,11 +28,11 @@ namespace Mana
         }
         void PopulateFromData()
         {
-            type = manaScriptableObject.type;
+            //type = manaScriptableObject.type;
             this.transform.localScale = ManaConfiguration.DEFAULT_SCALE;
             this.GetComponent<MeshRenderer>().sharedMaterial = ManaConfiguration.GetManaColor(type);
         }
-    }   
+    }
 
     public enum ManaType
     {

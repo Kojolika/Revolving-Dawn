@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UI.Menus.Common
 {
-    public abstract class Menu<TData> : MonoBehaviour, IMenuHandle, Data.IPopulateData<TData>
+    public abstract class Menu<TData> : MonoBehaviour, IMenuHandle
     {
         /// <summary>
         /// Unfortunately we cannot create static abstract properties with the current C# version.

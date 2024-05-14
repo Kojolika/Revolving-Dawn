@@ -50,9 +50,9 @@ namespace Systems.Managers
                 onFail?.Invoke();
             }
 
-            onSuccess?.Invoke(ophandle.Result as T);
+            onSuccess?.Invoke(ophandle.Result);
 
-            return ophandle.Result as T;
+            return ophandle.Result;
         }
 
         async UniTask ReleaseWhen(

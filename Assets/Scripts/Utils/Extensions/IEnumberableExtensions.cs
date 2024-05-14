@@ -6,9 +6,9 @@ namespace Utils.Extensions
     public static class IEnumberableExtensions
     {
         public static bool IsNullOrEmpty(this IEnumerable enumerable)
-            => enumerable.IsNullOrEmpty();
+            => enumerable == null || !enumerable.GetEnumerator().MoveNext();
         
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
-            => enumerable.IsNullOrEmpty();
+            => enumerable == null || !enumerable.GetEnumerator().MoveNext();
     }
 }

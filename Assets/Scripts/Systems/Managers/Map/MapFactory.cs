@@ -1,85 +1,128 @@
-using QuikGraph;
-using Data.Definitions.Map;
+using Models.Map;
 using UnityEngine;
 using Tooling.Logging;
-using QuikGraph.Algorithms.ShortestPath;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
-using QuikGraph.Utils;
+using Settings;
+using System;
 using Utils.Extensions;
 
 namespace Systems.Map
 {
     public class MapFactory
     {
-        public static float YStartAndEndPadding = 0.1f;
-        public static float YRegularNodePadding = 0.2f;
-        public static float XNodePadding = 0.1f;
-        public AdjacencyGraph<NodeDefinition, EdgeDefinition> Create(Vector2 dimension, int numNodes, int numPaths)
+        public MapDefinition Create(MapSettings mapSettings)
         {
-            MyLogger.Log($"Creating graph of dimension {dimension}, with nodes {numNodes} and paths {numPaths}");
-            var graph = new AdjacencyGraph<NodeDefinition, EdgeDefinition>();
+            var numNodes = mapSettings.NumberOfNodes;
+            var numPaths = mapSettings.NumberOfPaths;
+            var xDimension = mapSettings.XDimension;
+            var yDimension = mapSettings.YDimension;
+            var edgePadding = mapSettings.EdgePadding;
+            var regionPadding = mapSettings.RegionPadding;
+            var nodes = new List<NodeDefinition>();
 
-            var startNode = new NodeDefinition(0,
-                Mathf.FloorToInt(dimension.x / 2),
-                Mathf.FloorToInt(YStartAndEndPadding * dimension.y)
-            );
-            graph.AddVertex(startNode);
+            MyLogger.Log($"Creating map of with {numNodes} nodes, {numPaths} paths, and dimensions of ({xDimension},{yDimension})");
 
-            var endNode = new NodeDefinition(1,
-                Mathf.FloorToInt(dimension.x / 2),
-                Mathf.FloorToInt(dimension.y * (1 - YStartAndEndPadding))
-            );
-            graph.AddVertex(endNode);
+            var adjustedYDimension = yDimension - (edgePadding * 4);
+            var adjustedXDimension = xDimension - (edgePadding * 2);
+            var area = adjustedXDimension * adjustedYDimension;
+            var regionArea = area / numNodes;
+            int sqrtRegionArea = (int)Math.Sqrt(regionArea);
+            (int x, int y) regionDimensions = (sqrtRegionArea, sqrtRegionArea);
+            (int x, int y) numberOfRegions = (adjustedXDimension / regionDimensions.x, adjustedYDimension / regionDimensions.y);
 
-            for (int index = 2; index < numNodes; index++)
+            var randomNumGenerator = new System.Random();
+
+            for (int i = 0; i < numNodes; i++)
             {
-                System.Random randomGen = new();
-                int x = randomGen.Next(
-                    Mathf.FloorToInt(dimension.x * XNodePadding),
-                    Mathf.FloorToInt(dimension.x * (1 - XNodePadding))
-                );
-                int y = randomGen.Next(
-                    Mathf.FloorToInt(dimension.y * YRegularNodePadding),
-                    Mathf.FloorToInt(dimension.y * (1 - YRegularNodePadding))
-                );
-                graph.AddVertex(new NodeDefinition(index, x, y));
-            }
-
-            foreach (var vertex1 in graph.Vertices)
-            {
-                int numEdgesToAdd = 2;
-                Dictionary<float, NodeDefinition> distanceLookup = new();
-                foreach (var vertex2 in graph.Vertices.Except(new List<NodeDefinition>() { vertex1 }))
+                NodeDefinition newNode = default;
+                if (i == 0)
                 {
-                    float distance = Vector2.Distance(
-                        new Vector2(vertex1.X, vertex1.Y),
-                        new Vector2(vertex2.X, vertex2.Y)
-                    );
-
-                    if (distanceLookup.Count < numEdgesToAdd)
+                    newNode = new NodeDefinition()
                     {
-                        distanceLookup[distance] = vertex2;
-                        continue;
-                    }
-
-                    float highestMin = distanceLookup.Keys.Max();
-
-                    if (distance < highestMin && vertex2.X > vertex1.X)
+                        Coord = new NodeDefinition.Coordinate(xDimension / 2, edgePadding)
+                    };
+                }
+                else if (i == numNodes - 1)
+                {
+                    newNode = new NodeDefinition()
                     {
-                        distanceLookup.Remove(highestMin);
-                        distanceLookup[distance] = vertex2;
-                    }
+                        Coord = new NodeDefinition.Coordinate(xDimension / 2, yDimension - edgePadding),
+                        IsBoss = true
+                    };
+                }
+                else
+                {
+                    int xOffset = i % numberOfRegions.x * regionDimensions.x;
+                    int yOffset = (int)((float)i / numberOfRegions.x) * regionDimensions.y;
+
+                    newNode = new NodeDefinition()
+                    {
+                        Coord = new NodeDefinition.Coordinate(
+                            Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.x - (regionPadding / 2) - 1), 1) + xOffset + edgePadding,
+                            Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.y - (regionPadding / 2) - 1), 1) + yOffset + (edgePadding * 2)
+                        )
+                    };
                 }
 
-                foreach (var node in distanceLookup.Values)
+                nodes.Add(newNode);
+            }
+
+            var visitedEdges = new HashSet<(NodeDefinition, NodeDefinition)>();
+            for (int i = 0; i < numPaths; i++)
+            {
+                var node = nodes[0];
+                while (!node.IsBoss)
                 {
-                    graph.AddEdge(new EdgeDefinition(vertex1, node));
+                    var closestNode = nodes
+                        .Where(n => !visitedEdges.Contains((node, n)))
+                        .Where(n => n.Coord.y > node.Coord.y)
+                        // order by nearest nodes
+                        .OrderBy(n => Mathf.Sqrt(Mathf.Pow(n.Coord.x - node.Coord.x, 2) + Mathf.Pow(n.Coord.y - node.Coord.y, 2)))
+                        .FirstOrDefault();
+
+                    if (closestNode == null)
+                    {
+                        break;
+                    }
+
+                    var closestNodeCoordinates = closestNode.Coord;
+                    if (node.NextNodes.IsNullOrEmpty())
+                    {
+                        node.NextNodes = new List<NodeDefinition.Coordinate>() { closestNodeCoordinates };
+                    }
+                    else
+                    {
+                        node.NextNodes.Add(closestNodeCoordinates);
+                    }
+                    visitedEdges.Add((node, closestNode));
+                    node = closestNode;
                 }
             }
 
-            return graph;
+            // filter nodes that dont have any connections
+            nodes = nodes.Where(node => !node.NextNodes.IsNullOrEmpty() || node.IsBoss).ToList();
+
+            // Remove nextNodes that were filtered out from above
+            var coords = nodes.Select(node => node.Coord);
+            foreach (var node in nodes)
+            {
+                if (node.NextNodes.IsNullOrEmpty())
+                {
+                    continue;
+                }
+
+                node.NextNodes = node.NextNodes
+                    .Where(coord => coords.Contains(coord))
+                    .ToList();
+            }
+
+            return new MapDefinition()
+            {
+                Nodes = nodes,
+                XDimension = mapSettings.XDimension,
+                YDimension = mapSettings.YDimension
+            };
         }
     }
 }

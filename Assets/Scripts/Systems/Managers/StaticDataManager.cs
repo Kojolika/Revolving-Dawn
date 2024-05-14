@@ -53,15 +53,7 @@ namespace Systems.Managers
         /// static data of cards, classes, mana, items, etc.
         /// </summary>
         /// <remarks>
-        /// We use public if its the unity editor since we have attributes such as <see cref="ForeignKeyAttribute"/>
-        /// that utilize this asset dictionary, however we don't need to instantiate a <see cref="IManager"/> normally during editor usage.
-        /// </remarks>
-#if UNITY_EDITOR
-        public
-#else
-        private
-#endif
-        Dictionary<Type, Dictionary<string, ScriptableObject>> CreateAssetDictionary()
+        private Dictionary<Type, Dictionary<string, ScriptableObject>> CreateAssetDictionary()
         {
             MyLogger.Log($"Generating asset dictionary in {ScriptableObjectsAssetPath}");
 
@@ -77,37 +69,13 @@ namespace Systems.Managers
                 // Create a new instance in case the value of the scriptableObject changes at runtime
                 var newAssetInstance = Object.Instantiate(asset);
 
-                string guid = default;
+                string assetId = assetPath;
 
-                foreach (var field in assetType.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
-                {
-                    var attributes = field.GetCustomAttributes(false);
-                    foreach (var attribute in attributes)
-                    {
-                        if (attribute is PrimaryKeyAttribute idAttribute)
-                        {
-                            var value = field.GetValue(newAssetInstance);
-                            if (value is ReadOnly<string> readOnlyString)
-                            {
-                                guid = readOnlyString;
-                            }
-                            else
-                            {
-                                guid = (string)value;
-                            }
-                        }
-                    }
-                }
-
-                if (string.IsNullOrEmpty(guid))
-                {
-                    MyLogger.LogError($"No id asset found for {newAssetInstance} of type {assetType}");
-                    throw new Exception();
-                }
+                MyLogger.Log($"Adding asset {assetId}");
 
                 if (Assets.ContainsKey(assetType))
                 {
-                    Assets[assetType].Add(guid, newAssetInstance);
+                    Assets[assetType].Add(assetId, newAssetInstance);
                 }
                 else
                 {
@@ -115,7 +83,7 @@ namespace Systems.Managers
                         assetType,
                         new Dictionary<string, ScriptableObject>()
                         {
-                            { guid, newAssetInstance }
+                            { assetId, newAssetInstance }
                         }
                     );
                 }
