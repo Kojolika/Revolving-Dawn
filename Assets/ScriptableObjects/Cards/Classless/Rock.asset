@@ -19,19 +19,14 @@ MonoBehaviour:
   nextCard: {fileID: 0}
   previousCard: {fileID: 0}
   playEffects:
-  - cardEffect:
-      rid: 3824536954595180550
+  - rid: 2151913910404907008
   references:
     version: 2
     RefIds:
-    - rid: 3824536954595180550
+    - rid: 2151913910404907008
       type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 0
         buff:
-          rid: 3824536954595180551
-    - rid: 3824536954595180551
-      type: {class: Block, ns: Models.Buffs, asm: Assembly-CSharp}
-      data:
-        definition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
-        stackSize: 1
+          buffDefinition: {fileID: 0}
+          stacksize: 0

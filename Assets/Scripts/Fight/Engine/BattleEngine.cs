@@ -55,13 +55,18 @@ namespace Fight
 
         async void EngineLoop()
         {
+            int eventIndex = 0;
             while (IsRunning)
             {
-                if (battleEventQueue.Count > 0)
+                if (eventIndex < battleEventQueue.Count)
                 {
-                    var latestEvent = battleEventQueue.First();
-                    latestEvent.Execute(this);
-                    MyLogger.Log(latestEvent.Log());
+                    battleEventQueue[eventIndex].OnBeforeExecute(this);
+
+                    battleEventQueue[eventIndex].Execute(this);
+                    MyLogger.Log(battleEventQueue[eventIndex].Log());
+                    
+                    battleEventQueue[eventIndex].OnAfterExecute(this);
+                    eventIndex++;
                 }
                 else
                 {
