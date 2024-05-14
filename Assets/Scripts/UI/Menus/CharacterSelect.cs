@@ -71,7 +71,8 @@ namespace UI.Menus
             _ = menuManager.Open<MapView, MapView.Data>(
                 new MapView.Data()
                 {
-                    MapDefinition = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentMap
+                    MapDefinition = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentMap,
+                    CurrentNode = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentMapNode
                 }
             );
         }

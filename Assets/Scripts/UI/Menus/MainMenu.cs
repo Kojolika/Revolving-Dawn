@@ -60,7 +60,11 @@ namespace UI.Menus
             else if (currentRun.CurrentMap != null)
             {
                 _ = menuManager.Open<MapView, MapView.Data>(
-                    new MapView.Data() { MapDefinition = currentRun.CurrentMap }
+                    new MapView.Data()
+                    {
+                        MapDefinition = currentRun.CurrentMap,
+                        CurrentNode = currentRun.CurrentMapNode
+                    }
                 );
             }
         }
