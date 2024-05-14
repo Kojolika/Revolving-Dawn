@@ -9,6 +9,7 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
 {
     #region Settings
     [SerializeField] private MapSettings mapSettings;
+    [SerializeField] private CardSettings cardSettings;
     #endregion
 
     #region Asset Data
@@ -18,7 +19,6 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
 
     public override void InstallBindings()
     {
-        Container.BindInstances(mapSettings);
-        Container.BindInstances(playerClassDefinitions);
+        Container.BindInstances(mapSettings, cardSettings, playerClassDefinitions);
     }
 }

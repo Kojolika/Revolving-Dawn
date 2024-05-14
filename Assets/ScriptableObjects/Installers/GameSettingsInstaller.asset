@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GameSettingsInstaller
   m_EditorClassIdentifier: 
   mapSettings: {fileID: 11400000, guid: f1d27fc6394a05549943c42f2df62d68, type: 2}
+  cardSettings: {fileID: 11400000, guid: a3c5abc4584d7e64396a0929897aa8ca, type: 2}
   playerClassDefinitions:
     assetReferences:
     - m_AssetGUID: cb928e790e6382a4cbc364a9596de11f
