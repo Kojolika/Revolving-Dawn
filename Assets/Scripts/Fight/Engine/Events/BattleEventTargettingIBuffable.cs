@@ -13,11 +13,11 @@ namespace Fight.Events
 
         public override void Execute(T target, BattleEngine battleEngine)
         {
-            var triggeredEvents = target.Buffs.Select(buff => buff.EventOccured(this));
-            foreach (var triggeredEvent in triggeredEvents)
-            {
-                battleEngine.InsertAfterEvent(this, triggeredEvent);
-            }
+            target.Buffs
+                .Select(buff => buff.EventOccured(this))
+                .Where(triggeredEvent => triggeredEvent != null)
+                .ToList()
+                .ForEach(triggeredEvent => battleEngine.InsertAfterEvent(this, triggeredEvent));
         }
     }
 
@@ -32,11 +32,11 @@ namespace Fight.Events
 
         public override void Execute(S source, T target, BattleEngine battleEngine)
         {
-            var triggeredEvents = target.Buffs.Select(buff => buff.EventOccured(this));
-            foreach (var triggeredEvent in triggeredEvents)
-            {
-                battleEngine.InsertAfterEvent(this, triggeredEvent);
-            }
+            target.Buffs
+                .Select(buff => buff.EventOccured(this))
+                .Where(triggeredEvent => triggeredEvent != null)
+                .ToList()
+                .ForEach(triggeredEvent => battleEngine.InsertAfterEvent(this, triggeredEvent));
         }
     }
 }

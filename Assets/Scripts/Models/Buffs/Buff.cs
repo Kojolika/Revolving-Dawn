@@ -10,7 +10,11 @@ namespace Models.Buffs
         [SerializeField] private BuffDefinition buffDefinition;
         [SerializeField] private ulong stacksize;
 
-        public ulong StackSize => stacksize;
+        public ulong StackSize
+        {
+            get => stacksize;
+            set => stacksize = value;
+        }
         public override BuffDefinition Definition => buffDefinition;
 
         public BuffTriggeredEvent<TEvent> EventOccured<TEvent>(TEvent battleEvent) where TEvent : IBattleEvent
@@ -22,11 +26,6 @@ namespace Models.Buffs
 
             return null;
         }
-
-        public void SetStackSize<TEvent>(BuffTriggeredEvent<TEvent> buffTriggeredEvent) 
-            where TEvent : IBattleEvent 
-            => stacksize = buffTriggeredEvent.StackSizeAfterTrigger;
-
     }
 
     [Serializable]
