@@ -2,7 +2,7 @@ using Models;
 
 namespace Fight.Events
 {
-    public class DealDamageEvent : BattleEventTargettingIBuffable<IHealth>
+    public class DealDamageEvent : BattleEventTargetingIBuffable<IHealth>
     {
         public ulong Amount { get; set; }
         public DealDamageEvent(IHealth target, ulong amount) : base(target)
@@ -12,7 +12,6 @@ namespace Fight.Events
 
         public override void Execute(IHealth target, BattleEngine battleEngine)
         {
-            base.Execute(target, battleEngine);
             target.DealDamage(Amount);
         }
 

@@ -14,8 +14,15 @@ namespace Fight.Events
             Target = target;
         }
 
+        public virtual void OnBeforeExecute(S source, T target, BattleEngine battleEngine) { }
+        public void OnBeforeExecute(BattleEngine battleEngine) => OnBeforeExecute(Source, Target, battleEngine);
+
         public abstract void Execute(S source, T target, BattleEngine battleEngine);
         public void Execute(BattleEngine battleEngine) => Execute(Source, Target, battleEngine);
+
+        public virtual void OnAfterExecute(S source, T target, BattleEngine battleEngine) { }
+        public void OnAfterExecute(BattleEngine battleEngine) => OnAfterExecute(Source, Target, battleEngine);
+
         public abstract string Log();
     }
 
@@ -27,9 +34,15 @@ namespace Fight.Events
         {
             Target = target;
         }
+        public virtual void OnBeforeExecute(T target, BattleEngine battleEngine) { }
+        public void OnBeforeExecute(BattleEngine battleEngine) => OnBeforeExecute(Target, battleEngine);
 
         public abstract void Execute(T target, BattleEngine battleEngine);
         public void Execute(BattleEngine battleEngine) => Execute(Target, battleEngine);
+
+        public virtual void OnAfterExecute(T target, BattleEngine battleEngine) { }
+        public void OnAfterExecute(BattleEngine battleEngine) => OnAfterExecute(Target, battleEngine);
+
         public abstract string Log();
     }
 }

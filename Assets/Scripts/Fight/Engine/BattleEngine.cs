@@ -25,7 +25,7 @@ namespace Fight
             IsRunning = false;
         }
 
-        public void InsertAfterEvent(IBattleEvent battleEventInQueue, IBattleEvent battleEventToInsert)
+        public void InsertBeforeEvent(IBattleEvent battleEventInQueue, IBattleEvent battleEventToInsert)
         {
             var indexOfEvent = battleEventQueue.IndexOf(battleEventInQueue);
             if (indexOfEvent < 0)
@@ -34,6 +34,23 @@ namespace Fight
             }
 
             battleEventQueue.Insert(indexOfEvent, battleEventToInsert);
+        }
+
+        public void InsertAfterEvent(IBattleEvent battleEventInQueue, IBattleEvent battleEventToInsert)
+        {
+            var indexOfEvent = battleEventQueue.IndexOf(battleEventInQueue);
+            if (indexOfEvent < 0)
+            {
+                return;
+            }
+            if (indexOfEvent == battleEventQueue.Count() - 1)
+            {
+                battleEventQueue.Add(battleEventToInsert);
+            }
+            else
+            {
+                battleEventQueue.Insert(indexOfEvent + 1, battleEventToInsert);
+            }
         }
 
         async void EngineLoop()

@@ -16,16 +16,6 @@ namespace Models.Buffs
             set => stacksize = value;
         }
         public override BuffDefinition Definition => buffDefinition;
-
-        public BuffTriggeredEvent<TEvent> EventOccured<TEvent>(TEvent battleEvent) where TEvent : IBattleEvent
-        {
-            if (buffDefinition is ITriggerableBuff<TEvent> triggerableBuff)
-            {
-                return triggerableBuff.GenerateTriggeredEvent(battleEvent, this);
-            }
-
-            return null;
-        }
     }
 
     [Serializable]

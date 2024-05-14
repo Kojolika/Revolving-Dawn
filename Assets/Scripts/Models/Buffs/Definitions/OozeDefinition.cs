@@ -5,9 +5,9 @@ using UnityEngine;
 namespace Models.Buffs
 {
     [CreateAssetMenu(fileName = nameof(OozeDefinition), menuName = "RevolvingDawn/Buffs/" + nameof(OozeDefinition))]
-    public class OozeDefinition : BuffDefinition, ITriggerableBuff<TurnStarted>
+    public class OozeDefinition : BuffDefinition, ITriggerableBuffAfter<TurnStarted>
     {
-        public ulong OnTrigger(TurnStarted triggeredByEvent, Buff buff)
+        public ulong OnAfterTrigger(TurnStarted triggeredByEvent, Buff buff)
         {
             if (triggeredByEvent.Target is PlayerHero playerHero)
             {

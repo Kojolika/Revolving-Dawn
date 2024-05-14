@@ -4,10 +4,10 @@ using UnityEngine;
 namespace Models.Buffs
 {
     [CreateAssetMenu(fileName = nameof(BlockDefinition), menuName = "RevolvingDawn/Buffs/" + nameof(BlockDefinition))]
-    public class BlockDefinition : BuffDefinition, ITriggerableBuff<TurnStarted>, ITriggerableBuff<DealDamageEvent>
+    public class BlockDefinition : BuffDefinition, ITriggerableBuffAfter<TurnStarted>, ITriggerableBuffBefore<DealDamageEvent>
     {
-        public ulong OnTrigger(TurnStarted turnStarted, Buff buff) => 0;
-        public ulong OnTrigger(DealDamageEvent dealDamageEvent, Buff buff)
+        public ulong OnAfterTrigger(TurnStarted turnStarted, Buff buff) => 0;
+        public ulong OnBeforeTrigger(DealDamageEvent dealDamageEvent, Buff buff)
         {
             var cachedDamageAmount = dealDamageEvent.Amount;
             try

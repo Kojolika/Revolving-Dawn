@@ -25,4 +25,34 @@ namespace Fight.Events
 
         public override string Log() => $"Buff {Buff.Definition.name} triggered off of {nameof(TEvent)}";
     }
+
+    public static class BuffTriggeredEventFactory
+    {
+        public enum Timing
+        {
+            Before,
+            After
+        }
+        public static BuffTriggeredEvent<TEvent> GenerateTriggeredEvent<TEvent>(TEvent eventToCheck, Buff buff, Timing timing) where TEvent : IBattleEvent
+        {
+            if (timing == Timing.Before)
+            {
+                if (buff.Definition is ITriggerableBuffBefore<TEvent> triggerableBuff)
+                {
+                    return new BuffTriggeredEvent<TEvent>(eventToCheck, triggerableBuff.OnBeforeTrigger, buff);
+                }
+
+                return null;
+            }
+            else
+            {
+                if (buff.Definition is ITriggerableBuffAfter<TEvent> triggerableBuff)
+                {
+                    return new BuffTriggeredEvent<TEvent>(eventToCheck, triggerableBuff.OnAfterTrigger, buff);
+                }
+
+                return null;
+            }
+        }
+    }
 }
