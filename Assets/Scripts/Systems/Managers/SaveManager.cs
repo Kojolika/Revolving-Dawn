@@ -53,6 +53,17 @@ namespace Systems.Managers
             }
         }
 
+        public async UniTask SaveFight()
+        {
+            MyLogger.Log($"Saving file at {PlayerSaveFilePath}");
+            if (!Directory.Exists(SavePath))
+            {
+                MyLogger.Log("Directory not found, creating new...");
+                await Save(default);
+            }
+
+        }
+
         public async UniTask<PlayerDefinition> TryLoadSavedData()
         {
             MyLogger.Log($"Loading from {PlayerSaveFilePath}");

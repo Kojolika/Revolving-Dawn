@@ -14,22 +14,27 @@ namespace Models.Characters.Player
         {
 
         }
-        public void DrawCard(Card card)
+        
+        public void DrawCard()
         {
 
         }
+
         public void DiscardCard(Card card)
         {
 
         }
+
         public void AddCardToLost(Card card)
         {
 
         }
+
         public void UpgradeCard(Card card)
         {
 
         }
+
         public void DowngradeCard(Card card)
         {
 
