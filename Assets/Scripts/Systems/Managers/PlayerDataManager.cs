@@ -53,7 +53,7 @@ namespace Systems.Managers
                 Gold = 0,
                 CurrentMap = newMap,
                 CurrentMapNode = newMap.Nodes[0],
-                PlayerClass = playerClass
+                PlayerCharacter = new(playerClass)
             };
 
             await saveManager.Save(CurrentPlayerDefinition);

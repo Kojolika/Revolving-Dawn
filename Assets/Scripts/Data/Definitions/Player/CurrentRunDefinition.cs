@@ -3,6 +3,7 @@ using Models.Map;
 using Newtonsoft.Json;
 using Data.Definitions;
 using Models.Player;
+using Models.Characters;
 
 namespace Characters.Player2.Run
 {
@@ -13,13 +14,10 @@ namespace Characters.Player2.Run
         public string Name;
 
         [JsonProperty("gold")]
-        public int Gold;
+        public ulong Gold;
 
-        [JsonProperty("player_class")]
-        public PlayerClassDefinition PlayerClass;
-
-        [JsonProperty("deck")]
-        public List<CardDefinition> Deck;
+        [JsonProperty("player_character")]
+        public PlayerCharacter PlayerCharacter;
 
         [JsonProperty("current_map")]
         public MapDefinition CurrentMap;
@@ -28,6 +26,6 @@ namespace Characters.Player2.Run
         public NodeDefinition CurrentMapNode;
 
         [JsonProperty("current_level")]
-        public LevelDefinition CurrentLevel;
+        public int CurrentLevel;
     }
 }

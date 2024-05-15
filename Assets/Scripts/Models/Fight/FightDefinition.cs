@@ -7,6 +7,6 @@ namespace Models.Fight
     public class FightDefinition
     {
         public List<Enemy> Enemies;
-        public PlayerHero PlayerHero;
+        public PlayerCharacter PlayerCharacter;
     }
 }

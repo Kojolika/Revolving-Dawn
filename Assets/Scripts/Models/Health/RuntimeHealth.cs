@@ -6,11 +6,10 @@ using UnityEngine;
 namespace Models.Health
 {
   [Serializable]
-  public class RuntimeHealth : RuntimeModel<HealthDefinition>, IHealth
+  public class RuntimeHealth : RuntimeModel<HealthDefinition>
   {
     public ulong MaxHealth => healthDefinition.maxHealth;
     public ulong CurrentHealth { get; private set; }
-    public List<Buff> Buffs { get; private set; }
 
     [SerializeField] private HealthDefinition healthDefinition;
     public override HealthDefinition Definition => healthDefinition;
@@ -57,8 +56,5 @@ namespace Models.Health
       }
       CurrentHealth = finalHealth;
     }
-
-    public void DealDamage(ulong amount) => RemoveHealth(amount);
-    public void Heal(ulong amount) => AddHealth(amount);
   }
 }

@@ -9,9 +9,9 @@ namespace Models.Buffs
     {
         public ulong OnAfterTrigger(TurnStarted triggeredByEvent, Buff buff)
         {
-            if (triggeredByEvent.Target is PlayerHero playerHero)
+            if (triggeredByEvent.Target is PlayerCharacter playerCharacter)
             {
-                playerHero.Decks.DowngradeCard(null);
+                playerCharacter.Decks.DowngradeCard(null);
             }
 
             return buff.StackSize - 1;

@@ -1,19 +1,21 @@
 using System.Collections.Generic;
 using Models.Buffs;
 using Models.Health;
-using UnityEngine;
+using Newtonsoft.Json;
 
 namespace Models.Characters
 {
     [System.Serializable]
     public abstract class Character : IHealth
     {
-        [SerializeField] private string name;
-        [SerializeField] private HealthDefinition healthDefinition;
+        public abstract string Name { get; }
+        public abstract HealthDefinition HealthDefinition { get; }
 
-        public string Name => name;
+        [JsonProperty("buffs")]
         public List<Buff> Buffs { get; set; }
-        public RuntimeHealth Health;
+
+        [JsonProperty("health")]
+        public RuntimeHealth Health { get; protected set; }
 
         public void DealDamage(ulong amount) => Health.RemoveHealth(amount);
         public void Heal(ulong amount) => Health.AddHealth(amount);
