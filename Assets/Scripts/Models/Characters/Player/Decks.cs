@@ -7,37 +7,23 @@ using UnityEngine.AddressableAssets;
 namespace Models.Characters.Player
 {
     [System.Serializable]
-    public class Decks : ISerializationCallbackReceiver
+    public class Decks
     {
         [JsonProperty("full")]
         public List<AssetReferenceT<Card>> FullReference { get; private set; }
 
-        [JsonIgnore]
-        public List<Card> Full { get; private set; }
-
         [JsonProperty("hand")]
         public List<AssetReferenceT<Card>> HandReference { get; private set; }
-
-        [JsonIgnore]
-        public List<Card> Hand { get; private set; }
 
         [JsonProperty("remaining")]
         public List<AssetReferenceT<Card>> RemainingReference { get; private set; }
 
-        [JsonIgnore]
-        public List<Card> Remaining { get; private set; }
-
         [JsonProperty("discard")]
         public List<AssetReferenceT<Card>> DiscardReference { get; private set; }
-
-        [JsonIgnore]
-        public List<Card> Discard { get; private set; }
 
         [JsonProperty("lost")]
         public List<AssetReferenceT<Card>> LostReference { get; private set; }
 
-        [JsonIgnore]
-        public List<Card> Lost { get; private set; }
 
         public Decks(List<AssetReferenceT<Card>> fullDeck)
         {
@@ -77,25 +63,5 @@ namespace Models.Characters.Player
         {
 
         }
-
-        #region ISerializationCallbackReceiver
-        private Dictionary<Card, object> RuntimeKeyLookup = new();
-        public void OnBeforeSerialize()
-        {
-            var uniqueCards = new List<Card>()
-                .Concat(Full)
-                .Concat(Hand)
-                .Concat(Remaining)
-                .Concat(Discard)
-                .Concat(Lost)
-                .Distinct();
-        }
-
-        public void OnAfterDeserialize()
-        {
-            throw new System.NotImplementedException();
-        }
-        #endregion
     }
-
 }
