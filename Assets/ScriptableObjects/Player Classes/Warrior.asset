@@ -14,30 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Warrior
   startingDeck:
-  - m_AssetGUID: 800bb8b75bced384981baaac7271f2b8
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: 800bb8b75bced384981baaac7271f2b8
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: 800bb8b75bced384981baaac7271f2b8
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: b7d98dba89d65734ea3a2d2ad08fbe68
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: b7d98dba89d65734ea3a2d2ad08fbe68
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: b7d98dba89d65734ea3a2d2ad08fbe68
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
+  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
+  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
+  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
+  - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
+  - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
+  - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
   healthDefinition:
     maxHealth: 30
   description: Here is a great and beautifully written description about the Warrior

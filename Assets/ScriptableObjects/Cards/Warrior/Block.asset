@@ -14,10 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Block
   manas:
-  - {fileID: 11400000, guid: db0d8289709d075419d8283e0629229b, type: 2}
-  artwork: {fileID: 21300000, guid: 4024798ef8e3da84f96ea6b0774e6ebb, type: 3}
-  class: {fileID: 11400000, guid: cb928e790e6382a4cbc364a9596de11f, type: 2}
-  nextCard: {fileID: 0}
+  - m_AssetGUID: db0d8289709d075419d8283e0629229b
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  artwork:
+    m_AssetGUID: 4024798ef8e3da84f96ea6b0774e6ebb
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1
+  class:
+    m_AssetGUID: cb928e790e6382a4cbc364a9596de11f
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  nextCard: {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
   previousCard: {fileID: 0}
   playEffects:
   - rid: 3824537153553563652

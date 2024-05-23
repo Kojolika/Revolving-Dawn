@@ -23,7 +23,10 @@ namespace Systems.Managers
 
         public UniTask Startup()
         {
-            jsonSerializer = new JsonSerializer();
+            jsonSerializer = new JsonSerializer
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+            };
             jsonSerializer.Converters.Add(new AssetReferenceConverter());
             return UniTask.CompletedTask;
         }
@@ -40,12 +43,14 @@ namespace Systems.Managers
             await File.WriteAllTextAsync(PlayerSaveFilePath, playerDefinition.ToString());
             using (StreamWriter file = File.CreateText(PlayerSaveFilePath))
             {
-                using (JsonTextWriter writer = new JsonTextWriter(file))
+                using (JsonTextWriter writer = new(file))
                 {
                     JToken playerJson = JToken.FromObject(playerDefinition, jsonSerializer);
-                    JObject json = new JObject();
-                    // Store the player data under the 'player' key
-                    json.Add(PlayerDataJsonObjectName, playerJson);
+                    JObject json = new()
+                    {
+                        // Store the player data under the 'player' key
+                        { PlayerDataJsonObjectName, playerJson }
+                    };
 
                     json.WriteTo(writer);
                     MyLogger.Log("Saved successfully.");

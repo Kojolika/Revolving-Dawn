@@ -4,30 +4,32 @@ using Models.Player;
 using Models.CardEffects;
 using Models.Mana;
 using Utils.Attributes;
+using Newtonsoft.Json;
+using UnityEngine.AddressableAssets;
 
 namespace Models
 {
-    [CreateAssetMenu(fileName = "New Card", menuName = "RevolvingDawn/Cards/New Card")]
+    [System.Serializable, CreateAssetMenu(fileName = "New Card", menuName = "RevolvingDawn/Cards/New Card")]
     public class Card : ScriptableObject
     {
         #region Public Accessors
 
-        public string Name => name;
-        public List<ManaDefinition> Manas => manas;
-        public Sprite Artwork => artwork;
-        public PlayerClassDefinition Class => @class;
-        public Card NextCard => nextCard;
-        public Card PreviousCard => previousCard;
-        public List<ICombatEffect> PlayEffects => playEffects;
+        [JsonIgnore] public string Name => name;
+        [JsonIgnore] public List<AssetReferenceT<ManaDefinition>> Manas => manas;
+        [JsonIgnore] public AssetReferenceSprite Artwork => artwork;
+        [JsonIgnore] public AssetReferenceT<PlayerClassDefinition> Class => @class;
+        [JsonIgnore] public Card NextCard => nextCard;
+        [JsonIgnore] public Card PreviousCard => previousCard;
+        [JsonIgnore] public List<ICombatEffect> PlayEffects => playEffects;
 
         #endregion
 
-        [SerializeField] private new string name;
-        [SerializeField] private List<ManaDefinition> manas;
-        [SerializeField] private Sprite artwork;
-        [SerializeField] private PlayerClassDefinition @class;
-        [SerializeField] private Card nextCard;
-        [SerializeField] private Card previousCard;
-        [SerializeReference, DisplayInterface(typeof(ICombatEffect))] private List<ICombatEffect> playEffects;
+        [SerializeField, JsonProperty("name")] private new string name;
+        [SerializeField, JsonProperty("manas")] private List<AssetReferenceT<ManaDefinition>> manas;
+        [SerializeField, JsonProperty("artwork")] private AssetReferenceSprite artwork;
+        [SerializeField, JsonProperty("player_class")] private AssetReferenceT<PlayerClassDefinition> @class;
+        [SerializeField, JsonProperty("next_card")] private Card nextCard;
+        [SerializeField, JsonProperty("previous_card")] private Card previousCard;
+        [SerializeReference, DisplayInterface(typeof(ICombatEffect)), JsonProperty("play_effects")] private List<ICombatEffect> playEffects;
     }
 }

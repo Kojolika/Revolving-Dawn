@@ -1,18 +1,19 @@
-using Fight.Events;
+using Newtonsoft.Json;
 using UnityEngine;
-using Utils.Attributes;
+using UnityEngine.AddressableAssets;
 
 namespace Models.Buffs
 {
+    [System.Serializable]
     public class BuffDefinition : ScriptableObject
     {
-        [SerializeField] private new string name;
-        [SerializeField] private Sprite icon;
-        [SerializeField] private ulong maxStackSize;
-        
+        [SerializeField, JsonProperty("name")] private new string name;
+        [SerializeField, JsonProperty("icon")] private AssetReferenceSprite icon;
+        [SerializeField, JsonProperty("max_stack_size")] private ulong maxStackSize;
 
-        public string Name => name;
-        public Sprite Icon => icon;
-        public ulong MaxStackSize => maxStackSize;
+
+        [JsonIgnore] public string Name => name;
+        [JsonIgnore] public AssetReferenceSprite Icon => icon;
+        [JsonIgnore] public ulong MaxStackSize => maxStackSize;
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using Fight.Events;
 using UnityEngine;
 
 namespace Models.Buffs
@@ -16,18 +15,5 @@ namespace Models.Buffs
             set => stacksize = value;
         }
         public override BuffDefinition Definition => buffDefinition;
-    }
-
-    [Serializable]
-    public struct AmountLost<T> where T : struct
-    {
-        public LostType TypeOfLost;
-        public T Amount;
-    }
-
-    public enum LostType
-    {
-        Amount,
-        All
     }
 }

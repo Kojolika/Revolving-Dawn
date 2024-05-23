@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddc3a85dbd1d0cb4783f9e3167dd5fcf, type: 3}
   m_Name: OozeDefinition
   m_EditorClassIdentifier: 
-  name: 
-  icon: {fileID: 0}
-  maxStackSize: 0
+  name: Ooze
+  icon:
+    m_AssetGUID: 6d8d3d623dbde1b43aa737841443db60
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  maxStackSize: 199999

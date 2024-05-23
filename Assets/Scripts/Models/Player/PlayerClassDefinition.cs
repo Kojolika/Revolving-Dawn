@@ -16,7 +16,7 @@ namespace Models.Player
 
         [SerializeField]
         [JsonProperty("startingDeck")]
-        private List<AssetReferenceT<Card>> startingDeck;
+        private List<Card> startingDeck;
 
         [SerializeField]
         [JsonIgnore]
@@ -35,7 +35,7 @@ namespace Models.Player
         private AssetReferenceSprite cardBorderReference;
         
         [JsonIgnore] public string Name => name;
-        [JsonIgnore] public List<AssetReferenceT<Card>> StartingDeck => startingDeck;
+        [JsonIgnore] public List<Card> StartingDeck => startingDeck;
         [JsonIgnore] public HealthDefinition HealthDefinition => healthDefinition;
         [JsonIgnore] public string Description => description;
         [JsonIgnore] public AssetReferenceSprite CharacterAvatarReference => characterAvatarReference;

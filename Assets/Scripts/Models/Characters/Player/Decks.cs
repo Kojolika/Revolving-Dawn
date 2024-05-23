@@ -1,37 +1,22 @@
 using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace Models.Characters.Player
 {
-    [System.Serializable]
     public class Decks
     {
-        [JsonProperty("full")]
-        public List<AssetReferenceT<Card>> FullReference { get; private set; }
+        public List<Card> Full { get; private set; }
+        public List<Card> Hand { get; private set; }
+        public List<Card> Remaining { get; private set; }
+        public List<Card> Discard { get; private set; }
+        public List<Card> Lost { get; private set; }
 
-        [JsonProperty("hand")]
-        public List<AssetReferenceT<Card>> HandReference { get; private set; }
-
-        [JsonProperty("remaining")]
-        public List<AssetReferenceT<Card>> RemainingReference { get; private set; }
-
-        [JsonProperty("discard")]
-        public List<AssetReferenceT<Card>> DiscardReference { get; private set; }
-
-        [JsonProperty("lost")]
-        public List<AssetReferenceT<Card>> LostReference { get; private set; }
-
-
-        public Decks(List<AssetReferenceT<Card>> fullDeck)
+        public Decks(List<Card> fullDeck)
         {
-            FullReference = fullDeck;
-            HandReference = new();
-            RemainingReference = new();
-            DiscardReference = new();
-            LostReference = new();
+            Full = fullDeck;
+            Hand = new();
+            Remaining = new();
+            Discard = new();
+            Lost = new();
         }
 
         public void PlayCard(Card card)

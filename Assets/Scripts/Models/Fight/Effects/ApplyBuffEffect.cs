@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fight.Events;
@@ -7,10 +6,10 @@ using UnityEngine;
 
 namespace Models.CardEffects
 {
-    [Serializable]
+    [System.Serializable]
     public class ApplyBuffEffect : CombatEffect
     {
-        [SerializeField] Buff buff;
+        [SerializeField, Newtonsoft.Json.JsonProperty("buff")] Buff buff;
         public override List<IBattleEvent> Execute(List<IHealth> targets)
             => targets.Select(target => new ApplyBuffEvent(target, buff) as IBattleEvent).ToList();
     }
