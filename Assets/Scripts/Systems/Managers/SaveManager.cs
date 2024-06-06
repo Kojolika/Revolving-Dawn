@@ -25,9 +25,12 @@ namespace Systems.Managers
         {
             jsonSerializer = new JsonSerializer
             {
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented,
             };
             jsonSerializer.Converters.Add(new AssetReferenceConverter());
+            //jsonSerializer.Converters.Add(new ColorConverter());
             return UniTask.CompletedTask;
         }
 
@@ -41,21 +44,19 @@ namespace Systems.Managers
             }
 
             await File.WriteAllTextAsync(PlayerSaveFilePath, playerDefinition.ToString());
-            using (StreamWriter file = File.CreateText(PlayerSaveFilePath))
-            {
-                using (JsonTextWriter writer = new(file))
-                {
-                    JToken playerJson = JToken.FromObject(playerDefinition, jsonSerializer);
-                    JObject json = new()
-                    {
-                        // Store the player data under the 'player' key
-                        { PlayerDataJsonObjectName, playerJson }
-                    };
 
-                    json.WriteTo(writer);
-                    MyLogger.Log("Saved successfully.");
-                }
-            }
+            using StreamWriter file = File.CreateText(PlayerSaveFilePath);
+            using JsonTextWriter writer = new(file);
+
+            JToken playerJson = JToken.FromObject(playerDefinition, jsonSerializer);
+            JObject json = new()
+            {
+                // Store the player data under the 'player' key
+                { PlayerDataJsonObjectName, playerJson }
+            };
+
+            json.WriteTo(writer);
+            MyLogger.Log("Saved successfully.");
         }
 
         public async UniTask SaveFight()

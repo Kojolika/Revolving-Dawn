@@ -11,8 +11,8 @@ namespace Settings
         [System.Serializable]
         public class CardManaPair
         {
-            [SerializeField] private ManaDefinition manaDefinition;
-            [SerializeField] private Card card;
+            [SerializeField] private ManaSODefinition manaDefinition;
+            [SerializeField] private CardSODefinition card;
         }
 
         [Tooltip("The Card and mana defined here will determine the final downgrade a card can have for which mana type it is."

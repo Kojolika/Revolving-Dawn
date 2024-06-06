@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Models.Health;
 using Models.Player;
 using Newtonsoft.Json;
-using Tooling.Logging;
 
 namespace Models.Characters
 {
@@ -10,7 +9,7 @@ namespace Models.Characters
     public class PlayerCharacter : Character, IInventory
     {
         [JsonProperty("class")]
-        public PlayerClassDefinition Class { get; private set; }
+        public PlayerClass Class { get; private set; }
 
         [JsonProperty("decks")]
         public Player.Decks Decks { get; private set; }
@@ -24,11 +23,17 @@ namespace Models.Characters
         [JsonIgnore]
         public override HealthDefinition HealthDefinition => Class.HealthDefinition;
 
-        public PlayerCharacter(PlayerClassDefinition playerClassDefinition)
+        [JsonConstructor]
+        public PlayerCharacter()
         {
-            Class = playerClassDefinition;
+
+        }
+
+        public PlayerCharacter(PlayerClassSODefinition playerClassDefinition)
+        {
+            Class = playerClassDefinition.Representation;
             Decks = new Player.Decks(Class.StartingDeck);
-            Health = new(HealthDefinition.maxHealth, HealthDefinition);
+            Health = new(HealthDefinition.MaxHealth, HealthDefinition);
         }
     }
 }

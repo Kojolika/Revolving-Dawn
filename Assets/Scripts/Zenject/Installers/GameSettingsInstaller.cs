@@ -13,7 +13,7 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
     #endregion
 
     #region Asset Data
-    [SerializeField] private StaticDataReference<PlayerClassDefinition> playerClassDefinitions;
+    [SerializeField] private StaticDataReference<PlayerClassSODefinition> playerClassDefinitions;
 
     #endregion
 

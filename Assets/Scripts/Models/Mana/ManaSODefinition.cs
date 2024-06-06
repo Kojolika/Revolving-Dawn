@@ -1,10 +1,9 @@
 using UnityEngine;
-using Newtonsoft.Json;
 
 namespace Models.Mana
 {
-    [CreateAssetMenu(fileName = nameof(ManaDefinition), menuName = "RevolvingDawn/Mana/New " + nameof(ManaDefinition))]
-    public class ManaDefinition : ScriptableObject
+    [CreateAssetMenu(fileName = nameof(ManaSODefinition), menuName = "RevolvingDawn/Mana/New " + nameof(ManaSODefinition))]
+    public class ManaSODefinition : ScriptableObject
     {
         public string Name => name;
         public Color Color => color;

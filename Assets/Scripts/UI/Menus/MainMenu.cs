@@ -20,18 +20,15 @@ namespace UI.Menus
 
         private PlayerDataManager playerDataManager;
         private MenuManager menuManager;
-        private StaticDataManager staticDataManager;
-        private List<PlayerClassDefinition> playerClassDefinitions;
+        private List<PlayerClassSODefinition> playerClassDefinitions;
 
         [Zenject.Inject]
         async void Construct(PlayerDataManager playerDataManager,
             MenuManager menuManager,
-            StaticDataManager staticDataManager,
-            StaticDataReference<PlayerClassDefinition> playerClassReferences)
+            StaticDataReference<PlayerClassSODefinition> playerClassReferences)
         {
             this.playerDataManager = playerDataManager;
             this.menuManager = menuManager;
-            this.staticDataManager = staticDataManager;
             playerClassDefinitions = await playerClassReferences.LoadAssetsAsync();
         }
 

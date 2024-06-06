@@ -17,7 +17,7 @@ namespace UI.Menus
     {
         public class Data
         {
-            public List<PlayerClassDefinition> Classes;
+            public List<PlayerClassSODefinition> Classes;
         }
 
         [ResourcePath]
@@ -28,7 +28,7 @@ namespace UI.Menus
         [SerializeField] MyButton playButton;
 
         List<ClassDisplayElement> classDisplayElements = new();
-        PlayerClassDefinition selectedclass;
+        PlayerClassSODefinition selectedclass;
         MenuManager menuManager;
         PlayerDataManager playerDataManager;
         MapSettings mapSettings;

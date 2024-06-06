@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace UI.DisplayElements
 {
-    public class NodeDisplayElement : UI.Common.DisplayElement<NodeDisplayElement.Data>
+    public class NodeDisplayElement : DisplayElement<NodeDisplayElement.Data>
     {
         public class Data
         {
@@ -22,7 +22,10 @@ namespace UI.DisplayElements
             label.SetText(data.Definition.Coord == data.CurrentPlayerNode.Coord ? "H" : "");
 
             button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(() => MyLogger.Log($"I was clicked! Coord: {data.Definition.Coord}"));
+            button.onClick.AddListener(() =>
+            {
+                
+            });
         }
     }
 }

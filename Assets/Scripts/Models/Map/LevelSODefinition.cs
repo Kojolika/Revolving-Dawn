@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Models.Map
 {
-    [CreateAssetMenu(fileName = "New " + nameof(LevelDefinition), menuName = "RevolvingDawn/Levels/" + nameof(LevelDefinition))]
-    public class LevelDefinition : ScriptableObject
+    [CreateAssetMenu(fileName = "New " + nameof(LevelSODefinition), menuName = "RevolvingDawn/Levels/" + nameof(LevelSODefinition))]
+    public class LevelSODefinition : ScriptableObject
     {
         [JsonProperty("level")]
         public int Level;

@@ -9,7 +9,7 @@ namespace Models.Fight
 {
     public static class FightDefinitionFactory
     {
-        public static FightDefinition GenerateFightForLevel(LevelDefinition levelDefinition, PlayerDefinition playerDefinition)
+        public static FightDefinition GenerateFightForLevel(LevelSODefinition levelDefinition, PlayerDefinition playerDefinition)
         {
             if (playerDefinition.CurrentRun.PlayerCharacter == null)
             {

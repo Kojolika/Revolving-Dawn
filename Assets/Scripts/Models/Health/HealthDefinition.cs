@@ -3,6 +3,7 @@ namespace Models.Health
     [System.Serializable]
     public class HealthDefinition
     {
-        public ulong maxHealth;
+        [Newtonsoft.Json.JsonProperty("max_health")]
+        public ulong MaxHealth;
     }
 }

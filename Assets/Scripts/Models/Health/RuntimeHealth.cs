@@ -6,13 +6,13 @@ using UnityEngine;
 namespace Models.Health
 {
   [Serializable]
-  public class RuntimeHealth : RuntimeModel<HealthDefinition>
+  public class RuntimeHealth : IRuntimeModel<HealthDefinition>
   {
-    public ulong MaxHealth => healthDefinition.maxHealth;
+    public ulong MaxHealth => healthDefinition.MaxHealth;
     public ulong CurrentHealth { get; private set; }
 
     [SerializeField] private HealthDefinition healthDefinition;
-    public override HealthDefinition Definition => healthDefinition;
+    public HealthDefinition Definition => healthDefinition;
 
     public RuntimeHealth(ulong currentHealth, HealthDefinition healthDefinition)
     {

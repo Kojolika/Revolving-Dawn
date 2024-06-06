@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UI.Common.DisplayElements
 {
-    public class ClassDisplayElement : DisplayElement<PlayerClassDefinition>
+    public class ClassDisplayElement : DisplayElement<PlayerClassSODefinition>
     {
         [SerializeField] Image classImage;
         [SerializeField] Label className;
@@ -16,7 +16,7 @@ namespace UI.Common.DisplayElements
 
         private AssetReference classImageReference;
 
-        public override void Populate(PlayerClassDefinition data)
+        public override void Populate(PlayerClassSODefinition data)
         {
             className.SetText(data.Name);
             description.SetText(data.Description);

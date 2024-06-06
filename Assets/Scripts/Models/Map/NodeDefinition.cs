@@ -23,8 +23,6 @@ namespace Models.Map
             public int x;
             public int y;
 
-            public static readonly Coordinate Invalid = new Coordinate(int.MinValue, int.MinValue);
-
             public Coordinate(int x, int y)
             {
                 this.x = x;

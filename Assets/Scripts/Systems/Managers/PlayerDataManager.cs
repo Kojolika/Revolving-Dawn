@@ -44,7 +44,7 @@ namespace Systems.Managers
             await saveManager.Save(CurrentPlayerDefinition);
         }
 
-        public async UniTask StartNewRun(PlayerClassDefinition playerClass)
+        public async UniTask StartNewRun(PlayerClassSODefinition playerClass)
         {
             var newMap = new MapFactory().Create(mapSettings);
             CurrentPlayerDefinition.CurrentRun = new Characters.Player2.Run.RunDefinition()

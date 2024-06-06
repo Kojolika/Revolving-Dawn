@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Models.Buffs
 {
     [Serializable]
-    public class Buff : RuntimeModel<BuffDefinition>
+    public class Buff : IRuntimeModel<BuffDefinition>
     {
         [SerializeField] private BuffDefinition buffDefinition;
         [SerializeField] private ulong stacksize;
@@ -14,6 +14,6 @@ namespace Models.Buffs
             get => stacksize;
             set => stacksize = value;
         }
-        public override BuffDefinition Definition => buffDefinition;
+        public BuffDefinition Definition => buffDefinition;
     }
 }

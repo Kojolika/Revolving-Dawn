@@ -6,7 +6,7 @@ namespace Mana
 {
     public class Mana3D : MonoBehaviour
     {
-        [SerializeField] ManaDefinition manaScriptableObject;
+        [SerializeField] ManaSODefinition manaScriptableObject;
         public ManaType type;
         bool rotating = true;
         void Start()
