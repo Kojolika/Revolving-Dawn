@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bb560009b78c8f4ebd93a091ed7c998, type: 3}
+  m_Name: Map 1 Settings
+  m_EditorClassIdentifier: 
+  numberOfNodes: 80
+  numberOfPaths: 5
+  xDimension: 500
+  yDimension: 1000
+  edgePadding: 50
+  regionPadding: 15
+  eventWeights:
+  - weight: 70
+    nodeEvent:
+      rid: 503764513150730240
+  - weight: 10
+    nodeEvent:
+      rid: 503764513150730241
+  - weight: 10
+    nodeEvent:
+      rid: 503764513150730242
+  - weight: 10
+    nodeEvent:
+      rid: 503764513150730245
+  enemys:
+  - enemy: {fileID: 11400000, guid: 954de47bc8f771641919652e34e706fc, type: 2}
+    minSpawnRange:
+      settingsType: 1
+      value: 0
+    maxSpawnRange:
+      settingsType: 2
+      value: 0
+    enemyDifficultyRating: 1
+  elites: []
+  bosses: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 503764513150730240
+      type: {class: EnemyEvent, ns: Models.Map, asm: Assembly-CSharp}
+      data:
+        Name: Enemy
+        MapIconReference:
+          m_AssetGUID: 205954ae161227c418555d528d4ef5be
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_EditorAssetChanged: 0
+    - rid: 503764513150730241
+      type: {class: EliteEnemy, ns: Models.Map, asm: Assembly-CSharp}
+      data:
+        Name: Elite Enemy
+        MapIconReference:
+          m_AssetGUID: e35cc54cea8489b4ea21bc3508317060
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_EditorAssetChanged: 0
+    - rid: 503764513150730242
+      type: {class: EncounterEvent, ns: Models.Map, asm: Assembly-CSharp}
+      data:
+        Name: Encounter
+        MapIconReference:
+          m_AssetGUID: 7b920439d31f14e4fbaf16b35db655ff
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_EditorAssetChanged: 0
+    - rid: 503764513150730245
+      type: {class: ShopEvent, ns: Models.Map, asm: Assembly-CSharp}
+      data:
+        Name: Shop
+        MapIconReference:
+          m_AssetGUID: 54e96a69d0d5f524bbb6cdcfb36b432b
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_EditorAssetChanged: 0

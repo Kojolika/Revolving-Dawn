@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Models.Map
 {
@@ -10,11 +11,19 @@ namespace Models.Map
         [JsonProperty("coordinate")]
         public Coordinate Coord;
 
-        [JsonProperty("isBoss")]
-        public bool IsBoss = false;
+        [JsonProperty("event")]
+        public NodeEvent Event;
 
-        [JsonProperty("nextNodes")]
+        [JsonProperty("next_nodes")]
         public List<Coordinate> NextNodes;
+
+        [JsonProperty("previous_nodes")]
+        public List<Coordinate> PreviousNodes;
+
+        [JsonProperty("level")]
+        public int Level = UnitilizizedLevel;
+
+        public const int UnitilizizedLevel = -1;
 
 
         [Serializable]
@@ -28,6 +37,8 @@ namespace Models.Map
                 this.x = x;
                 this.y = y;
             }
+
+            public static float Distance(Coordinate c1, Coordinate c2) => Mathf.Sqrt(Mathf.Pow(c1.x - c2.x, 2) + Mathf.Pow(c1.y - c2.y, 2));
 
             public static Coordinate operator +(Coordinate a, Coordinate b) => new Coordinate(a.x + b.x, a.y + b.y);
 

@@ -4,11 +4,11 @@ namespace Models.Characters
 {
     public class Enemy : Character
     {
-        public EnemyDefinition EnemyDefinition { get; private set; }
+        public EnemySODefinition EnemyDefinition { get; private set; }
         public override HealthDefinition HealthDefinition => EnemyDefinition.HealthDefinition;
         public override string Name => EnemyDefinition.Name;
 
-        public Enemy(EnemyDefinition enemyDefinition)
+        public Enemy(EnemySODefinition enemyDefinition)
         {
             EnemyDefinition = enemyDefinition;
         }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Models.Characters
 {
-    [CreateAssetMenu(fileName = nameof(EnemyDefinition), menuName = "RevolvingDawn/Enemies/" + nameof(EnemyDefinition))]
-    public class EnemyDefinition : ScriptableObject
+    [CreateAssetMenu(fileName = nameof(EnemySODefinition), menuName = "RevolvingDawn/Enemies/" + nameof(EnemySODefinition))]
+    public class EnemySODefinition : ScriptableObject
     {
         [SerializeField] private new string name;
         [SerializeField] private HealthDefinition healthDefinition;

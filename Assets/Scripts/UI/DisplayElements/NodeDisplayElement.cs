@@ -18,13 +18,13 @@ namespace UI.DisplayElements
 
         public override void Populate(Data data)
         {
-            button.interactable = data.CurrentPlayerNode.NextNodes.Contains(data.Definition.Coord);
-            label.SetText(data.Definition.Coord == data.CurrentPlayerNode.Coord ? "H" : "");
+            button.interactable = data.CurrentPlayerNode.NextNodes?.Contains(data.Definition.Coord) ?? false;
+            label.SetText(data.Definition.Coord == data.CurrentPlayerNode.Coord ? "H" : data.Definition.Level.ToString());
 
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>
             {
-                
+                data.Definition.Event.StartEvent();
             });
         }
     }
