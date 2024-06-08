@@ -10,15 +10,15 @@ using Utils.Extensions;
 namespace Systems.Map
 {
     public class MapFactory
-    {
+    {   
         public MapDefinition Create(MapSettings mapSettings)
         {
             var randomNumGenerator = new System.Random();
 
             var (nodes, nodeLookup, firstNode, lastNode) = GenerateNodePositions(mapSettings, randomNumGenerator);
             nodes = CreateEdgesBetweenNodes(nodes, nodeLookup, firstNode, lastNode, mapSettings.NumberOfPaths);
-            nodes = AssignLevelsToNodes(mapSettings, randomNumGenerator, nodes, nodeLookup, firstNode, lastNode);
-            nodes = AssignEventsToNodes(mapSettings, randomNumGenerator, nodes, nodeLookup, firstNode, lastNode);
+            nodes = AssignLevelsToNodes(nodes, nodeLookup, firstNode);
+            nodes = AssignEventsToNodes(mapSettings, randomNumGenerator, nodes, firstNode, lastNode);
 
             return new MapDefinition()
             {
@@ -73,7 +73,6 @@ namespace Systems.Map
                 if (i == 0)
                 {
                     firstNode = newNode;
-                    firstNode.Level = 0;
                 }
                 if (i == numNodes - 1)
                 {
@@ -172,24 +171,37 @@ namespace Systems.Map
         }
 
         private List<NodeDefinition> AssignLevelsToNodes(
-            MapSettings mapSettings,
-            System.Random randomNumGenerator,
             List<NodeDefinition> nodes,
             Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup,
-            NodeDefinition firstNode,
-            NodeDefinition lastNode)
+            NodeDefinition firstNode)
         {
+            // We use dijkstra's shortest path algorithm with the distance as levels
             var unvisitedNodes = new HashSet<NodeDefinition.Coordinate>(nodeLookup.Keys);
-            var nodeDistances = new Dictionary<NodeDefinition.Coordinate, int>();
-            foreach (var node in unvisitedNodes)
+
+            NodeDefinition currentNode = default;
+            firstNode.Level = 0;
+            while (unvisitedNodes.Count > 0)
             {
-                nodeDistances.Add(node, int.MaxValue);
+                var lowestDistanceUnvisited = unvisitedNodes.OrderBy(coord => nodeLookup[coord].Level).First();
+                currentNode = nodeLookup[lowestDistanceUnvisited];
+                unvisitedNodes.Remove(currentNode.Coord);
+
+                if (!currentNode.NextNodes.IsNullOrEmpty())
+                {
+                    foreach (var nodeCoordinate in currentNode.NextNodes)
+                    {
+                        var nextNode = nodeLookup[nodeCoordinate];
+
+                        // Each edge will have a distance of 1, that way players can traverse the map
+                        // one level after another
+                        var distanceToNode = currentNode.Level + 1;
+                        if (distanceToNode < nextNode.Level)
+                        {
+                            nextNode.Level = distanceToNode;
+                        }
+                    }
+                }
             }
-            
-            var currentNode = firstNode;
-            
-
-
 
             return nodes;
         }
@@ -198,32 +210,50 @@ namespace Systems.Map
             MapSettings mapSettings,
             System.Random randomNumGenerator,
             List<NodeDefinition> nodes,
-            Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup,
             NodeDefinition firstNode,
             NodeDefinition lastNode)
         {
+            var eventWeights = mapSettings.EventWeights;
+            var numEventWeignts = eventWeights.Count;
+            float totalWeights = eventWeights.Sum(evt => evt.Weight);
+            MyLogger.Log($"Total weignts: {totalWeights}");
+            float[] cumulativeSums = new float[numEventWeignts];
 
-            return nodes;
-        }
-
-        private int GetDistanceToNode(NodeDefinition currentNode, NodeDefinition targetNode, Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup)
-        {
-            return GetDistanceRecursive(currentNode, targetNode, nodeLookup);
-
-            int GetDistanceRecursive(NodeDefinition currentNode, NodeDefinition targetNode, Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup, int currentDistance = 0)
+            for (int i = 0; i < numEventWeignts; i++)
             {
-                if (currentNode == targetNode)
+                cumulativeSums[i] = i - 1 > 0
+                    ? eventWeights[i].Weight + cumulativeSums[i - 1]
+                    : eventWeights[i].Weight;
+                MyLogger.Log($"Cum sum for {i}: {cumulativeSums[i]}");
+            }
+
+            foreach (var node in nodes)
+            {
+                if (node == firstNode)
                 {
-                    return currentDistance;
+                    node.Event = mapSettings.FinalNodeEvent;
+                    continue;
                 }
 
-                var closestNode = currentNode.NextNodes
-                    .Concat(currentNode.PreviousNodes)
-                    .OrderBy(coord => NodeDefinition.Coordinate.Distance(coord, targetNode.Coord))
-                    .First();
+                if (node == lastNode)
+                {
+                    lastNode.Event = mapSettings.FinalNodeEvent;
+                    continue;
+                }
 
-                return GetDistanceRecursive(nodeLookup[closestNode], targetNode, nodeLookup, ++currentDistance);
+                var randomNum = randomNumGenerator.Next(0, (int)totalWeights);
+                MyLogger.Log($"Random num: {randomNum}");
+                for (int i = 0; i < numEventWeignts; i++)
+                {
+                    if (randomNum <= cumulativeSums[i])
+                    {
+                        node.Event = eventWeights[i].NodeEvent;
+                        MyLogger.Log($"Setting node event to :{node.Event}");
+                        break;
+                    }
+                }
             }
+            return nodes;
         }
     }
 }

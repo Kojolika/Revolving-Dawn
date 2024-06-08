@@ -29,8 +29,15 @@ namespace Settings
         [Tooltip("The amount of padding inside each region of the map that a node can be generated. The greater the padding the more spread apart the nodes are")]
         [SerializeField] private int regionPadding;
 
+        [Tooltip("The event for which the first node on the map will be.")]
+        [SerializeReference, DisplayInterface(typeof(INodeEvent))]
+        private INodeEvent firstNodeEvent;
+
+        [Tooltip("The event for which the last node on the map will be.")]
+        [SerializeReference, DisplayInterface(typeof(INodeEvent))]
+        private INodeEvent finalNodeEvent;
+
         [Tooltip("Event types, and their weights of appearing on the map.")]
-        
         [SerializeField]
         private List<EventWeight> eventWeights;
 
@@ -52,6 +59,8 @@ namespace Settings
         public int YDimension => yDimension;
         public int EdgePadding => edgePadding;
         public int RegionPadding => regionPadding;
+        public INodeEvent FirstNodeEvent => firstNodeEvent;
+        public INodeEvent FinalNodeEvent => finalNodeEvent;
         public List<EventWeight> EventWeights => eventWeights;
         public List<EnemySpawnSettings> Enemys => enemys;
         public List<EnemySpawnSettings> Elites => elites;

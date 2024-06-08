@@ -2,6 +2,8 @@ using Models.Map;
 using Tooling.Logging;
 using UI.Common;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
 namespace UI.DisplayElements
@@ -15,6 +17,7 @@ namespace UI.DisplayElements
         }
         [SerializeField] Label label;
         [SerializeField] Button button;
+        [SerializeField] Image image;
 
         public override void Populate(Data data)
         {

@@ -530,6 +530,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   label: {fileID: 8641754814104545896}
   button: {fileID: 7705988277251892137}
+  image: {fileID: 6243155864087359056}
 --- !u!114 &7705988277251892137
 MonoBehaviour:
   m_ObjectHideFlags: 0

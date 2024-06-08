@@ -13,11 +13,15 @@ MonoBehaviour:
   m_Name: Map 1 Settings
   m_EditorClassIdentifier: 
   numberOfNodes: 80
-  numberOfPaths: 5
+  numberOfPaths: 3
   xDimension: 500
   yDimension: 1000
   edgePadding: 50
   regionPadding: 15
+  firstNodeEvent:
+    rid: 6183955953057529859
+  finalNodeEvent:
+    rid: 6183955953057529858
   eventWeights:
   - weight: 70
     nodeEvent:
@@ -48,8 +52,8 @@ MonoBehaviour:
     - rid: 503764513150730240
       type: {class: EnemyEvent, ns: Models.Map, asm: Assembly-CSharp}
       data:
-        Name: Enemy
-        MapIconReference:
+        name: Enemy
+        mapIconReference:
           m_AssetGUID: 205954ae161227c418555d528d4ef5be
           m_SubObjectName: 
           m_SubObjectType: 
@@ -57,8 +61,8 @@ MonoBehaviour:
     - rid: 503764513150730241
       type: {class: EliteEnemy, ns: Models.Map, asm: Assembly-CSharp}
       data:
-        Name: Elite Enemy
-        MapIconReference:
+        name: Elite Enemy
+        mapIconReference:
           m_AssetGUID: e35cc54cea8489b4ea21bc3508317060
           m_SubObjectName: 
           m_SubObjectType: 
@@ -66,8 +70,8 @@ MonoBehaviour:
     - rid: 503764513150730242
       type: {class: EncounterEvent, ns: Models.Map, asm: Assembly-CSharp}
       data:
-        Name: Encounter
-        MapIconReference:
+        name: Encounter
+        mapIconReference:
           m_AssetGUID: 7b920439d31f14e4fbaf16b35db655ff
           m_SubObjectName: 
           m_SubObjectType: 
@@ -75,9 +79,27 @@ MonoBehaviour:
     - rid: 503764513150730245
       type: {class: ShopEvent, ns: Models.Map, asm: Assembly-CSharp}
       data:
-        Name: Shop
-        MapIconReference:
+        name: Shop
+        mapIconReference:
           m_AssetGUID: 54e96a69d0d5f524bbb6cdcfb36b432b
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_EditorAssetChanged: 0
+    - rid: 6183955953057529858
+      type: {class: EncounterEvent, ns: Models.Map, asm: Assembly-CSharp}
+      data:
+        name: Boss
+        mapIconReference:
+          m_AssetGUID: e35cc54cea8489b4ea21bc3508317060
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_EditorAssetChanged: 0
+    - rid: 6183955953057529859
+      type: {class: BeginRunEvent, ns: Models.Map, asm: Assembly-CSharp}
+      data:
+        name: Start Run
+        mapIconReference:
+          m_AssetGUID: 6d8d3d623dbde1b43aa737841443db60
           m_SubObjectName: 
           m_SubObjectType: 
           m_EditorAssetChanged: 0

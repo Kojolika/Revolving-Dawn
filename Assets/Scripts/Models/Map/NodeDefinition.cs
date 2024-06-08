@@ -12,7 +12,7 @@ namespace Models.Map
         public Coordinate Coord;
 
         [JsonProperty("event")]
-        public NodeEvent Event;
+        public INodeEvent Event;
 
         [JsonProperty("next_nodes")]
         public List<Coordinate> NextNodes;
@@ -21,9 +21,7 @@ namespace Models.Map
         public List<Coordinate> PreviousNodes;
 
         [JsonProperty("level")]
-        public int Level = UnitilizizedLevel;
-
-        public const int UnitilizizedLevel = -1;
+        public int Level = int.MaxValue;
 
 
         [Serializable]
