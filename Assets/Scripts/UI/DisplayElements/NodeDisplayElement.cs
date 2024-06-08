@@ -19,6 +19,8 @@ namespace UI.DisplayElements
         [SerializeField] Button button;
         [SerializeField] Image image;
 
+        AsyncOperationHandle iconOpHandle;
+
         public override async void Populate(Data data)
         {
             button.interactable = data.CurrentPlayerNode.NextNodes?.Contains(data.Definition.Coord) ?? false;
@@ -28,29 +30,35 @@ namespace UI.DisplayElements
             button.onClick.AddListener(() =>
             {
                 data.Definition.Event.StartEvent();
+                button.interactable = false;
             });
 
             var iconAssetRef = data.Definition.Event.MapIconReference;
-            var opHandle = iconAssetRef.OperationHandle;
+            iconOpHandle = iconAssetRef.OperationHandle;
 
-            if (!opHandle.IsValid())
+            if (!iconOpHandle.IsValid())
             {
-                opHandle = iconAssetRef.LoadAssetAsync();
+                iconOpHandle = iconAssetRef.LoadAssetAsync();
             }
 
-            if (!opHandle.IsDone)
+            if (!iconOpHandle.IsDone)
             {
-                await opHandle.Task;
+                await iconOpHandle.Task;
             }
 
-            if (opHandle.Status == AsyncOperationStatus.Succeeded)
+            if (iconOpHandle.Status == AsyncOperationStatus.Succeeded)
             {
-                image.sprite = opHandle.Result as Sprite;
+                image.sprite = iconOpHandle.Result as Sprite;
             }
             else
             {
-                Addressables.Release(opHandle);
+                Addressables.Release(iconOpHandle);
             }
+        }
+
+        private void OnDestroy()
+        {
+            Addressables.Release(iconOpHandle);
         }
     }
 }
