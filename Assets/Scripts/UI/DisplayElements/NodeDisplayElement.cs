@@ -19,7 +19,7 @@ namespace UI.DisplayElements
         [SerializeField] Button button;
         [SerializeField] Image image;
 
-        public override void Populate(Data data)
+        public override async void Populate(Data data)
         {
             button.interactable = data.CurrentPlayerNode.NextNodes?.Contains(data.Definition.Coord) ?? false;
             label.SetText(data.Definition.Coord == data.CurrentPlayerNode.Coord ? "H" : data.Definition.Level.ToString());
@@ -29,6 +29,28 @@ namespace UI.DisplayElements
             {
                 data.Definition.Event.StartEvent();
             });
+
+            var iconAssetRef = data.Definition.Event.MapIconReference;
+            var opHandle = iconAssetRef.OperationHandle;
+
+            if (!opHandle.IsValid())
+            {
+                opHandle = iconAssetRef.LoadAssetAsync();
+            }
+
+            if (!opHandle.IsDone)
+            {
+                await opHandle.Task;
+            }
+
+            if (opHandle.Status == AsyncOperationStatus.Succeeded)
+            {
+                image.sprite = opHandle.Result as Sprite;
+            }
+            else
+            {
+                Addressables.Release(opHandle);
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ using Utils.Extensions;
 namespace Systems.Map
 {
     public class MapFactory
-    {   
+    {
         public MapDefinition Create(MapSettings mapSettings)
         {
             var randomNumGenerator = new System.Random();
@@ -214,17 +214,17 @@ namespace Systems.Map
             NodeDefinition lastNode)
         {
             var eventWeights = mapSettings.EventWeights;
-            var numEventWeignts = eventWeights.Count;
+            var numEventWeights = eventWeights.Count;
             float totalWeights = eventWeights.Sum(evt => evt.Weight);
-            MyLogger.Log($"Total weignts: {totalWeights}");
-            float[] cumulativeSums = new float[numEventWeignts];
+            float[] cumulativeSums = new float[numEventWeights];
 
-            for (int i = 0; i < numEventWeignts; i++)
+            for (int i = 0; i < numEventWeights; i++)
             {
-                cumulativeSums[i] = i - 1 > 0
-                    ? eventWeights[i].Weight + cumulativeSums[i - 1]
-                    : eventWeights[i].Weight;
-                MyLogger.Log($"Cum sum for {i}: {cumulativeSums[i]}");
+                cumulativeSums[i] = eventWeights[i].Weight;
+                if (i - 1 >= 0)
+                {
+                    cumulativeSums[i] += cumulativeSums[i - 1];
+                }
             }
 
             foreach (var node in nodes)
@@ -242,13 +242,11 @@ namespace Systems.Map
                 }
 
                 var randomNum = randomNumGenerator.Next(0, (int)totalWeights);
-                MyLogger.Log($"Random num: {randomNum}");
-                for (int i = 0; i < numEventWeignts; i++)
+                for (int i = 0; i < numEventWeights; i++)
                 {
                     if (randomNum <= cumulativeSums[i])
                     {
                         node.Event = eventWeights[i].NodeEvent;
-                        MyLogger.Log($"Setting node event to :{node.Event}");
                         break;
                     }
                 }
