@@ -24,7 +24,7 @@ namespace Models.Map
         public int Level = int.MaxValue;
 
 
-        [Serializable]
+        [Serializable, JsonObject(IsReference = false)]
         public struct Coordinate : IEquatable<Coordinate>, IComparable<Coordinate>
         {
             public int x;

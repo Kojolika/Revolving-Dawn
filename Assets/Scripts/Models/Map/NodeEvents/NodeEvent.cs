@@ -1,14 +1,21 @@
 using Settings;
 using UnityEngine.AddressableAssets;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace Models.Map
 {
     [System.Serializable]
     public abstract class NodeEvent : INodeEvent
     {
-        [SerializeField] private string name;
-        [SerializeField] private AssetReferenceSprite mapIconReference;
+        [JsonProperty("name")]
+        [SerializeField]
+        private string name;
+
+        [JsonProperty("map_icon_reference")]
+        [SerializeField]
+        private AssetReferenceSprite mapIconReference;
+
         public string Name => name;
         public AssetReferenceSprite MapIconReference => mapIconReference;
         public abstract void StartEvent();
