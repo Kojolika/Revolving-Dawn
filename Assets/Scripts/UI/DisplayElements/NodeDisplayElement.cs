@@ -18,13 +18,16 @@ namespace UI.DisplayElements
         [SerializeField] Label label;
         [SerializeField] Button button;
         [SerializeField] Image image;
+        [SerializeField] Image playerIndicator;
 
         AsyncOperationHandle iconOpHandle;
 
         public override async void Populate(Data data)
         {
             button.interactable = data.CurrentPlayerNode.NextNodes?.Contains(data.Definition.Coord) ?? false;
-            label.SetText(data.Definition.Coord == data.CurrentPlayerNode.Coord ? "H" : data.Definition.Level.ToString());
+            bool isPlayerHere = data.Definition.Coord == data.CurrentPlayerNode.Coord;
+            label.SetText(isPlayerHere ? "H" : data.Definition.Level.ToString());
+            playerIndicator.gameObject.SetActive(isPlayerHere);
 
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>

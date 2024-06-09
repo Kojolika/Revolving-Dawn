@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Map 1 Settings
   m_EditorClassIdentifier: 
   numberOfNodes: 80
-  numberOfPaths: 3
+  numberOfPaths: 4
   xDimension: 500
   yDimension: 1000
   edgePadding: 50
@@ -35,6 +35,9 @@ MonoBehaviour:
   - weight: 10
     nodeEvent:
       rid: 503764513150730245
+  - weight: 20
+    nodeEvent:
+      rid: 503764554863083520
   enemys:
   - enemy: {fileID: 11400000, guid: 954de47bc8f771641919652e34e706fc, type: 2}
     minSpawnRange:
@@ -82,6 +85,15 @@ MonoBehaviour:
         name: Shop
         mapIconReference:
           m_AssetGUID: 54e96a69d0d5f524bbb6cdcfb36b432b
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_EditorAssetChanged: 0
+    - rid: 503764554863083520
+      type: {class: CampfireEvent, ns: Models.Map, asm: Assembly-CSharp}
+      data:
+        name: Campfire
+        mapIconReference:
+          m_AssetGUID: bff0b98fa576ffd418785c1f4eab6cd1
           m_SubObjectName: 
           m_SubObjectType: 
           m_EditorAssetChanged: 0
