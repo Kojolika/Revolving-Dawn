@@ -12,7 +12,7 @@ namespace Models.Map
         public Coordinate Coord;
 
         [JsonProperty("event")]
-        public INodeEvent Event;
+        public NodeEvent Event;
 
         [JsonProperty("next_nodes")]
         public List<Coordinate> NextNodes;

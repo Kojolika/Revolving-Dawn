@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using Data.Definitions.Player;
 using UI.Menus.Common;
 using Utils.Attributes;
 using UnityEngine;
 using UI.Common.DisplayElements;
 using Tooling.Logging;
 using UI.Common;
-using Systems.Map;
 using Systems.Managers;
 using Settings;
 using Models.Player;

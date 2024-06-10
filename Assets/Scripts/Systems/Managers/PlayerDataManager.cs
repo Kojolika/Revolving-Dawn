@@ -4,7 +4,6 @@ using Models.Map;
 using Models.Player;
 using Settings;
 using Systems.Managers.Base;
-using Systems.Map;
 using Tooling.Logging;
 
 namespace Systems.Managers

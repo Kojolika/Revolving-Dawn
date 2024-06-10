@@ -9,7 +9,7 @@ namespace Models.Characters
     public class EnemyMove
     {
         [SerializeField] private Sprite moveIntentSprite;
-        [SerializeReference, DisplayInterface(typeof(ICombatEffect))] private List<ICombatEffect> enemyMoves;
+        [SerializeReference, DisplayAbstract(typeof(ICombatEffect))] private List<ICombatEffect> enemyMoves;
 
         public Sprite MoveIntentSprite => moveIntentSprite;
         public List<ICombatEffect> EnemyMoves => enemyMoves;

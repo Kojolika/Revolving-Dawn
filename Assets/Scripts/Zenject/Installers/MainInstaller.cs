@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Systems.Managers.Base;
 using Tooling.Logging;
+using UI.DisplayElements;
 using UnityEngine;
 
 
@@ -10,9 +11,12 @@ namespace Zenject.Installers
 {
     public class MainInstaller : MonoInstaller<MainInstaller>
     {
+        [SerializeField] private NodeDisplayElement nodeDisplayElement;
+
         public override void InstallBindings()
         {
             InstallManagers();
+            InstallPrefabs();
         }
 
         private void InstallManagers()
@@ -28,7 +32,7 @@ namespace Zenject.Installers
                         && !typeof(IPartTimeManager).IsAssignableFrom(type))
                 .ToArray();
 
-            List<IManager> managers = new List<IManager>();
+            var managers = new List<IManager>();
             foreach (var managerType in managerTypes)
             {
                 if (Managers.GetManagerOfType(managerType) != null)
@@ -51,6 +55,11 @@ namespace Zenject.Installers
                 // in order for that instance to get its DI dependencies
                 Container.QueueForInject(newManagerInstance);
             }
+        }
+
+        private void InstallPrefabs()
+        {
+            Container.BindFactory<NodeDisplayElement.Data, NodeDisplayElement, NodeDisplayElement.Factory>().FromComponentInNewPrefab(nodeDisplayElement);
         }
     }
 }

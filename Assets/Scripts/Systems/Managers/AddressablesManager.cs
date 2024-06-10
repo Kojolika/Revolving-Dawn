@@ -12,12 +12,16 @@ namespace Systems.Managers
 {
     public class AddressablesManager : IManager
     {
+        private Dictionary<AssetReference, int> AsyncOperationRefCounts = new();
+
         async UniTask IManager.Startup()
         {
             MyLogger.Log("Booting up Addressables.");
             var addressableHandle = Addressables.InitializeAsync();
             await UniTask.WaitUntil(() => addressableHandle.IsDone);
         }
+
+
         /// <summary>
         /// Load an asset defined in the addressable groups.
         /// </summary>
@@ -28,7 +32,7 @@ namespace Systems.Managers
         /// <typeparam name="T">Type of asset to load.</typeparam>
         /// <returns>The loaded asset.</returns>
         public async UniTask<T> LoadGenericAsset<T>(
-            string key,
+            AssetReferenceT<T> key,
             Func<bool> releaseCondition,
             Action<T> onSuccess = null,
             Action onFail = null,

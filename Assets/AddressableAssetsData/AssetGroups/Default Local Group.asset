@@ -142,11 +142,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 54e96a69d0d5f524bbb6cdcfb36b432b
-    m_Address: node_event_shop
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7b920439d31f14e4fbaf16b35db655ff
     m_Address: node_event_encounter
     m_ReadOnly: 0
@@ -154,6 +149,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bff0b98fa576ffd418785c1f4eab6cd1
     m_Address: node_event_campfire
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54e96a69d0d5f524bbb6cdcfb36b432b
+    m_Address: node_event_shop
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

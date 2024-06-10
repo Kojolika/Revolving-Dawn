@@ -1,23 +1,17 @@
 using System;
-using System.Collections.Generic;
-using Models.Buffs;
-using UnityEngine;
 
-namespace Models.Health
+namespace Models
 {
   [Serializable]
-  public class RuntimeHealth : IRuntimeModel<HealthDefinition>
+  public class Health
   {
-    public ulong MaxHealth => healthDefinition.MaxHealth;
+    public ulong MaxHealth { get; private set; }
     public ulong CurrentHealth { get; private set; }
 
-    [SerializeField] private HealthDefinition healthDefinition;
-    public HealthDefinition Definition => healthDefinition;
-
-    public RuntimeHealth(ulong currentHealth, HealthDefinition healthDefinition)
+    public Health(ulong currentHealth, ulong maxHealth)
     {
       CurrentHealth = currentHealth;
-      this.healthDefinition = healthDefinition;
+      MaxHealth = maxHealth;
     }
 
     public void SetHealth(ulong amount) => CurrentHealth = Math.Min(MaxHealth, amount);

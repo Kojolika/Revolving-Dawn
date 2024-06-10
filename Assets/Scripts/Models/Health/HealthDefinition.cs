@@ -1,4 +1,4 @@
-namespace Models.Health
+namespace Models
 {
     [System.Serializable]
     public class HealthDefinition

@@ -1,28 +1,31 @@
 using Models.Map;
+using Systems.Managers;
 using Tooling.Logging;
 using UI.Common;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI.DisplayElements
 {
-    public class NodeDisplayElement : DisplayElement<NodeDisplayElement.Data>
+    public class NodeDisplayElement : MonoBehaviour
     {
-        public class Data
+        [SerializeField] private Label label;
+        [SerializeField] private Button button;
+        [SerializeField] private Image image;
+        [SerializeField] private Image playerIndicator;
+
+        private AddressablesManager addressablesManager;
+        private Data data;
+
+        [Inject]
+        void Construct(AddressablesManager addressablesManager, Data data)
         {
-            public NodeDefinition Definition;
-            public NodeDefinition CurrentPlayerNode;
+            this.addressablesManager = addressablesManager;
+            this.data = data;
         }
-        [SerializeField] Label label;
-        [SerializeField] Button button;
-        [SerializeField] Image image;
-        [SerializeField] Image playerIndicator;
 
-        AsyncOperationHandle iconOpHandle;
-
-        public override async void Populate(Data data)
+        private void Start()
         {
             button.interactable = data.CurrentPlayerNode.NextNodes?.Contains(data.Definition.Coord) ?? false;
             bool isPlayerHere = data.Definition.Coord == data.CurrentPlayerNode.Coord;
@@ -36,32 +39,17 @@ namespace UI.DisplayElements
                 button.interactable = false;
             });
 
-            var iconAssetRef = data.Definition.Event.MapIconReference;
-            iconOpHandle = iconAssetRef.OperationHandle;
-
-            if (!iconOpHandle.IsValid())
-            {
-                iconOpHandle = iconAssetRef.LoadAssetAsync();
-            }
-
-            if (!iconOpHandle.IsDone)
-            {
-                await iconOpHandle.Task;
-            }
-
-            if (iconOpHandle.Status == AsyncOperationStatus.Succeeded)
-            {
-                image.sprite = iconOpHandle.Result as Sprite;
-            }
-            else
-            {
-                Addressables.Release(iconOpHandle);
-            }
+            _ = addressablesManager.LoadGenericAsset(data.Definition.Event.MapIconReference,
+                () => gameObject == null,
+                asset => image.sprite = asset
+            );
         }
 
-        private void OnDestroy()
+        public class Factory : PlaceholderFactory<Data, NodeDisplayElement> { }
+        public class Data
         {
-            Addressables.Release(iconOpHandle);
+            public NodeDefinition Definition;
+            public NodeDefinition CurrentPlayerNode;
         }
     }
 }

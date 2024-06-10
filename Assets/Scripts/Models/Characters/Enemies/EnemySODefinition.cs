@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Models.Health;
 using UnityEngine;
 
 namespace Models.Characters

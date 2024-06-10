@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Utils.Extensions;
 using System.Linq;
 using System;
+using Zenject;
 
 namespace UI.Menus
 {
@@ -27,8 +28,15 @@ namespace UI.Menus
         [SerializeField] private RectTransform mapContainer;
         [SerializeField] private RectTransform nodeContainer;
         [SerializeField] private RectTransform lineContainer;
-        [SerializeField] private NodeDisplayElement nodeDisplayElementRoot;
         [SerializeField] private RectTransform lineDisplayElement;
+
+        private NodeDisplayElement.Factory nodeDisplayFactory;
+
+        [Inject]
+        void Construct(NodeDisplayElement.Factory nodeDisplayFactory)
+        {
+            this.nodeDisplayFactory = nodeDisplayFactory;
+        }
 
         private Dictionary<NodeDefinition.Coordinate, NodeDisplayElement> nodeElementsLookup = new();
         private Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeDefinitionsLookup = new();
@@ -47,8 +55,8 @@ namespace UI.Menus
                 int xPos = Mathf.FloorToInt(mapSize.x * xNodeDataNormalized);
                 int yPos = Mathf.FloorToInt(mapSize.y * yNodeDataNormalized);
 
-                var newNode = Instantiate(nodeDisplayElementRoot, nodeContainer);
-                newNode.Populate(new NodeDisplayElement.Data{ Definition = node, CurrentPlayerNode = data.CurrentNode});
+                var newNode = nodeDisplayFactory.Create(new NodeDisplayElement.Data { Definition = node, CurrentPlayerNode = data.CurrentNode });
+                newNode.transform.SetParent(nodeContainer);
                 var coordinates = new NodeDefinition.Coordinate(node.Coord.x, node.Coord.y);
                 nodeElementsLookup.Add(coordinates, newNode);
                 nodeDefinitionsLookup.Add(coordinates, node);

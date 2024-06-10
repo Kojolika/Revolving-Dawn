@@ -7,7 +7,7 @@ namespace Models.Map
     {
         public override void Populate(MapSettings mapSettings, NodeDefinition node)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public override void StartEvent()

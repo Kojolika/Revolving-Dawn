@@ -11,25 +11,25 @@ using UnityEngine.Serialization;
 
 namespace Data.Utils.Editor
 {
-    [CustomPropertyDrawer(typeof(DisplayInterfaceAttribute))]
-    public class DisplayInterfaceDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(DisplayAbstractAttribute))]
+    public class DisplayAbstractDrawer : PropertyDrawer
     {
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
             var root = new VisualElement();
-            var interfaceType = (attribute as DisplayInterfaceAttribute).Type;
+            var abstractType = (attribute as DisplayAbstractAttribute).Type;
             var derivedTypes = AppDomain.CurrentDomain
                 .GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
                 .Where(type => !type.IsAbstract
                     && !type.IsInterface
-                    && interfaceType.IsAssignableFrom(type)
+                    && abstractType.IsAssignableFrom(type)
                     && type.HasAttribute<SerializableAttribute>())
                 .ToArray();
 
             if (derivedTypes.Length == 0)
             {
-                root.Add(new Label($"No derived types of type {interfaceType} can be displayed. They must be concrete types and have the System.SerializableAttribute to be shown in the inspector"));
+                root.Add(new Label($"No derived types of type {abstractType} can be displayed. They must be concrete types and have the System.SerializableAttribute to be shown in the inspector"));
                 return root;
             }
 
@@ -48,7 +48,7 @@ namespace Data.Utils.Editor
                 defaultSelection = defaultDisplayType.Name;
             }
 
-            var dropdownLabel = $"Select an {interfaceType.Name}";
+            var dropdownLabel = $"Select an {abstractType.Name}";
             var dropdown = new DropdownField(dropdownLabel, derivedTypes.Select(type => type.Name).ToList(), defaultSelection);
             var propertyField = DisplayConcreteType(defaultDisplayType, property);
 
@@ -93,36 +93,6 @@ namespace Data.Utils.Editor
             dropdown.style.borderBottomColor = Color.white;
             dropdown.style.borderBottomWidth = 1;
             dropdown.style.marginBottom = 5;
-        }
-
-        void StyleInterfaceElement(VisualElement typeDisplay)
-        {
-            typeDisplay.style.color = Color.black;
-            typeDisplay.style.marginLeft = 30;
-
-            var padding = 5;
-            typeDisplay.style.paddingBottom = padding;
-            typeDisplay.style.paddingLeft = padding;
-            typeDisplay.style.paddingRight = padding;
-            typeDisplay.style.paddingTop = padding;
-
-            var borderWidth = 0.5f;
-            typeDisplay.style.borderBottomWidth = borderWidth;
-            typeDisplay.style.borderLeftWidth = borderWidth;
-            typeDisplay.style.borderRightWidth = borderWidth;
-            typeDisplay.style.borderTopWidth = borderWidth;
-
-            var borderColor = Color.white;
-            typeDisplay.style.borderBottomColor = borderColor;
-            typeDisplay.style.borderLeftColor = borderColor;
-            typeDisplay.style.borderRightColor = borderColor;
-            typeDisplay.style.borderTopColor = borderColor;
-
-            var borderRadius = 5;
-            typeDisplay.style.borderBottomLeftRadius = borderRadius;
-            typeDisplay.style.borderBottomRightRadius = borderRadius;
-            typeDisplay.style.borderTopLeftRadius = borderRadius;
-            typeDisplay.style.borderTopRightRadius = borderRadius;
         }
     }
 }

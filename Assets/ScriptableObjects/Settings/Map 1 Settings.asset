@@ -18,100 +18,25 @@ MonoBehaviour:
   yDimension: 1000
   edgePadding: 50
   regionPadding: 15
-  firstNodeEvent:
-    rid: 6183955953057529859
-  finalNodeEvent:
-    rid: 6183955953057529858
-  eventWeights:
-  - weight: 70
-    nodeEvent:
-      rid: 503764513150730240
-  - weight: 10
-    nodeEvent:
-      rid: 503764513150730241
-  - weight: 10
-    nodeEvent:
-      rid: 503764513150730242
-  - weight: 10
-    nodeEvent:
-      rid: 503764513150730245
+  firstNodeEvent: {fileID: 11400000, guid: 8b25272e10c41834ab3f2e5e1b00bd8b, type: 2}
+  finalNodeEvent: {fileID: 11400000, guid: bf26c2ae58a527645bdf8d961da3a9c2, type: 2}
+  eventSettings:
   - weight: 20
-    nodeEvent:
-      rid: 503764554863083520
-  enemys:
+    nodeEventDefinition: {fileID: 11400000, guid: 94e8129c18ef6fd41bf856090313c392, type: 2}
+  - weight: 10
+    nodeEventDefinition: {fileID: 11400000, guid: 646e13df5756cac4093595e3a0ffa43c, type: 2}
+  - weight: 10
+    nodeEventDefinition: {fileID: 11400000, guid: da7f97de511b5324faed518f93227613, type: 2}
+  - weight: 90
+    nodeEventDefinition: {fileID: 11400000, guid: 1af3b9f0e6fb9684d94ca240790356ee, type: 2}
+  - weight: 10
+    nodeEventDefinition: {fileID: 11400000, guid: 8165ca2aaadc1044cb8036ef5dd2baa4, type: 2}
+  enemySpawnSettings:
   - enemy: {fileID: 11400000, guid: 954de47bc8f771641919652e34e706fc, type: 2}
-    minSpawnRange:
-      settingsType: 1
-      value: 0
-    maxSpawnRange:
-      settingsType: 2
-      value: 0
+    minSpawnRange: 0
+    maxSpawnRange: 1
     enemyDifficultyRating: 1
-  elites: []
-  bosses: []
-  references:
-    version: 2
-    RefIds:
-    - rid: 503764513150730240
-      type: {class: EnemyEvent, ns: Models.Map, asm: Assembly-CSharp}
-      data:
-        name: Enemy
-        mapIconReference:
-          m_AssetGUID: 205954ae161227c418555d528d4ef5be
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_EditorAssetChanged: 0
-    - rid: 503764513150730241
-      type: {class: EliteEnemy, ns: Models.Map, asm: Assembly-CSharp}
-      data:
-        name: Elite Enemy
-        mapIconReference:
-          m_AssetGUID: e35cc54cea8489b4ea21bc3508317060
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_EditorAssetChanged: 0
-    - rid: 503764513150730242
-      type: {class: EncounterEvent, ns: Models.Map, asm: Assembly-CSharp}
-      data:
-        name: Encounter
-        mapIconReference:
-          m_AssetGUID: 7b920439d31f14e4fbaf16b35db655ff
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_EditorAssetChanged: 0
-    - rid: 503764513150730245
-      type: {class: ShopEvent, ns: Models.Map, asm: Assembly-CSharp}
-      data:
-        name: Shop
-        mapIconReference:
-          m_AssetGUID: 54e96a69d0d5f524bbb6cdcfb36b432b
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_EditorAssetChanged: 0
-    - rid: 503764554863083520
-      type: {class: CampfireEvent, ns: Models.Map, asm: Assembly-CSharp}
-      data:
-        name: Campfire
-        mapIconReference:
-          m_AssetGUID: bff0b98fa576ffd418785c1f4eab6cd1
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_EditorAssetChanged: 0
-    - rid: 6183955953057529858
-      type: {class: EncounterEvent, ns: Models.Map, asm: Assembly-CSharp}
-      data:
-        name: Boss
-        mapIconReference:
-          m_AssetGUID: e35cc54cea8489b4ea21bc3508317060
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_EditorAssetChanged: 0
-    - rid: 6183955953057529859
-      type: {class: BeginRunEvent, ns: Models.Map, asm: Assembly-CSharp}
-      data:
-        name: Start Run
-        mapIconReference:
-          m_AssetGUID: 6d8d3d623dbde1b43aa737841443db60
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_EditorAssetChanged: 0
+  eliteSpawnSettings: []
+  bossSpawnSettings: []
+  enemyDifficultyMultiplier: 0.118
+  enemyHealthMultiplier: 1.25

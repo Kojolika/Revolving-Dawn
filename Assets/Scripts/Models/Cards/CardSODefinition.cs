@@ -20,7 +20,7 @@ namespace Models
         [SerializeField] private AssetReferenceT<PlayerClassSODefinition> playerClass;
         [SerializeField] private CardSODefinition nextCard;
         [SerializeField] private CardSODefinition previousCard;
-        [SerializeReference, DisplayInterface(typeof(ICombatEffect))] private List<ICombatEffect> playEffects;
+        [SerializeReference, DisplayAbstract(typeof(ICombatEffect))] private List<ICombatEffect> playEffects;
 
         public string Name => name;
         public List<AssetReferenceT<ManaSODefinition>> Manas => manas;

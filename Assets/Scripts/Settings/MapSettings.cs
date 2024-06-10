@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Characters;
 using Models.Characters;
 using Models.Map;
 using UnityEngine;
@@ -12,46 +11,62 @@ namespace Settings
     public class MapSettings : ScriptableObject
     {
         [Tooltip("The number of nodes to generate for the map. Each node will be an enemy,event,shop,etc. that the player can travel to")]
-        [SerializeField] private int numberOfNodes;
+        [SerializeField]
+        private int numberOfNodes;
 
         [Tooltip("The number of paths to create from the start node to the end node (boss)")]
-        [SerializeField] private int numberOfPaths;
+        [SerializeField]
+        private int numberOfPaths;
 
         [Tooltip("The width of the map")]
-        [SerializeField] private int xDimension;
+        [SerializeField]
+        private int xDimension;
 
         [Tooltip("The height of the map")]
-        [SerializeField] private int yDimension;
+        [SerializeField]
+        private int yDimension;
 
         [Tooltip("The amount of padding between the edge of the map and where nodes can be generated")]
-        [SerializeField] private int edgePadding;
+        [SerializeField]
+        private int edgePadding;
 
         [Tooltip("The amount of padding inside each region of the map that a node can be generated. The greater the padding the more spread apart the nodes are")]
-        [SerializeField] private int regionPadding;
+        [SerializeField]
+        private int regionPadding;
 
         [Tooltip("The event for which the first node on the map will be.")]
-        [SerializeReference, DisplayInterface(typeof(INodeEvent))]
-        private INodeEvent firstNodeEvent;
+        [SerializeField]
+        private NodeEventSODefinition firstNodeEvent;
 
         [Tooltip("The event for which the last node on the map will be.")]
-        [SerializeReference, DisplayInterface(typeof(INodeEvent))]
-        private INodeEvent finalNodeEvent;
+        [SerializeField]
+        private NodeEventSODefinition finalNodeEvent;
 
         [Tooltip("Event types, and their weights of appearing on the map.")]
         [SerializeField]
-        private List<EventWeight> eventWeights;
+        private List<EventSettings> eventSettings;
 
         [Tooltip("Type of possible enemies.")]
         [SerializeField]
-        private List<EnemySpawnSettings> enemys;
+        private List<EnemySpawnSettings> enemySpawnSettings;
 
         [Tooltip("Type of possible elites.")]
         [SerializeField]
-        private List<EnemySpawnSettings> elites;
+        private List<EnemySpawnSettings> eliteSpawnSettings;
 
         [Tooltip("Type of possible possible bosses.")]
         [SerializeField]
-        private List<EnemySpawnSettings> bosses;
+        private List<EnemySpawnSettings> bossSpawnSettings;
+
+        [Tooltip("The higher this value, the more enemies will spawn at higher levels.")]
+        [SerializeField]
+        [Range(.001f, 1)]
+        private float enemyDifficultyMultiplier;
+
+        [Tooltip("The higher this value, the more health enemies will have at higher levels.")]
+        [SerializeField]
+        [Range(1, float.MaxValue)]
+        private float enemyHealthMultiplier;
 
         public int NumberOfNodes => numberOfNodes;
         public int NumberOfPaths => numberOfPaths;
@@ -59,22 +74,27 @@ namespace Settings
         public int YDimension => yDimension;
         public int EdgePadding => edgePadding;
         public int RegionPadding => regionPadding;
-        public INodeEvent FirstNodeEvent => firstNodeEvent;
-        public INodeEvent FinalNodeEvent => finalNodeEvent;
-        public List<EventWeight> EventWeights => eventWeights;
-        public List<EnemySpawnSettings> Enemys => enemys;
-        public List<EnemySpawnSettings> Elites => elites;
-        public List<EnemySpawnSettings> Bosses => bosses;
+        public NodeEventSODefinition FirstNodeEvent => firstNodeEvent;
+        public NodeEventSODefinition FinalNodeEvent => finalNodeEvent;
+        public List<EventSettings> EventSettings => eventSettings;
+        public List<EnemySpawnSettings> EnemySpawnSettings => enemySpawnSettings;
+        public List<EnemySpawnSettings> EliteSpawnSettings => eliteSpawnSettings;
+        public List<EnemySpawnSettings> BossSpawnSettings => bossSpawnSettings;
+        public float EnemyDifficultyMultiplier => enemyDifficultyMultiplier;
+        public float EnemyHealthMultiplier => enemyHealthMultiplier;
     }
 
     [Serializable]
-    public class EventWeight
+    public class EventSettings
     {
-        [SerializeField] private float weight;
-        [SerializeReference, DisplayInterface(typeof(INodeEvent))] private NodeEvent nodeEvent;
+        [SerializeField]
+        private float weight;
+
+        [SerializeField]
+        private NodeEventSODefinition nodeEventDefinition;
 
         public float Weight => weight;
-        public NodeEvent NodeEvent => nodeEvent;
+        public NodeEventSODefinition NodeEventDefinition => nodeEventDefinition;
     }
 
     [Serializable]
@@ -83,20 +103,23 @@ namespace Settings
         [SerializeField]
         private EnemySODefinition enemy;
 
+        [Tooltip("This range is a percentage of the map in which they will spawn.")]
         [SerializeField]
-        private NumberSettings<int> minSpawnRange;
+        [Range(0, 1)]
+        private float minSpawnRange;
+
+        [Tooltip("This range is a percentage of the map in which they will spawn.")]
+        [SerializeField]
+        [Range(0, 1)]
+        private float maxSpawnRange;
 
         [SerializeField]
-        private NumberSettings<int> maxSpawnRange;
-
-        [SerializeField]
-        [Range(1, 10)]
+        [Range(1, int.MaxValue)]
         private int enemyDifficultyRating;
 
-
         public EnemySODefinition Enemy => enemy;
-        public NumberSettings<int> MinSpawnRange => minSpawnRange;
-        public NumberSettings<int> MaxSpawnRange => maxSpawnRange;
+        public float MinSpawnRange => minSpawnRange;
+        public float MaxSpawnRange => maxSpawnRange;
         public int EnemyDifficultyRating => enemyDifficultyRating;
     }
 

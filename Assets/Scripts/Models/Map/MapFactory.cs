@@ -1,4 +1,3 @@
-using Models.Map;
 using UnityEngine;
 using Tooling.Logging;
 using System.Linq;
@@ -7,7 +6,7 @@ using Settings;
 using System;
 using Utils.Extensions;
 
-namespace Systems.Map
+namespace Models.Map
 {
     public class MapFactory
     {
@@ -213,7 +212,7 @@ namespace Systems.Map
             NodeDefinition firstNode,
             NodeDefinition lastNode)
         {
-            var eventWeights = mapSettings.EventWeights;
+            var eventWeights = mapSettings.EventSettings;
             var numEventWeights = eventWeights.Count;
             float totalWeights = eventWeights.Sum(evt => evt.Weight);
             float[] cumulativeSums = new float[numEventWeights];
@@ -229,27 +228,30 @@ namespace Systems.Map
 
             foreach (var node in nodes)
             {
+                NodeEvent newNodeEvent = null;
                 if (node == firstNode)
                 {
-                    node.Event = mapSettings.FinalNodeEvent;
-                    continue;
+                    newNodeEvent = mapSettings.FinalNodeEvent.CreateRuntimeEvent();
                 }
-
-                if (node == lastNode)
+                else if (node == lastNode)
                 {
-                    lastNode.Event = mapSettings.FinalNodeEvent;
-                    continue;
+                    newNodeEvent = mapSettings.FinalNodeEvent.CreateRuntimeEvent();
                 }
-
-                var randomNum = randomNumGenerator.Next(0, (int)totalWeights);
-                for (int i = 0; i < numEventWeights; i++)
+                else
                 {
-                    if (randomNum <= cumulativeSums[i])
+                    var randomNum = randomNumGenerator.Next(0, (int)totalWeights);
+                    for (int i = 0; i < numEventWeights; i++)
                     {
-                        node.Event = eventWeights[i].NodeEvent;
-                        break;
+                        if (randomNum <= cumulativeSums[i])
+                        {
+                            newNodeEvent = eventWeights[i].NodeEventDefinition.CreateRuntimeEvent();
+                            break;
+                        }
                     }
                 }
+                
+                newNodeEvent.Populate(mapSettings, node);
+                node.Event = newNodeEvent;
             }
             return nodes;
         }

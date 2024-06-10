@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Models.Health;
 using Models.Player;
 using Newtonsoft.Json;
 
@@ -20,8 +19,6 @@ namespace Models.Characters
         [JsonIgnore]
         public override string Name => Class.Name;
 
-        [JsonIgnore]
-        public override HealthDefinition HealthDefinition => Class.HealthDefinition;
 
         [JsonConstructor]
         public PlayerCharacter()
@@ -33,7 +30,7 @@ namespace Models.Characters
         {
             Class = playerClassDefinition.Representation;
             Decks = new Player.Decks(Class.StartingDeck);
-            Health = new(HealthDefinition.MaxHealth, HealthDefinition);
+            Health = new(playerClassDefinition.HealthDefinition.MaxHealth, playerClassDefinition.HealthDefinition.MaxHealth);
         }
     }
 }

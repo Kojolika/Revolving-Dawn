@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Models.Health;
 using Newtonsoft.Json;
 using Serialization;
 using UnityEngine;
