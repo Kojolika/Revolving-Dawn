@@ -12,12 +12,6 @@ namespace Models.Map
         [SerializeReference, DisplayAbstract(typeof(NodeEvent))] NodeEvent eventAction;
 
         public AssetReferenceSprite MapIconReference => mapIconReference;
-
-        public NodeEvent CreateRuntimeEvent()
-        {
-            var newNodeEvent = Activator.CreateInstance(eventAction.GetType()) as NodeEvent;
-            newNodeEvent.PopulateStaticData(name, mapIconReference);
-            return newNodeEvent;
-        }
+        public NodeEvent EventAction => eventAction;
     }
 }

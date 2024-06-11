@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using Characters.Model;
 using Cysharp.Threading.Tasks;
+using Models.Characters;
+using Models.Fight;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serialization;
@@ -59,15 +61,40 @@ namespace Systems.Managers
             MyLogger.Log("Saved successfully.");
         }
 
-        public async UniTask SaveFight()
+        public async UniTask SaveFight(FightDefinition fightDefinition, PlayerCharacter playerCharacter)
         {
-            MyLogger.Log($"Saving file at {PlayerSaveFilePath}");
-            if (!Directory.Exists(SavePath))
+            if (!File.Exists(PlayerSaveFilePath))
             {
-                MyLogger.Log("Directory not found, creating new...");
-                await Save(default);
+                throw new System.Exception($"Trying to save a fight without save file created already!");
             }
 
+            try
+            {
+                JObject saveJson = JObject.Parse(await File.ReadAllTextAsync(PlayerSaveFilePath));
+                if (saveJson.TryGetValue(PlayerDataJsonObjectName, out JToken playerData))
+                {
+                    PlayerDefinition playerDefinition = playerData.ToObject<PlayerDefinition>(jsonSerializer);
+                    playerDefinition.CurrentRun.PlayerCharacter = playerCharacter;
+                    playerDefinition.CurrentRun.CurrentFight = fightDefinition;
+
+                    using StreamWriter file = File.CreateText(PlayerSaveFilePath);
+                    using JsonTextWriter writer = new(file);
+
+                    JToken playerJson = JToken.FromObject(playerDefinition, jsonSerializer);
+                    JObject json = new()
+                    {
+                        // Store the player data under the 'player' key
+                        { PlayerDataJsonObjectName, playerJson }
+                    };
+
+                    json.WriteTo(writer);
+                    MyLogger.Log("Saved successfully.");
+                }
+            }
+            catch (JsonReaderException e)
+            {
+                MyLogger.LogError($"Error reading save file: {e.Message}");
+            }
         }
 
         public async UniTask<PlayerDefinition> TryLoadSavedData()

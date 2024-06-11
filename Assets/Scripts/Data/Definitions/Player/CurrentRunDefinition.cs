@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Data.Definitions;
 using Models.Player;
 using Models.Characters;
+using Models.Fight;
 
 namespace Characters.Player2.Run
 {
@@ -25,7 +26,7 @@ namespace Characters.Player2.Run
         [JsonProperty("current_node")]
         public NodeDefinition CurrentMapNode;
 
-        [JsonProperty("current_level")]
-        public int CurrentLevel;
+        [JsonProperty("current_fight")]
+        public FightDefinition CurrentFight;
     }
 }

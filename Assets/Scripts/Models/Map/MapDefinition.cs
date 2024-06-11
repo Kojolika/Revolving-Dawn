@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using Settings;
+using Zenject;
 
 namespace Models.Map
 {
@@ -17,5 +19,7 @@ namespace Models.Map
 
         [JsonProperty("y_dimension")]
         public int YDimension;
+
+        public class Factory : PlaceholderFactory<MapSettings, MapDefinition> { }
     }
 }

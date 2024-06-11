@@ -5,11 +5,20 @@ using System.Collections.Generic;
 using Settings;
 using System;
 using Utils.Extensions;
+using Zenject;
 
 namespace Models.Map
 {
-    public class MapFactory
+    public class MapFactory : IFactory<MapSettings, MapDefinition>
     {
+        private NodeEvent.Factory nodeEventFactory;
+
+        [Inject]
+        void Construct(NodeEvent.Factory nodeEventFactory)
+        {
+            this.nodeEventFactory = nodeEventFactory;
+        }
+
         public MapDefinition Create(MapSettings mapSettings)
         {
             var randomNumGenerator = new System.Random();
@@ -236,30 +245,18 @@ namespace Models.Map
 
             foreach (var node in nodes)
             {
-                NodeEvent newNodeEvent = null;
-                if (node == firstNode)
-                {
-                    newNodeEvent = mapSettings.FinalNodeEvent.CreateRuntimeEvent();
-                }
-                else if (node == lastNode)
-                {
-                    newNodeEvent = mapSettings.FinalNodeEvent.CreateRuntimeEvent();
-                }
-                else
-                {
-                    var randomNum = randomNumGenerator.Next(0, (int)totalWeights);
-                    for (int i = 0; i < numEventWeights; i++)
-                    {
-                        if (randomNum <= cumulativeSums[i])
-                        {
-                            newNodeEvent = eventWeights[i].NodeEventDefinition.CreateRuntimeEvent();
-                            break;
-                        }
-                    }
-                }
+                var nodeFactoryData = new NodeEventFactory.Data(
+                    mapSettings,
+                    node,
+                    firstNode,
+                    lastNode,
+                    maxNodeLevelForMap,
+                    randomNumGenerator,
+                    cumulativeSums,
+                    totalWeights
+                );
 
-                newNodeEvent.Populate(mapSettings, node, maxNodeLevelForMap);
-                node.Event = newNodeEvent;
+                node.Event = nodeEventFactory.Create(nodeFactoryData);
             }
             return nodes;
         }

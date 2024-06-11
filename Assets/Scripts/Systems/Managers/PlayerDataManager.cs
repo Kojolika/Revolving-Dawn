@@ -1,5 +1,6 @@
 ﻿using Characters.Model;
 using Cysharp.Threading.Tasks;
+using Models.Fight;
 using Models.Map;
 using Models.Player;
 using Settings;
@@ -14,12 +15,15 @@ namespace Systems.Managers
 
         private SaveManager saveManager;
         private MapSettings mapSettings;
+        private MapDefinition.Factory mapFactory;
 
         [Zenject.Inject]
-        void Construct(SaveManager saveManager, MapSettings mapSettings)
+        void Construct(SaveManager saveManager, MapSettings mapSettings, MapDefinition.Factory mapFactory)
         {
+            MyLogger.Log($"Injected map factory: {mapFactory}");
             this.saveManager = saveManager;
             this.mapSettings = mapSettings;
+            this.mapFactory = mapFactory;
         }
 
         public async UniTask AfterStart()
@@ -43,9 +47,16 @@ namespace Systems.Managers
             await saveManager.Save(CurrentPlayerDefinition);
         }
 
+        public async UniTask StartFight(FightDefinition fightDefinition)
+        {
+            CurrentPlayerDefinition.CurrentRun.CurrentFight = fightDefinition;
+
+            await saveManager.Save(CurrentPlayerDefinition);
+        }
+
         public async UniTask StartNewRun(PlayerClassSODefinition playerClass)
         {
-            var newMap = new MapFactory().Create(mapSettings);
+            var newMap = mapFactory.Create(mapSettings);
             CurrentPlayerDefinition.CurrentRun = new Characters.Player2.Run.RunDefinition()
             {
                 Name = "Test",

@@ -19,16 +19,14 @@ namespace Systems.Managers
 
         private Canvas menuCanvas;
         private DiContainer container;
-        private MySceneManager sceneManager;
 
         public event Action MenuStackUpdated;
 
         [Inject]
-        void Construct(Canvas menuCanvas, DiContainer container, MySceneManager sceneManager)
+        void Construct(Canvas menuCanvas, DiContainer container)
         {
             this.menuCanvas = menuCanvas;
             this.container = container;
-            this.sceneManager = sceneManager;
         }
 
         public UniTask Startup()
@@ -66,6 +64,17 @@ namespace Systems.Managers
             // Index 1 from the end:
             // docs: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/proposals/csharp-8.0/ranges
             _ = Close(MenuStack[^1]);
+        }
+
+        public async UniTask CloseAll()
+        {
+            var closeHandles = new List<UniTask>();
+            foreach (var menuInfo in MenuStack)
+            {
+                closeHandles.Add(Close(menuInfo.MenuHandle));
+            }
+
+            await UniTask.WhenAll(closeHandles);
         }
 
         public async UniTask Close(IMenuHandle menuHandle)

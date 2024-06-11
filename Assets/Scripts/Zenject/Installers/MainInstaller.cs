@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Models.Map;
+using Settings;
 using Systems.Managers.Base;
 using Tooling.Logging;
 using UI.DisplayElements;
@@ -17,6 +19,7 @@ namespace Zenject.Installers
         {
             InstallManagers();
             InstallPrefabs();
+            InstallMapObjects();
         }
 
         private void InstallManagers()
@@ -60,6 +63,12 @@ namespace Zenject.Installers
         private void InstallPrefabs()
         {
             Container.BindFactory<NodeDisplayElement.Data, NodeDisplayElement, NodeDisplayElement.Factory>().FromComponentInNewPrefab(nodeDisplayElement);
+        }
+
+        private void InstallMapObjects()
+        {
+            Container.BindFactory<NodeEventFactory.Data, NodeEvent, NodeEvent.Factory>().FromFactory<NodeEventFactory>();
+            Container.BindFactory<MapSettings, MapDefinition, MapDefinition.Factory>().FromFactory<MapFactory>();
         }
     }
 }
