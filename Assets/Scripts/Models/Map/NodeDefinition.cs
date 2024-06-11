@@ -23,6 +23,9 @@ namespace Models.Map
         [JsonProperty("level")]
         public int Level = int.MaxValue;
 
+        [JsonIgnore]
+        public int NumberOfEdges => NextNodes?.Count ?? 0 + PreviousNodes?.Count ?? 0;
+
 
         [Serializable, JsonObject(IsReference = false)]
         public struct Coordinate : IEquatable<Coordinate>, IComparable<Coordinate>

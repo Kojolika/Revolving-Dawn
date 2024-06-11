@@ -1,13 +1,22 @@
+using Newtonsoft.Json;
+
 namespace Models.Characters
 {
     public class Enemy : Character
     {
-        public EnemySODefinition EnemyDefinition { get; private set; }
-        public override string Name => EnemyDefinition.Name;
+        [JsonProperty("model")]
+        public EnemyModel Model { get; private set; }
+
+        [JsonConstructor]
+        public Enemy()
+        {
+
+        }
 
         public Enemy(EnemySODefinition enemyDefinition, Health health)
         {
-            EnemyDefinition = enemyDefinition;
+            Name = enemyDefinition.name;
+            Model = enemyDefinition.Representation;
             Health = health;
         }
     }

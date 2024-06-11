@@ -18,7 +18,7 @@ namespace UI.Common.DisplayElements
 
         public override void Populate(PlayerClassSODefinition data)
         {
-            className.SetText(data.Name);
+            className.SetText(data.name);
             description.SetText(data.Description);
 
             classImageReference = data.CharacterAvatarReference;

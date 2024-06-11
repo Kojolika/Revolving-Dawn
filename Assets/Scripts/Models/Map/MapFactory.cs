@@ -15,9 +15,9 @@ namespace Models.Map
             var randomNumGenerator = new System.Random();
 
             var (nodes, nodeLookup, firstNode, lastNode) = GenerateNodePositions(mapSettings, randomNumGenerator);
-            nodes = CreateEdgesBetweenNodes(nodes, nodeLookup, firstNode, lastNode, mapSettings.NumberOfPaths);
-            nodes = AssignLevelsToNodes(nodes, nodeLookup, firstNode);
-            nodes = AssignEventsToNodes(mapSettings, randomNumGenerator, nodes, firstNode, lastNode);
+            var nodesWithEdges = CreatePaths(mapSettings, nodes, nodeLookup, firstNode, lastNode);
+            var (nodesWithLevels, maxNodeLevelForMap) = AssignLevelsToNodes(nodesWithEdges, nodeLookup, firstNode);
+            nodes = AssignEventsToNodes(mapSettings, randomNumGenerator, nodesWithLevels, firstNode, lastNode, maxNodeLevelForMap);
 
             return new MapDefinition()
             {
@@ -85,13 +85,14 @@ namespace Models.Map
             return (nodes, nodeLookup, firstNode, lastNode);
         }
 
-        private List<NodeDefinition> CreateEdgesBetweenNodes(
+        private List<NodeDefinition> CreatePaths(
+            MapSettings mapSettings,
             List<NodeDefinition> nodes,
             Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup,
             NodeDefinition firstNode,
-            NodeDefinition lastNode,
-            int numPaths)
+            NodeDefinition lastNode)
         {
+            var numPaths = mapSettings.NumberOfPaths;
             var visitedEdges = new HashSet<(NodeDefinition, NodeDefinition)>();
             for (int i = 0; i < numPaths; i++)
             {
@@ -101,12 +102,12 @@ namespace Models.Map
                     var closestNode = nodes
                         .Where(n => !visitedEdges.Contains((node, n)) && n.Coord.y > node.Coord.y)
                         // order by nearest nodes
-                        .OrderBy(n => NodeDefinition.Coordinate.Distance(n.Coord, node.Coord))
+                        .OrderBy(n => NodeDefinition.Coordinate.Distance(n.Coord, node.Coord) + (mapSettings.XDimension + mapSettings.YDimension) * (0.01 * n.NumberOfEdges))
                         .FirstOrDefault();
 
                     if (closestNode == null)
                     {
-                        MyLogger.LogError($"Error during map creation: Couldn't find a valid node to continue the path generation!");
+                        MyLogger.LogError($"Error during map creation: Couldn't find a valid node to continue the path generation! Node : {node.Coord}");
                         break;
                     }
 
@@ -169,7 +170,7 @@ namespace Models.Map
             return nodes;
         }
 
-        private List<NodeDefinition> AssignLevelsToNodes(
+        private (List<NodeDefinition>, int) AssignLevelsToNodes(
             List<NodeDefinition> nodes,
             Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup,
             NodeDefinition firstNode)
@@ -179,6 +180,7 @@ namespace Models.Map
 
             NodeDefinition currentNode = default;
             firstNode.Level = 0;
+            int max = firstNode.Level;
             while (unvisitedNodes.Count > 0)
             {
                 var lowestDistanceUnvisited = unvisitedNodes.OrderBy(coord => nodeLookup[coord].Level).First();
@@ -196,13 +198,18 @@ namespace Models.Map
                         var distanceToNode = currentNode.Level + 1;
                         if (distanceToNode < nextNode.Level)
                         {
+                            if (max < distanceToNode)
+                            {
+                                max = distanceToNode;
+                            }
+
                             nextNode.Level = distanceToNode;
                         }
                     }
                 }
             }
 
-            return nodes;
+            return (nodes, max);
         }
 
         private List<NodeDefinition> AssignEventsToNodes(
@@ -210,7 +217,8 @@ namespace Models.Map
             System.Random randomNumGenerator,
             List<NodeDefinition> nodes,
             NodeDefinition firstNode,
-            NodeDefinition lastNode)
+            NodeDefinition lastNode,
+            int maxNodeLevelForMap)
         {
             var eventWeights = mapSettings.EventSettings;
             var numEventWeights = eventWeights.Count;
@@ -249,8 +257,8 @@ namespace Models.Map
                         }
                     }
                 }
-                
-                newNodeEvent.Populate(mapSettings, node);
+
+                newNodeEvent.Populate(mapSettings, node, maxNodeLevelForMap);
                 node.Event = newNodeEvent;
             }
             return nodes;

@@ -7,7 +7,8 @@ namespace Models.Characters
     [System.Serializable]
     public abstract class Character : IHealth
     {
-        public abstract string Name { get; }
+        [JsonProperty("name")]
+        public string Name { get; protected set; }
 
         [JsonProperty("buffs")]
         public List<Buff> Buffs { get; set; }

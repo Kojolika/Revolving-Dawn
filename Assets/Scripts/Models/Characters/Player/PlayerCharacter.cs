@@ -8,17 +8,13 @@ namespace Models.Characters
     public class PlayerCharacter : Character, IInventory
     {
         [JsonProperty("class")]
-        public PlayerClass Class { get; private set; }
+        public PlayerClassModel Class { get; private set; }
 
         [JsonProperty("decks")]
         public Player.Decks Decks { get; private set; }
 
         [JsonProperty("inventory")]
         public List<IItem> Inventory { get; private set; }
-
-        [JsonIgnore]
-        public override string Name => Class.Name;
-
 
         [JsonConstructor]
         public PlayerCharacter()
@@ -29,6 +25,7 @@ namespace Models.Characters
         public PlayerCharacter(PlayerClassSODefinition playerClassDefinition)
         {
             Class = playerClassDefinition.Representation;
+            Name = playerClassDefinition.name;
             Decks = new Player.Decks(Class.StartingDeck);
             Health = new(playerClassDefinition.HealthDefinition.MaxHealth, playerClassDefinition.HealthDefinition.MaxHealth);
         }

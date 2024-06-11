@@ -5,7 +5,7 @@ namespace Models.Map
     [System.Serializable]
     public class CampfireEvent : NodeEvent
     {
-        public override void Populate(MapSettings mapSettings, NodeDefinition node)
+        public override void Populate(MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
         {
             //throw new System.NotImplementedException();
         }

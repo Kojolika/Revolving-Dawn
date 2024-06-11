@@ -18,7 +18,7 @@ namespace Models.Map
         public AssetReferenceSprite MapIconReference => mapIconReference;
 
         public abstract void StartEvent();
-        public abstract void Populate(MapSettings mapSettings, NodeDefinition node);
+        public abstract void Populate(MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap);
         public void PopulateStaticData(string name, AssetReferenceSprite mapIconReference)
         {
             this.name = name;

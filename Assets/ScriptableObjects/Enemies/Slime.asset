@@ -13,21 +13,44 @@ MonoBehaviour:
   m_Name: Slime
   m_EditorClassIdentifier: 
   healthDefinition:
-    maxHealth: 50
-  enemySprite: {fileID: 21300000, guid: 3b5e3770d189f3c41949c9f885de85f1, type: 3}
+    MaxHealth: 30
+  avatarReference:
+    m_AssetGUID: 8f05220f1e9b7cc4f835f8332dbf5ac4
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   enemyMoves:
-  - moveIntentSprite: {fileID: 21300000, guid: 74fdc7ee74478604dab6857ff5cc204c, type: 3}
+  - moveIntentSprite:
+      m_AssetGUID: 74fdc7ee74478604dab6857ff5cc204c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     enemyMoves:
     - rid: 3824537175778918400
-  - moveIntentSprite: {fileID: 21300000, guid: 76a8a3a7098bf3c4c89e2d0700bf39d6, type: 3}
+  - moveIntentSprite:
+      m_AssetGUID: 76a8a3a7098bf3c4c89e2d0700bf39d6
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     enemyMoves:
     - rid: 3824537175778918401
-  - moveIntentSprite: {fileID: 21300000, guid: ee805cdaee4f17644a3b4e802f2301fe, type: 3}
+  - moveIntentSprite:
+      m_AssetGUID: ee805cdaee4f17644a3b4e802f2301fe
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     enemyMoves:
-    - rid: 3824537175778918400
+    - rid: 503764604246032385
   references:
     version: 2
     RefIds:
+    - rid: 503764604246032385
+      type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+      data:
+        targeting: 1
+        buff:
+          buffDefinition: {fileID: 11400000, guid: f192b420cc2e18046926d3ac19030545, type: 2}
+          stacksize: 2
     - rid: 3824537175778918400
       type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
@@ -39,4 +62,4 @@ MonoBehaviour:
       type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 1
-        amount: 7
+        damageAmount: 2
