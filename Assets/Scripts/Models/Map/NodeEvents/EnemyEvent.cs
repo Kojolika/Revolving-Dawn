@@ -62,10 +62,10 @@ namespace Models.Map
             }
         }
 
-        public override void StartEvent()
+        public override async void StartEvent()
         {
-            _ = menuManager.CloseAll();
             _ = playerDataManager.StartFight(new Fight.FightDefinition() { Enemies = enemies });
+            await menuManager.CloseAll();
             _ = mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
         }
     }

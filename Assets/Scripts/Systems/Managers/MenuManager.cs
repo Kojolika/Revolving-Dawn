@@ -50,7 +50,7 @@ namespace Systems.Managers
         public MenuInfo LastOrDefault<T>()
             => MenuStack.LastOrDefault(menu => menu.Type == typeof(T));
 
-        public MenuInfo Peek() => MenuStack.Count >= 0
+        public MenuInfo Peek() => MenuStack.Count > 0
             ? MenuStack[^1]
             : null;
 
@@ -68,13 +68,12 @@ namespace Systems.Managers
 
         public async UniTask CloseAll()
         {
-            var closeHandles = new List<UniTask>();
-            foreach (var menuInfo in MenuStack)
+            MenuInfo menuOnStack = Peek();
+            while (menuOnStack != null)
             {
-                closeHandles.Add(Close(menuInfo.MenuHandle));
+                await Close(menuOnStack);
+                menuOnStack = Peek();
             }
-
-            await UniTask.WhenAll(closeHandles);
         }
 
         public async UniTask Close(IMenuHandle menuHandle)
