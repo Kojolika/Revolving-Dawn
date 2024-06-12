@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Models.Map;
+using Serialization;
 using Settings;
 using Systems.Managers.Base;
 using Tooling.Logging;
@@ -20,6 +21,7 @@ namespace Zenject.Installers
             InstallManagers();
             InstallPrefabs();
             InstallMapObjects();
+            InstallDependenciesForDeserializer();
         }
 
         private void InstallManagers()
@@ -69,6 +71,11 @@ namespace Zenject.Installers
         {
             Container.BindFactory<NodeEventFactory.Data, NodeEvent, NodeEvent.Factory>().FromFactory<NodeEventFactory>();
             Container.BindFactory<MapSettings, MapDefinition, MapDefinition.Factory>().FromFactory<MapFactory>();
+        }
+
+        private void InstallDependenciesForDeserializer()
+        {
+            Container.Bind<ZenjectDependenciesContractResolver>().FromNew().AsSingle();
         }
     }
 }

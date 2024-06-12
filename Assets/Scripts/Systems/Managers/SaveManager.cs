@@ -3,11 +3,13 @@ using Characters.Model;
 using Cysharp.Threading.Tasks;
 using Models.Characters;
 using Models.Fight;
+using Models.Map;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serialization;
 using Systems.Managers.Base;
 using Tooling.Logging;
+using Zenject;
 using File = System.IO.File;
 
 namespace Systems.Managers
@@ -15,13 +17,20 @@ namespace Systems.Managers
     public class SaveManager : IManager
     {
         static string SavePath => $"{UnityEngine.Application.persistentDataPath}/saves";
-        static string SaveFormat = ".json";
+        const string SaveFormat = ".json";
         static string RunsSavePath => $"{SavePath}/runs";
-        static string PlayerDataFileName = "player_data";
+        const string PlayerDataFileName = "player_data";
         static string PlayerSaveFilePath => $"{SavePath}/{PlayerDataFileName}{SaveFormat}";
-        static string PlayerDataJsonObjectName = "player";
+        const string PlayerDataJsonObjectName = "player";
 
         private JsonSerializer jsonSerializer;
+        private ZenjectDependenciesContractResolver zenjectDependencyContractResolver;
+
+        [Inject]
+        void Construct(ZenjectDependenciesContractResolver zenjectDependencyContractResolver)
+        {
+            this.zenjectDependencyContractResolver = zenjectDependencyContractResolver;
+        }
 
         public UniTask Startup()
         {
@@ -32,7 +41,7 @@ namespace Systems.Managers
                 Formatting = Formatting.Indented,
             };
             jsonSerializer.Converters.Add(new AssetReferenceConverter());
-            //jsonSerializer.Converters.Add(new ColorConverter());
+            jsonSerializer.ContractResolver = zenjectDependencyContractResolver;
             return UniTask.CompletedTask;
         }
 

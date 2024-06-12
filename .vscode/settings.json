@@ -49,5 +49,13 @@
     },
     "workbench.colorTheme": "Default Dark Modern",
     "explorer.excludeGitIgnore": true,
-    "dotnet.defaultSolution": "Revolving-Dawn.sln"
+    "dotnet.defaultSolution": "Revolving-Dawn.sln",
+    "cSpell.words": [
+        "deserialzed",
+        "Instantiator",
+        "Mathf",
+        "Newtonsoft",
+        "Scriptable",
+        "Zenject"
+    ]
 }

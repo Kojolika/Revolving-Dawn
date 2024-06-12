@@ -20,7 +20,6 @@ namespace Systems.Managers
         [Zenject.Inject]
         void Construct(SaveManager saveManager, MapSettings mapSettings, MapDefinition.Factory mapFactory)
         {
-            MyLogger.Log($"Injected map factory: {mapFactory}");
             this.saveManager = saveManager;
             this.mapSettings = mapSettings;
             this.mapFactory = mapFactory;
@@ -43,6 +42,13 @@ namespace Systems.Managers
             // TODO: Implement steam id
             CurrentPlayerDefinition = new PlayerDefinition(1);
             MyLogger.Log($"Created new player with id {CurrentPlayerDefinition.ID}");
+
+            await saveManager.Save(CurrentPlayerDefinition);
+        }
+
+        public async UniTask UpdateMapNode(NodeDefinition currentNode)
+        {
+            CurrentPlayerDefinition.CurrentRun.CurrentMapNode = currentNode;
 
             await saveManager.Save(CurrentPlayerDefinition);
         }

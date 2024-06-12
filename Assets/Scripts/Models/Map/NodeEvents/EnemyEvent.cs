@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Models.Characters;
 using Newtonsoft.Json;
+using Serialization;
 using Settings;
 using Systems.Managers;
 using Tooling.Logging;
@@ -28,7 +30,6 @@ namespace Models.Map
         [Inject]
         void Construct(PlayerDataManager playerDataManager, MySceneManager mySceneManager, MenuManager menuManager)
         {
-            MyLogger.Log($"Injected in enemy event;");
             this.playerDataManager = playerDataManager;
             this.mySceneManager = mySceneManager;
             this.menuManager = menuManager;

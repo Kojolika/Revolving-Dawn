@@ -16,12 +16,14 @@ namespace UI.DisplayElements
         [SerializeField] private Image playerIndicator;
 
         private AddressablesManager addressablesManager;
+        private PlayerDataManager playerDataManager;
         private Data data;
 
         [Inject]
-        void Construct(AddressablesManager addressablesManager, Data data)
+        void Construct(AddressablesManager addressablesManager, PlayerDataManager playerDataManager, Data data)
         {
             this.addressablesManager = addressablesManager;
+            this.playerDataManager = playerDataManager;
             this.data = data;
         }
 
@@ -37,6 +39,7 @@ namespace UI.DisplayElements
             {
                 data.Definition.Event.StartEvent();
                 button.interactable = false;
+                _ = playerDataManager.UpdateMapNode(data.Definition);
             });
 
             _ = addressablesManager.LoadGenericAsset(data.Definition.Event.MapIconReference,
