@@ -11,10 +11,10 @@ namespace Models.Map
     public abstract class NodeEvent
     {
         [JsonProperty("name")]
-        private string name;
+        private readonly string name;
 
         [JsonProperty("map_icon_reference")]
-        private AssetReferenceSprite mapIconReference;
+        private readonly AssetReferenceSprite mapIconReference;
 
         public string Name => name;
         public AssetReferenceSprite MapIconReference => mapIconReference;

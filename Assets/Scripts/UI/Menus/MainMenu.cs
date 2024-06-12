@@ -19,15 +19,19 @@ namespace UI.Menus
         [SerializeField] private MyButton quitButton;
 
         private PlayerDataManager playerDataManager;
+        private MySceneManager mySceneManager;
         private MenuManager menuManager;
         private List<PlayerClassSODefinition> playerClassDefinitions;
 
         [Zenject.Inject]
-        async void Construct(PlayerDataManager playerDataManager,
+        async void Construct(
+            PlayerDataManager playerDataManager,
+            MySceneManager mySceneManager,
             MenuManager menuManager,
             StaticDataReference<PlayerClassSODefinition> playerClassReferences)
         {
             this.playerDataManager = playerDataManager;
+            this.mySceneManager = mySceneManager;
             this.menuManager = menuManager;
             playerClassDefinitions = await playerClassReferences.LoadAssetsAsync();
         }
@@ -41,7 +45,7 @@ namespace UI.Menus
 
         public override void Populate(Null data) { }
 
-        void StartNewGameOrLoadCurrent()
+        async void StartNewGameOrLoadCurrent()
         {
             // If continuing load current fight or load current map
             // otherwise open character selection
@@ -53,7 +57,10 @@ namespace UI.Menus
                     new CharacterSelect.Data() { Classes = playerClassDefinitions }
                 );
             }
-            // TODO: add if current fight is not null load fight
+            else if (currentRun.CurrentFight != null)
+            {
+                await mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
+            }
             else if (currentRun.CurrentMap != null)
             {
                 _ = menuManager.Open<MapView, MapView.Data>(

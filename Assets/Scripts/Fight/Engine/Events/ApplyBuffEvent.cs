@@ -16,5 +16,10 @@ namespace Fight.Events
         }
 
         public override string Log() => $"Applied {Buff} to {Target}";
+
+        public override void Undo()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

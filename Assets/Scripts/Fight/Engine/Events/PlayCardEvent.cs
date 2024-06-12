@@ -14,5 +14,10 @@ namespace Fight.Events
         }
 
         public override string Log() => $"Played card {Target.name}";
+
+        public override void Undo()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

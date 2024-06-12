@@ -51,11 +51,17 @@
     "explorer.excludeGitIgnore": true,
     "dotnet.defaultSolution": "Revolving-Dawn.sln",
     "cSpell.words": [
+        "Behaviour",
+        "Bezier",
+        "Cysharp",
         "deserialzed",
+        "Discarder",
+        "dont",
         "Instantiator",
         "Mathf",
         "Newtonsoft",
         "Scriptable",
+        "Triggerable",
         "Zenject"
     ]
 }

@@ -53,7 +53,7 @@ namespace Systems.Managers
             await saveManager.Save(CurrentPlayerDefinition);
         }
 
-        public async UniTask StartFight(FightDefinition fightDefinition)
+        public async UniTask SaveFight(FightDefinition fightDefinition)
         {
             CurrentPlayerDefinition.CurrentRun.CurrentFight = fightDefinition;
 

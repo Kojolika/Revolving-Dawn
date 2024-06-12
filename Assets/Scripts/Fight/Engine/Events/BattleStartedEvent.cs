@@ -7,5 +7,10 @@ namespace Fight.Events
         public BattleStartedEvent(FightManager target) : base(target) { }
         public override void Execute(FightManager target, BattleEngine battleEngine) { }
         public override string Log() => "Fight started!";
+
+        public override void Undo()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

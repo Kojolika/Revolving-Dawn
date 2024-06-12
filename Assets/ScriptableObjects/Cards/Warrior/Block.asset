@@ -23,7 +23,7 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 1
-  class:
+  playerClass:
     m_AssetGUID: cb928e790e6382a4cbc364a9596de11f
     m_SubObjectName: 
     m_SubObjectType: 

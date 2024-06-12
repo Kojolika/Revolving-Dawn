@@ -12,10 +12,11 @@ namespace Systems.Managers
     [CreateAssetMenu(menuName = "RevolvingDawn/Systems/Managers/" + nameof(MySceneManager), fileName = nameof(MySceneManager))]
     public class MySceneManager : AbstractSOManager
     {
-        [SerializeField] private Canvas loadingCanvas;
-        [SerializeField] private Animator defaultLoadingAnim;
+        private Canvas loadingCanvas;
+        private Animator defaultLoadingAnim;
+        private MenuManager menuManager;
 
-        public List<Object> dontDestroyOnLoadObjects { get; private set; } = new List<Object>();
+        public List<Object> DontDestroyOnLoadObjects { get; private set; } = new List<Object>();
 
         /// <summary>
         /// Scene indexes in the build settings.
@@ -28,10 +29,11 @@ namespace Systems.Managers
         }
 
         [Zenject.Inject]
-        void Construct(Canvas loadingCanvas, Animator defaultLoadingAnim)
+        void Construct(Canvas loadingCanvas, Animator defaultLoadingAnim, MenuManager menuManager)
         {
             this.loadingCanvas = loadingCanvas;
             this.defaultLoadingAnim = defaultLoadingAnim;
+            this.menuManager = menuManager;
         }
 
         public override UniTask Startup()
@@ -47,19 +49,20 @@ namespace Systems.Managers
         public void AddObjectToNotDestroyOnLoad(Object obj)
         {
             DontDestroyOnLoad(obj);
-            dontDestroyOnLoadObjects.Add(obj);
+            DontDestroyOnLoadObjects.Add(obj);
         }
 
         public async UniTask LoadScene(SceneIndex index)
         {
             loadingCanvas.gameObject.SetActive(true);
+            _ = menuManager.CloseAll();
 
             MyLogger.Log("Loading scene " + index);
 
             await SceneManager.LoadSceneAsync((int)index);
 
             // So we can actually see it load
-            await UniTask.Delay(TimeSpan.FromSeconds(2));
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
 
             loadingCanvas.gameObject.SetActive(false);
         }

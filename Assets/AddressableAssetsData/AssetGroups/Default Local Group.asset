@@ -52,11 +52,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2081d146d8f52ec468ab6f19744b0863
-    m_Address: buff_fracture
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d1ee13283cbbd2e409b03a6d2b373c01
     m_Address: class_sprite_warrior
     m_ReadOnly: 0
@@ -127,11 +122,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c130ca224996c694db4ce233fd927b74
-    m_Address: buff_block
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 205954ae161227c418555d528d4ef5be
     m_Address: node_event_enemy
     m_ReadOnly: 0
@@ -179,6 +169,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ee805cdaee4f17644a3b4e802f2301fe
     m_Address: intent_special
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f29e4772184bae4d9f6977d4877148c
+    m_Address: buff_ooze
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63102531cc50a29459bb58fbf0d12221
+    m_Address: buff_block
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

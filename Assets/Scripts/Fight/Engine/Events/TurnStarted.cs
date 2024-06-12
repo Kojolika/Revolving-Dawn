@@ -9,5 +9,10 @@ namespace Fight.Events
         public override void Execute(Character target, BattleEngine battleEngine) { }
 
         public override string Log() => $"{Target.Name}'s turn started!";
+
+        public override void Undo()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

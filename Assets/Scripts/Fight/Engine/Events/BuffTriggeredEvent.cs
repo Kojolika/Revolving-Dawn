@@ -23,7 +23,12 @@ namespace Fight.Events
             Buff.StackSize = TriggerEffect.Invoke(target, Buff);
         }
 
-        public override string Log() => $"Buff {Buff.Definition.name} triggered off of {nameof(TEvent)}";
+        public override string Log() => $"Buff {Buff.Definition.Name} triggered off of {nameof(TEvent)}";
+
+        public override void Undo()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public static class BuffTriggeredEventFactory

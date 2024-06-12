@@ -23,7 +23,7 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  class:
+  playerClass:
     m_AssetGUID: cb928e790e6382a4cbc364a9596de11f
     m_SubObjectName: 
     m_SubObjectType: 
@@ -39,4 +39,4 @@ MonoBehaviour:
       type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 1
-        amount: 5
+        damageAmount: 5

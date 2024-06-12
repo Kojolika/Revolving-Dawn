@@ -11,7 +11,7 @@ namespace Models.Characters
         public string Name { get; protected set; }
 
         [JsonProperty("buffs")]
-        public List<Buff> Buffs { get; set; }
+        public BuffList Buffs { get; set; }
 
         [JsonProperty("health")]
         public Health Health { get; protected set; }

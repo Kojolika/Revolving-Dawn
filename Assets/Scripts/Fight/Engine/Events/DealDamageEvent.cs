@@ -16,5 +16,10 @@ namespace Fight.Events
         }
 
         public override string Log() => $"{Target} is dealt {Amount} damage";
+
+        public override void Undo()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

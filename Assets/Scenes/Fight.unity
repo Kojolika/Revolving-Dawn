@@ -623,7 +623,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 430144961}
-  - component: {fileID: 430144962}
   - component: {fileID: 430144960}
   m_Layer: 0
   m_Name: FightManager
@@ -672,22 +671,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &430144962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 430144959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cea5a03983a182f4f82ad470da2b29e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pauseBackGround: {fileID: 8772199765870303, guid: 3bba7d0711912ae4e88cee8d62bf9dc5, type: 3}
-  escapeMenu: {fileID: 5613503155809031647, guid: 34bb1059df7294043a5b9b9a55e742ea, type: 3}
-  SettingsMenu: {fileID: 147049452486798194, guid: 32254755a6e257c41af5bc69aea8aff1, type: 3}
-  DeckViewerMenu: {fileID: 3662419231129239214, guid: c9fecdcbb8c377e4eaff6ce333f70dc0, type: 3}
 --- !u!1 &503000086
 GameObject:
   m_ObjectHideFlags: 0

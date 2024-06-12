@@ -65,9 +65,8 @@ namespace Models.Map
 
         public override async void StartEvent()
         {
-            _ = playerDataManager.StartFight(new Fight.FightDefinition() { Enemies = enemies });
-            await menuManager.CloseAll();
-            _ = mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
+            _ = playerDataManager.SaveFight(new Fight.FightDefinition() { Enemies = enemies });
+            await mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
         }
     }
 
