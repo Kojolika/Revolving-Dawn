@@ -19,7 +19,7 @@ namespace Fight.Events
 
         public override void Undo()
         {
-            throw new System.NotImplementedException();
+            Target.Buffs[Buff].StackSize -= Buff.StackSize;
         }
     }
 }
