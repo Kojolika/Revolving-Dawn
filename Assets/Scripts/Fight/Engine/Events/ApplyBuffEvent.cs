@@ -19,7 +19,7 @@ namespace Fight.Events
 
         public override void Undo()
         {
-            Target.Buffs[Buff].StackSize -= Buff.StackSize;
+            Target.Buffs.Remove(Buff);
         }
     }
 }

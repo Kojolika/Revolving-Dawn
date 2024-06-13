@@ -182,6 +182,41 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b17ad1f7b9ea379449767031043acd63
+    m_Address: card_border_time_keeper
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 083b62d404bf9bd47bed1e084f79134d
+    m_Address: card_art_rewind
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35ae9a42ae3ef2a42a2090ef1fd50fe2
+    m_Address: class_sprite_time_keeper
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97608a3c0220d3c418750a48d3ed8f83
+    m_Address: player_class_time_keeper
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d64d33cd3d35f84b846fd22e87ff5fa
+    m_Address: card_mana_socket
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83d3aaf6c39df1d43b8f9929591680c4
+    m_Address: card_mana_socker_border
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 646adcdade04dee42be35324ad5c116d
+    m_Address: card_border_timekeeper
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3788ab0c79ab5ed46b258ba64fadb02d, type: 2}
   m_SchemaSet:
