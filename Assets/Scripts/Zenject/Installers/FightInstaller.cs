@@ -10,7 +10,7 @@ namespace Zenject.Installers
 
         public override void InstallBindings()
         {
-
+            
         }
     }
 }

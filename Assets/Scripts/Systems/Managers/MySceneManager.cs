@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Systems.Managers.Base;
 using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
 
 namespace Systems.Managers
 {
@@ -15,8 +13,6 @@ namespace Systems.Managers
         private Canvas loadingCanvas;
         private Animator defaultLoadingAnim;
         private MenuManager menuManager;
-
-        public List<Object> DontDestroyOnLoadObjects { get; private set; } = new List<Object>();
 
         /// <summary>
         /// Scene indexes in the build settings.
@@ -34,22 +30,11 @@ namespace Systems.Managers
             this.loadingCanvas = loadingCanvas;
             this.defaultLoadingAnim = defaultLoadingAnim;
             this.menuManager = menuManager;
-        }
 
-        public override UniTask Startup()
-        {
-            AddObjectToNotDestroyOnLoad(loadingCanvas);
-            
+            DontDestroyOnLoad(loadingCanvas);
+
             defaultLoadingAnim.transform.SetParent(loadingCanvas.transform);
             defaultLoadingAnim.transform.localPosition = Vector3.zero;
-
-            return base.Startup();
-        }
-
-        public void AddObjectToNotDestroyOnLoad(Object obj)
-        {
-            DontDestroyOnLoad(obj);
-            DontDestroyOnLoadObjects.Add(obj);
         }
 
         public async UniTask LoadScene(SceneIndex index)

@@ -51,6 +51,7 @@
     "explorer.excludeGitIgnore": true,
     "dotnet.defaultSolution": "Revolving-Dawn.sln",
     "cSpell.words": [
+        "Addressables",
         "Behaviour",
         "Bezier",
         "Cysharp",

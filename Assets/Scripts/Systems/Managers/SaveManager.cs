@@ -24,15 +24,9 @@ namespace Systems.Managers
         const string PlayerDataJsonObjectName = "player";
 
         private JsonSerializer jsonSerializer;
-        private ZenjectDependenciesContractResolver zenjectDependencyContractResolver;
 
         [Inject]
         void Construct(ZenjectDependenciesContractResolver zenjectDependencyContractResolver)
-        {
-            this.zenjectDependencyContractResolver = zenjectDependencyContractResolver;
-        }
-
-        public UniTask Startup()
         {
             jsonSerializer = new JsonSerializer
             {
@@ -42,7 +36,6 @@ namespace Systems.Managers
             };
             jsonSerializer.Converters.Add(new AssetReferenceConverter());
             jsonSerializer.ContractResolver = zenjectDependencyContractResolver;
-            return UniTask.CompletedTask;
         }
 
         public async UniTask Save(PlayerDefinition playerDefinition)

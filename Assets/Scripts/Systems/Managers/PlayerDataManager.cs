@@ -18,22 +18,18 @@ namespace Systems.Managers
         private MapDefinition.Factory mapFactory;
 
         [Zenject.Inject]
-        void Construct(SaveManager saveManager, MapSettings mapSettings, MapDefinition.Factory mapFactory)
+        async void Construct(SaveManager saveManager, MapSettings mapSettings, MapDefinition.Factory mapFactory)
         {
             this.saveManager = saveManager;
             this.mapSettings = mapSettings;
             this.mapFactory = mapFactory;
-        }
 
-        public async UniTask AfterStart()
-        {
             CurrentPlayerDefinition = await saveManager.TryLoadSavedData();
 
-            MyLogger.Log($"Current run after loading: {CurrentPlayerDefinition?.CurrentRun}");
 
             if (CurrentPlayerDefinition == null)
             {
-                await CreateNewPlayer();
+                _ = CreateNewPlayer();
             }
         }
 
