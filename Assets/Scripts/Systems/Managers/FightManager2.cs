@@ -7,19 +7,13 @@ namespace Systems.Managers
 {
     public class FightManager2 : IPartTimeManager
     {
-        private PlayerDataManager playerDataManager;
-        private BattleEngine battleEngine;
+        private readonly PlayerDataManager playerDataManager;
+        private readonly BattleEngine battleEngine;
 
-        [Zenject.Inject]
-        void Construct(PlayerDataManager playerDataManager)
+        public FightManager2(PlayerDataManager playerDataManager, BattleEngine battleEngine)
         {
+            this.battleEngine = new BattleEngine();
             this.playerDataManager = playerDataManager;
-        }
-
-        UniTask IManager.Startup()
-        {
-            battleEngine = new BattleEngine();
-            return UniTask.CompletedTask;
         }
     }
 }

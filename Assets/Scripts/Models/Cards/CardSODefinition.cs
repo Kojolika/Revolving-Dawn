@@ -7,7 +7,6 @@ using Utils.Attributes;
 using Newtonsoft.Json;
 using UnityEngine.AddressableAssets;
 using Serialization;
-using System;
 
 namespace Models
 {
