@@ -17,7 +17,7 @@ namespace Systems.Managers
         public bool isEnabled = false;
         public bool isPaused = false;
 
-        public event Action<Mana3D> MouseEnterMana3D;
+        public event Action<ManaView> MouseEnterMana3D;
         public event Action MouseExitMana3D;
         public event Action MouseEnterManaArea;
         public event Action MouseExitManaArea;
@@ -73,7 +73,7 @@ namespace Systems.Managers
             {
                 RaycastHit hit = hits[i];
 
-                if (hit.transform.gameObject.TryGetComponent(out Mana3D mana))
+                if (hit.transform.gameObject.TryGetComponent(out ManaView mana))
                 {
                     if (!mouseEnteredMana3D)
                     {

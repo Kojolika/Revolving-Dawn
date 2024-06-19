@@ -10,7 +10,7 @@ namespace Cards
     public class Card_UI : MonoBehaviour
     {
         CardDefinition card;
-        List<(ManaType, Mana3D)> ManaOfSockets { get; set; }
+        List<(ManaType, ManaView)> ManaOfSockets { get; set; }
         GameObject sockets;
         GameObject border;
         GameObject artwork;

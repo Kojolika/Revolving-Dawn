@@ -7,14 +7,14 @@ namespace FightInput
     {
 
         ChangeStateTo changeStateTo = ChangeStateTo.ManaViewing;
-        Mana3D currentMana = null;
-        ManaPool manaPool;
+        ManaView currentMana = null;
+        ManaPoolView manaPool;
 
         public ManaViewingState()
         {
             _input.MouseExitManaArea += ExitManaArea;
             _input.MouseEnterMana3D += MouseEnterMana3D;
-            manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
+            manaPool = _input.cardCam.GetComponentInChildren<ManaPoolView>();
             if (manaPool.IsRotating())
                 manaPool.StopRotating();
         }
@@ -39,7 +39,7 @@ namespace FightInput
         {
             changeStateTo = ChangeStateTo.Default;
         }
-        void MouseEnterMana3D(Mana3D mana)
+        void MouseEnterMana3D(ManaView mana)
         {
             currentMana = mana;
             changeStateTo = ChangeStateTo.ManaHovering;

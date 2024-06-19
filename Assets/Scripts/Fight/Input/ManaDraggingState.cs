@@ -7,18 +7,18 @@ namespace FightInput
     public class ManaDraggingState : PlayerInputState
     {
         ChangeStateTo changeStateTo = ChangeStateTo.ManaDragging;
-        ManaPool manaPool;
-        Mana3D manaBeingDragged;
+        ManaPoolView manaPool;
+        ManaView manaBeingDragged;
         Card3D cardBeingMousedOver;
 
-        public ManaDraggingState(Mana3D mana)
+        public ManaDraggingState(ManaView mana)
         {
             manaBeingDragged = mana;
 
             //Remove collider when dragging
             Object.Destroy(manaBeingDragged.GetComponent<BoxCollider>());
 
-            manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
+            manaPool = _input.cardCam.GetComponentInChildren<ManaPoolView>();
 
             _input.RightClicked += RightClicked;
             _input.LeftClicked += LeftClicked;
@@ -72,7 +72,7 @@ namespace FightInput
             cardBeingMousedOver = null;
         }
 
-        void TryBindManaToCard(Mana3D mana, Card3D card)
+        void TryBindManaToCard(ManaView mana, Card3D card)
         {
             if (card.BindMana(mana))
             {

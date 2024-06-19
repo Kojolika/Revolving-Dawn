@@ -1,6 +1,4 @@
-using Cysharp.Threading.Tasks;
 using Systems.Managers.Base;
-using Models.Fight;
 using Fight;
 
 namespace Systems.Managers

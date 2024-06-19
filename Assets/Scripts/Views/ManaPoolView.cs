@@ -5,10 +5,10 @@ using Fight;
 
 namespace Mana
 {
-    public class ManaPool : MonoBehaviour
+    public class ManaPoolView : MonoBehaviour
     {
-        public List<Mana3D> pool = new List<Mana3D>();
-        [SerializeField] Mana3D manaPrefab;
+        public List<ManaView> pool = new List<ManaView>();
+        [SerializeField] ManaView manaPrefab;
         int manaCount;
 
         public GameObject center;
@@ -81,12 +81,12 @@ namespace Mana
 
         public void AddMana(ManaType type)
         {    
-            Mana3D mana = Instantiate(manaPrefab, this.transform, true);
+            ManaView mana = Instantiate(manaPrefab, this.transform, true);
 
             pool.Add(mana);
             ResetPool();
         }
-        public void RemoveMana(Mana3D mana)
+        public void RemoveMana(ManaView mana)
         {
             StopAllCoroutines();
             pool.Remove(mana);

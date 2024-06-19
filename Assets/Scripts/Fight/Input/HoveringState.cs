@@ -8,14 +8,14 @@ namespace FightInput
     public class HoveringState : PlayerInputState
     {
         ChangeStateTo changeStateTo = ChangeStateTo.Hovering;
-        ManaPool manaPool;
+        ManaPoolView manaPool;
         Card3D currentCard;
         HoverManager hoverManager = null;
         bool rightClicked = false;
 
         public HoveringState(Card3D card)
         {
-            manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
+            manaPool = _input.cardCam.GetComponentInChildren<ManaPoolView>();
             _input.RightClicked += RightClicked;
             _input.LeftClicked += LeftClicked;
             _input.CardMouseExit += NoCardMouseOver;

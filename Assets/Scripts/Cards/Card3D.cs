@@ -21,7 +21,7 @@ namespace Cards
         [SerializeField] SpriteRenderer border;
         [SerializeField] GameObject manaSockets; //parent object to instantiate sockets under
         [SerializeField] GameObject socketPrefab; //socket prefab to instatiate depending on the cards mana
-        [SerializeField] Mana3D[] manaInSockets; //mana currently in this cards sockets, start as null for every socket
+        [SerializeField] ManaView[] manaInSockets; //mana currently in this cards sockets, start as null for every socket
 
         [SerializeField] ParticleSystem playableOutline;
         [SerializeField] ParticleSystem flash;
@@ -89,7 +89,7 @@ namespace Cards
 
             Owner = card.owner;
 
-            manaInSockets = new Mana3D[card.mana.Length];
+            manaInSockets = new ManaView[card.mana.Length];
 
             //If sockets are already instantiated, destroy them
             if (manaSockets.transform.childCount > 0)
@@ -152,7 +152,7 @@ namespace Cards
             Populate(cardData.Transform(direction));
         }
 
-        public bool BindMana(Mana3D manaBeingBound)
+        public bool BindMana(ManaView manaBeingBound)
         {
             bool readyToTransform = true;
             bool binded = false;
@@ -175,7 +175,7 @@ namespace Cards
             //input is true because when every mana is fit into the socket, the card is upgraded
             if (readyToTransform) Transform(true);
 
-            void FitManaIntoSocket(Mana3D mana, Transform socket)
+            void FitManaIntoSocket(ManaView mana, Transform socket)
             {
                 mana.transform.SetParent(socket, false);
                 mana.transform.localPosition = Vector3.zero;
@@ -188,7 +188,7 @@ namespace Cards
         public List<ManaType> UnBindAndReturnMana()
         {
             List<ManaType> manaTypesToBeUnbound = new List<ManaType>();
-            foreach (Mana3D mana in manaInSockets)
+            foreach (ManaView mana in manaInSockets)
             {
                 if (mana != null)
                 {
@@ -258,7 +258,7 @@ namespace Cards
         }
 
 
-        void MousedOverMana(Mana3D mana)
+        void MousedOverMana(ManaView mana)
         {
             ManaType type = mana.type;
             foreach (ManaType manaType in this.CardData.mana)

@@ -9,13 +9,13 @@ namespace FightInput
 
         ChangeStateTo changeStateTo = ChangeStateTo.Default;
         Card3D currentCard = null;
-        ManaPool manaPool;
+        ManaPoolView manaPool;
 
         public DefaultState()
         {
             _input.CardMouseOver += CardMouseOver;
             _input.MouseEnterManaArea += MouseEnterManaArea;
-            manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
+            manaPool = _input.cardCam.GetComponentInChildren<ManaPoolView>();
             if(!manaPool.IsRotating())
             {
                 manaPool.StartCircularRotate();

@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using Models.Mana;
+using Zenject;
 
 namespace Mana
 {
-    public class Mana3D : MonoBehaviour
+    public class ManaView : MonoBehaviour
     {
         [SerializeField] ManaSODefinition manaScriptableObject;
         public ManaType type;
@@ -31,6 +32,11 @@ namespace Mana
             //type = manaScriptableObject.type;
             this.transform.localScale = ManaConfiguration.DEFAULT_SCALE;
             this.GetComponent<MeshRenderer>().sharedMaterial = ManaConfiguration.GetManaColor(type);
+        }
+
+        public class Factory : PlaceholderFactory<ManaSODefinition, ManaView>
+        {
+
         }
     }
 
