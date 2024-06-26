@@ -17,7 +17,7 @@ namespace Models
         [SerializeField] private new string name;
         [SerializeField] private List<ManaSODefinition> manas;
         [SerializeField] private AssetReferenceSprite artwork;
-        [SerializeField] private AssetReferenceT<PlayerClassSODefinition> playerClass;
+        [SerializeField] private PlayerClassSODefinition playerClass;
         [SerializeField] private CardSODefinition nextCard;
         [SerializeField] private CardSODefinition previousCard;
         [SerializeReference, DisplayAbstract(typeof(ICombatEffect))] private List<ICombatEffect> playEffects;
@@ -25,7 +25,7 @@ namespace Models
         public string Name => name;
         public List<ManaSODefinition> Manas => manas;
         public AssetReferenceSprite Artwork => artwork;
-        public AssetReferenceT<PlayerClassSODefinition> PlayerClass => playerClass;
+        public PlayerClassSODefinition PlayerClass => playerClass;
         public CardSODefinition NextCard => nextCard;
         public CardSODefinition PreviousCard => previousCard;
         public List<ICombatEffect> PlayEffects => playEffects;
@@ -54,7 +54,7 @@ namespace Models
         public readonly AssetReferenceSprite Artwork;
 
         [JsonProperty("player_class")]
-        public readonly AssetReferenceT<PlayerClassSODefinition> PlayerClass;
+        public readonly PlayerClassSODefinition PlayerClass;
 
         [JsonProperty("next_card")]
         public readonly Card NextCard;

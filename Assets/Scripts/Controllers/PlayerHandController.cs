@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Models;
 using Models.Characters.Player;
 using Settings;
 using Systems.Managers;
 using Tooling.Logging;
+using Utils.Extensions;
 using Views;
 
 namespace Controllers
@@ -105,7 +107,7 @@ namespace Controllers
         {
             if (card.PreviousCard == null)
             {
-                if (card.Manas.Count == 0)
+                if (card.Manas.IsNullOrEmpty())
                 {
                     MyLogger.LogError($"Cannot downgrade card {card.Name} with zero mana to upgrade it.");
                 }
@@ -114,6 +116,9 @@ namespace Controllers
                     .Where(cardManaPair => cardManaPair.ManaSODefinition.Representation == card.Manas[0])
                     .Select(cardManaPair => cardManaPair.Card.Representation)
                     .First();
+
+                Debug.Assert(card != null, "Card shouldn't be null after downgrading." +
+                    "ManaDefinition may be a different instance than the scriptableObject one or card settings do not have ManaDefinition's specified! ");
             }
             else
             {

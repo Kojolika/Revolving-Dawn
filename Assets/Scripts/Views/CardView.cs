@@ -28,16 +28,11 @@ namespace Views
             }
             descriptionText.SetText(description);
 
-            _ = addressablesManager.LoadGenericAsset(cardModel.PlayerClass,
+            _ = addressablesManager.LoadGenericAsset(cardModel.PlayerClass.CharacterAvatarReference,
                 () => gameObject == null,
-                asset =>
-                {
-                    _ = addressablesManager.LoadGenericAsset(asset.CharacterAvatarReference,
-                        () => gameObject == null,
-                        asset => cardBorderRenderer.sprite = asset
-                    );
-                }
+                asset => cardBorderRenderer.sprite = asset
             );
+
             _ = addressablesManager.LoadGenericAsset(cardModel.Artwork,
                 () => gameObject == null,
                 asset => cardArtRenderer.sprite = asset
