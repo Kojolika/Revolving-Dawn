@@ -35,7 +35,7 @@ namespace FightInput
                 case 0: //Friendly
                     dragger = currentCard.GetComponent<Dragger>();
 
-                    var player = FightManager.CurrentPlayer;
+                    var player = FightManager_Obsolete.CurrentPlayer;
                     targets.Add(player);
                     player.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
                     break;
@@ -64,7 +64,7 @@ namespace FightInput
                 case 2: //RandomEnemy
                     dragger = currentCard.GetComponent<Dragger>();
 
-                    foreach (Enemy e in FightManager.CurrentEnemies)
+                    foreach (Enemy e in FightManager_Obsolete.CurrentEnemies)
                     {
                         targets.Add(e);
                         e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
@@ -76,7 +76,7 @@ namespace FightInput
                 case 3: //AllEnemies
                     dragger = currentCard.GetComponent<Dragger>();
 
-                    foreach (Enemy e in FightManager.CurrentEnemies)
+                    foreach (Enemy e in FightManager_Obsolete.CurrentEnemies)
                     {
                         targets.Add(e);
                         e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
@@ -89,15 +89,15 @@ namespace FightInput
                     dragger = currentCard.GetComponent<Dragger>();
 
 
-                    foreach (Enemy e in FightManager.CurrentEnemies)
+                    foreach (Enemy e in FightManager_Obsolete.CurrentEnemies)
                     {
                         targets.Add(e);
 
                         e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
                     }
 
-                    targets.Add(FightManager.CurrentPlayer);
-                    FightManager.CurrentPlayer.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
+                    targets.Add(FightManager_Obsolete.CurrentPlayer);
+                    FightManager_Obsolete.CurrentPlayer.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
 
                     break;
 

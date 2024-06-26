@@ -40,5 +40,5 @@ MonoBehaviour:
       data:
         targeting: 0
         buff:
-          buffDefinition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
-          stacksize: 6
+          buffSODefinition: {fileID: 11400000, guid: df6fdde0fd15eb14e980f3a79fc7385e, type: 2}
+          stackSize: 6

@@ -25,7 +25,7 @@ namespace Models.Buffs
                 {
                     if (buffSODefinition == null)
                     {
-                        throw new Exception("Cannot create definition without a SO definitionSpecified!");
+                        throw new Exception("Cannot create definition without a SO definition Specified!");
                     }
                     definition = new SerializableBuffDefinition(buffSODefinition);
                 }

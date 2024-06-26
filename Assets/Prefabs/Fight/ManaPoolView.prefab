@@ -579,7 +579,7 @@ GameObject:
   - component: {fileID: 6098122200892397194}
   - component: {fileID: 5870496563720125087}
   m_Layer: 0
-  m_Name: ManaPool
+  m_Name: ManaPoolView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -11,7 +11,8 @@ namespace Models.CardEffects
     public class DealDamageEffect : CombatEffect
     {
         [SerializeField, JsonProperty("damage_amount")] ulong damageAmount;
-
+        
+        public override string Description => $"Deal {damageAmount} {Cards.Targeting.GetSuffixDescription(Targeting)}";
         public override List<IBattleEvent> Execute(List<IHealth> targets) => Execute(targets, damageAmount);
 
         List<IBattleEvent> Execute(List<IHealth> targets, ulong amount)

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6113720153841493983}
   - component: {fileID: 6056615806283124606}
   m_Layer: 7
-  m_Name: Mana
+  m_Name: ManaView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

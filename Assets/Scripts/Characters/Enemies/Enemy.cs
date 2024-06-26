@@ -82,7 +82,7 @@ namespace Characters
         public void ChooseMove(Character character)
         {
             //Choose the current move during the start of the players turn
-            if (character != FightManager.CurrentPlayer) return;
+            if (character != FightManager_Obsolete.CurrentPlayer) return;
 
             int randomInt = random.Next(0, Moves.Count);
             CurrentMove = Moves[randomInt];
@@ -122,16 +122,16 @@ namespace Characters
             switch (CurrentMove.Targeting)
             {
                 case Move.Enemy_Targeting.All:
-                    targets.Add(FightManager.CurrentPlayer);
-                    targets.AddRange(FightManager.CurrentEnemies);
+                    targets.Add(FightManager_Obsolete.CurrentPlayer);
+                    targets.AddRange(FightManager_Obsolete.CurrentEnemies);
                     break;
                 case Move.Enemy_Targeting.AllEnemies:
-                    targets.AddRange(FightManager.CurrentEnemies);
+                    targets.AddRange(FightManager_Obsolete.CurrentEnemies);
                     break;
                 case Move.Enemy_Targeting.None:
                     break;
                 case Move.Enemy_Targeting.Player:
-                    targets.Add(FightManager.CurrentPlayer);
+                    targets.Add(FightManager_Obsolete.CurrentPlayer);
                     break;
                 case Move.Enemy_Targeting.Self:
                     targets.Add((Character)this);

@@ -47,6 +47,12 @@ namespace Models.Buffs
         [JsonProperty("buff_properties")]
         public readonly List<IBuffProperty> BuffProperties;
 
+        [JsonConstructor]
+        public SerializableBuffDefinition()
+        {
+
+        }
+
         public SerializableBuffDefinition(BuffSODefinition buffDefinition)
         {
             Name = buffDefinition.Name;

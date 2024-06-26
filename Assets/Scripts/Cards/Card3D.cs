@@ -30,7 +30,7 @@ namespace Cards
         public static Vector3 DEFAULT_SCALE => new Vector3(0.2f, 1f, 0.3f);
 
         public void Play(List<Character> targets) => cardData.Play(targets);
-        public Targeting GetTarget() => cardData.target;
+        public Targeting.Options GetTarget() => cardData.target;
 
         public Character Owner
         {

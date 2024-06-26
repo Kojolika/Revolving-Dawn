@@ -497,7 +497,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &430144960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,7 +505,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 430144959}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8eb475a82e93c27438f827758edf3275, type: 3}
   m_Name: 
@@ -1080,6 +1080,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: cardView
+      value: 
+      objectReference: {fileID: 5688237593754736355, guid: f4de30e169568b540a79161afe6ac71f, type: 3}
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: manaView
+      value: 
+      objectReference: {fileID: 6056615806283124606, guid: e388ebfbc81f23f48aafdb9d746d5b17, type: 3}
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: enemyView
+      value: 
+      objectReference: {fileID: 669354274644052179, guid: 8931cf9159f557642add1ca147fa21de, type: 3}
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: levelView
+      value: 
+      objectReference: {fileID: 4115722748415284752, guid: 1c4ff16ac40f02748aaaedf5c473db3a, type: 3}
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: playerView
+      value: 
+      objectReference: {fileID: 2830729349787752623, guid: cbf9eabb409d3a648adb6b60a69d297e, type: 3}
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: manaPoolView
+      value: 
+      objectReference: {fileID: 5870496563720125087, guid: 03e4e9f04c8d42f4887c32baa366a57b, type: 3}
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: playerHandView
+      value: 
+      objectReference: {fileID: 2466177272251067132, guid: 0698591aca8ef854ba4dc07a2623558d, type: 3}
     - target: {fileID: 3050639727896682978, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2893,7 +2921,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2139908748
 Transform:
   m_ObjectHideFlags: 0

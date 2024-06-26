@@ -19,28 +19,40 @@ namespace Zenject.Installers
 
         public override void InstallBindings()
         {
-            Container.Bind<FightManager2>();
-            Container.Bind<BattleEngine>();
+            Container.Bind<FightManager>()
+                .FromNew()
+                .AsSingle()
+                .NonLazy();
+            Container.Bind<BattleEngine>()
+                .FromNew()
+                .AsSingle();
 
             Container.BindFactory<Models.Card, CardView, CardView.Factory>()
-                .FromSubContainerResolve()
-                .ByNewPrefabInstaller<CardViewInstaller>(cardView);
+                .FromComponentInNewPrefab(cardView)
+                .AsSingle();
 
             Container.BindFactory<Models.Player.PlayerClassModel, PlayerView, PlayerView.Factory>()
-                .FromSubContainerResolve()
-                .ByNewPrefabInstaller<PlayerViewInstaller>(playerView);
+                .FromComponentInNewPrefab(playerView)
+                .AsSingle();
 
-            Container.BindFactory<Models.Characters.EnemyModel, EnemyView, EnemyView.Factory>()
-                .FromSubContainerResolve()
-                .ByNewPrefabInstaller<EnemyViewInstaller>(enemyView);
+            Container.BindFactory<Models.Characters.Enemy, EnemyView, EnemyView.Factory>()
+                .FromComponentInNewPrefab(enemyView)
+                .AsSingle();
 
             Container.BindFactory<Models.Mana.ManaSODefinition, ManaView, ManaView.Factory>()
-                .FromComponentInNewPrefab(manaView);
+                .FromComponentInNewPrefab(manaView)
+                .AsSingle();
 
-            Container.Bind<ManaPoolView>().FromComponentInNewPrefab(manaPoolView);
+            Container.Bind<ManaPoolView>()
+                .FromComponentInNewPrefab(manaPoolView)
+                .AsSingle();
 
             Container.Bind<PlayerHandView>()
                 .FromComponentInNewPrefab(playerHandView)
+                .AsSingle();
+
+            Container.Bind<LevelView>()
+                .FromComponentInNewPrefab(levelView)
                 .AsSingle();
         }
     }

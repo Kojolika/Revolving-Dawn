@@ -12,6 +12,7 @@ namespace Models.CardEffects
     {
         [SerializeField, JsonProperty("heal_amount")] private ulong healAmount;
 
+        public override string Description => $"Heal {healAmount} {Cards.Targeting.GetSuffixDescription(Targeting)}";
         public override List<IBattleEvent> Execute(List<IHealth> targets)
             => targets.Select(target => new HealEvent(target, healAmount) as IBattleEvent).ToList();
     }

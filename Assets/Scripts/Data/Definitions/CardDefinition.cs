@@ -21,7 +21,7 @@ namespace Data.Definitions
         public Sprite artwork; //card art
         public PlayerClass playerClass = PlayerClass.Classless; //class of the card
 
-        public Targeting target; //who the card targets
+        public Targeting.Options target; //who the card targets
 
         // Add list of Keywords in future
         [Space(20)]

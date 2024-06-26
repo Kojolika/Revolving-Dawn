@@ -44,20 +44,22 @@ namespace Cards
                     }
                     else return BORDER_ROGUE;
                 case (PlayerClass.Mage):
-                    if(BORDER_MAGE == null)
+                    if (BORDER_MAGE == null)
                     {
                         BORDER_MAGE = Resources.Load<Sprite>("Mage_Border");
                         return BORDER_MAGE;
                     }
                     else return BORDER_MAGE;
                 case (PlayerClass.Priest):
-                    if(BORDER_PRIEST == null){
+                    if (BORDER_PRIEST == null)
+                    {
                         BORDER_PRIEST = Resources.Load<Sprite>("Priest_Border");
                         return BORDER_PRIEST;
                     }
                     else return BORDER_PRIEST;
                 case (PlayerClass.Classless):
-                    if(BORDER_NEUTRAL == null){
+                    if (BORDER_NEUTRAL == null)
+                    {
                         BORDER_NEUTRAL = Resources.Load<Sprite>("Neutral_Border");
                         return BORDER_NEUTRAL;
                     }
@@ -66,17 +68,30 @@ namespace Cards
             return Resources.Load<Sprite>("Neutral_Border");
         }
     }
-    
-    public enum Targeting
+
+    public static class Targeting
     {
-        Friendly,
-        Enemy,
-        RandomEnemy,
-        AllEnemies,
-        All,
-        None
+        public enum Options
+        {
+            Friendly,
+            Enemy,
+            RandomEnemy,
+            AllEnemies,
+            All,
+            None
+        }
+
+        public static string GetSuffixDescription(Options options)
+            => options switch
+            {
+                Options.Friendly => "to a friendly character.",
+                Options.Enemy => "to an enemy.",
+                Options.RandomEnemy => "to a random enemy.",
+                Options.AllEnemies => "to all enemies.",
+                Options.All => "to all characters.",
+                Options.None => "",
+                _ => ""
+            };
     }
-
-
 }
 
