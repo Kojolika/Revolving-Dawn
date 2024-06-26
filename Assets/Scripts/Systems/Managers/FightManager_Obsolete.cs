@@ -72,8 +72,8 @@ namespace Systems.Managers
             //Load Card manager for moving cards around
             _cardHandManager = this.gameObject.AddComponent<CardHandManager>();
             _cardHandManager.Initialize(cardsCamAndGameArea.GetComponentInChildren<BezierCurve>(),
-                cardsCamAndGameArea.GetComponentInChildren<CardSpawner>().gameObject,
-                cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject,
+                null, //cardsCamAndGameArea.GetComponentInChildren<CardSpawner>().gameObject,
+                null, //cardsCamAndGameArea.GetComponentInChildren<CardDiscarder>().gameObject,
                 null,
                 currentPlayer,
                 cardPrefab

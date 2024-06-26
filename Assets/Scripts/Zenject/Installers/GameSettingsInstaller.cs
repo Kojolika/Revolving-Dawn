@@ -8,8 +8,9 @@ using Zenject;
 public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInstaller>
 {
     #region Settings
-    [SerializeField] private MapSettings mapSettings;
-    [SerializeField] private CardSettings cardSettings;
+    [SerializeField] MapSettings mapSettings;
+    [SerializeField] CardSettings cardSettings;
+    [SerializeField] CharacterSettings characterSettings;
     #endregion
 
     #region Asset Data
@@ -19,6 +20,11 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
 
     public override void InstallBindings()
     {
-        Container.BindInstances(mapSettings, cardSettings, playerClassDefinitions);
+        Container.BindInstances(
+            mapSettings, 
+            cardSettings,
+            characterSettings,
+            playerClassDefinitions
+        );
     }
 }

@@ -7,6 +7,7 @@ using Utils.Attributes;
 using Newtonsoft.Json;
 using UnityEngine.AddressableAssets;
 using Serialization;
+using System.Linq;
 
 namespace Models
 {
@@ -14,7 +15,7 @@ namespace Models
     public class CardSODefinition : ScriptableObject, IHaveSerializableRepresentation<Card>
     {
         [SerializeField] private new string name;
-        [SerializeField] private List<AssetReferenceT<ManaSODefinition>> manas;
+        [SerializeField] private List<ManaSODefinition> manas;
         [SerializeField] private AssetReferenceSprite artwork;
         [SerializeField] private AssetReferenceT<PlayerClassSODefinition> playerClass;
         [SerializeField] private CardSODefinition nextCard;
@@ -22,7 +23,7 @@ namespace Models
         [SerializeReference, DisplayAbstract(typeof(ICombatEffect))] private List<ICombatEffect> playEffects;
 
         public string Name => name;
-        public List<AssetReferenceT<ManaSODefinition>> Manas => manas;
+        public List<ManaSODefinition> Manas => manas;
         public AssetReferenceSprite Artwork => artwork;
         public AssetReferenceT<PlayerClassSODefinition> PlayerClass => playerClass;
         public CardSODefinition NextCard => nextCard;
@@ -47,7 +48,7 @@ namespace Models
         public readonly string Name;
 
         [JsonProperty("manas")]
-        public readonly List<AssetReferenceT<ManaSODefinition>> manas;
+        public readonly List<ManaDefinition> Manas;
 
         [JsonProperty("artwork")]
         public readonly AssetReferenceSprite Artwork;
@@ -73,7 +74,7 @@ namespace Models
         public Card(CardSODefinition card)
         {
             Name = card.Name;
-            manas = card.Manas;
+            Manas = card.Manas.Select(manaSoDef => manaSoDef.Representation).ToList();
             Artwork = card.Artwork;
             PlayerClass = card.PlayerClass;
             NextCard = card.NextCard == null ? null : card.NextCard.Representation;

@@ -11,6 +11,7 @@ namespace Fight
     {
         public bool IsRunning { get; private set; }
         private List<IBattleEvent> battleEventQueue;
+        public Stack<IBattleEvent> BattleEventHistory { get; private set; } = new Stack<IBattleEvent>();
 
         public void Run()
         {
@@ -63,8 +64,9 @@ namespace Fight
                     battleEventQueue[eventIndex].OnBeforeExecute(this);
 
                     battleEventQueue[eventIndex].Execute(this);
-                    MyLogger.Log(battleEventQueue[eventIndex].Log());
-                    
+                    BattleEventHistory.Push(battleEventQueue[eventIndex]);
+                    MyLogger.Log($"{battleEventQueue[eventIndex].GetType().Name}: {battleEventQueue[eventIndex].Log()}");
+
                     battleEventQueue[eventIndex].OnAfterExecute(this);
                     eventIndex++;
                 }

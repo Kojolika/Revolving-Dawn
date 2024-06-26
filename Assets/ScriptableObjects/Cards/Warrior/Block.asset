@@ -14,10 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Block
   manas:
-  - m_AssetGUID: db0d8289709d075419d8283e0629229b
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
+  - {fileID: 11400000, guid: db0d8289709d075419d8283e0629229b, type: 2}
   artwork:
     m_AssetGUID: 4024798ef8e3da84f96ea6b0774e6ebb
     m_SubObjectName: 

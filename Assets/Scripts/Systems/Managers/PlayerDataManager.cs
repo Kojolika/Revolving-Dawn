@@ -1,4 +1,4 @@
-﻿using Characters.Model;
+﻿using Models.Characters.Player;
 using Cysharp.Threading.Tasks;
 using Models.Fight;
 using Models.Map;
@@ -59,7 +59,7 @@ namespace Systems.Managers
         public async UniTask StartNewRun(PlayerClassSODefinition playerClass)
         {
             var newMap = mapFactory.Create(mapSettings);
-            CurrentPlayerDefinition.CurrentRun = new Characters.Player2.Run.RunDefinition()
+            CurrentPlayerDefinition.CurrentRun = new RunDefinition()
             {
                 Name = "Test",
                 Gold = 0,

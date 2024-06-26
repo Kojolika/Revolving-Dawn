@@ -1,9 +1,8 @@
 ﻿using System.IO;
-using Characters.Model;
+using Models.Characters.Player;
 using Cysharp.Threading.Tasks;
 using Models.Characters;
 using Models.Fight;
-using Models.Map;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serialization;

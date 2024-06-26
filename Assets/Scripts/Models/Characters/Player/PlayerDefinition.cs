@@ -1,7 +1,6 @@
-﻿using Characters.Player2.Run;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Characters.Model
+namespace Models.Characters.Player
 {
     [System.Serializable]
     public class PlayerDefinition 

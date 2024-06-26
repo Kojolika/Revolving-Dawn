@@ -1,15 +1,35 @@
+using Serialization;
 using UnityEngine;
 
 namespace Models.Mana
 {
     [CreateAssetMenu(fileName = nameof(ManaSODefinition), menuName = "RevolvingDawn/Mana/New " + nameof(ManaSODefinition))]
-    public class ManaSODefinition : ScriptableObject
+    public class ManaSODefinition : ScriptableObject, IHaveSerializableRepresentation<ManaDefinition>
     {
-        public string Name => name;
+        [SerializeField] private Color color;
         public Color Color => color;
 
-        [SerializeField] private new string name;
+        private ManaDefinition representation;
+        public ManaDefinition Representation
+        {
+            get
+            {
+                representation ??= new ManaDefinition(this);
+                return representation;
+            }
+            private set => representation = value;
+        }
+    }
 
-        [SerializeField] private Color color;
+    public class ManaDefinition
+    {
+        public readonly string Name;
+        public readonly Color Color;
+
+        public ManaDefinition(ManaSODefinition manaSODefinition)
+        {
+            Name = manaSODefinition.name;
+            Color = manaSODefinition.Color;
+        }
     }
 }

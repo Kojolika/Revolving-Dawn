@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using Models.Map;
+﻿using Models.Map;
 using Newtonsoft.Json;
-using Data.Definitions;
-using Models.Player;
-using Models.Characters;
 using Models.Fight;
 
-namespace Characters.Player2.Run
+namespace Models.Characters.Player
 {
     [System.Serializable]
     public class RunDefinition

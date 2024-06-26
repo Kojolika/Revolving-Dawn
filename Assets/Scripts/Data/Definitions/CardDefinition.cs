@@ -1,12 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Characters;
-using Data.Definitions.Player;
 using Mana;
 using FightDamageCalc;
 using Cards;
-using Utils.Attributes;
-using Utils;
 
 namespace Data.Definitions
 {

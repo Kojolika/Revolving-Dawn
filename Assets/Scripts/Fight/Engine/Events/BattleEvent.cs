@@ -52,4 +52,14 @@ namespace Fight.Events
         public abstract void Undo();
         public abstract string Log();
     }
+
+    public abstract class BattleEvent : IBattleEvent
+    {
+        public bool IsCharacterAction { get; private set; }
+        public virtual void OnBeforeExecute(BattleEngine battleEngine) { }
+        public abstract void Execute(BattleEngine battleEngine);
+        public virtual void OnAfterExecute(BattleEngine battleEngine) { }
+        public abstract void Undo();
+        public abstract string Log();
+    }
 }

@@ -14,10 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Punch
   manas:
-  - m_AssetGUID: cf92ef4110406784cb00b29170e2560c
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
+  - {fileID: 11400000, guid: cf92ef4110406784cb00b29170e2560c, type: 2}
   artwork:
     m_AssetGUID: 43e72cc9bd51c4547bd8aeaa0d30abbb
     m_SubObjectName: 
