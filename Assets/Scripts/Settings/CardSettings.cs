@@ -22,6 +22,10 @@ namespace Settings
             + "That is, if a card has a null downgrade, it will be transformed to the card here depending on its mana type.")]
         [SerializeField] private List<CardManaPair> downgradeBaseCardsForMana;
 
+        [Tooltip("The speed which cards will be moved around in your .")]
+        [SerializeField] private float cardMoveSeedInHand;
+
         public List<CardManaPair> DowngradeBaseCardsForMana => downgradeBaseCardsForMana;
+        public float CardMoveSeedInHand => cardMoveSeedInHand;
     }
 }
