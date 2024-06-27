@@ -1,4 +1,6 @@
+using System;
 using Fight;
+using Fight.Events;
 using Mana;
 using Systems.Managers;
 using Tooling.Logging;
@@ -27,7 +29,7 @@ namespace Zenject.Installers
             Container.Bind<BattleEngine>()
                 .FromNew()
                 .AsSingle();
-            
+
             Container.Bind<PlayerInputState>()
                 .To<DefaultState>()
                 .AsSingle();
@@ -59,6 +61,9 @@ namespace Zenject.Installers
             Container.Bind<LevelView>()
                 .FromComponentInNewPrefab(levelView)
                 .AsSingle();
+
+            Container.BindFactory<Type, BattleEvent, BattleEvent.Factory>()
+                .FromFactory<BattleEvent.CustomFactory>();
         }
     }
 }

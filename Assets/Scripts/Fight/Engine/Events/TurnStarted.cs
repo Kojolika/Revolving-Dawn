@@ -8,6 +8,15 @@ namespace Fight.Events
 
         public override void Execute(Character target, BattleEngine battleEngine) { }
 
+        public override void OnAfterExecute(Character target, BattleEngine battleEngine)
+        {
+            base.OnAfterExecute(target, battleEngine);
+            if(target is PlayerCharacter playerCharacter)
+            {
+                battleEngine.InsertAfterEvent(this, );
+            }
+        }
+
         public override string Log() => $"{Target.Name}'s turn started!";
 
         public override void Undo()
