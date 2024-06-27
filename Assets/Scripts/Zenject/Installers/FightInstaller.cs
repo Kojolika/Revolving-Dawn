@@ -23,8 +23,13 @@ namespace Zenject.Installers
                 .FromNew()
                 .AsSingle()
                 .NonLazy();
+
             Container.Bind<BattleEngine>()
                 .FromNew()
+                .AsSingle();
+            
+            Container.Bind<PlayerInputState>()
+                .To<DefaultState>()
                 .AsSingle();
 
             Container.BindFactory<Models.Card, CardView, CardView.Factory>()

@@ -1,33 +1,19 @@
+using System;
+using Models;
 using Systems.Managers;
 using UnityEngine;
+using Views;
+using Zenject;
 
-namespace FightInput
+namespace Fight
 {
-    //Finite State Machine for player inputs and events
-    public class PlayerInputState
+    // Finite State Machine for player inputs and events
+    public abstract class PlayerInputState : ITickable
     {
-        public static PlayerTurnInputManager _input;
+        public Action<CardView> CardHovered;
 
-        internal enum ChangeStateTo 
-        {
-            Default,
-            Hovering,
-            Dragging,
-            Targeting,
-            ManaViewing,
-            ManaHovering,
-            ManaDragging
-        }
-        public virtual PlayerInputState Transition()
-        {
-            return new DefaultState();
-        }
-
-        public virtual void Exit() => Debug.Log("testing exit");
-
-        public void Initialize()
-        {
-            _input = PlayerTurnInputManager.StaticInstance;
-        }
+        public abstract void Transition(PlayerInputState nextState);
+        public abstract void Exit();
+        public abstract void Tick();
     }
 }

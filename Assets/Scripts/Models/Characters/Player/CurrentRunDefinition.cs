@@ -10,9 +10,6 @@ namespace Models.Characters.Player
         [JsonProperty("player_name")]
         public string Name;
 
-        [JsonProperty("gold")]
-        public ulong Gold;
-
         [JsonProperty("player_character")]
         public PlayerCharacter PlayerCharacter;
 

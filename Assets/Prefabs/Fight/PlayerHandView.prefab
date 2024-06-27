@@ -337,11 +337,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72b884301bf6376459c57841628fe9e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manaPoolView: {fileID: 8681642051717237937}
   handViewCamera: {fileID: 3766926104811558915}
   handParent: {fileID: 5757645867356818775}
   cardSpawnLocation: {fileID: 3766926105752614208}
   cardDiscardLocation: {fileID: 3766926105463909463}
+  manaPoolViewLocation: {fileID: 2008232385999281242}
   handCurve: {fileID: 3766926105632174684}
 --- !u!1 &3766926104885370319
 GameObject:
@@ -784,6 +784,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ManaPool
       objectReference: {fileID: 0}
+    - target: {fileID: 5424496100433355245, guid: 03e4e9f04c8d42f4887c32baa366a57b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6098122200892397194, guid: 03e4e9f04c8d42f4887c32baa366a57b, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.55527055
@@ -837,17 +841,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03e4e9f04c8d42f4887c32baa366a57b, type: 3}
---- !u!114 &8681642051717237937 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5870496563720125087, guid: 03e4e9f04c8d42f4887c32baa366a57b, type: 3}
-  m_PrefabInstance: {fileID: 2955297003980158510}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63c7f2d8a330bd240b9196485cd86437, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &9053276637727957156 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6098122200892397194, guid: 03e4e9f04c8d42f4887c32baa366a57b, type: 3}

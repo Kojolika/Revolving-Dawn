@@ -5,8 +5,6 @@ using Characters;
 using Cards;
 using Fight;
 using Utils;
-using FightInput;
-
 
 namespace Systems.Managers
 {
@@ -63,11 +61,11 @@ namespace Systems.Managers
 
             //Load playerinputmanager to handle player input during turns
             _playerTurnInputManager = this.gameObject.AddComponent<PlayerTurnInputManager>();
-            state = new PlayerInputState();
+/*             state = new PlayerInputState();
             state.Initialize();
             _playerTurnInputManager.state = state;
             _playerTurnInputManager.cardCam = cardsCamAndGameArea.GetComponent<Camera>();
-            currentPlayer.SetInputState(_playerTurnInputManager.state);
+            currentPlayer.SetInputState(_playerTurnInputManager.state); */
 
             //Load Card manager for moving cards around
             _cardHandManager = this.gameObject.AddComponent<CardHandManager>();

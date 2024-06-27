@@ -1,4 +1,4 @@
-using System;
+using Fight;
 using Systems.Managers;
 using TMPro;
 using UnityEngine;
@@ -14,11 +14,13 @@ namespace Views
         [SerializeField] TextMeshPro descriptionText;
 
         private Models.Card cardModel;
+        private PlayerInputState playerInputState;
 
         [Inject]
-        private void Construct(AddressablesManager addressablesManager, Models.Card cardModel)
+        private void Construct(AddressablesManager addressablesManager, Models.Card cardModel, PlayerInputState playerInputState)
         {
             this.cardModel = cardModel;
+            this.playerInputState = playerInputState;
             nameText.SetText(cardModel.Name);
 
             var description = "";
@@ -37,6 +39,11 @@ namespace Views
                 () => gameObject == null,
                 asset => cardArtRenderer.sprite = asset
             );
+        }
+
+        private void OnMouseOver()
+        {
+            playerInputState.CardHovered?.Invoke(this);
         }
 
         public class Factory : PlaceholderFactory<Models.Card, CardView>

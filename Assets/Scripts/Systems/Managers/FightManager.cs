@@ -26,6 +26,7 @@ namespace Systems.Managers
             if(battleEngine.BattleEventHistory.Count == 0)
             {
                 battleEngine.AddEvent(new BattleStartedEvent());
+                
             }
         }
     }

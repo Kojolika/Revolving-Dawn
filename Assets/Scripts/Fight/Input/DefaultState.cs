@@ -1,57 +1,23 @@
 using Cards;
 using Mana;
-using UnityEngine;
 
-namespace FightInput
+namespace Fight
 {
     public class DefaultState : PlayerInputState
     {
-
-        ChangeStateTo changeStateTo = ChangeStateTo.Default;
-        Card3D currentCard = null;
-        ManaPoolView manaPool;
-
-        public DefaultState()
+        public override void Transition(PlayerInputState nextState)
         {
-            _input.CardMouseOver += CardMouseOver;
-            _input.MouseEnterManaArea += MouseEnterManaArea;
-            manaPool = _input.cardCam.GetComponentInChildren<ManaPoolView>();
-            if(!manaPool.IsRotating())
-            {
-                manaPool.StartCircularRotate();
-            }
-                
+            throw new System.NotImplementedException();
         }
 
-        public override PlayerInputState Transition()
-        {
-            switch (changeStateTo)
-            {
-                case ChangeStateTo.Default:
-                    return this;
-                case ChangeStateTo.Hovering:
-                    Exit();
-                    return new HoveringState(currentCard);
-                case ChangeStateTo.ManaViewing:
-                    Exit();
-                    return new ManaViewingState();
-            }
-            return this;
-        }
-        void CardMouseOver(Card3D card)
-        {
-            changeStateTo = ChangeStateTo.Hovering;
-            currentCard = card;
-        }
-        void MouseEnterManaArea()
-        {
-            changeStateTo = ChangeStateTo.ManaViewing;
-        }
         public override void Exit()
         {
-            _input.CardMouseOver -= CardMouseOver;
-            _input.MouseEnterManaArea -= MouseEnterManaArea;
+            throw new System.NotImplementedException();
         }
 
+        public override void Tick()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

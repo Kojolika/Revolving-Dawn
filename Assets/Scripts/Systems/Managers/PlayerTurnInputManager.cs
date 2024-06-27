@@ -3,7 +3,6 @@ using Cards;
 using Characters;
 using Mana;
 using System;
-using FightInput;
 
 namespace Systems.Managers
 {
@@ -13,7 +12,7 @@ namespace Systems.Managers
         public Camera cardCam;
         public static PlayerTurnInputManager StaticInstance;
 
-        public PlayerInputState state;
+        //public PlayerInputState state;
         public bool isEnabled = false;
         public bool isPaused = false;
 

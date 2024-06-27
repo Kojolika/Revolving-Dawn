@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using Serialization;
 using UnityEngine;
 
@@ -25,6 +26,9 @@ namespace Models.Mana
     {
         public readonly string Name;
         public readonly Color Color;
+
+        [JsonConstructor]
+        public ManaDefinition() { }
 
         public ManaDefinition(ManaSODefinition manaSODefinition)
         {

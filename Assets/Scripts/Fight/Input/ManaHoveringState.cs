@@ -1,9 +1,9 @@
 using Mana;
 
-namespace FightInput
+namespace Fight
 {
-    public class ManaHoveringState : PlayerInputState
-    {
+    public class ManaHoveringState
+    {/* 
         ChangeStateTo changeStateTo = ChangeStateTo.ManaHovering;
         ManaView currentMana = null;
         public ManaHoveringState(ManaView mana)
@@ -44,6 +44,6 @@ namespace FightInput
         {
             _input.MouseExitMana3D -= NoManaMouseOver;
             _input.LeftClicked -= LeftClicked;
-        }
+        } */
     }
 }

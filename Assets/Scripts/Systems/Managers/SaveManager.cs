@@ -10,6 +10,7 @@ using Systems.Managers.Base;
 using Tooling.Logging;
 using Zenject;
 using File = System.IO.File;
+using System.Drawing;
 
 namespace Systems.Managers
 {
@@ -34,6 +35,7 @@ namespace Systems.Managers
                 Formatting = Formatting.Indented,
             };
             jsonSerializer.Converters.Add(new AssetReferenceConverter());
+            jsonSerializer.Converters.Add(new Serialization.ColorConverter());
             jsonSerializer.ContractResolver = zenjectDependencyContractResolver;
         }
 

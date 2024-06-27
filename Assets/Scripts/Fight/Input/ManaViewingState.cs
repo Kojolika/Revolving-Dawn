@@ -1,11 +1,11 @@
 using Mana;
 using UnityEngine;
 
-namespace FightInput
+namespace Fight
 {
-    public class ManaViewingState : PlayerInputState
+    public class ManaViewingState
     {
-
+/* 
         ChangeStateTo changeStateTo = ChangeStateTo.ManaViewing;
         ManaView currentMana = null;
         ManaPoolView manaPool;
@@ -49,6 +49,6 @@ namespace FightInput
             _input.MouseExitManaArea -= ExitManaArea;
             _input.MouseEnterMana3D -= MouseEnterMana3D;
         }
-
+ */
     }
 }

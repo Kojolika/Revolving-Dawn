@@ -1,10 +1,10 @@
 using UnityEngine;
 using Cards;
 
-namespace FightInput
+namespace Fight
 {
-    public class DraggingState : PlayerInputState
-    {
+    public class DraggingState
+    {/* 
         ChangeStateTo changeStateTo = ChangeStateTo.Dragging;
         Card3D currentCard = null;
         Dragger newDragger;
@@ -53,6 +53,6 @@ namespace FightInput
                 newDragger.StopDragging();
                 GameObject.Destroy(newDragger);
             }
-        }
+        } */
     }
 }

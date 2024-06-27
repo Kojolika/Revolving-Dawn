@@ -6,11 +6,11 @@ using Fight;
 using Systems.Managers;
 
 
-namespace FightInput
+namespace Fight
 {
-        public class TargetingState : PlayerInputState
+    public class TargetingState 
     {
-        ChangeStateTo changeStateTo = ChangeStateTo.Targeting;
+/*         ChangeStateTo changeStateTo = ChangeStateTo.Targeting;
         Card3D currentCard;
         Enemy previousEnemy = null;
         Dragger dragger;
@@ -111,7 +111,7 @@ namespace FightInput
 
         public override PlayerInputState Transition()
         {
-            switch(changeStateTo)
+            switch (changeStateTo)
             {
                 case ChangeStateTo.Default:
                     Exit();
@@ -123,7 +123,7 @@ namespace FightInput
             return this;
         }
 
-        void LeftClicked() 
+        void LeftClicked()
         {
             if (targets.Count > 0)
             {
@@ -138,7 +138,7 @@ namespace FightInput
         {
             if (enemy != null)
             {
-                
+
                 if (enemy != previousEnemy)
                 {
                     RemoveTargets();
@@ -182,7 +182,7 @@ namespace FightInput
 
             foreach (Character character in targets)
             {
-                if(character == null) continue;
+                if (character == null) continue;
                 character.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = false;
             }
 
@@ -222,6 +222,6 @@ namespace FightInput
         {
             dragger.StopDragging();
             GameObject.Destroy(dragger);
-        }
+        } */
     }
 }

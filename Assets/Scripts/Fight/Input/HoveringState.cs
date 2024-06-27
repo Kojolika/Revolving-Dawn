@@ -3,11 +3,11 @@ using Cards;
 using Systems.Managers;
 using Mana;
 
-namespace FightInput
+namespace Fight
 {
-    public class HoveringState : PlayerInputState
+    public class HoveringState
     {
-        ChangeStateTo changeStateTo = ChangeStateTo.Hovering;
+ /*        ChangeStateTo changeStateTo = ChangeStateTo.Hovering;
         ManaPoolView manaPool;
         Card3D currentCard;
         HoverManager hoverManager = null;
@@ -64,7 +64,7 @@ namespace FightInput
                 }
 
                 manaPool.StartCircularRotate();
-                rightClicked = false; */
+                rightClicked = false; 
         }
         void NewCardForHoverEffects(Card3D card)
         {
@@ -86,6 +86,6 @@ namespace FightInput
             _input.CardMouseOver -= CardMouseOver;
 
             GameObject.Destroy(hoverManager);
-        }
+        } */
     }
 }

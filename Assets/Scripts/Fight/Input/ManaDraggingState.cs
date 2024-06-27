@@ -2,11 +2,11 @@ using UnityEngine;
 using Mana;
 using Cards;
 
-namespace FightInput
+namespace Fight
 {
-    public class ManaDraggingState : PlayerInputState
+    public class ManaDraggingState
     {
-        ChangeStateTo changeStateTo = ChangeStateTo.ManaDragging;
+/*         ChangeStateTo changeStateTo = ChangeStateTo.ManaDragging;
         ManaPoolView manaPool;
         ManaView manaBeingDragged;
         Card3D cardBeingMousedOver;
@@ -98,6 +98,6 @@ namespace FightInput
             _input.LeftClicked -= LeftClicked;
             _input.CardMouseOver -= MouseOverCard;
             _input.CardMouseExit -= NoCardMouseOver;
-        }
+        } */
     }
 }

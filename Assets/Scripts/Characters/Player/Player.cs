@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Cards;
-using FightInput;
 using UnityEngine;
 
 namespace Characters
@@ -12,7 +11,7 @@ namespace Characters
         public int DrawAmount = 1;
         public int manaAmount = 1;
         public HealthDisplay _healthDisplay;
-        public PlayerInputState state = null;
+        //public PlayerInputState state = null;
 
 
         Vector3 _healthBarPosition = new Vector3(0f, -0.05f, 0f);
@@ -41,7 +40,7 @@ namespace Characters
         {
             base.InitializeHealth();
         }
-
+/* 
         public void SetInputState(PlayerInputState state) => this.state = state;
 
         void HandleInput()
@@ -57,7 +56,7 @@ namespace Characters
         void Update()
         {
             HandleInput();
-        }
+        } */
     }
 
     public enum PlayerClass

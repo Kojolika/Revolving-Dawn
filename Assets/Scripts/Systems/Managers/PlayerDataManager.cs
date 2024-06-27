@@ -15,13 +15,15 @@ namespace Systems.Managers
 
         private SaveManager saveManager;
         private MapSettings mapSettings;
+        private CharacterSettings characterSettings;
         private MapDefinition.Factory mapFactory;
 
         [Zenject.Inject]
-        async void Construct(SaveManager saveManager, MapSettings mapSettings, MapDefinition.Factory mapFactory)
+        async void Construct(SaveManager saveManager, MapSettings mapSettings, CharacterSettings characterSettings, MapDefinition.Factory mapFactory)
         {
             this.saveManager = saveManager;
             this.mapSettings = mapSettings;
+            this.characterSettings = characterSettings;
             this.mapFactory = mapFactory;
 
             CurrentPlayerDefinition = await saveManager.TryLoadSavedData();
@@ -62,10 +64,9 @@ namespace Systems.Managers
             CurrentPlayerDefinition.CurrentRun = new RunDefinition()
             {
                 Name = "Test",
-                Gold = 0,
                 CurrentMap = newMap,
                 CurrentMapNode = newMap.Nodes[0],
-                PlayerCharacter = new(playerClass)
+                PlayerCharacter = new(playerClass, characterSettings)
             };
 
             await saveManager.Save(CurrentPlayerDefinition);
