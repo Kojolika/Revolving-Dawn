@@ -46,7 +46,7 @@ namespace Fight
             }
             if (indexOfEvent == battleEventQueue.Count() - 1)
             {
-                battleEventQueue.Add(battleEventToInsert);
+                AddEvent(battleEventToInsert);
             }
             else
             {

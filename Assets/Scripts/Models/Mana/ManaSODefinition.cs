@@ -5,32 +5,32 @@ using UnityEngine;
 namespace Models.Mana
 {
     [CreateAssetMenu(fileName = nameof(ManaSODefinition), menuName = "RevolvingDawn/Mana/New " + nameof(ManaSODefinition))]
-    public class ManaSODefinition : ScriptableObject, IHaveSerializableRepresentation<ManaDefinition>
+    public class ManaSODefinition : ScriptableObject, IHaveSerializableRepresentation<ManaModel>
     {
         [SerializeField] private Color color;
         public Color Color => color;
 
-        private ManaDefinition representation;
-        public ManaDefinition Representation
+        private ManaModel representation;
+        public ManaModel Representation
         {
             get
             {
-                representation ??= new ManaDefinition(this);
+                representation ??= new ManaModel(this);
                 return representation;
             }
             private set => representation = value;
         }
     }
 
-    public class ManaDefinition
+    public class ManaModel
     {
         public readonly string Name;
         public readonly Color Color;
 
         [JsonConstructor]
-        public ManaDefinition() { }
+        public ManaModel() { }
 
-        public ManaDefinition(ManaSODefinition manaSODefinition)
+        public ManaModel(ManaSODefinition manaSODefinition)
         {
             Name = manaSODefinition.name;
             Color = manaSODefinition.Color;

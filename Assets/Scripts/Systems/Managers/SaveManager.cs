@@ -33,6 +33,7 @@ namespace Systems.Managers
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
             jsonSerializer.Converters.Add(new AssetReferenceConverter());
             jsonSerializer.Converters.Add(new Serialization.ColorConverter());

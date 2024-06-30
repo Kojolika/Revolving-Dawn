@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6947203264631182340}
   - component: {fileID: 1080514648780821578}
   - component: {fileID: 2406428948682428719}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CardBorderSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,7 +164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1023268657031817424}
   - component: {fileID: 5688237593754736355}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CardView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -217,7 +217,7 @@ GameObject:
   m_Component:
   - component: {fileID: 880759076173051277}
   - component: {fileID: 8860031963702891208}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CardArt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,7 +301,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5542207399920790565}
   - component: {fileID: 4083367903284416604}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Art Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -385,7 +385,7 @@ GameObject:
   - component: {fileID: 3165512066255026364}
   - component: {fileID: 2299825260790203914}
   - component: {fileID: 1777166560988056099}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -556,7 +556,7 @@ GameObject:
   - component: {fileID: 4136473409518648117}
   - component: {fileID: 6338792926180692282}
   - component: {fileID: 8720104262675490854}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}

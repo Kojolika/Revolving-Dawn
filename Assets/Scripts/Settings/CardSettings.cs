@@ -25,6 +25,7 @@ namespace Settings
         [Tooltip("The speed which cards will be moved around in your .")]
         [SerializeField] private float cardMoveSeedInHand;
 
+
         public List<CardManaPair> DowngradeBaseCardsForMana => downgradeBaseCardsForMana;
         public float CardMoveSeedInHand => cardMoveSeedInHand;
     }

@@ -1,9 +1,9 @@
-using System;
+using Controllers;
 using Fight;
 using Fight.Events;
 using Mana;
+using Models.Characters;
 using Systems.Managers;
-using Tooling.Logging;
 using UnityEngine;
 using Views;
 
@@ -34,7 +34,7 @@ namespace Zenject.Installers
                 .To<DefaultState>()
                 .AsSingle();
 
-            Container.BindFactory<Models.Card, CardView, CardView.Factory>()
+            Container.BindFactory<Models.CardModel, CardView, CardView.Factory>()
                 .FromComponentInNewPrefab(cardView)
                 .AsSingle();
 
@@ -42,7 +42,7 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(playerView)
                 .AsSingle();
 
-            Container.BindFactory<Models.Characters.Enemy, EnemyView, EnemyView.Factory>()
+            Container.BindFactory<Enemy, EnemyView, EnemyView.Factory>()
                 .FromComponentInNewPrefab(enemyView)
                 .AsSingle();
 
@@ -62,8 +62,19 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(levelView)
                 .AsSingle();
 
-            Container.BindFactory<Type, BattleEvent, BattleEvent.Factory>()
-                .FromFactory<BattleEvent.CustomFactory>();
+            Container.Bind<PlayerHandController>()
+                .AsSingle();
+
+            InstallBattleEventFactories();
+        }
+
+        private void InstallBattleEventFactories()
+        {
+            Container.BindFactory<PlayerCharacter, DrawCardEvent, DrawCardEvent.BattleEventFactoryT<DrawCardEvent>>()
+                .AsSingle();
+
+            Container.BindFactory<Character, TurnStartedEvent, TurnStartedEvent.BattleEventFactoryT<TurnStartedEvent>>()
+                .AsSingle();
         }
     }
 }

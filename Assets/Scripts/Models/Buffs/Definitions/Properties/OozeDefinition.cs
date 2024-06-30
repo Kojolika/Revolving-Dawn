@@ -5,7 +5,7 @@ using Models.Characters;
 namespace Models.Buffs
 {
     [System.Serializable]
-    public class OozeProperty : ITriggerableBuffAfter<TurnStarted>
+    public class OozeProperty : ITriggerableBuffAfter<TurnStartedEvent>
     {
         private readonly PlayerHandController playerHandController;
 
@@ -14,7 +14,7 @@ namespace Models.Buffs
             this.playerHandController = playerHandController;
         }
 
-        public ulong OnAfterTrigger(TurnStarted triggeredByEvent, Buff buff)
+        public ulong OnAfterTrigger(TurnStartedEvent triggeredByEvent, Buff buff)
         {
             if (triggeredByEvent.Target is PlayerCharacter playerCharacter)
             {

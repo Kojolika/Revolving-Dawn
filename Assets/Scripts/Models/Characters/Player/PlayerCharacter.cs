@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using Models.Player;
 using Newtonsoft.Json;
 using Settings;
+using UnityEngine.AddressableAssets;
 
 namespace Models.Characters
 {
@@ -27,7 +29,7 @@ namespace Models.Characters
         public int DrawAmount { get; private set; }
 
         [JsonProperty("mana_per_turn")]
-        public int UsableManaPerTurn {get; private set; }
+        public int UsableManaPerTurn { get; private set; }
 
         [JsonConstructor]
         public PlayerCharacter()
@@ -39,7 +41,9 @@ namespace Models.Characters
         {
             Class = playerClassDefinition.Representation;
             Name = playerClassDefinition.name;
-            Decks = new Player.Decks(Class.StartingDeck);
+            //var startingDeck = new List<CardModel>(DrawAmount);
+            //Addressables.LoadAssetsAsync<CardSODefinition>(playerClassDefinition.StartingDeck, cardModel => startingDeck.Add(cardModel.Representation), mode: Addressables.MergeMode.UseFirst).WaitForCompletion();
+            Decks = new Player.Decks(playerClassDefinition.StartingDeck.Select(cardSO => cardSO.Representation).ToList());
             Health = new(playerClassDefinition.HealthDefinition.MaxHealth, playerClassDefinition.HealthDefinition.MaxHealth);
             HandSize = characterSettings.HandSize;
             DrawAmount = characterSettings.DrawAmount;

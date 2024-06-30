@@ -1,23 +1,25 @@
+using Controllers;
+using Cysharp.Threading.Tasks;
 using Models.Characters;
+using Tooling.Logging;
 
 namespace Fight.Events
 {
-    public class DrawCardEvent : BattleEvent<PlayerCharacter>
+    public class DrawCardEvent : BattleEventTargetingIBuffable<PlayerCharacter>
     {
-        public DrawCardEvent(PlayerCharacter target, bool isCharacterAction = false) : base(target, isCharacterAction)
+        private PlayerHandController playerHandController;
+
+        public DrawCardEvent(PlayerCharacter target, PlayerHandController playerHandController, bool isCharacterAction = false) : base(target, isCharacterAction)
         {
-            
+            this.playerHandController = playerHandController;
         }
 
         public override void Execute(PlayerCharacter target, BattleEngine battleEngine)
         {
-            throw new System.NotImplementedException();
+            playerHandController.DrawCard();
         }
 
-        public override string Log()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override string Log() => $"{Target} drew a card!";
 
         public override void Undo()
         {

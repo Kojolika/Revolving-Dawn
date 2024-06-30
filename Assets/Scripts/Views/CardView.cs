@@ -13,11 +13,11 @@ namespace Views
         [SerializeField] TextMeshPro nameText;
         [SerializeField] TextMeshPro descriptionText;
 
-        private Models.Card cardModel;
+        private Models.CardModel cardModel;
         private PlayerInputState playerInputState;
 
         [Inject]
-        private void Construct(AddressablesManager addressablesManager, Models.Card cardModel, PlayerInputState playerInputState)
+        private void Construct(AddressablesManager addressablesManager, Models.CardModel cardModel, PlayerInputState playerInputState)
         {
             this.cardModel = cardModel;
             this.playerInputState = playerInputState;
@@ -30,12 +30,12 @@ namespace Views
             }
             descriptionText.SetText(description);
 
-            _ = addressablesManager.LoadGenericAsset(cardModel.PlayerClass.CharacterAvatarReference,
+            _ = addressablesManager.LoadGenericAsset(cardModel.PlayerClass.CardBorderReference,
                 () => gameObject == null,
                 asset => cardBorderRenderer.sprite = asset
             );
 
-            _ = addressablesManager.LoadGenericAsset(cardModel.Artwork,
+            _ = addressablesManager.LoadGenericAsset(cardModel.ArtReference,
                 () => gameObject == null,
                 asset => cardArtRenderer.sprite = asset
             );
@@ -46,7 +46,7 @@ namespace Views
             playerInputState.CardHovered?.Invoke(this);
         }
 
-        public class Factory : PlaceholderFactory<Models.Card, CardView>
+        public class Factory : PlaceholderFactory<Models.CardModel, CardView>
         {
 
         }

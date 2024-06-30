@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Time Keeper
   m_EditorClassIdentifier: 
   startingDeck:
-  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
-  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
-  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
-  - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
-  - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
-  - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
+  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
+  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
+  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
+  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
+  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
+  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
   healthDefinition:
     MaxHealth: 40
   description: Keeps time, moves time, loses time.

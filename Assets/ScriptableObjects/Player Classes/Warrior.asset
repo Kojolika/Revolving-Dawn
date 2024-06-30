@@ -12,14 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b140f5980ef4d284bbe6252ab0ffcf29, type: 3}
   m_Name: Warrior
   m_EditorClassIdentifier: 
-  name: Warrior
   startingDeck:
-  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
-  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
-  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
   - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
   - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
   - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
+  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
+  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
+  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
   healthDefinition:
     MaxHealth: 30
   description: Here is a great and beautifully written description about the Warrior

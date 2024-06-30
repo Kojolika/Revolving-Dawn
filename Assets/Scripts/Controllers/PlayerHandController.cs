@@ -17,9 +17,9 @@ namespace Controllers
         public readonly PlayerHandView playerHandView;
         public readonly Decks decks;
         public readonly CardSettings cardSettings;
-        public PlayerHandController(PlayerDataManager playerDataManager, 
-            AddressablesManager addressablesManager, 
-            PlayerHandView playerHandView, 
+        public PlayerHandController(PlayerDataManager playerDataManager,
+            AddressablesManager addressablesManager,
+            PlayerHandView playerHandView,
             CardSettings cardSettings)
         {
             decks = playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter.Decks;
@@ -32,7 +32,7 @@ namespace Controllers
         /// Shuffle the specified deck by using the Fisher-Yates shuffle algorithm.
         /// </summary>
         /// <param name="deck">Deck to shuffle.</param>
-        public void ShuffleDeck(List<Card> deck)
+        public void ShuffleDeck(List<CardModel> deck)
         {
             var rng = new System.Random();
             int deckSize = deck.Count - 1;
@@ -46,26 +46,27 @@ namespace Controllers
 
         public void DrawCard()
         {
-            if (decks.Draw.Count > 0)
+            if (decks.Draw.Count == 0)
             {
-                var cardDrawn = decks.Draw[^1];
-                decks.Draw.Remove(cardDrawn);
+                if (decks.Discard.Count == 0)
+                {
+                    MyLogger.LogError($"Fatal: No cards in the draw pile or discard pile!");
+                }
 
-                decks.Hand.Add(cardDrawn);
-            }
-            else if (decks.Draw.Count == 0 && decks.Discard.Count == 0)
-            {
-                MyLogger.LogError($"Fatal: No cards in the draw pile or discard pile!");
-            }
-            else
-            {
                 ShuffleDeck(decks.Discard);
                 decks.Draw = decks.Discard;
                 decks.Discard.Clear();
             }
+
+            var cardDrawn = decks.Draw[^1];
+            decks.Draw.Remove(cardDrawn);
+
+            decks.Hand.Add(cardDrawn);
+
+            playerHandView.DrawCards(new List<CardModel> { cardDrawn });
         }
 
-        public void DiscardCard(Card card)
+        public void DiscardCard(CardModel card)
         {
             if (!decks.Hand.Contains(card))
             {
@@ -76,7 +77,7 @@ namespace Controllers
             decks.Discard.Add(card);
         }
 
-        public void LoseCard(Card card)
+        public void LoseCard(CardModel card)
         {
             if (decks.Hand.Contains(card))
             {
@@ -94,7 +95,7 @@ namespace Controllers
             decks.Lost.Add(card);
         }
 
-        public void UpgradeCard(Card card)
+        public void UpgradeCard(CardModel card)
         {
             if (card.NextCard == null)
             {
@@ -103,7 +104,7 @@ namespace Controllers
             card = card.NextCard;
         }
 
-        public void DowngradeCard(Card card)
+        public void DowngradeCard(CardModel card)
         {
             if (card.PreviousCard == null)
             {

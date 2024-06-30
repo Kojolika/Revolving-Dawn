@@ -12,15 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a3d1e2a98ac8ca4da9ba55be9c0aa7d, type: 3}
   m_Name: Punch
   m_EditorClassIdentifier: 
-  name: Punch
   manas:
   - {fileID: 11400000, guid: cf92ef4110406784cb00b29170e2560c, type: 2}
-  artwork:
-    m_AssetGUID: 43e72cc9bd51c4547bd8aeaa0d30abbb
+  artReference:
+    m_AssetGUID: 083b62d404bf9bd47bed1e084f79134d
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  playerClass: {fileID: 11400000, guid: cb928e790e6382a4cbc364a9596de11f, type: 2}
+  playerClassDefinition: {fileID: 11400000, guid: cb928e790e6382a4cbc364a9596de11f, type: 2}
   nextCard: {fileID: 11400000, guid: 069a59b51b259b247a766c58971bb2f4, type: 2}
   previousCard: {fileID: 0}
   playEffects:

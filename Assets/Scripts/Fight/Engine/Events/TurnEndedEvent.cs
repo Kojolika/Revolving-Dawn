@@ -2,9 +2,9 @@ using Models.Characters;
 
 namespace Fight.Events
 {
-    public class TurnEnded : BattleEvent<Character>
+    public class TurnEndedEvent : BattleEvent<Character>
     {
-        public TurnEnded(Character target) : base(target) { }
+        public TurnEndedEvent(Character target) : base(target) { }
 
         public override void Execute(Character target, BattleEngine battleEngine) { }
 

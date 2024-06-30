@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Fight;
 using Mana;
 using Models;
 using Settings;
+using Tooling.Logging;
 using UnityEngine;
-using UnityEngine.XR;
 using Utils;
 
 namespace Views
@@ -34,7 +35,7 @@ namespace Views
         }
 
 
-        public void DrawCards(List<Card> cards)
+        public void DrawCards(List<CardModel> cards)
         {
             foreach (var card in cards)
             {
@@ -62,26 +63,30 @@ namespace Views
 
             foreach (var task in tasks)
             {
+                MyLogger.Log($"Moving card...");
                 await task;
+                MyLogger.Log($"Done moving...");
             }
         }
 
         private async UniTask MoveCard(CardView cardView, Vector3 position, Vector3 rotation)
         {
-
-            while (Mathf.Abs(cardView.transform.position.x - position.x) > .01f
-                && Mathf.Abs(cardView.transform.position.y - position.y) > .01f
-                && Mathf.Abs(cardView.transform.rotation.x - rotation.x) > .01f
-                && Mathf.Abs(cardView.transform.rotation.y - rotation.y) > .01f)
+            while (Vector3.Distance(cardView.transform.position, position) >= 0.01f)
             {
                 cardView.transform.position = Vector3.MoveTowards(cardView.transform.position, position, cardSettings.CardMoveSeedInHand * Time.deltaTime);
 
-                //cardView.transform.Rotate();
+                var current = cardView.transform.eulerAngles;
+                cardView.transform.eulerAngles = new Vector3(
+                    Mathf.MoveTowardsAngle(current.x, rotation.x, cardSettings.CardMoveSeedInHand * Time.deltaTime), 
+                    Mathf.MoveTowardsAngle(current.y, rotation.y, cardSettings.CardMoveSeedInHand * Time.deltaTime), 
+                    Mathf.MoveTowardsAngle(current.z, rotation.z, cardSettings.CardMoveSeedInHand * Time.deltaTime)
+                );
+
                 await UniTask.WaitForEndOfFrame(this);
             }
         }
 
-        public void DiscardCard(Card card)
+        public void DiscardCard(CardModel card)
         {
 
         }

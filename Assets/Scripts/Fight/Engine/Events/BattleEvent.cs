@@ -1,5 +1,3 @@
-using System;
-using Tooling.Logging;
 using Zenject;
 
 namespace Fight.Events
@@ -22,6 +20,8 @@ namespace Fight.Events
 
         public virtual void OnAfterExecute(S source, T target, BattleEngine battleEngine) { }
         public override void OnAfterExecute(BattleEngine battleEngine) => OnAfterExecute(Source, Target, battleEngine);
+
+        public class BattleEventFactoryST<E> : PlaceholderFactory<S, T, E> where E : BattleEvent<T> { }
     }
 
     public abstract class BattleEvent<T> : BattleEvent
@@ -40,6 +40,8 @@ namespace Fight.Events
 
         public virtual void OnAfterExecute(T target, BattleEngine battleEngine) { }
         public override void OnAfterExecute(BattleEngine battleEngine) => OnAfterExecute(Target, battleEngine);
+
+        public class BattleEventFactoryT<E> : PlaceholderFactory<T, E> where E : BattleEvent<T> { }
     }
 
     public abstract class BattleEvent : IBattleEvent
@@ -55,23 +57,6 @@ namespace Fight.Events
         public abstract void Undo();
         public abstract string Log();
 
-        public class Factory : PlaceholderFactory<Type, BattleEvent> { }
-
-        public class CustomFactory : IFactory<Type, BattleEvent>
-        {
-            private readonly IInstantiator instantiator;
-            public CustomFactory(IInstantiator instantiator)
-            {
-                this.instantiator = instantiator;
-            }
-            public BattleEvent Create(Type param)
-            {
-                if (!typeof(BattleEvent).IsAssignableFrom(param))
-                {
-                    MyLogger.LogError($"Must pass in a type that derives from {typeof(BattleEvent)} when using {this}");
-                }
-                return instantiator.Instantiate(param) as BattleEvent;
-            }
-        }
+        public class BattleEventFactory<E> : PlaceholderFactory<E> where E : BattleEvent { }
     }
 }
