@@ -30,15 +30,28 @@ namespace Views
             }
             descriptionText.SetText(description);
 
-            _ = addressablesManager.LoadGenericAsset(cardModel.PlayerClass.CardBorderReference,
-                () => gameObject == null,
-                asset => cardBorderRenderer.sprite = asset
-            );
+            _ = addressablesManager.LoadGenericAsset(cardModel.PlayerClass, () => gameObject == null, asset =>
+            {
+                _ = addressablesManager.LoadGenericAsset(asset.CardBorderReference,
+                    () => gameObject == null,
+                    asset => cardBorderRenderer.sprite = asset
+                );
+            });
 
             _ = addressablesManager.LoadGenericAsset(cardModel.ArtReference,
                 () => gameObject == null,
                 asset => cardArtRenderer.sprite = asset
             );
+        }
+
+        public void Focus()
+        {
+
+        }
+
+        public void UnFocus()
+        {
+
         }
 
         private void OnMouseOver()

@@ -14,6 +14,8 @@ namespace Systems.Managers
         private Animator defaultLoadingAnim;
         private MenuManager menuManager;
 
+        public bool IsLoading { get; private set; } = false;
+
         /// <summary>
         /// Scene indexes in the build settings.
         /// </summary>
@@ -40,6 +42,7 @@ namespace Systems.Managers
         public async UniTask LoadScene(SceneIndex index)
         {
             loadingCanvas.gameObject.SetActive(true);
+            IsLoading = true;
             _ = menuManager.CloseAll();
 
             MyLogger.Log("Loading scene " + index);
@@ -50,6 +53,7 @@ namespace Systems.Managers
             await UniTask.Delay(TimeSpan.FromSeconds(1));
 
             loadingCanvas.gameObject.SetActive(false);
+            IsLoading = false;
         }
     }
 }

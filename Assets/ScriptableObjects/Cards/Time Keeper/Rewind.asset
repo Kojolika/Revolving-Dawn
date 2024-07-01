@@ -19,7 +19,11 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  playerClassDefinition: {fileID: 11400000, guid: 97608a3c0220d3c418750a48d3ed8f83, type: 2}
+  playerClassDefinition:
+    m_AssetGUID: 97608a3c0220d3c418750a48d3ed8f83
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   nextCard: {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
   previousCard: {fileID: 0}
   playEffects:

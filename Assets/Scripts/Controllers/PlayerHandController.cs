@@ -63,7 +63,7 @@ namespace Controllers
 
             decks.Hand.Add(cardDrawn);
 
-            playerHandView.DrawCards(new List<CardModel> { cardDrawn });
+            playerHandView.DrawCard(cardDrawn);
         }
 
         public void DiscardCard(CardModel card)

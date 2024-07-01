@@ -16,14 +16,14 @@ namespace Models
     {
         [SerializeField] private List<ManaSODefinition> manas;
         [SerializeField] private AssetReferenceSprite artReference;
-        [SerializeField] private PlayerClassSODefinition playerClassDefinition;
+        [SerializeField] private AssetReferenceT<PlayerClassSODefinition> playerClassDefinition;
         [SerializeField] private CardSODefinition nextCard;
         [SerializeField] private CardSODefinition previousCard;
         [SerializeReference, DisplayAbstract(typeof(ICombatEffect))] private List<ICombatEffect> playEffects;
 
         public List<ManaSODefinition> Manas => manas;
         public AssetReferenceSprite ArtReference => artReference;
-        public PlayerClassSODefinition PlayerClassDefinition => playerClassDefinition;
+        public AssetReferenceT<PlayerClassSODefinition> PlayerClassDefinition => playerClassDefinition;
         public CardSODefinition NextCard => nextCard;
         public CardSODefinition PreviousCard => previousCard;
         public List<ICombatEffect> PlayEffects => playEffects;
@@ -51,8 +51,8 @@ namespace Models
         [JsonProperty("artwork")]
         public readonly AssetReferenceSprite ArtReference;
 
-        [JsonProperty("player_class")]
-        public readonly PlayerClassModel PlayerClass;
+        [JsonProperty("player_class_ref")]
+        public readonly AssetReferenceT<PlayerClassSODefinition> PlayerClass;
 
         [JsonProperty("next_card")]
         public readonly CardModel NextCard;
@@ -74,7 +74,7 @@ namespace Models
             Name = card.name;
             Manas = card.Manas.Select(manaSoDef => manaSoDef.Representation).ToList();
             ArtReference = card.ArtReference;
-            PlayerClass = card.PlayerClassDefinition.Representation;
+            PlayerClass = card.PlayerClassDefinition;
             NextCard = card.NextCard == null ? null : card.NextCard.Representation;
             PreviousCard = card.PreviousCard == null ? null : card.PreviousCard.Representation;
             PlayEffects = card.PlayEffects;
