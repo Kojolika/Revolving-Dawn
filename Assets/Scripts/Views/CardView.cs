@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using Fight;
 using Systems.Managers;
 using TMPro;
+using Tooling.Logging;
 using UnityEngine;
 using Zenject;
 
@@ -30,16 +32,20 @@ namespace Views
             }
             descriptionText.SetText(description);
 
-            _ = addressablesManager.LoadGenericAsset(cardModel.PlayerClass, () => gameObject == null, asset =>
-            {
-                _ = addressablesManager.LoadGenericAsset(asset.CardBorderReference,
-                    () => gameObject == null,
-                    asset => cardBorderRenderer.sprite = asset
-                );
-            });
+            var cancellationToken = this.GetCancellationTokenOnDestroy();
+            _ = addressablesManager.LoadGenericAsset(cardModel.PlayerClass,
+                () => cancellationToken.IsCancellationRequested,
+                asset =>
+                {
+                    _ = addressablesManager.LoadGenericAsset(asset.CardBorderReference,
+                        () => cancellationToken.IsCancellationRequested,
+                        asset => cardBorderRenderer.sprite = asset
+                    );
+                }
+            );
 
             _ = addressablesManager.LoadGenericAsset(cardModel.ArtReference,
-                () => gameObject == null,
+                () => cancellationToken.IsCancellationRequested,
                 asset => cardArtRenderer.sprite = asset
             );
         }

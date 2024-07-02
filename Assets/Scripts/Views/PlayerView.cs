@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Systems.Managers;
 using UnityEngine;
 using Zenject;
@@ -12,10 +13,10 @@ namespace Views
         [Inject]
         private void Construct(Models.Player.PlayerClassModel playerClassModel, AddressablesManager addressablesManager)
         {
-            this.PlayerClassModel = playerClassModel;
+            PlayerClassModel = playerClassModel;
 
             _ = addressablesManager.LoadGenericAsset(playerClassModel.CharacterAvatarReference,
-                () => gameObject == null,
+                () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset => spriteRenderer.sprite = asset
             );
         }

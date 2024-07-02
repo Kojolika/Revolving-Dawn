@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Models.Characters;
 using Systems.Managers;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace Views
         {
             this.enemy = enemy;
             _ = addressablesManager.LoadGenericAsset(enemy.Model.AvatarReference,
-                () => gameObject == null,
+                () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset => spriteRenderer.sprite = asset 
             );
         }

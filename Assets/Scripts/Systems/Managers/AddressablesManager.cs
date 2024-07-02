@@ -63,7 +63,7 @@ namespace Systems.Managers
             CancellationToken cancellationToken
         )
         {
-            await UniTask.WaitUntil(condition, cancellationToken: cancellationToken).SuppressCancellationThrow();
+            _ = await UniTask.WaitUntil(condition, cancellationToken: cancellationToken).SuppressCancellationThrow();
 
             if (operationHandle.IsValid())
             {

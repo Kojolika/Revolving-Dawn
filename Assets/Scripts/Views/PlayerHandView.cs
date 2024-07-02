@@ -84,7 +84,6 @@ namespace Views
         {
             while (Vector3.Distance(cardView.transform.position, position) >= 0.01f && !cancellationToken.IsCancellationRequested)
             {
-                MyLogger.Log($"Moving card");
                 cardView.transform.position = Vector3.MoveTowards(cardView.transform.position, position, cardSettings.CardMoveSpeedInHand * Time.deltaTime);
 
                 var current = cardView.transform.eulerAngles;
