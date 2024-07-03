@@ -24,7 +24,6 @@ namespace Views
         private ManaPoolView manaPoolView;
         private List<CardView> hand;
         private CardSettings cardSettings;
-        private CancellationTokenSource cts = new();
         private List<Sequence> moveTweens = new();
 
         [Zenject.Inject]
@@ -45,9 +44,7 @@ namespace Views
             newCardView.transform.SetParent(handParent);
             hand.Add(newCardView);
 
-            cts.Cancel();
-            RefreshCancellationToken();
-            CreateHandCurve(cts.Token);
+            CreateHandCurve();
         }
 
         public void DiscardCard(CardModel card)
@@ -56,14 +53,9 @@ namespace Views
         }
 
 
-        private void CreateHandCurve(CancellationToken cancellationToken)
+        private void CreateHandCurve()
         {
-            foreach (var moveTween in moveTweens)
-            {
-                moveTween.Stop();
-            }
-
-            moveTweens.Clear();
+            CleanMoveTweens();
 
             var handSize = hand.Count;
             for (int i = 0; i < handSize; i++)
@@ -75,24 +67,31 @@ namespace Views
 
                 var newRotation = new Vector3(0f, 0f, GetZRotationForCard(handSize, i + 1));
 
-                moveTweens.Add(MoveCard(hand[i], newPosition, newRotation, cts.Token));
+                moveTweens.Add(MoveCard(hand[i], newPosition, newRotation));
             }
         }
 
-        private Sequence MoveCard(CardView cardView, Vector3 position, Vector3 rotation, CancellationToken cancellationToken)
+        private Sequence MoveCard(CardView cardView, Vector3 position, Vector3 rotation)
         {
             return Sequence.Create()
                 .Group(Tween.PositionAtSpeed(cardView.transform, position, cardSettings.CardMoveSpeedInHand, ease: cardSettings.CardMoveFunction))
                 .Group(Tween.RotationAtSpeed(cardView.transform, Quaternion.Euler(rotation), cardSettings.CardMoveSpeedInHand, ease: cardSettings.CardMoveFunction));
         }
 
+        private void CleanMoveTweens()
+        {
+            foreach (var moveTween in moveTweens)
+            {
+                moveTween.Stop();
+            }
+
+            moveTweens.Clear();
+        }
+
         private void HoverCard(CardView cardView)
         {
+            CleanMoveTweens();
             var cardIndex = hand.IndexOf(cardView);
-
-            cts.Cancel();
-            RefreshCancellationToken();
-
             for (int i = 0; i < hand.Count; i++)
             {
                 if (i == cardIndex)
@@ -124,8 +123,7 @@ namespace Views
 
                 MoveCard(hand[i],
                     newPosition,
-                    new Vector3(0f, 0f, GetZRotationForCard(cardIndex, i + 1)),
-                    cts.Token
+                    new Vector3(0f, 0f, GetZRotationForCard(cardIndex, i + 1))
                 );
             }
         }
@@ -386,12 +384,6 @@ namespace Views
                     break;
             }
             return result;
-        }
-
-        private void RefreshCancellationToken()
-        {
-            cts.Dispose();
-            cts = new CancellationTokenSource();
         }
     }
 }
