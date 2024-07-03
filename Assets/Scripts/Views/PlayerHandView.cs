@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Fight;
+using PrimeTween;
 using Mana;
 using Models;
 using Settings;
@@ -25,6 +25,7 @@ namespace Views
         private List<CardView> hand;
         private CardSettings cardSettings;
         private CancellationTokenSource cts = new();
+        private List<Sequence> moveTweens = new();
 
         [Zenject.Inject]
         private void Construct(CardView.Factory cardViewFactory, ManaPoolView manaPoolView, CardSettings cardSettings)
@@ -46,7 +47,7 @@ namespace Views
 
             cts.Cancel();
             RefreshCancellationToken();
-            _ = CreateHandCurve(cts.Token);
+            CreateHandCurve(cts.Token);
         }
 
         public void DiscardCard(CardModel card)
@@ -55,46 +56,34 @@ namespace Views
         }
 
 
-        private async UniTask CreateHandCurve(CancellationToken cancellationToken)
+        private void CreateHandCurve(CancellationToken cancellationToken)
         {
+            foreach (var moveTween in moveTweens)
+            {
+                moveTween.Stop();
+            }
+
+            moveTweens.Clear();
+
             var handSize = hand.Count;
-            UniTask[] tasks = new UniTask[handSize];
             for (int i = 0; i < handSize; i++)
             {
-                var newPosition = handCurve.GetPoint(GetCardPosition(handSize, i + 1));
+                var pointOnCurve = GetCardPosition(handSize, i + 1);
+
+                var newPosition = handCurve.GetPoint(pointOnCurve);
                 newPosition.z -= i * .5f;
 
                 var newRotation = new Vector3(0f, 0f, GetZRotationForCard(handSize, i + 1));
 
-                tasks[i] = MoveCard(hand[i], newPosition, newRotation, cancellationToken);
-            }
-
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
-
-            foreach (var task in tasks)
-            {
-                await task;
+                moveTweens.Add(MoveCard(hand[i], newPosition, newRotation, cts.Token));
             }
         }
 
-        private async UniTask MoveCard(CardView cardView, Vector3 position, Vector3 rotation, CancellationToken cancellationToken)
+        private Sequence MoveCard(CardView cardView, Vector3 position, Vector3 rotation, CancellationToken cancellationToken)
         {
-            while (Vector3.Distance(cardView.transform.position, position) >= 0.01f && !cancellationToken.IsCancellationRequested)
-            {
-                cardView.transform.position = Vector3.MoveTowards(cardView.transform.position, position, cardSettings.CardMoveSpeedInHand * Time.deltaTime);
-
-                var current = cardView.transform.eulerAngles;
-                cardView.transform.eulerAngles = new Vector3(
-                    Mathf.MoveTowardsAngle(current.x, rotation.x, cardSettings.CardMoveSpeedInHand * Time.deltaTime),
-                    Mathf.MoveTowardsAngle(current.y, rotation.y, cardSettings.CardMoveSpeedInHand * Time.deltaTime),
-                    Mathf.MoveTowardsAngle(current.z, rotation.z, cardSettings.CardMoveSpeedInHand * Time.deltaTime)
-                );
-
-                await UniTask.WaitForEndOfFrame(this);
-            }
+            return Sequence.Create()
+                .Group(Tween.PositionAtSpeed(cardView.transform, position, cardSettings.CardMoveSpeedInHand, ease: cardSettings.CardMoveFunction))
+                .Group(Tween.RotationAtSpeed(cardView.transform, Quaternion.Euler(rotation), cardSettings.CardMoveSpeedInHand, ease: cardSettings.CardMoveFunction));
         }
 
         private void HoverCard(CardView cardView)
@@ -133,7 +122,7 @@ namespace Views
                 // Gives a sense of realism to the card hand
                 newPosition.z -= i * 0.5f;
 
-                _ = MoveCard(hand[i],
+                MoveCard(hand[i],
                     newPosition,
                     new Vector3(0f, 0f, GetZRotationForCard(cardIndex, i + 1)),
                     cts.Token

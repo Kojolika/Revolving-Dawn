@@ -7,7 +7,7 @@ namespace Fight.Events
 {
     public class DrawCardEvent : BattleEventTargetingIBuffable<PlayerCharacter>
     {
-        private PlayerHandController playerHandController;
+        private readonly PlayerHandController playerHandController;
 
         public DrawCardEvent(PlayerCharacter target, PlayerHandController playerHandController, bool isCharacterAction = false) : base(target, isCharacterAction)
         {
@@ -19,7 +19,7 @@ namespace Fight.Events
             playerHandController.DrawCard();
         }
 
-        public override string Log() => $"{Target} drew a card!";
+        public override string Log() => $"{Target.Name} drew a card!";
 
         public override void Undo()
         {

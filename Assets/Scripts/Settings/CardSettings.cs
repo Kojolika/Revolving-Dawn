@@ -22,11 +22,19 @@ namespace Settings
             + "That is, if a card has a null downgrade, it will be transformed to the card here depending on its mana type.")]
         [SerializeField] private List<CardManaPair> downgradeBaseCardsForMana;
 
-        [Tooltip("The speed which cards will be moved around in your .")]
+        [Tooltip("The speed which cards will be moved around in the player hand.")]
         [SerializeField] private float cardMoveSpeedInHand;
+
+        [Tooltip("The speed which cards will be rotated around in the player hand.")]
+        [SerializeField] private float  cardRotateSpeedInHand;
+            
+        [Tooltip("The type of move function cards use when being drawn.")]
+        [SerializeField] PrimeTween.Ease cardMoveFunction;
 
 
         public List<CardManaPair> DowngradeBaseCardsForMana => downgradeBaseCardsForMana;
         public float CardMoveSpeedInHand => cardMoveSpeedInHand;
+        public float CardRotateSpeedInHand => cardRotateSpeedInHand;
+        public PrimeTween.Ease CardMoveFunction => cardMoveFunction;
     }
 }

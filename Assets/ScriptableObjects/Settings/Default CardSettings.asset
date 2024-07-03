@@ -21,4 +21,6 @@ MonoBehaviour:
     card: {fileID: 11400000, guid: be0fe3c49ac96e8498bdaf46dc5a0bc4, type: 2}
   - manaDefinition: {fileID: 11400000, guid: fc30a61ee75aac346922ceb5affbc23a, type: 2}
     card: {fileID: 11400000, guid: 86d0fa1a7c64bd6479c6bf786c75e5f8, type: 2}
-  cardMoveSpeedInHand: 40
+  cardMoveSpeedInHand: 10
+  cardRotateSpeedInHand: 30
+  cardMoveFunction: 19
