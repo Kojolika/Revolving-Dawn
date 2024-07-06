@@ -28,16 +28,19 @@ namespace Views
         private List<CardView> hand;
         private CardSettings cardSettings;
         private readonly List<Sequence> currentMoveTweens = new();
-
         public BattleEngine BattleEngine { get; private set; }
         public BattleAnimationEngine BattleAnimationEngine { get; private set; }
+        private PlayerInputState playerInputState;
+
+        public Camera Camera => handViewCamera;
 
         [Zenject.Inject]
         private void Construct(CardView.Factory cardViewFactory,
             ManaPoolView manaPoolView,
             CardSettings cardSettings,
             BattleEngine battleEngine,
-            BattleAnimationEngine battleAnimationEngine)
+            BattleAnimationEngine battleAnimationEngine,
+            PlayerInputState playerInputState)
         {
             this.cardViewFactory = cardViewFactory;
             this.manaPoolView = manaPoolView;
@@ -46,6 +49,8 @@ namespace Views
             this.cardSettings = cardSettings;
             BattleEngine = battleEngine;
             BattleAnimationEngine = battleAnimationEngine;
+            this.playerInputState = playerInputState;
+            playerInputState.CardHovered += HoverCard;
         }
 
         public async UniTask DrawCard(CardModel cardModel)
@@ -62,7 +67,6 @@ namespace Views
         {
 
         }
-
 
         private async UniTask CreateHandCurve()
         {
@@ -406,6 +410,11 @@ namespace Views
                     break;
             }
             return result;
+        }
+
+        private void OnDestroy()
+        {
+            playerInputState.CardHovered -= HoverCard;
         }
     }
 }

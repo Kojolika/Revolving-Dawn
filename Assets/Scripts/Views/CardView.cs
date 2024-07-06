@@ -16,13 +16,11 @@ namespace Views
         [SerializeField] TextMeshPro descriptionText;
 
         private Models.CardModel cardModel;
-        private PlayerInputState playerInputState;
 
         [Inject]
-        private void Construct(AddressablesManager addressablesManager, Models.CardModel cardModel, PlayerInputState playerInputState)
+        private void Construct(AddressablesManager addressablesManager, Models.CardModel cardModel)
         {
             this.cardModel = cardModel;
-            this.playerInputState = playerInputState;
             nameText.SetText(cardModel.Name);
 
             var description = "";

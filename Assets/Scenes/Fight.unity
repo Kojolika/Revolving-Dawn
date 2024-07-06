@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.45036817, g: 0.50038505, b: 0.57526517, a: 1}
+  m_IndirectSpecularColor: {r: 0.45036852, g: 0.5003854, b: 0.57526577, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -987,6 +987,10 @@ PrefabInstance:
       propertyPath: playerHandView
       value: 
       objectReference: {fileID: 2466177272251067132, guid: 0698591aca8ef854ba4dc07a2623558d, type: 3}
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: playerHandInput
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: 10cb80aa9e274ce46bfec653475a6800, type: 3}
     - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
       propertyPath: fightOverlayCanvas
       value: 

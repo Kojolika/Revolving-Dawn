@@ -42,7 +42,6 @@ namespace Zenject.Installers
                 .FromFactory<IBattleAnimation.CustomFactory>();
 
             Container.Bind<PlayerInputState>()
-                .To<DefaultState>()
                 .AsSingle();
 
             Container.BindFactory<Models.CardModel, CardView, CardView.Factory>()
@@ -65,15 +64,9 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(manaPoolView)
                 .AsSingle();
 
-            Container.BindInterfacesAndSelfTo<PlayerHandView>()
+            Container.Bind<PlayerHandView>()
                 .FromComponentInNewPrefab(playerHandView)
-                .AsSingle()
-                .OnInstantiated((ctx, playerHandView) =>
-                {
-                    Container.Bind<Camera>()
-                        .FromInstance((playerHandView as MonoBehaviour).GetComponent<Camera>())
-                        .WhenInjectedInto<PlayerInputState>();
-                });
+                .AsSingle();
 
             Container.Bind<LevelView>()
                 .FromComponentInNewPrefab(levelView)
