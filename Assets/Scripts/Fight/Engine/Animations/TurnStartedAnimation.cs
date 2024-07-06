@@ -27,7 +27,7 @@ namespace Fight.Animations
                 var text = animatorPrefab.GetComponentInChildren<TextMeshProUGUI>();
                 text.SetText($"{playerCharacter.Name}'s turn started!");
 
-                await LoadAndPlayAnimator();
+                await PlayAndReleaseAnimator(Instantiate(animatorPrefab, canvas.transform));
             }
         }
 

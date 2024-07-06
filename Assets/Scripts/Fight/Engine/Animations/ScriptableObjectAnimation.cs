@@ -15,15 +15,14 @@ namespace Fight.Animations
         public bool ShouldWait => shouldWait;
         public AsyncOperationHandle AsyncOperationHandle { get; set; }
 
-        public virtual async UniTask Play(IBattleEvent battleEvent) => await LoadAndPlayAnimator();
+        public virtual async UniTask Play(IBattleEvent battleEvent) => await PlayAndReleaseAnimator(Instantiate(animatorPrefab));
         public virtual UniTask Undo(IBattleEvent battleEvent)
         {
             return default;
         }
 
-        protected async UniTask LoadAndPlayAnimator()
+        protected async UniTask PlayAndReleaseAnimator(Animator animator)
         {
-            var animator = Instantiate(animatorPrefab);
             animator.Play(animator.GetNextAnimatorStateInfo(0).fullPathHash);
 
             // Wait for anim to start
