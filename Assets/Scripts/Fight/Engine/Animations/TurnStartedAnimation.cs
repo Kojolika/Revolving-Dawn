@@ -10,7 +10,7 @@ using UnityEngine.AddressableAssets;
 namespace Fight.Animations
 {
     [CreateAssetMenu(menuName = "RevolvingDawn/Fight/Animations/" + nameof(TurnStartedEventAnimation), fileName = "New " + nameof(TurnStartedEventAnimation))]
-    public class TurnStartedEventAnimation : ScriptableObjectAnimationWithBaseFunctionality<TurnStartedEvent>
+    public class TurnStartedEventAnimation : ScriptableObjectAnimation<TurnStartedEvent>
     {
         private Canvas canvas;
 
@@ -27,7 +27,7 @@ namespace Fight.Animations
                 var text = animatorPrefab.GetComponentInChildren<TextMeshProUGUI>();
                 text.SetText($"{playerCharacter.Name}'s turn started!");
 
-                await base.Play((IBattleEvent)battleEvent);
+                await LoadAndPlayAnimator();
             }
         }
 

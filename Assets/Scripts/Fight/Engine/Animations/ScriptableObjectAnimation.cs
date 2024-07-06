@@ -15,7 +15,13 @@ namespace Fight.Animations
         public bool ShouldWait => shouldWait;
         public AsyncOperationHandle AsyncOperationHandle { get; set; }
 
-        public virtual async UniTask Play(IBattleEvent battleEvent)
+        public virtual async UniTask Play(IBattleEvent battleEvent) => await LoadAndPlayAnimator();
+        public virtual UniTask Undo(IBattleEvent battleEvent)
+        {
+            return default;
+        }
+
+        protected async UniTask LoadAndPlayAnimator()
         {
             var animator = Instantiate(animatorPrefab);
             animator.Play(animator.GetNextAnimatorStateInfo(0).fullPathHash);
@@ -31,24 +37,13 @@ namespace Fight.Animations
             Destroy(animatorGO);
             Addressables.Release(AsyncOperationHandle);
         }
-        public virtual UniTask Undo(IBattleEvent battleEvent)
-        {
-            return default;
-        }
     }
 
     public abstract class ScriptableObjectAnimation<T> : ScriptableObjectAnimation, IBattleAnimation<T>
         where T : IBattleEvent
     {
-        public async override UniTask Play(IBattleEvent battleEvent) => await Play((DrawCardEvent)battleEvent);
-        public async override UniTask Undo(IBattleEvent battleEvent) => await Undo((DrawCardEvent)battleEvent);
-        public abstract UniTask Play(T battleEvent);
-        public abstract UniTask Undo(T battleEvent);
-    }
-
-    public abstract class ScriptableObjectAnimationWithBaseFunctionality<T> : ScriptableObjectAnimation, IBattleAnimation<T>
-        where T : IBattleEvent
-    {
+        public async override UniTask Play(IBattleEvent battleEvent) => await Play((T)battleEvent);
+        public async override UniTask Undo(IBattleEvent battleEvent) => await Undo((T)battleEvent);
         public abstract UniTask Play(T battleEvent);
         public abstract UniTask Undo(T battleEvent);
     }
