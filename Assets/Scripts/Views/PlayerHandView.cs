@@ -8,6 +8,9 @@ using Settings;
 using Tooling.Logging;
 using UnityEngine;
 using Utils;
+using Fight.Animations;
+using Fight.Events;
+using Fight;
 
 namespace Views
 {
@@ -24,27 +27,35 @@ namespace Views
         private ManaPoolView manaPoolView;
         private List<CardView> hand;
         private CardSettings cardSettings;
-        private List<Sequence> moveTweens = new();
+        private readonly List<Sequence> currentMoveTweens = new();
+
+        public BattleEngine BattleEngine { get; private set; }
+        public BattleAnimationEngine BattleAnimationEngine { get; private set; }
 
         [Zenject.Inject]
-        private void Construct(CardView.Factory cardViewFactory, ManaPoolView manaPoolView, CardSettings cardSettings)
+        private void Construct(CardView.Factory cardViewFactory,
+            ManaPoolView manaPoolView,
+            CardSettings cardSettings,
+            BattleEngine battleEngine,
+            BattleAnimationEngine battleAnimationEngine)
         {
             this.cardViewFactory = cardViewFactory;
             this.manaPoolView = manaPoolView;
             manaPoolView.transform.position = manaPoolViewLocation.position;
             hand = new List<CardView>();
             this.cardSettings = cardSettings;
+            BattleEngine = battleEngine;
+            BattleAnimationEngine = battleAnimationEngine;
         }
 
-
-        public void DrawCard(CardModel cardModel)
+        public async UniTask DrawCard(CardModel cardModel)
         {
             var newCardView = cardViewFactory.Create(cardModel);
             newCardView.transform.position = cardSpawnLocation.position;
             newCardView.transform.SetParent(handParent);
             hand.Add(newCardView);
 
-            CreateHandCurve();
+            await CreateHandCurve();
         }
 
         public void DiscardCard(CardModel card)
@@ -53,11 +64,12 @@ namespace Views
         }
 
 
-        private void CreateHandCurve()
+        private async UniTask CreateHandCurve()
         {
-            CleanMoveTweens();
+            ClearMoveTweens();
 
             var handSize = hand.Count;
+            var moveTasks = new UniTask[handSize];
             for (int i = 0; i < handSize; i++)
             {
                 var pointOnCurve = GetCardPosition(handSize, i + 1);
@@ -67,30 +79,40 @@ namespace Views
 
                 var newRotation = new Vector3(0f, 0f, GetZRotationForCard(handSize, i + 1));
 
-                moveTweens.Add(MoveCard(hand[i], newPosition, newRotation));
+                moveTasks[i] = MoveCard(hand[i], newPosition, newRotation);
             }
+
+            await UniTask.WhenAll(moveTasks);
         }
 
-        private Sequence MoveCard(CardView cardView, Vector3 position, Vector3 rotation)
+        private async UniTask<Sequence> MoveCard(CardView cardView, Vector3 position, Vector3 rotation)
         {
-            return Sequence.Create()
-                .Group(Tween.PositionAtSpeed(cardView.transform, position, cardSettings.CardMoveSpeedInHand, ease: cardSettings.CardMoveFunction))
-                .Group(Tween.RotationAtSpeed(cardView.transform, Quaternion.Euler(rotation), cardSettings.CardMoveSpeedInHand, ease: cardSettings.CardMoveFunction));
+            var distance = Vector3.Distance(cardView.transform.position, position);
+            var distanceModifier = distance == 0 ? 0 : 1f / distance;
+
+            var moveCardSeq = Sequence.Create()
+                .Group(Tween.PositionAtSpeed(cardView.transform, position, cardSettings.CardMoveSpeedInHand + distance, ease: cardSettings.CardMoveFunction))
+                .Group(Tween.RotationAtSpeed(cardView.transform, Quaternion.Euler(rotation), cardSettings.CardRotateSpeedInHand + distance, ease: cardSettings.CardMoveFunction));
+
+            currentMoveTweens.Add(moveCardSeq);
+            await UniTask.WaitWhile(() => moveCardSeq.isAlive);
+
+            return moveCardSeq;
         }
 
-        private void CleanMoveTweens()
+        private void ClearMoveTweens()
         {
-            foreach (var moveTween in moveTweens)
+            foreach (var moveTween in currentMoveTweens)
             {
                 moveTween.Stop();
             }
 
-            moveTweens.Clear();
+            currentMoveTweens.Clear();
         }
 
-        private void HoverCard(CardView cardView)
+        private async void HoverCard(CardView cardView)
         {
-            CleanMoveTweens();
+            ClearMoveTweens();
             var cardIndex = hand.IndexOf(cardView);
             for (int i = 0; i < hand.Count; i++)
             {
@@ -121,7 +143,7 @@ namespace Views
                 // Gives a sense of realism to the card hand
                 newPosition.z -= i * 0.5f;
 
-                MoveCard(hand[i],
+                await MoveCard(hand[i],
                     newPosition,
                     new Vector3(0f, 0f, GetZRotationForCard(cardIndex, i + 1))
                 );

@@ -1,5 +1,6 @@
 using Controllers;
 using Fight;
+using Fight.Animations;
 using Fight.Events;
 using Mana;
 using Models.Characters;
@@ -18,6 +19,7 @@ namespace Zenject.Installers
         [SerializeField] PlayerHandView playerHandView;
         [SerializeField] ManaPoolView manaPoolView;
         [SerializeField] ManaView manaView;
+        [SerializeField] Canvas fightOverlayCanvas;
 
         public override void InstallBindings()
         {
@@ -29,6 +31,13 @@ namespace Zenject.Installers
             Container.Bind<BattleEngine>()
                 .FromNew()
                 .AsSingle();
+
+            Container.Bind<BattleAnimationEngine>()
+                .FromNew()
+                .AsSingle();
+
+            Container.BindFactory<IBattleEvent, IBattleAnimation, IBattleAnimation.Factory>()
+                .FromFactory<IBattleAnimation.CustomFactory>();
 
             Container.Bind<PlayerInputState>()
                 .To<DefaultState>()
@@ -54,7 +63,7 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(manaPoolView)
                 .AsSingle();
 
-            Container.Bind<PlayerHandView>()
+            Container.BindInterfacesAndSelfTo<PlayerHandView>()
                 .FromComponentInNewPrefab(playerHandView)
                 .AsSingle();
 
@@ -64,6 +73,9 @@ namespace Zenject.Installers
 
             Container.Bind<PlayerHandController>()
                 .AsSingle();
+
+            Container.Bind<Canvas>()
+                .FromInstance(fightOverlayCanvas);
 
             InstallBattleEventFactories();
         }

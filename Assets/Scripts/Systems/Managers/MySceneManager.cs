@@ -50,7 +50,7 @@ namespace Systems.Managers
             await SceneManager.LoadSceneAsync((int)index);
 
             // So we can actually see it load
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            // await UniTask.Delay(TimeSpan.FromSeconds(1));
 
             loadingCanvas.gameObject.SetActive(false);
             IsLoading = false;

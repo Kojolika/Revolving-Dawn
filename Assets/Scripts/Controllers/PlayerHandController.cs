@@ -44,7 +44,7 @@ namespace Controllers
             }
         }
 
-        public void DrawCard()
+        public CardModel DrawCard()
         {
             if (decks.Draw.Count == 0)
             {
@@ -63,7 +63,7 @@ namespace Controllers
 
             decks.Hand.Add(cardDrawn);
 
-            playerHandView.DrawCard(cardDrawn);
+            return cardDrawn;
         }
 
         public void DiscardCard(CardModel card)

@@ -1,20 +1,39 @@
 using System.Collections.Generic;
-using UnityEngine;
-using Fight.Events;
 using Cysharp.Threading.Tasks;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using System.Linq;
+using Fight.Events;
+using Tooling.Logging;
 
 namespace Fight.Animations
 {
-    public class BattleAnimationEngine : MonoBehaviour
+    public class BattleAnimationEngine
     {
         public bool IsRunning { get; private set; }
-        private Queue<(AsyncOperationHandle<IBattleAnimation> animationAssetHandle, IBattleEvent battleEvent)> battleAnimationQueue;
-        public void Run(Queue<IBattleEvent> battleEvents = null)
+        private Queue<BattleEventAnimation> battleAnimationQueue;
+        private readonly BattleEngine battleEngine;
+        private readonly IBattleAnimation.Factory animationFactory;
+
+        public BattleAnimationEngine(BattleEngine battleEngine, IBattleAnimation.Factory animationFactory)
         {
-            battleAnimationQueue = new Queue<(AsyncOperationHandle<IBattleAnimation>, IBattleEvent)>();
+            this.battleEngine = battleEngine;
+            this.animationFactory = animationFactory;
+
+            battleEngine.EventOccurred += LoadAndEnqueueAnimation;
+        }
+
+        ~BattleAnimationEngine()
+        {
+            battleEngine.EventOccurred -= LoadAndEnqueueAnimation;
+        }
+
+        public void Run()
+        {
+            if (IsRunning)
+            {
+                MyLogger.LogWarning($"Requested run on {this} but {this} is already running.");
+                return;
+            }
+
+            battleAnimationQueue = new();
             IsRunning = true;
             EngineLoop();
         }
@@ -32,8 +51,14 @@ namespace Fight.Animations
                 if (battleAnimationQueue.Count > 0)
                 {
                     var first = battleAnimationQueue.Dequeue();
-                    var animation = await first.animationAssetHandle;
-                    await animation.Play(first.battleEvent);
+                    if (first.Animation.ShouldWait)
+                    {
+                        await first.Animation.Play(first.BattleEvent);
+                    }
+                    else
+                    {
+                        _ = first.Animation.Play(first.BattleEvent);
+                    }
                 }
                 else
                 {
@@ -41,37 +66,29 @@ namespace Fight.Animations
                 }
             }
         }
-    
-        public void EnqueueAnimationFromEvent(IBattleEvent battleEvent)
-            => battleAnimationQueue.Enqueue((BattleAnimationFactory.CreateAnimationFromEvent(battleEvent), battleEvent));
 
-        public void EnqueueAnimationsFromEvent(IEnumerable<IBattleEvent> battleEvents)
-        {   
-            foreach(var battleEvent in battleEvents)
+        public void Enqueue(BattleEventAnimation battleEventAnimation) => battleAnimationQueue?.Enqueue(battleEventAnimation);
+
+        private void LoadAndEnqueueAnimation(IBattleEvent battleEvent)
+        {
+            var animation = animationFactory.Create(battleEvent);
+            if (animation == null)
             {
-                battleAnimationQueue.Enqueue((BattleAnimationFactory.CreateAnimationFromEvent(battleEvent), battleEvent));
+                return;
             }
+
+            Enqueue(new BattleEventAnimation(battleEvent, animation));
         }
     }
 
-    /// <summary>
-    /// For animations we are using a notation where the name of the event followed by 'Animation'
-    /// will be the addressable asset key for the corresponding animation.
-    /// This class loads the animation using addresables
-    /// </summary>
-    public static class BattleAnimationFactory
+    public class BattleEventAnimation
     {
-        public static AsyncOperationHandle<IBattleAnimation> CreateAnimationFromEvent(IBattleEvent battleEvent)
-            => Addressables.LoadAssetAsync<IBattleAnimation>($"{nameof(battleEvent)}Animation");
-
-        public static Queue<AsyncOperationHandle<IBattleAnimation>> CreateAnimationsFromEvent(IEnumerable<IBattleEvent> battleEvents)
+        public readonly IBattleEvent BattleEvent;
+        public readonly IBattleAnimation Animation;
+        public BattleEventAnimation(IBattleEvent battleEvent, IBattleAnimation animation)
         {
-            var animationHandles = new Queue<AsyncOperationHandle<IBattleAnimation>>();
-            foreach (var battleEvent in battleEvents)
-            {
-                animationHandles.Enqueue(CreateAnimationFromEvent(battleEvent));
-            }
-            return animationHandles;
+            BattleEvent = battleEvent;
+            Animation = animation;
         }
     }
 }
