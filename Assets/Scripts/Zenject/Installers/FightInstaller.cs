@@ -6,6 +6,7 @@ using Mana;
 using Models.Characters;
 using Systems.Managers;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Views;
 
 namespace Zenject.Installers
@@ -20,6 +21,7 @@ namespace Zenject.Installers
         [SerializeField] ManaPoolView manaPoolView;
         [SerializeField] ManaView manaView;
         [SerializeField] Canvas fightOverlayCanvas;
+        [SerializeField] InputActionAsset playerHandInput;
 
         public override void InstallBindings()
         {
@@ -65,7 +67,13 @@ namespace Zenject.Installers
 
             Container.BindInterfacesAndSelfTo<PlayerHandView>()
                 .FromComponentInNewPrefab(playerHandView)
-                .AsSingle();
+                .AsSingle()
+                .OnInstantiated((ctx, playerHandView) =>
+                {
+                    Container.Bind<Camera>()
+                        .FromInstance((playerHandView as MonoBehaviour).GetComponent<Camera>())
+                        .WhenInjectedInto<PlayerInputState>();
+                });
 
             Container.Bind<LevelView>()
                 .FromComponentInNewPrefab(levelView)
@@ -76,6 +84,9 @@ namespace Zenject.Installers
 
             Container.Bind<Canvas>()
                 .FromInstance(fightOverlayCanvas);
+
+            Container.Bind<InputActionAsset>()
+                .FromInstance(playerHandInput);
 
             InstallBattleEventFactories();
         }

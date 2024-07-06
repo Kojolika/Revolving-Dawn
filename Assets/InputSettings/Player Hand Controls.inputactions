@@ -7,12 +7,12 @@
             "actions": [
                 {
                     "name": "Hover Card",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "7b56d91d-1776-478a-b4f5-2ad29529aa09",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Drag Card",
@@ -61,17 +61,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "0ce1e338-a063-40c4-a9bc-8783da2f1950",
-                    "path": "",
-                    "interactions": "Hold",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Hover Card",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "1858595f-ea88-494e-8735-5ecbc8af88ff",
@@ -124,6 +113,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reduce Card",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d344069f-ea78-4627-bff6-1216e4b65461",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hover Card",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "afc5d8e6-52ac-4ac4-bf19-18d2d5f0255d",
+                    "path": "<Touchscreen>/primaryTouch",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hover Card",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
