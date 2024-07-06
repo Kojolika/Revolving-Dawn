@@ -60,11 +60,6 @@ namespace Views
 
         }
 
-        private void OnMouseOver()
-        {
-            playerInputState.CardHovered?.Invoke(this);
-        }
-
         public class Factory : PlaceholderFactory<Models.CardModel, CardView>
         {
 

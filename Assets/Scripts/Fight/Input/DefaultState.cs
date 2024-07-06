@@ -1,5 +1,6 @@
 using Cards;
 using Mana;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 
@@ -7,17 +8,8 @@ namespace Fight
 {
     public class DefaultState : PlayerInputState
     {
-        public DefaultState()
+        public DefaultState(InputActionAsset playerHandInputActionAsset, Camera handViewCamera) : base(playerHandInputActionAsset, handViewCamera)
         {
-            if (Touchscreen.current != null && !EnhancedTouchSupport.enabled)
-            {
-                EnhancedTouchSupport.Enable();
-            }
-        }
-
-        public override void Transition(PlayerInputState nextState)
-        {
-            throw new System.NotImplementedException();
         }
 
         public override void Exit()
@@ -27,7 +19,11 @@ namespace Fight
 
         public override void Tick()
         {
-            throw new System.NotImplementedException();
+            var cardHovered = PollCardHovering();
+            if (cardHovered != null)
+            {
+                InvokeCardHovered(cardHovered);
+            }
         }
     }
 }
