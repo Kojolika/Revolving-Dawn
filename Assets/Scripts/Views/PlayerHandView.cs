@@ -11,6 +11,7 @@ using Utils;
 using Fight.Animations;
 using Fight.Events;
 using Fight;
+using Controllers;
 
 namespace Views
 {
@@ -39,8 +40,7 @@ namespace Views
             ManaPoolView manaPoolView,
             CardSettings cardSettings,
             BattleEngine battleEngine,
-            BattleAnimationEngine battleAnimationEngine,
-            PlayerInputState playerInputState)
+            BattleAnimationEngine battleAnimationEngine)
         {
             this.cardViewFactory = cardViewFactory;
             this.manaPoolView = manaPoolView;
@@ -49,8 +49,6 @@ namespace Views
             this.cardSettings = cardSettings;
             BattleEngine = battleEngine;
             BattleAnimationEngine = battleAnimationEngine;
-            this.playerInputState = playerInputState;
-            playerInputState.CardHovered += HoverCard;
         }
 
         public async UniTask DrawCard(CardModel cardModel)
@@ -68,7 +66,7 @@ namespace Views
 
         }
 
-        private async UniTask CreateHandCurve()
+        public async UniTask CreateHandCurve()
         {
             ClearMoveTweens();
 
@@ -114,10 +112,12 @@ namespace Views
             currentMoveTweens.Clear();
         }
 
-        private async void HoverCard(CardView cardView)
+        public async UniTask HoverCard(CardView cardView)
         {
             ClearMoveTweens();
             var cardIndex = hand.IndexOf(cardView);
+            var handSize = hand.Count;
+            var moveTasks = new UniTask[handSize];
             for (int i = 0; i < hand.Count; i++)
             {
                 if (i == cardIndex)
@@ -125,11 +125,12 @@ namespace Views
                     // Selected card will perfectly straight, moved so the text is in view of the screen clear,
                     // and scaled up for better visibility
                     cardView.transform.rotation = Quaternion.Euler(Vector3.zero);
-                    Vector3 p = handViewCamera.ViewportToWorldPoint(new Vector3(0.5f, 0, handViewCamera.nearClipPlane));
+                    //Vector3 p = handViewCamera.ViewportToWorldPoint(new Vector3(0.5f, 0, handViewCamera.nearClipPlane));
+                    var currentCardPosition = cardView.transform.position;
                     cardView.transform.position = new Vector3(
                         handCurve.GetPoint(GetCardPosition(hand.Count, i + 1)).x,
-                        p.y,
-                        cardView.transform.position.z - 1f);
+                        currentCardPosition.y,
+                        currentCardPosition.z - 1f);
                     cardView.Focus();
                     continue;
                 }
@@ -138,7 +139,7 @@ namespace Views
                 // Move Cards relative to their position of the selected card
                 // i.e. cards closer more farther away
                 float positionDifference = 1.75f / (i - cardIndex);
-                float moveAmount = GetCardPosition(hand.Count, i + 1) + (positionDifference) * .05f;
+                float moveAmount = GetCardPosition(hand.Count, i + 1) + positionDifference * .05f;
 
                 //turn curve point into vector space
                 Vector3 newPosition = handCurve.GetPoint(moveAmount);
@@ -147,11 +148,13 @@ namespace Views
                 // Gives a sense of realism to the card hand
                 newPosition.z -= i * 0.5f;
 
-                await MoveCard(hand[i],
+                moveTasks[i] = MoveCard(hand[i],
                     newPosition,
                     new Vector3(0f, 0f, GetZRotationForCard(cardIndex, i + 1))
                 );
             }
+
+            await UniTask.WhenAll(moveTasks);
         }
 
         /// <summary>
@@ -410,11 +413,6 @@ namespace Views
                     break;
             }
             return result;
-        }
-
-        private void OnDestroy()
-        {
-            playerInputState.CardHovered -= HoverCard;
         }
     }
 }

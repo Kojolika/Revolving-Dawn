@@ -41,10 +41,6 @@ namespace Zenject.Installers
             Container.BindFactory<IBattleEvent, IBattleAnimation, IBattleAnimation.Factory>()
                 .FromFactory<IBattleAnimation.CustomFactory>();
 
-            Container.Bind<PlayerInputState>()
-                .FromNew()
-                .AsSingle();
-
             Container.BindFactory<Models.CardModel, CardView, CardView.Factory>()
                 .FromComponentInNewPrefab(cardView)
                 .AsSingle();
@@ -79,10 +75,8 @@ namespace Zenject.Installers
             Container.Bind<Canvas>()
                 .FromInstance(fightOverlayCanvas);
 
-            Container.Bind<InputActionAsset>()
-                .FromInstance(playerHandInput);
-
             InstallBattleEventFactories();
+            InstallPlayerHandInputs();
         }
 
         private void InstallBattleEventFactories()
@@ -91,6 +85,22 @@ namespace Zenject.Installers
                 .AsSingle();
 
             Container.BindFactory<Character, TurnStartedEvent, TurnStartedEvent.BattleEventFactoryT<TurnStartedEvent>>()
+                .AsSingle();
+        }
+
+        private void InstallPlayerHandInputs()
+        {
+            Container.Bind<InputActionAsset>()
+                .FromInstance(playerHandInput);
+
+            Container.Bind<PlayerHandInputController>()
+                .AsSingle()
+                .NonLazy();
+
+            Container.Bind<DefaultState>()
+                .AsSingle();
+
+            Container.BindFactory<CardView, HoveringState, HoveringState.Factory>()
                 .AsSingle();
         }
     }
