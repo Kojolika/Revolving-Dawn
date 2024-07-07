@@ -61,6 +61,7 @@
         "Instantiator",
         "Mathf",
         "Newtonsoft",
+        "Raycast",
         "Scriptable",
         "Tickable",
         "Triggerable",

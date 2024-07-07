@@ -1,5 +1,4 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
+using Tooling.Logging;
 
 namespace Fight
 {
@@ -7,8 +6,6 @@ namespace Fight
     {
         public override void Tick()
         {
-            base.Tick();
-
             var cardHovered = PollCardHovering();
             if (cardHovered != null)
             {

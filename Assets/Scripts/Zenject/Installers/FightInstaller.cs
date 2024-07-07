@@ -42,6 +42,7 @@ namespace Zenject.Installers
                 .FromFactory<IBattleAnimation.CustomFactory>();
 
             Container.Bind<PlayerInputState>()
+                .FromNew()
                 .AsSingle();
 
             Container.BindFactory<Models.CardModel, CardView, CardView.Factory>()

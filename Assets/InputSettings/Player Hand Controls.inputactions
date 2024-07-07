@@ -1,12 +1,12 @@
 {
-    "name": "Default Controls",
+    "name": "Player Hand Controls",
     "maps": [
         {
             "name": "PlayerHand",
             "id": "bdf0ae77-7e20-417d-97b2-6417b1e9b798",
             "actions": [
                 {
-                    "name": "Hover Card",
+                    "name": "hoverCard",
                     "type": "Value",
                     "id": "7b56d91d-1776-478a-b4f5-2ad29529aa09",
                     "expectedControlType": "",
@@ -123,7 +123,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Hover Card",
+                    "action": "hoverCard",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -134,7 +134,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Hover Card",
+                    "action": "hoverCard",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

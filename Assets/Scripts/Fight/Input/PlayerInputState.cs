@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
-using Models;
-using Systems.Managers;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
+using Utils.Extensions;
 using Views;
-using Zenject;
 
 namespace Fight
 {
     // Finite State Machine for player inputs and events
-    public class PlayerInputState : ITickable
+    public class PlayerInputState
     {
         protected InputActionAsset playerHandInputActionAsset;
         protected InputActionMap playerHandInputActionMap;
@@ -19,15 +20,15 @@ namespace Fight
         protected InputAction hoverAction;
         private Dictionary<Type, PlayerInputState> playerInputStates;
         public PlayerInputState CurrentState { get; private set; }
+        private CancellationToken cancellationToken;
 
-        [Inject]
+        [Zenject.Inject]
         private void Construct(InputActionAsset playerHandInputActionAsset, PlayerHandView playerHandView)
         {
-            this.playerHandInputActionAsset = playerHandInputActionAsset;
-            this.playerHandInputActionMap = playerHandInputActionAsset.FindActionMap("PlayerHand");
-            this.hoverAction = playerHandInputActionMap.FindAction("Hover Card");
-            this.handViewCamera = playerHandView.Camera;
+            Initialize(playerHandInputActionAsset, playerHandView.Camera);
+            this.cancellationToken = playerHandView.GetCancellationTokenOnDestroy();
             playerInputStates = new();
+            this.playerHandInputActionMap.Enable();
 
             if (Touchscreen.current != null && !EnhancedTouchSupport.enabled)
             {
@@ -36,6 +37,15 @@ namespace Fight
 
             CurrentState = this;
             Transition<DefaultState>();
+            _ = Update();
+        }
+
+        private void Initialize(InputActionAsset playerHandInputActionAsset, Camera handViewCamera)
+        {
+            this.playerHandInputActionAsset = playerHandInputActionAsset;
+            this.playerHandInputActionMap = playerHandInputActionAsset.FindActionMap("PlayerHand");
+            this.hoverAction = playerHandInputActionMap.FindAction("hoverCard");
+            this.handViewCamera = handViewCamera;
         }
 
         public event Action<CardView> CardHovered;
@@ -53,17 +63,21 @@ namespace Fight
             {
                 playerInputStates[type] = new T();
                 CurrentState = playerInputStates[type];
+                CurrentState.Initialize(playerHandInputActionAsset, handViewCamera);
             }
             CurrentState.Enter();
         }
 
         protected virtual void Enter() { }
         protected virtual void Exit() { }
-        public virtual void Tick()
+        public virtual void Tick() { }
+
+        private async UniTask Update()
         {
-            if (CurrentState != this)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                return;
+                CurrentState.Tick();
+                await UniTask.Yield(PlayerLoopTiming.Update);
             }
         }
 
@@ -71,14 +85,17 @@ namespace Fight
         {
             if (hoverAction.WasPerformedThisFrame())
             {
-                Ray ray = handViewCamera.ScreenPointToRay(Input.mousePosition);
-                RaycastHit[] hits = new RaycastHit[20];
-                Physics.RaycastNonAlloc(ray, hits, 100.0F);
+                var pointerPosition = hoverAction.ReadValue<Vector2>();
+                Ray ray = handViewCamera.ScreenPointToRay(pointerPosition);
+                var hits = new RaycastHit[20];
+                var numHits = Physics.RaycastNonAlloc(ray, hits, 100.0F);
 
-                foreach (var hit in hits)
+                for(int i = 0; i < numHits; i++)
                 {
+                    var hit = hits[i];
                     if (hit.transform.TryGetComponent<CardView>(out var cardView))
                     {
+                        MyLogger.Log($"Found card {cardView}");
                         return cardView;
                     }
                 }
