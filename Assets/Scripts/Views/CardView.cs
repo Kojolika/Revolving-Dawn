@@ -17,6 +17,10 @@ namespace Views
 
         private Models.CardModel cardModel;
 
+        public Collider Collider { get; private set; }
+        public Vector3 DefaultScale { get; private set; }
+        public Vector3 FocusScale => DefaultScale * 1.5f;
+
         [Inject]
         private void Construct(AddressablesManager addressablesManager, Models.CardModel cardModel)
         {
@@ -48,14 +52,10 @@ namespace Views
             );
         }
 
-        public void Focus()
+        private void Awake()
         {
-
-        }
-
-        public void UnFocus()
-        {
-
+            Collider = GetComponentInChildren<Collider>();
+            DefaultScale = transform.localScale;
         }
 
         public class Factory : PlaceholderFactory<Models.CardModel, CardView>

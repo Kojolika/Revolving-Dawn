@@ -130,7 +130,7 @@
                 {
                     "name": "",
                     "id": "afc5d8e6-52ac-4ac4-bf19-18d2d5f0255d",
-                    "path": "<Touchscreen>/position",
+                    "path": "<Touchscreen>/pressure",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

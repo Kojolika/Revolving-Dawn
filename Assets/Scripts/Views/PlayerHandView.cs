@@ -124,24 +124,27 @@ namespace Views
                 {
                     // Selected card will perfectly straight, moved so the text is in view of the screen clear,
                     // and scaled up for better visibility
+                    cardView.transform.localScale = cardView.FocusScale;
+
                     cardView.transform.rotation = Quaternion.Euler(Vector3.zero);
-                    //Vector3 p = handViewCamera.ViewportToWorldPoint(new Vector3(0.5f, 0, handViewCamera.nearClipPlane));
+
+                    Vector3 bottomMiddleOfScreen = handViewCamera.ViewportToWorldPoint(new Vector3(0, 0));
                     var currentCardPosition = cardView.transform.position;
                     cardView.transform.position = new Vector3(
                         handCurve.GetPoint(GetCardPosition(hand.Count, i + 1)).x,
-                        currentCardPosition.y,
+                        bottomMiddleOfScreen.y + hand[i].Collider.bounds.extents.y,
                         currentCardPosition.z - 1f);
-                    cardView.Focus();
+
                     continue;
                 }
+                cardView.transform.localScale = cardView.DefaultScale;
 
-                cardView.UnFocus();
                 // Move Cards relative to their position of the selected card
                 // i.e. cards closer more farther away
                 float positionDifference = 1.75f / (i - cardIndex);
                 float moveAmount = GetCardPosition(hand.Count, i + 1) + positionDifference * .05f;
 
-                //turn curve point into vector space
+                // turn curve point into vector space
                 Vector3 newPosition = handCurve.GetPoint(moveAmount);
 
                 // Add a small z value so cards on the right area always slightly in front of the left card
