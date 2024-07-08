@@ -102,6 +102,9 @@ namespace Zenject.Installers
 
             Container.BindFactory<CardView, HoveringState, HoveringState.Factory>()
                 .AsSingle();
+
+            Container.BindFactory<CardView, DraggingState, DraggingState.Factory>()
+                .AsSingle();
         }
     }
 }

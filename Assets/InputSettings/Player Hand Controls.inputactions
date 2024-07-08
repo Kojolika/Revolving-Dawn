@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Drag Card",
+                    "name": "dragCard",
                     "type": "Button",
                     "id": "c722f8c0-4eb5-49cb-9331-09ad10f1ecc6",
                     "expectedControlType": "Button",
@@ -64,11 +64,22 @@
                 {
                     "name": "",
                     "id": "1858595f-ea88-494e-8735-5ecbc8af88ff",
-                    "path": "",
+                    "path": "<Mouse>/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Drag Card",
+                    "action": "dragCard",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ad7b08de-9912-4840-bc5f-c267c32aa0d2",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "dragCard",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

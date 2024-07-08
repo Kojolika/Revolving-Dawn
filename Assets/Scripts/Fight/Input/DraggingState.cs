@@ -1,58 +1,53 @@
-using UnityEngine;
-using Cards;
+using System.Numerics;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine.InputSystem;
+using Views;
+using Zenject;
 
 namespace Fight
 {
-    public class DraggingState
-    {/* 
-        ChangeStateTo changeStateTo = ChangeStateTo.Dragging;
-        Card3D currentCard = null;
-        Dragger newDragger;
+    public class DraggingState : PlayerInputState
+    {
+        private readonly CancellationTokenSource cts;
+        private readonly CardView cardView;
 
-
-        public DraggingState(Card3D card)
+        public DraggingState(InputActionAsset playerHandInputActionAsset,
+            PlayerHandView playerHandView,
+            CardView cardView)
+            : base(playerHandInputActionAsset, playerHandView)
         {
-            if (currentCard == card) return;
-
-            currentCard = card;
-
-            _input.RightClicked += RightClicked;
-            _input.MouseEnterPlayArea += OnEnterPlayArea;
-
-            currentCard.transform.rotation = Quaternion.Euler(CardConfiguration.DEFAULT_CARD_ROTATION);
-            newDragger = currentCard.gameObject.AddComponent<Dragger>();
-            newDragger.cardCam = _input.cardCam;
-            newDragger.StartDragging();
+            cts = new();
+            this.cardView = cardView;
         }
 
-        public override PlayerInputState Transition()
+        public override void OnEnter()
         {
-            switch(changeStateTo)
-            {
-                case ChangeStateTo.Dragging:
-                    return this;
-                case ChangeStateTo.Default:
-                    Exit();
-                    return new DefaultState();
-                case ChangeStateTo.Targeting:
-                    Exit();
-                    return new TargetingState(currentCard);
-            }
-            return this;
+            base.OnEnter();
+            _ = CardFollowPlayerInputTask(cardView);
         }
 
-        void RightClicked()=> changeStateTo = ChangeStateTo.Default;
-        void OnEnterPlayArea() => changeStateTo = ChangeStateTo.Targeting;
-        public override void Exit()
+        public override void OnExit()
         {
-            _input.RightClicked -= RightClicked;
-            _input.MouseEnterPlayArea -= OnEnterPlayArea;
+            base.OnExit();
+            cts.Cancel();
+            cts.Dispose();
+        }
 
-            if ((int)currentCard.GetTarget() == 1 || changeStateTo == ChangeStateTo.Default)
+        private async UniTask CardFollowPlayerInputTask(CardView cardView)
+        {
+            while (!cts.Token.IsCancellationRequested)
             {
-                newDragger.StopDragging();
-                GameObject.Destroy(newDragger);
+                var playerInputLocation = dragAction.ReadValue<Vector2>();
+                var playerInputWorldSpace = playerHandView.Camera.ScreenToWorldPoint(new UnityEngine.Vector3(playerInputLocation.X,playerInputLocation.Y));
+                cardView.transform.position = new UnityEngine.Vector3(playerInputWorldSpace.x,
+                    playerInputWorldSpace.y,
+                    cardView.transform.position.z
+                );
+                await UniTask.Yield(PlayerLoopTiming.Update);
             }
-        } */
+        }
+
+        public class Factory : PlaceholderFactory<CardView, DraggingState> { }
     }
 }

@@ -11,19 +11,20 @@ namespace Fight
 {
     public class HoveringState : PlayerInputState
     {
-        private readonly CardView hoveredCard;
+        private CardView hoveredCard;
         private readonly DefaultState defaultState;
         private readonly Factory hoveringStateFactory;
+        private readonly DraggingState.Factory draggingStateFactory;
         public HoveringState(InputActionAsset playerHandInputActionAsset,
             PlayerHandView playerHandView,
             CardView hoveredCard,
             DefaultState defaultState,
-            Factory hoveringStateFactory)
+            DraggingState.Factory draggingStateFactory)
             : base(playerHandInputActionAsset, playerHandView)
         {
             this.hoveredCard = hoveredCard;
             this.defaultState = defaultState;
-            this.hoveringStateFactory = hoveringStateFactory;
+            this.draggingStateFactory = draggingStateFactory;
         }
 
         public override void OnEnter()
@@ -39,11 +40,19 @@ namespace Fight
             {
                 if (cardHovered != null)
                 {
-                    NextState = hoveringStateFactory.Create(cardHovered);
+                    hoveredCard = cardHovered;
+                    NextState = this;
                 }
                 else
                 {
                     NextState = defaultState;
+                }
+            }
+            else
+            {
+                if (dragAction.WasPerformedThisFrame())
+                {
+                    NextState = draggingStateFactory.Create(cardHovered);
                 }
             }
         }

@@ -30,8 +30,7 @@ namespace Controllers
         private async UniTask Update()
         {
             while (!cancellationToken.IsCancellationRequested)
-            {
-                MyLogger.Log($"Current state type {CurrentState.GetType()}");
+            { 
                 CurrentState.Tick();
 
                 await UniTask.Yield(PlayerLoopTiming.Update);

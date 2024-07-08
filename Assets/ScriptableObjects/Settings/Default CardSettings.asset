@@ -23,4 +23,4 @@ MonoBehaviour:
     card: {fileID: 11400000, guid: 86d0fa1a7c64bd6479c6bf786c75e5f8, type: 2}
   cardMoveSpeedInHand: 1
   cardRotateSpeedInHand: 10
-  cardMoveFunction: 28
+  cardMoveFunction: 18

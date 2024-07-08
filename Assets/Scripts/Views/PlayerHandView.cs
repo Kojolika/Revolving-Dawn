@@ -87,19 +87,39 @@ namespace Views
             await UniTask.WhenAll(moveTasks);
         }
 
-        private async UniTask<Sequence> MoveCard(CardView cardView, Vector3 position, Vector3 rotation)
+        private async UniTask MoveCard(CardView cardView, Vector3 position, Vector3 rotation)
         {
             var distance = Vector3.Distance(cardView.transform.position, position);
-            var distanceModifier = distance == 0 ? 0 : 1f / distance;
 
-            var moveCardSeq = Sequence.Create()
-                .Group(Tween.PositionAtSpeed(cardView.transform, position, cardSettings.CardMoveSpeedInHand + distance, ease: cardSettings.CardMoveFunction))
-                .Group(Tween.RotationAtSpeed(cardView.transform, Quaternion.Euler(rotation), cardSettings.CardRotateSpeedInHand + distance, ease: cardSettings.CardMoveFunction));
+            var moveCardSeq = Sequence.Create();
+
+            if (cardView.transform.position != position)
+            {
+                _ = moveCardSeq.Insert(0f, Tween.PositionAtSpeed(cardView.transform,
+                    position,
+                    cardSettings.CardMoveSpeedInHand + distance,
+                    ease: cardSettings.CardMoveFunction));
+            }
+
+            if (cardView.transform.rotation.eulerAngles != rotation)
+            {
+                _ = moveCardSeq.Insert(0f, Tween.RotationAtSpeed(cardView.transform,
+                    Quaternion.Euler(rotation),
+                    cardSettings.CardRotateSpeedInHand + distance,
+                    ease: cardSettings.CardMoveFunction));
+            }
+
+            if (cardView.transform.localScale != cardView.DefaultScale)
+            {
+                _ = moveCardSeq.Insert(0f, Tween.Scale(cardView.transform,
+                    cardView.DefaultScale,
+                    cardSettings.CardMoveSpeedInHand,
+                    ease: cardSettings.CardMoveFunction));
+            }
 
             currentMoveTweens.Add(moveCardSeq);
-            await UniTask.WaitWhile(() => moveCardSeq.isAlive);
 
-            return moveCardSeq;
+            await UniTask.WaitWhile(() => moveCardSeq.isAlive);
         }
 
         private void ClearMoveTweens()
@@ -126,6 +146,8 @@ namespace Views
                     // and scaled up for better visibility
                     cardView.transform.localScale = cardView.FocusScale;
 
+                    await UniTask.WaitForEndOfFrame(cardView);
+
                     cardView.transform.rotation = Quaternion.Euler(Vector3.zero);
 
                     Vector3 bottomMiddleOfScreen = handViewCamera.ViewportToWorldPoint(new Vector3(0, 0));
@@ -137,7 +159,8 @@ namespace Views
 
                     continue;
                 }
-                cardView.transform.localScale = cardView.DefaultScale;
+
+                hand[i].transform.localScale = cardView.DefaultScale;
 
                 // Move Cards relative to their position of the selected card
                 // i.e. cards closer more farther away

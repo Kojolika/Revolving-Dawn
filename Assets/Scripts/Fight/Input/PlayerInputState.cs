@@ -19,6 +19,7 @@ namespace Fight
         protected InputActionMap playerHandInputActionMap;
         protected PlayerHandView playerHandView;
         protected InputAction hoverAction;
+        protected InputAction dragAction;
 
         public PlayerInputState NextState { get; protected set; }
 
@@ -27,6 +28,7 @@ namespace Fight
             this.playerHandInputActionAsset = playerHandInputActionAsset;
             this.playerHandInputActionMap = playerHandInputActionAsset.FindActionMap("PlayerHand");
             this.hoverAction = playerHandInputActionMap.FindAction("hoverCard");
+            this.dragAction = playerHandInputActionMap.FindAction("dragCard");
             this.playerHandView = playerHandView;
         }
 
