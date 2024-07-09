@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Time Keeper
   m_EditorClassIdentifier: 
   startingDeck:
-  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
-  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
-  - {fileID: 11400000, guid: 800bb8b75bced384981baaac7271f2b8, type: 2}
-  - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
-  - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
-  - {fileID: 11400000, guid: b7d98dba89d65734ea3a2d2ad08fbe68, type: 2}
+  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
+  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
+  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
+  - {fileID: 11400000, guid: c533e310efb320143aaa4dd16504edb8, type: 2}
+  - {fileID: 11400000, guid: c533e310efb320143aaa4dd16504edb8, type: 2}
+  - {fileID: 11400000, guid: c533e310efb320143aaa4dd16504edb8, type: 2}
   healthDefinition:
     MaxHealth: 40
   description: Keeps time, moves time, loses time.
@@ -28,7 +28,7 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   cardBorderReference:
-    m_AssetGUID: b17ad1f7b9ea379449767031043acd63
+    m_AssetGUID: 646adcdade04dee42be35324ad5c116d
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

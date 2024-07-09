@@ -1,91 +1,56 @@
-using UnityEngine;
-using Cards;
-using Systems.Managers;
-using Mana;
+using UnityEngine.InputSystem;
+using Views;
+using Zenject;
 
-namespace FightInput
+namespace Fight.Input
 {
     public class HoveringState : PlayerInputState
     {
-        ChangeStateTo changeStateTo = ChangeStateTo.Hovering;
-        ManaPool manaPool;
-        Card3D currentCard;
-        HoverManager hoverManager = null;
-        bool rightClicked = false;
-
-        public HoveringState(Card3D card)
+        private CardView hoveredCard;
+        private readonly DefaultState defaultState;
+        private readonly DraggingState.Factory draggingStateFactory;
+        public HoveringState(InputActionAsset playerHandInputActionAsset,
+            PlayerHandView playerHandView,
+            CardView hoveredCard,
+            DefaultState defaultState,
+            DraggingState.Factory draggingStateFactory)
+            : base(playerHandInputActionAsset, playerHandView)
         {
-            manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
-            _input.RightClicked += RightClicked;
-            _input.LeftClicked += LeftClicked;
-            _input.CardMouseExit += NoCardMouseOver;
-            _input.CardMouseOver += CardMouseOver;
-
-            NewCardForHoverEffects(card);
+            this.hoveredCard = hoveredCard;
+            this.defaultState = defaultState;
+            this.draggingStateFactory = draggingStateFactory;
         }
 
-        public override PlayerInputState Transition()
+        public override void OnEnter()
         {
-            switch (changeStateTo)
+            base.OnEnter();
+            _ = playerHandView.HoverCard(hoveredCard);
+        }
+
+        public override void Update()
+        {
+            var cardHovered = PollCardHovering();
+            if (cardHovered != hoveredCard)
             {
-                case ChangeStateTo.Hovering:
-                    if (rightClicked) AddManaBackToPool();
-                    rightClicked = false;
-                    return this;
-                case ChangeStateTo.Default:
-                    Exit();
-                    return new DefaultState();
-                case ChangeStateTo.Dragging:
-                    Exit();
-                    return new DraggingState(currentCard);
-            }
-            return this;
-        }
-
-        void RightClicked()
-        {
-            rightClicked = true;
-            changeStateTo = ChangeStateTo.Hovering;
-        }
-        void LeftClicked() => changeStateTo = ChangeStateTo.Dragging;
-        void NoCardMouseOver(Card3D card) => changeStateTo = ChangeStateTo.Default;
-        void CardMouseOver(Card3D card) => NewCardForHoverEffects(card);
-
-        void AddManaBackToPool()
-        {
-            //need to remake login for new idea of reducing cards
-
-            /*if(!currentCard.isManaCharged) return;
-
-                manaPool.StopAllCoroutines();
-                foreach(var mana in currentCard.UnBindAndReturnMana())
+                if (cardHovered != null)
                 {
-                    manaPool.AddMana(mana);
+                    hoveredCard = cardHovered;
+                    NextState = this;
                 }
-
-                manaPool.StartCircularRotate();
-                rightClicked = false; */
+                else
+                {
+                    NextState = defaultState;
+                }
+            }
+            else
+            {
+                if (dragAction.WasPerformedThisFrame())
+                {
+                    NextState = draggingStateFactory.Create(cardHovered);
+                }
+            }
         }
-        void NewCardForHoverEffects(Card3D card)
-        {
-            if (currentCard == card) return;
-            if (!hoverManager) hoverManager = _input.gameObject.AddComponent<HoverManager>();
 
-            currentCard = card;
-            hoverManager.cardCam = _input.cardCam;
-            hoverManager.Initialize(_input.gameObject.GetComponent<CardHandManager>(), currentCard);
-            //hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
-            hoverManager.HoverCardEffects();
-        }
-        public override void Exit()
-        {
-            hoverManager.ResetHand(HoverManager.MOVE_SPEED_RESET);
-            _input.RightClicked -= RightClicked;
-            _input.LeftClicked -= LeftClicked;
-            _input.CardMouseExit -= NoCardMouseOver;
-            _input.CardMouseOver -= CardMouseOver;
-
-            GameObject.Destroy(hoverManager);
-        }
+        public class Factory : PlaceholderFactory<CardView, HoveringState> { }
     }
 }

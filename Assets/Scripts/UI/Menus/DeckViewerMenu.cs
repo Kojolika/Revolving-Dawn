@@ -5,20 +5,20 @@ using Cards;
 using TMPro;
 using UI.Menus.Common;
 using Utils.Attributes;
-using Data.Definitions;
+using Models;
 
 namespace UI
 {
-    public class DeckViewerMenu : Menu<DeckViewerMenu.DeckViewerData>
+    public class DeckViewerMenu /* : Menu<DeckViewerMenu.DeckViewerData> */
     {        
-        [ResourcePath]
+ /*        [ResourcePath]
         public string ResourcePath => nameof(DeckViewerMenu);
         public class DeckViewerData
         {
-            public List<CardDefinition> cardList;
+            public List<CardModel> cardList;
         }
 
-        ObservableCollection<CardDefinition> currentDeck = new ObservableCollection<CardDefinition>();
+        ObservableCollection<CardModel> currentDeck = new ObservableCollection<CardModel>();
         DeckViewer deckViewerContent;
         [SerializeField] Card_UI card_UI;
         [SerializeField] TextMeshProUGUI deckName;
@@ -66,6 +66,6 @@ namespace UI
                 contentRect.sizeDelta += new Vector2(0, distance);
                 contentRect.anchoredPosition3D -= new Vector3(0, contentRect.position.y + (distance / 2), 0);
             }
-        }
+        } */
     }
 }

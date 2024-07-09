@@ -1,57 +1,40 @@
-using Cards;
-using Mana;
-using UnityEngine;
+using Settings;
+using UnityEngine.InputSystem;
+using Views;
 
-namespace FightInput
+namespace Fight.Input
 {
     public class DefaultState : PlayerInputState
     {
-
-        ChangeStateTo changeStateTo = ChangeStateTo.Default;
-        Card3D currentCard = null;
-        ManaPool manaPool;
-
-        public DefaultState()
+        private readonly HoveringState.Factory hoveringStateFactory;
+        private readonly PlayerHandViewSettings playerHandViewSettings;
+        public DefaultState(InputActionAsset playerHandInputActionAsset,
+            PlayerHandView playerHandView,
+            HoveringState.Factory hoveringStateFactory,
+            PlayerHandViewSettings playerHandViewSettings)
+            : base(playerHandInputActionAsset, playerHandView)
         {
-            _input.CardMouseOver += CardMouseOver;
-            _input.MouseEnterManaArea += MouseEnterManaArea;
-            manaPool = _input.cardCam.GetComponentInChildren<ManaPool>();
-            if(!manaPool.IsRotating())
+            this.hoveringStateFactory = hoveringStateFactory;
+            this.playerHandViewSettings = playerHandViewSettings;
+        }
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            _ = playerHandView.CreateHandCurve(playerHandViewSettings.CardHoverMoveSpeedInHand,
+                playerHandViewSettings.CardHoverRotateSpeedInHand,
+                playerHandViewSettings.CardHoverMoveFunction);
+        }
+        public override void Update()
+        {
+            if (hoverAction.WasPerformedThisFrame())
             {
-                manaPool.StartCircularRotate();
+                var cardHovered = PollCardHovering();
+                if (cardHovered != null)
+                {
+                    NextState = hoveringStateFactory.Create(cardHovered);
+                }
             }
-                
         }
-
-        public override PlayerInputState Transition()
-        {
-            switch (changeStateTo)
-            {
-                case ChangeStateTo.Default:
-                    return this;
-                case ChangeStateTo.Hovering:
-                    Exit();
-                    return new HoveringState(currentCard);
-                case ChangeStateTo.ManaViewing:
-                    Exit();
-                    return new ManaViewingState();
-            }
-            return this;
-        }
-        void CardMouseOver(Card3D card)
-        {
-            changeStateTo = ChangeStateTo.Hovering;
-            currentCard = card;
-        }
-        void MouseEnterManaArea()
-        {
-            changeStateTo = ChangeStateTo.ManaViewing;
-        }
-        public override void Exit()
-        {
-            _input.CardMouseOver -= CardMouseOver;
-            _input.MouseEnterManaArea -= MouseEnterManaArea;
-        }
-
     }
 }

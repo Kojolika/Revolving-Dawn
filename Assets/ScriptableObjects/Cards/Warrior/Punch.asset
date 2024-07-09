@@ -12,18 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a3d1e2a98ac8ca4da9ba55be9c0aa7d, type: 3}
   m_Name: Punch
   m_EditorClassIdentifier: 
-  name: Punch
   manas:
-  - m_AssetGUID: cf92ef4110406784cb00b29170e2560c
+  - {fileID: 11400000, guid: cf92ef4110406784cb00b29170e2560c, type: 2}
+  artReference:
+    m_AssetGUID: 083b62d404bf9bd47bed1e084f79134d
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  artwork:
-    m_AssetGUID: 43e72cc9bd51c4547bd8aeaa0d30abbb
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  playerClass:
+  playerClassDefinition:
     m_AssetGUID: cb928e790e6382a4cbc364a9596de11f
     m_SubObjectName: 
     m_SubObjectType: 

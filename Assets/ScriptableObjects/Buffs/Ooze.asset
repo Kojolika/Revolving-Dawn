@@ -19,10 +19,10 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   maxStackSize: 10000000
   buffProperties:
-  - rid: 503764629703622658
+  - rid: 503764946174869504
   references:
     version: 2
     RefIds:
-    - rid: 503764629703622658
-      type: {class: OozeProperty, ns: Models.Buffs, asm: Assembly-CSharp}
+    - rid: 503764946174869504
+      type: {class: BlockProperty, ns: Models.Buffs, asm: Assembly-CSharp}
       data: 

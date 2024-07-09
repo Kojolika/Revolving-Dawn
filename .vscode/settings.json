@@ -51,6 +51,7 @@
     "explorer.excludeGitIgnore": true,
     "dotnet.defaultSolution": "Revolving-Dawn.sln",
     "cSpell.words": [
+        "Addressables",
         "Behaviour",
         "Bezier",
         "Cysharp",
@@ -60,8 +61,12 @@
         "Instantiator",
         "Mathf",
         "Newtonsoft",
+        "Raycast",
         "Scriptable",
+        "Tickable",
         "Triggerable",
+        "Tweens",
+        "UGUI",
         "Zenject"
     ]
 }

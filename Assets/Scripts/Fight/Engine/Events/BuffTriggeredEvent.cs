@@ -6,9 +6,14 @@ namespace Fight.Events
     public class BuffTriggeredEvent<TEvent> : BattleEvent<TEvent>
         where TEvent : IBattleEvent
     {
+        /// <summary>
+        /// This delegate handles what happens when an event causes a buffed to trigger.
+        /// The return is the stackSize of the buff after triggering the effect.
+        /// </summary>
+        /// <param name="triggerEvent">Event that triggered this TriggerEvent</param>
+        /// <param name="buff">Buff that was triggered.</param>
+        /// <returns></returns>
         public delegate ulong TriggerEffectDelegate(TEvent triggerEvent, Buff buff);
-
-
         public Buff Buff { get; private set; }
         public TriggerEffectDelegate TriggerEffect { get; private set; }
 

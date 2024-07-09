@@ -26,7 +26,7 @@ namespace UI.Menus
         [SerializeField] MyButton playButton;
 
         List<ClassDisplayElement> classDisplayElements = new();
-        PlayerClassSODefinition selectedclass;
+        PlayerClassSODefinition selectedClass;
         MenuManager menuManager;
         PlayerDataManager playerDataManager;
         MapSettings mapSettings;
@@ -53,7 +53,7 @@ namespace UI.Menus
                 newClassDisplayElement.SelectButton.Pressed += () =>
                 {
                     playButton.gameObject.SetActive(true);
-                    selectedclass = classDef;
+                    selectedClass = classDef;
                 };
             }
 
@@ -65,7 +65,7 @@ namespace UI.Menus
         async void SaveSelectionAndGenerateRun()
         {
             MyLogger.Log("Generating map...");
-            await playerDataManager.StartNewRun(selectedclass);
+            await playerDataManager.StartNewRun(selectedClass);
             _ = menuManager.Open<MapView, MapView.Data>(
                 new MapView.Data()
                 {

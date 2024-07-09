@@ -37,40 +37,26 @@ namespace Zenject.Installers
                         && !typeof(IPartTimeManager).IsAssignableFrom(type))
                 .ToArray();
 
-            var managers = new List<IManager>();
             foreach (var managerType in managerTypes)
             {
-                if (Managers.GetManagerOfType(managerType) != null)
-                {
-                    return;
-                }
-
                 MyLogger.Log($"Creating manager {managerType.Name}...");
-                IManager newManagerInstance = typeof(ScriptableObject).IsAssignableFrom(managerType)
-                    ? ScriptableObject.CreateInstance(managerType) as IManager
-                    : Activator.CreateInstance(managerType) as IManager;
-
-                Managers.RegisterManager(managerType, newManagerInstance);
-
-                Container.BindInterfacesAndSelfTo(managerType)
-                    .FromInstance(newManagerInstance)
-                    .AsSingle();
-
-                // when using an instance not created with Container, must queue it for inject
-                // in order for that instance to get its DI dependencies
-                Container.QueueForInject(newManagerInstance);
+                Container.BindInterfacesAndSelfTo(managerType).AsSingle();
             }
         }
 
         private void InstallPrefabs()
         {
-            Container.BindFactory<NodeDisplayElement.Data, NodeDisplayElement, NodeDisplayElement.Factory>().FromComponentInNewPrefab(nodeDisplayElement);
+            Container.BindFactory<NodeDisplayElement.Data, NodeDisplayElement, NodeDisplayElement.Factory>()
+                .FromComponentInNewPrefab(nodeDisplayElement);
         }
 
         private void InstallMapObjects()
         {
-            Container.BindFactory<NodeEventFactory.Data, NodeEvent, NodeEvent.Factory>().FromFactory<NodeEventFactory>();
-            Container.BindFactory<MapSettings, MapDefinition, MapDefinition.Factory>().FromFactory<MapFactory>();
+            Container.BindFactory<NodeEventFactory.Data, NodeEvent, NodeEvent.Factory>()
+                .FromFactory<NodeEventFactory>();
+
+            Container.BindFactory<MapSettings, MapDefinition, MapDefinition.Factory>()
+                .FromFactory<MapFactory>();
         }
 
         private void InstallDependenciesForDeserializer()

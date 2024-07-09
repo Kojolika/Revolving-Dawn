@@ -17,31 +17,22 @@ namespace Systems.Managers
     {
         public static List<MenuInfo> MenuStack { get; private set; } = new List<MenuInfo>();
 
-        private Canvas menuCanvas;
-        private DiContainer container;
+        private readonly Canvas menuCanvas;
+        private readonly DiContainer container;
 
         public event Action MenuStackUpdated;
 
-        [Inject]
-        void Construct(Canvas menuCanvas, DiContainer container)
+        public MenuManager(Canvas menuCanvas, DiContainer container)
         {
+            UnityEngine.Object.DontDestroyOnLoad(menuCanvas);
             this.menuCanvas = menuCanvas;
             this.container = container;
-        }
-
-        public UniTask Startup()
-        {
             MenuStackUpdated += OnMenuStackUpdated;
-
-            return UniTask.CompletedTask;
         }
 
-        public UniTask Shutdown()
+        ~MenuManager()
         {
             MenuStackUpdated -= OnMenuStackUpdated;
-
-            GameObject.Destroy(menuCanvas);
-            return UniTask.CompletedTask;
         }
 
         public void OnMenuStackUpdated()
@@ -97,8 +88,6 @@ namespace Systems.Managers
                 MyLogger.LogError($"Couldn't find {menuOnStack} on the MenuStack to close!");
                 return;
             }
-
-            MyLogger.Log($"Menuhandle: {menuOnStack.MenuHandle}");
 
             if (menuOnStack.MenuHandle.gameObject.TryGetComponent(out IHaveCloseOperation closeOperation))
             {
@@ -171,12 +160,12 @@ namespace Systems.Managers
         public class MenuInfo
         {
             public readonly IMenuHandle MenuHandle;
-            public readonly System.Type Type;
+            public readonly Type Type;
 
             public AsyncOperationHandle AsyncOperationHandle;
             public int SortingOrder;
 
-            public MenuInfo(IMenuHandle menuHandle, System.Type type, AsyncOperationHandle asyncOperationHandle, int sortingOrder)
+            public MenuInfo(IMenuHandle menuHandle, Type type, AsyncOperationHandle asyncOperationHandle, int sortingOrder)
             {
                 MenuHandle = menuHandle;
                 Type = type;

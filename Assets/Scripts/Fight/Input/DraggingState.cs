@@ -1,58 +1,59 @@
-using UnityEngine;
-using Cards;
+using UnityEngine.InputSystem;
+using Views;
+using Zenject;
 
-namespace FightInput
+namespace Fight.Input
 {
     public class DraggingState : PlayerInputState
     {
-        ChangeStateTo changeStateTo = ChangeStateTo.Dragging;
-        Card3D currentCard = null;
-        Dragger newDragger;
+        private readonly CardView cardView;
+        private readonly DefaultState defaultState;
+        private readonly Settings.PlayerHandViewSettings playerHandInputSettings;
+        private readonly TargetingState.Factory targetingStateFactory;
 
-
-        public DraggingState(Card3D card)
+        public DraggingState(InputActionAsset playerHandInputActionAsset,
+            PlayerHandView playerHandView,
+            CardView cardView,
+            DefaultState defaultState,
+            Settings.PlayerHandViewSettings playerHandInputSettings,
+            TargetingState.Factory targetingStateFactory)
+            : base(playerHandInputActionAsset, playerHandView)
         {
-            if (currentCard == card) return;
-
-            currentCard = card;
-
-            _input.RightClicked += RightClicked;
-            _input.MouseEnterPlayArea += OnEnterPlayArea;
-
-            currentCard.transform.rotation = Quaternion.Euler(CardConfiguration.DEFAULT_CARD_ROTATION);
-            newDragger = currentCard.gameObject.AddComponent<Dragger>();
-            newDragger.cardCam = _input.cardCam;
-            newDragger.StartDragging();
+            this.cardView = cardView;
+            this.defaultState = defaultState;
+            this.playerHandInputSettings = playerHandInputSettings;
+            this.targetingStateFactory = targetingStateFactory;
         }
 
-        public override PlayerInputState Transition()
+        public override void OnEnter()
         {
-            switch(changeStateTo)
+            base.OnEnter();
+            playerHandView.UnsetSelectionEffects(cardView);
+        }
+
+        public override void Update()
+        {
+            if (!dragAction.inProgress)
             {
-                case ChangeStateTo.Dragging:
-                    return this;
-                case ChangeStateTo.Default:
-                    Exit();
-                    return new DefaultState();
-                case ChangeStateTo.Targeting:
-                    Exit();
-                    return new TargetingState(currentCard);
+                NextState = defaultState;
+                return;
             }
-            return this;
-        }
 
-        void RightClicked()=> changeStateTo = ChangeStateTo.Default;
-        void OnEnterPlayArea() => changeStateTo = ChangeStateTo.Targeting;
-        public override void Exit()
-        {
-            _input.RightClicked -= RightClicked;
-            _input.MouseEnterPlayArea -= OnEnterPlayArea;
-
-            if ((int)currentCard.GetTarget() == 1 || changeStateTo == ChangeStateTo.Default)
+            var playerInputScreenPosition = dragAction.ReadValue<UnityEngine.Vector2>();
+            var playerInputViewPortPosition = playerHandView.Camera.ScreenToViewportPoint(playerInputScreenPosition);
+            if (playerInputViewPortPosition.y > playerHandInputSettings.PositionOnScreenWhereTargetingStarts)
             {
-                newDragger.StopDragging();
-                GameObject.Destroy(newDragger);
+                NextState = targetingStateFactory.Create(cardView);
+                return;
             }
+
+            var playerInputWorldPosition = playerHandView.Camera.ScreenToWorldPoint(new UnityEngine.Vector3(playerInputScreenPosition.x, playerInputScreenPosition.y));
+            cardView.transform.position = new UnityEngine.Vector3(playerInputWorldPosition.x,
+                playerInputWorldPosition.y,
+                cardView.transform.position.z
+            );
         }
+
+        public class Factory : PlaceholderFactory<CardView, DraggingState> { }
     }
 }

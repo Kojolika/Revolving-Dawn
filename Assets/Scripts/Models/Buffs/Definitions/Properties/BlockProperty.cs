@@ -3,9 +3,9 @@ using Fight.Events;
 namespace Models.Buffs
 {
     [System.Serializable]
-    public class BlockProperty : ITriggerableBuffAfter<TurnStarted>, ITriggerableBuffBefore<DealDamageEvent>
+    public class BlockProperty : ITriggerableBuffAfter<TurnStartedEvent>, ITriggerableBuffBefore<DealDamageEvent>
     {
-        public ulong OnAfterTrigger(TurnStarted turnStarted, Buff buff) => 0;
+        public ulong OnAfterTrigger(TurnStartedEvent turnStarted, Buff buff) => 0;
         public ulong OnBeforeTrigger(DealDamageEvent dealDamageEvent, Buff buff)
         {
             var cachedDamageAmount = dealDamageEvent.Amount;

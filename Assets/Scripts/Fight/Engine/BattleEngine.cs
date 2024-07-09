@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Fight.Events;
 using Tooling.Logging;
 
@@ -11,12 +12,15 @@ namespace Fight
     {
         public bool IsRunning { get; private set; }
         private List<IBattleEvent> battleEventQueue;
+        public Stack<IBattleEvent> BattleEventHistory { get; private set; } = new Stack<IBattleEvent>();
+
+        public event Action<IBattleEvent> EventOccurred;
 
         public void Run()
         {
             battleEventQueue = new List<IBattleEvent>();
             IsRunning = true;
-            EngineLoop();
+            _ = EngineLoop();
         }
 
         public void Stop()
@@ -45,7 +49,7 @@ namespace Fight
             }
             if (indexOfEvent == battleEventQueue.Count() - 1)
             {
-                battleEventQueue.Add(battleEventToInsert);
+                AddEvent(battleEventToInsert);
             }
             else
             {
@@ -53,7 +57,7 @@ namespace Fight
             }
         }
 
-        async void EngineLoop()
+        async UniTask EngineLoop()
         {
             int eventIndex = 0;
             while (IsRunning)
@@ -63,14 +67,16 @@ namespace Fight
                     battleEventQueue[eventIndex].OnBeforeExecute(this);
 
                     battleEventQueue[eventIndex].Execute(this);
-                    MyLogger.Log(battleEventQueue[eventIndex].Log());
-                    
+                    BattleEventHistory.Push(battleEventQueue[eventIndex]);
+                    EventOccurred?.Invoke(battleEventQueue[eventIndex]);
+                    MyLogger.Log($"{battleEventQueue[eventIndex].GetType().Name}: {battleEventQueue[eventIndex].Log()}");
+
                     battleEventQueue[eventIndex].OnAfterExecute(this);
                     eventIndex++;
                 }
                 else
                 {
-                    await Task.Delay(500);
+                    await UniTask.Delay(500);
                 }
             }
         }

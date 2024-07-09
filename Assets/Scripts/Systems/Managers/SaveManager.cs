@@ -1,9 +1,8 @@
 ﻿using System.IO;
-using Characters.Model;
+using Models.Characters.Player;
 using Cysharp.Threading.Tasks;
 using Models.Characters;
 using Models.Fight;
-using Models.Map;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serialization;
@@ -11,6 +10,7 @@ using Systems.Managers.Base;
 using Tooling.Logging;
 using Zenject;
 using File = System.IO.File;
+using System.Drawing;
 
 namespace Systems.Managers
 {
@@ -24,25 +24,20 @@ namespace Systems.Managers
         const string PlayerDataJsonObjectName = "player";
 
         private JsonSerializer jsonSerializer;
-        private ZenjectDependenciesContractResolver zenjectDependencyContractResolver;
 
         [Inject]
         void Construct(ZenjectDependenciesContractResolver zenjectDependencyContractResolver)
-        {
-            this.zenjectDependencyContractResolver = zenjectDependencyContractResolver;
-        }
-
-        public UniTask Startup()
         {
             jsonSerializer = new JsonSerializer
             {
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
             jsonSerializer.Converters.Add(new AssetReferenceConverter());
+            jsonSerializer.Converters.Add(new Serialization.ColorConverter());
             jsonSerializer.ContractResolver = zenjectDependencyContractResolver;
-            return UniTask.CompletedTask;
         }
 
         public async UniTask Save(PlayerDefinition playerDefinition)

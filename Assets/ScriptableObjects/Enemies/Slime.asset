@@ -49,15 +49,15 @@ MonoBehaviour:
       data:
         targeting: 1
         buff:
-          buffDefinition: {fileID: 11400000, guid: f192b420cc2e18046926d3ac19030545, type: 2}
-          stacksize: 2
+          buffSODefinition: {fileID: 11400000, guid: 92f7311f2a63890489a88cbb2f5563c1, type: 2}
+          stackSize: 2
     - rid: 3824537175778918400
       type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 0
         buff:
-          buffDefinition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
-          stacksize: 2
+          buffSODefinition: {fileID: 11400000, guid: df6fdde0fd15eb14e980f3a79fc7385e, type: 2}
+          stackSize: 4
     - rid: 3824537175778918401
       type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:

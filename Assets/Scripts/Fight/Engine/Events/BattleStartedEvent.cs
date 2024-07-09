@@ -1,16 +1,9 @@
-using Systems.Managers;
-
 namespace Fight.Events
 {
-    public class BattleStartedEvent : BattleEvent<FightManager>
+    public class BattleStartedEvent : BattleEvent
     {
-        public BattleStartedEvent(FightManager target) : base(target) { }
-        public override void Execute(FightManager target, BattleEngine battleEngine) { }
+        public override void Execute(BattleEngine battleEngine) { }
         public override string Log() => "Fight started!";
-
-        public override void Undo()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void Undo() { }
     }
 }

@@ -62,11 +62,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 199ea291b8dc10749814c60df5e5232a
-    m_Address: card_boder_warrior
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cb928e790e6382a4cbc364a9596de11f
     m_Address: player_class_warrior
     m_ReadOnly: 0
@@ -182,11 +177,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b17ad1f7b9ea379449767031043acd63
-    m_Address: card_border_time_keeper
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 083b62d404bf9bd47bed1e084f79134d
     m_Address: card_art_rewind
     m_ReadOnly: 0
@@ -213,7 +203,37 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 646adcdade04dee42be35324ad5c116d
-    m_Address: card_border_timekeeper
+    m_Address: card_border_time_keeper
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 199ea291b8dc10749814c60df5e5232a
+    m_Address: card_border_warrior
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 372c951ab5bb37048bc2c0c4073af1a3
+    m_Address: card_rewind
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc7caa9635bbf37498fb038f24effdd6
+    m_Address: DrawCardEventAnimation
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c31475ea3382804e818fbacaf522435
+    m_Address: BattleStartedEventAnimation
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea5b84f0c94189243ad89243b3700040
+    m_Address: TurnStartedEventAnimation
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c533e310efb320143aaa4dd16504edb8
+    m_Address: card_watch_slap
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

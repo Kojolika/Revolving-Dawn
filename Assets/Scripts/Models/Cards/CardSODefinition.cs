@@ -7,76 +7,74 @@ using Utils.Attributes;
 using Newtonsoft.Json;
 using UnityEngine.AddressableAssets;
 using Serialization;
-using System;
+using System.Linq;
 
 namespace Models
 {
     [CreateAssetMenu(fileName = "New Card", menuName = "RevolvingDawn/Cards/New Card")]
-    public class CardSODefinition : ScriptableObject, IHaveSerializableRepresentation<Card>
+    public class CardSODefinition : ScriptableObject, IHaveSerializableRepresentation<CardModel>
     {
-        [SerializeField] private new string name;
-        [SerializeField] private List<AssetReferenceT<ManaSODefinition>> manas;
-        [SerializeField] private AssetReferenceSprite artwork;
-        [SerializeField] private AssetReferenceT<PlayerClassSODefinition> playerClass;
+        [SerializeField] private List<ManaSODefinition> manas;
+        [SerializeField] private AssetReferenceSprite artReference;
+        [SerializeField] private AssetReferenceT<PlayerClassSODefinition> playerClassDefinition;
         [SerializeField] private CardSODefinition nextCard;
         [SerializeField] private CardSODefinition previousCard;
         [SerializeReference, DisplayAbstract(typeof(ICombatEffect))] private List<ICombatEffect> playEffects;
 
-        public string Name => name;
-        public List<AssetReferenceT<ManaSODefinition>> Manas => manas;
-        public AssetReferenceSprite Artwork => artwork;
-        public AssetReferenceT<PlayerClassSODefinition> PlayerClass => playerClass;
+        public List<ManaSODefinition> Manas => manas;
+        public AssetReferenceSprite ArtReference => artReference;
+        public AssetReferenceT<PlayerClassSODefinition> PlayerClassDefinition => playerClassDefinition;
         public CardSODefinition NextCard => nextCard;
         public CardSODefinition PreviousCard => previousCard;
         public List<ICombatEffect> PlayEffects => playEffects;
 
-        private Card representation;
-        public Card Representation
+        private CardModel representation;
+        public CardModel Representation
         {
             get
             {
-                representation ??= new Card(this);
+                representation ??= new CardModel(this);
                 return representation;
             }
             private set => representation = value;
         }
     }
 
-    public class Card
+    public class CardModel
     {
         [JsonProperty("name")]
         public readonly string Name;
 
         [JsonProperty("manas")]
-        public readonly List<AssetReferenceT<ManaSODefinition>> manas;
+        public readonly List<ManaModel> Manas;
 
         [JsonProperty("artwork")]
-        public readonly AssetReferenceSprite Artwork;
+        public readonly AssetReferenceSprite ArtReference;
 
-        [JsonProperty("player_class")]
+        [JsonProperty("player_class_ref")]
         public readonly AssetReferenceT<PlayerClassSODefinition> PlayerClass;
 
         [JsonProperty("next_card")]
-        public readonly Card NextCard;
+        public readonly CardModel NextCard;
 
         [JsonProperty("previous_card")]
-        public readonly Card PreviousCard;
+        public readonly CardModel PreviousCard;
 
         [JsonProperty("play_effects")]
         public readonly List<ICombatEffect> PlayEffects;
 
         [JsonConstructor]
-        public Card()
+        public CardModel()
         {
 
         }
 
-        public Card(CardSODefinition card)
+        public CardModel(CardSODefinition card)
         {
-            Name = card.Name;
-            manas = card.Manas;
-            Artwork = card.Artwork;
-            PlayerClass = card.PlayerClass;
+            Name = card.name;
+            Manas = card.Manas.Select(manaSoDef => manaSoDef.Representation).ToList();
+            ArtReference = card.ArtReference;
+            PlayerClass = card.PlayerClassDefinition;
             NextCard = card.NextCard == null ? null : card.NextCard.Representation;
             PreviousCard = card.PreviousCard == null ? null : card.PreviousCard.Representation;
             PlayEffects = card.PlayEffects;

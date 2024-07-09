@@ -12,18 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a3d1e2a98ac8ca4da9ba55be9c0aa7d, type: 3}
   m_Name: Block
   m_EditorClassIdentifier: 
-  name: Block
   manas:
-  - m_AssetGUID: db0d8289709d075419d8283e0629229b
+  - {fileID: 11400000, guid: db0d8289709d075419d8283e0629229b, type: 2}
+  artReference:
+    m_AssetGUID: 083b62d404bf9bd47bed1e084f79134d
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  artwork:
-    m_AssetGUID: 4024798ef8e3da84f96ea6b0774e6ebb
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 1
-  playerClass:
+  playerClassDefinition:
     m_AssetGUID: cb928e790e6382a4cbc364a9596de11f
     m_SubObjectName: 
     m_SubObjectType: 
@@ -40,5 +36,5 @@ MonoBehaviour:
       data:
         targeting: 0
         buff:
-          buffDefinition: {fileID: 11400000, guid: 2b5af44fbff0f154cab9dd72013abb0a, type: 2}
-          stacksize: 6
+          buffSODefinition: {fileID: 11400000, guid: df6fdde0fd15eb14e980f3a79fc7385e, type: 2}
+          stackSize: 6

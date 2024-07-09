@@ -1,33 +1,54 @@
-using Systems.Managers;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Views;
 
-namespace FightInput
+namespace Fight.Input
 {
-    //Finite State Machine for player inputs and events
-    public class PlayerInputState
+    // Finite State Machine for player inputs and events
+    public abstract class PlayerInputState
     {
-        public static PlayerTurnInputManager _input;
+        protected InputActionAsset playerHandInputActionAsset;
+        protected InputActionMap playerHandInputActionMap;
+        protected PlayerHandView playerHandView;
+        protected InputAction hoverAction;
+        protected InputAction dragAction;
 
-        internal enum ChangeStateTo 
+        public PlayerInputState NextState { get; protected set; }
+
+        private readonly RaycastHit[] raycastHitsBuffer;
+
+        public PlayerInputState(InputActionAsset playerHandInputActionAsset, PlayerHandView playerHandView)
         {
-            Default,
-            Hovering,
-            Dragging,
-            Targeting,
-            ManaViewing,
-            ManaHovering,
-            ManaDragging
+            this.playerHandInputActionAsset = playerHandInputActionAsset;
+            this.playerHandInputActionMap = playerHandInputActionAsset.FindActionMap("PlayerHand");
+            this.hoverAction = playerHandInputActionMap.FindAction("hoverCard");
+            this.dragAction = playerHandInputActionMap.FindAction("dragCard");
+            this.playerHandView = playerHandView;
+            this.raycastHitsBuffer = new RaycastHit[20];
         }
-        public virtual PlayerInputState Transition()
+
+        public virtual void OnEnter()
         {
-            return new DefaultState();
+            NextState = null;
         }
+        public virtual void OnExit() { }
+        public virtual void Update() { }
 
-        public virtual void Exit() => Debug.Log("testing exit");
-
-        public void Initialize()
+        protected CardView PollCardHovering()
         {
-            _input = PlayerTurnInputManager.StaticInstance;
+            Ray ray = playerHandView.Camera.ScreenPointToRay(hoverAction.ReadValue<Vector2>());
+            var numHits = Physics.RaycastNonAlloc(ray, raycastHitsBuffer, 500.0F);
+
+            for (int i = 0; i < numHits; i++)
+            {
+                var hit = raycastHitsBuffer[i];
+                var cardView = hit.transform.GetComponentInParent<CardView>();
+                if (cardView != null)
+                {
+                    return cardView;
+                }
+            }
+            return null;
         }
     }
 }

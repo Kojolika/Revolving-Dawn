@@ -40,7 +40,7 @@ namespace Models.Player
         public readonly string Name;
 
         [JsonProperty("starting_deck")]
-        public readonly List<Card> StartingDeck;
+        public readonly List<CardModel> StartingDeck;
 
         [JsonProperty("health_definition")]
         public readonly HealthDefinition HealthDefinition;
@@ -63,7 +63,7 @@ namespace Models.Player
         public PlayerClassModel(PlayerClassSODefinition playerClassDefinition)
         {
             Name = playerClassDefinition.name;
-            StartingDeck = playerClassDefinition.StartingDeck.Select(cardDef => cardDef.Representation).ToList();
+            StartingDeck = playerClassDefinition.StartingDeck.Select(cardSO => cardSO.Representation).ToList();
             HealthDefinition = playerClassDefinition.HealthDefinition;
             Description = playerClassDefinition.Description;
             CharacterAvatarReference = playerClassDefinition.CharacterAvatarReference;

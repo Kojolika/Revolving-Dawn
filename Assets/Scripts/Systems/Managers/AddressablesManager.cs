@@ -12,8 +12,6 @@ namespace Systems.Managers
 {
     public class AddressablesManager : IManager
     {
-        private Dictionary<AssetReference, int> AsyncOperationRefCounts = new();
-
         async UniTask IManager.Startup()
         {
             MyLogger.Log("Booting up Addressables.");
@@ -39,24 +37,24 @@ namespace Systems.Managers
             CancellationToken cancellationToken = default
         ) where T : UnityEngine.Object
         {
-            var ophandle = Addressables.LoadAssetAsync<T>(key);
+            var opHandle = Addressables.LoadAssetAsync<T>(key);
 
             try
             {
-                await ophandle.Task;
+                await opHandle.Task;
 
-                _ = ReleaseWhen(releaseCondition, ophandle, cancellationToken);
+                _ = ReleaseWhen(releaseCondition, opHandle, cancellationToken);
             }
             catch (Exception e)
             {
-                MyLogger.LogError($"Failed to load addressable {key} of type {typeof(T)} with exeception {e}");
+                MyLogger.LogError($"Failed to load addressable {key} of type {typeof(T)} with exception {e}");
 
                 onFail?.Invoke();
             }
 
-            onSuccess?.Invoke(ophandle.Result);
+            onSuccess?.Invoke(opHandle.Result);
 
-            return ophandle.Result;
+            return opHandle.Result;
         }
 
         async UniTask ReleaseWhen(
@@ -65,7 +63,7 @@ namespace Systems.Managers
             CancellationToken cancellationToken
         )
         {
-            await UniTask.WaitUntil(condition, cancellationToken: cancellationToken).SuppressCancellationThrow();
+            _ = await UniTask.WaitUntil(condition, cancellationToken: cancellationToken).SuppressCancellationThrow();
 
             if (operationHandle.IsValid())
             {
