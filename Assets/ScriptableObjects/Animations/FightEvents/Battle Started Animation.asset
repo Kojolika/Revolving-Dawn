@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d7c45f6166fd3748915151734569471, type: 3}
-  m_Name: New BattleStartedEventAnimation
+  m_Script: {fileID: 11500000, guid: 55029ae20c965c94783c086f7335c9d9, type: 3}
+  m_Name: Battle Started Animation
   m_EditorClassIdentifier: 
   shouldWait: 1
   animatorPrefab: {fileID: 5881053260802750561, guid: ef91fb1f5dd7d7542a1d72e62e0ff1c0, type: 3}

@@ -1,5 +1,3 @@
-using Systems.Managers;
-
 namespace Fight.Events
 {
     public class BattleStartedEvent : BattleEvent

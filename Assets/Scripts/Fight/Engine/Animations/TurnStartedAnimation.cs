@@ -22,13 +22,10 @@ namespace Fight.Animations
 
         public async override UniTask Play(TurnStartedEvent battleEvent)
         {
-            if (battleEvent.Target is PlayerCharacter playerCharacter)
-            {
-                var text = animatorPrefab.GetComponentInChildren<TextMeshProUGUI>();
-                text.SetText($"{playerCharacter.Name}'s turn started!");
+            var text = animatorPrefab.GetComponentInChildren<TextMeshProUGUI>();
+            text.SetText(battleEvent.Log());
 
-                await PlayAndReleaseAnimator(Instantiate(animatorPrefab, canvas.transform));
-            }
+            await PlayAndReleaseAnimator(Instantiate(animatorPrefab, canvas.transform));
         }
 
         public override UniTask Undo(TurnStartedEvent battleEvent)

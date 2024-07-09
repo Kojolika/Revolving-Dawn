@@ -31,7 +31,6 @@ namespace Controllers
         {
             while (!cancellationToken.IsCancellationRequested)
             { 
-                MyLogger.Log($"State : {CurrentState}");
                 CurrentState.Update();
 
                 await UniTask.Yield(PlayerLoopTiming.Update);

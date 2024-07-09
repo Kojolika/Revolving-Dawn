@@ -222,7 +222,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d7731671f2bee8141a3d9fd793f7d297
+  - m_GUID: 8c31475ea3382804e818fbacaf522435
     m_Address: BattleStartedEventAnimation
     m_ReadOnly: 0
     m_SerializedLabels: []
