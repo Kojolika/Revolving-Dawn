@@ -41,8 +41,6 @@ namespace Models.Characters
         {
             Class = playerClassDefinition.Representation;
             Name = playerClassDefinition.name;
-            //var startingDeck = new List<CardModel>(DrawAmount);
-            //Addressables.LoadAssetsAsync<CardSODefinition>(playerClassDefinition.StartingDeck, cardModel => startingDeck.Add(cardModel.Representation), mode: Addressables.MergeMode.UseFirst).WaitForCompletion();
             Decks = new Player.Decks(playerClassDefinition.StartingDeck.Select(cardSO => cardSO.Representation).ToList());
             Health = new(playerClassDefinition.HealthDefinition.MaxHealth, playerClassDefinition.HealthDefinition.MaxHealth);
             HandSize = characterSettings.HandSize;
