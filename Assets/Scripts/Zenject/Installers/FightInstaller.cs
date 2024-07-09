@@ -2,8 +2,10 @@ using Controllers;
 using Fight;
 using Fight.Animations;
 using Fight.Events;
+using Fight.Input;
 using Mana;
 using Models.Characters;
+using Settings;
 using Systems.Managers;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -22,6 +24,8 @@ namespace Zenject.Installers
         [SerializeField] ManaView manaView;
         [SerializeField] Canvas fightOverlayCanvas;
         [SerializeField] InputActionAsset playerHandInput;
+        [SerializeField] PlayerHandViewSettings playerHandInputSettings;
+        [SerializeField] TargetingArrowView targetingArrowView;
 
         public override void InstallBindings()
         {
@@ -64,6 +68,11 @@ namespace Zenject.Installers
             Container.Bind<PlayerHandView>()
                 .FromComponentInNewPrefab(playerHandView)
                 .AsSingle();
+            
+            Container.Bind<TargetingArrowView>()
+                .FromComponentInNewPrefab(targetingArrowView)
+                .AsSingle()
+                .NonLazy();
 
             Container.Bind<LevelView>()
                 .FromComponentInNewPrefab(levelView)
@@ -92,6 +101,9 @@ namespace Zenject.Installers
         {
             Container.Bind<InputActionAsset>()
                 .FromInstance(playerHandInput);
+            
+            Container.Bind<PlayerHandViewSettings>()
+                .FromInstance(playerHandInputSettings);
 
             Container.Bind<PlayerHandInputController>()
                 .AsSingle()
@@ -104,6 +116,9 @@ namespace Zenject.Installers
                 .AsSingle();
 
             Container.BindFactory<CardView, DraggingState, DraggingState.Factory>()
+                .AsSingle();
+            
+            Container.BindFactory<CardView, TargetingState, TargetingState.Factory>()
                 .AsSingle();
         }
     }

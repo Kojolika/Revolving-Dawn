@@ -24,3 +24,4 @@ MonoBehaviour:
   cardMoveSpeedInHand: 1
   cardRotateSpeedInHand: 10
   cardMoveFunction: 18
+  numberOfArrowPiecesForTargetingArrow: 20

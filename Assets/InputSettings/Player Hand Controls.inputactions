@@ -62,26 +62,70 @@
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "1858595f-ea88-494e-8735-5ecbc8af88ff",
+                    "name": "Mouse",
+                    "id": "bfa03da9-a2c4-4f40-9b21-7fb7b3807cbb",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "dragCard",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "2e40ee64-6b0b-4ed0-bc9e-b4b0ea16e391",
                     "path": "<Mouse>/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "dragCard",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "ad7b08de-9912-4840-bc5f-c267c32aa0d2",
-                    "path": "<Touchscreen>/Press",
-                    "interactions": "Hold",
+                    "name": "binding",
+                    "id": "4efe4288-77b7-4ae6-be00-7a3132bd5b71",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "dragCard",
                     "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Touch",
+                    "id": "8ddde740-71ef-4c7a-85cb-d9c99006eb4a",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "dragCard",
+                    "isComposite": true,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "3455da2f-9220-4fe8-8ef5-6d6363b6d4eb",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "dragCard",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "a0ae38c4-f5b7-45bd-b539-126e5c3611ba",
+                    "path": "<Touchscreen>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "dragCard",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 },
                 {
                     "name": "",

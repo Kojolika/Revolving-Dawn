@@ -1,17 +1,14 @@
 using System.Collections.Generic;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using Mana;
 using Models;
 using Settings;
-using Tooling.Logging;
 using UnityEngine;
 using Utils;
 using Fight.Animations;
-using Fight.Events;
 using Fight;
-using Controllers;
+using Fight.Input;
 
 namespace Views
 {
@@ -27,7 +24,7 @@ namespace Views
         private CardView.Factory cardViewFactory;
         private ManaPoolView manaPoolView;
         private List<CardView> hand;
-        private CardSettings cardSettings;
+        private PlayerHandViewSettings playerHandViewSettings;
         private readonly List<Sequence> currentMoveTweens = new();
         public BattleEngine BattleEngine { get; private set; }
         public BattleAnimationEngine BattleAnimationEngine { get; private set; }
@@ -38,7 +35,7 @@ namespace Views
         [Zenject.Inject]
         private void Construct(CardView.Factory cardViewFactory,
             ManaPoolView manaPoolView,
-            CardSettings cardSettings,
+            PlayerHandViewSettings playerHandViewSettings,
             BattleEngine battleEngine,
             BattleAnimationEngine battleAnimationEngine)
         {
@@ -46,7 +43,7 @@ namespace Views
             this.manaPoolView = manaPoolView;
             manaPoolView.transform.position = manaPoolViewLocation.position;
             hand = new List<CardView>();
-            this.cardSettings = cardSettings;
+            this.playerHandViewSettings = playerHandViewSettings;
             BattleEngine = battleEngine;
             BattleAnimationEngine = battleAnimationEngine;
         }
@@ -58,7 +55,7 @@ namespace Views
             newCardView.transform.SetParent(handParent);
             hand.Add(newCardView);
 
-            await CreateHandCurve();
+            await CreateHandCurve(playerHandViewSettings.CardDrawMoveSpeed, playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
         }
 
         public void DiscardCard(CardModel card)
@@ -66,7 +63,7 @@ namespace Views
 
         }
 
-        public async UniTask CreateHandCurve()
+        public async UniTask CreateHandCurve(float cardSpeed, float cardRotateSpeed, Ease easeFunction)
         {
             ClearMoveTweens();
 
@@ -81,40 +78,43 @@ namespace Views
 
                 var newRotation = new Vector3(0f, 0f, GetZRotationForCard(handSize, i + 1));
 
-                moveTasks[i] = MoveCard(hand[i], newPosition, newRotation);
+                moveTasks[i] = MoveCard(hand[i], newPosition, newRotation, cardSpeed, cardRotateSpeed, easeFunction);
             }
 
             await UniTask.WhenAll(moveTasks);
         }
 
-        private async UniTask MoveCard(CardView cardView, Vector3 position, Vector3 rotation)
+        private async UniTask MoveCard(CardView cardView,
+            Vector3 position,
+            Vector3 rotation,
+            float cardSpeed,
+            float cardRotateSpeed,
+            Ease easeFunction)
         {
-            var distance = Vector3.Distance(cardView.transform.position, position);
-
             var moveCardSeq = Sequence.Create();
 
             if (cardView.transform.position != position)
             {
-                _ = moveCardSeq.Insert(0f, Tween.PositionAtSpeed(cardView.transform,
+                _ = moveCardSeq.Insert(0f, Tween.Position(cardView.transform,
                     position,
-                    cardSettings.CardMoveSpeedInHand + distance,
-                    ease: cardSettings.CardMoveFunction));
+                    cardSpeed,
+                    ease: easeFunction));
             }
 
             if (cardView.transform.rotation.eulerAngles != rotation)
             {
-                _ = moveCardSeq.Insert(0f, Tween.RotationAtSpeed(cardView.transform,
+                _ = moveCardSeq.Insert(0f, Tween.Rotation(cardView.transform,
                     Quaternion.Euler(rotation),
-                    cardSettings.CardRotateSpeedInHand + distance,
-                    ease: cardSettings.CardMoveFunction));
+                    cardRotateSpeed,
+                    ease: easeFunction));
             }
 
             if (cardView.transform.localScale != cardView.DefaultScale)
             {
                 _ = moveCardSeq.Insert(0f, Tween.Scale(cardView.transform,
                     cardView.DefaultScale,
-                    cardSettings.CardMoveSpeedInHand,
-                    ease: cardSettings.CardMoveFunction));
+                    playerHandViewSettings.ScaleAnimationDuration,
+                    ease: easeFunction));
             }
 
             currentMoveTweens.Add(moveCardSeq);
@@ -144,7 +144,7 @@ namespace Views
                 {
                     // Selected card will perfectly straight, moved so the text is in view of the screen clear,
                     // and scaled up for better visibility
-                    cardView.transform.localScale = cardView.FocusScale;
+                    SetSelectionEffects(cardView);
 
                     await UniTask.WaitForEndOfFrame(cardView);
 
@@ -160,7 +160,7 @@ namespace Views
                     continue;
                 }
 
-                hand[i].transform.localScale = cardView.DefaultScale;
+                UnsetSelectionEffects(hand[i]);
 
                 // Move Cards relative to their position of the selected card
                 // i.e. cards closer more farther away
@@ -176,11 +176,24 @@ namespace Views
 
                 moveTasks[i] = MoveCard(hand[i],
                     newPosition,
-                    new Vector3(0f, 0f, GetZRotationForCard(cardIndex, i + 1))
+                    new Vector3(0f, 0f, GetZRotationForCard(cardIndex, i + 1)),
+                    playerHandViewSettings.CardHoverMoveSpeedInHand,
+                    playerHandViewSettings.CardHoverRotateSpeedInHand,
+                    playerHandViewSettings.CardHoverMoveFunction
                 );
             }
 
             await UniTask.WhenAll(moveTasks);
+        }
+
+        public void SetSelectionEffects(CardView cardView)
+        {
+            cardView.transform.localScale = cardView.DefaultScale * playerHandViewSettings.CardHoverScaleFactor;
+        }
+
+        public void UnsetSelectionEffects(CardView cardView)
+        {
+            cardView.transform.localScale = cardView.DefaultScale;
         }
 
         /// <summary>

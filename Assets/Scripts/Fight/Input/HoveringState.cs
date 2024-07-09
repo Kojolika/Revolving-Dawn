@@ -1,19 +1,13 @@
-using UnityEngine;
-using Cards;
-using Systems.Managers;
-using Mana;
 using UnityEngine.InputSystem;
 using Views;
-using Tooling.Logging;
 using Zenject;
 
-namespace Fight
+namespace Fight.Input
 {
     public class HoveringState : PlayerInputState
     {
         private CardView hoveredCard;
         private readonly DefaultState defaultState;
-        private readonly Factory hoveringStateFactory;
         private readonly DraggingState.Factory draggingStateFactory;
         public HoveringState(InputActionAsset playerHandInputActionAsset,
             PlayerHandView playerHandView,
@@ -33,7 +27,7 @@ namespace Fight
             _ = playerHandView.HoverCard(hoveredCard);
         }
 
-        public override void Tick()
+        public override void Update()
         {
             var cardHovered = PollCardHovering();
             if (cardHovered != hoveredCard)

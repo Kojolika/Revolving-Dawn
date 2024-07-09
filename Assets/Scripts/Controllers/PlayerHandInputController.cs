@@ -1,6 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Fight;
+using Fight.Input;
 using Tooling.Logging;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -24,14 +24,15 @@ namespace Controllers
             }
 
             SetNextState(defaultState);
-            _ = Update();
+            _ = RunUpdateLoop();
         }
 
-        private async UniTask Update()
+        private async UniTask RunUpdateLoop()
         {
             while (!cancellationToken.IsCancellationRequested)
             { 
-                CurrentState.Tick();
+                MyLogger.Log($"State : {CurrentState}");
+                CurrentState.Update();
 
                 await UniTask.Yield(PlayerLoopTiming.Update);
 

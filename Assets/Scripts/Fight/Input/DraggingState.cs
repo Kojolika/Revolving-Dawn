@@ -1,51 +1,57 @@
-using System.Numerics;
-using System.Threading;
-using Cysharp.Threading.Tasks;
 using UnityEngine.InputSystem;
 using Views;
 using Zenject;
 
-namespace Fight
+namespace Fight.Input
 {
     public class DraggingState : PlayerInputState
     {
-        private readonly CancellationTokenSource cts;
         private readonly CardView cardView;
+        private readonly DefaultState defaultState;
+        private readonly Settings.PlayerHandViewSettings playerHandInputSettings;
+        private readonly TargetingState.Factory targetingStateFactory;
 
         public DraggingState(InputActionAsset playerHandInputActionAsset,
             PlayerHandView playerHandView,
-            CardView cardView)
+            CardView cardView,
+            DefaultState defaultState,
+            Settings.PlayerHandViewSettings playerHandInputSettings,
+            TargetingState.Factory targetingStateFactory)
             : base(playerHandInputActionAsset, playerHandView)
         {
-            cts = new();
             this.cardView = cardView;
+            this.defaultState = defaultState;
+            this.playerHandInputSettings = playerHandInputSettings;
+            this.targetingStateFactory = targetingStateFactory;
         }
 
         public override void OnEnter()
         {
             base.OnEnter();
-            _ = CardFollowPlayerInputTask(cardView);
+            playerHandView.UnsetSelectionEffects(cardView);
         }
 
-        public override void OnExit()
+        public override void Update()
         {
-            base.OnExit();
-            cts.Cancel();
-            cts.Dispose();
-        }
-
-        private async UniTask CardFollowPlayerInputTask(CardView cardView)
-        {
-            while (!cts.Token.IsCancellationRequested)
+            if (!dragAction.inProgress)
             {
-                var playerInputLocation = dragAction.ReadValue<Vector2>();
-                var playerInputWorldSpace = playerHandView.Camera.ScreenToWorldPoint(new UnityEngine.Vector3(playerInputLocation.X,playerInputLocation.Y));
-                cardView.transform.position = new UnityEngine.Vector3(playerInputWorldSpace.x,
-                    playerInputWorldSpace.y,
-                    cardView.transform.position.z
-                );
-                await UniTask.Yield(PlayerLoopTiming.Update);
+                NextState = defaultState;
+                return;
             }
+
+            var playerInputScreenPosition = dragAction.ReadValue<UnityEngine.Vector2>();
+            var playerInputViewPortPosition = playerHandView.Camera.ScreenToViewportPoint(playerInputScreenPosition);
+            if (playerInputViewPortPosition.y > playerHandInputSettings.PositionOnScreenWhereTargetingStarts)
+            {
+                NextState = targetingStateFactory.Create(cardView);
+                return;
+            }
+
+            var playerInputWorldPosition = playerHandView.Camera.ScreenToWorldPoint(new UnityEngine.Vector3(playerInputScreenPosition.x, playerInputScreenPosition.y));
+            cardView.transform.position = new UnityEngine.Vector3(playerInputWorldPosition.x,
+                playerInputWorldPosition.y,
+                cardView.transform.position.z
+            );
         }
 
         public class Factory : PlaceholderFactory<CardView, DraggingState> { }

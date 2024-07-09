@@ -1,227 +1,79 @@
-using UnityEngine;
-using Cards;
-using System.Collections.Generic;
-using Characters;
-using Fight;
-using Systems.Managers;
 
+using System.Linq;
+using Fight.Input;
+using Settings;
+using UnityEngine.InputSystem;
+using Views;
+using Zenject;
 
 namespace Fight
 {
-    public class TargetingState 
+    public class TargetingState : PlayerInputState
     {
-/*         ChangeStateTo changeStateTo = ChangeStateTo.Targeting;
-        Card3D currentCard;
-        Enemy previousEnemy = null;
-        Dragger dragger;
-        TargetingArrow targetingArrow;
-        int cardtarget;
-        Mover mover;
-        List<Character> targets = new List<Character>();
-        CardHandManager cardMovementManager = _input.GetComponent<CardHandManager>();
+        private readonly CardView cardView;
+        private readonly DefaultState defaultState;
+        private readonly TargetingArrowView targetingArrowView;
+        private readonly PlayerHandViewSettings playerHandViewSettings;
 
-        public TargetingState(Card3D card)
+        private bool shouldDrawCurve = false;
+
+        public TargetingState(InputActionAsset playerHandInputActionAsset,
+            PlayerHandView playerHandView,
+            CardView cardView,
+            DefaultState defaultState,
+            TargetingArrowView targetingArrowView,
+            PlayerHandViewSettings playerHandViewSettings)
+            : base(playerHandInputActionAsset, playerHandView)
         {
-            currentCard = card;
-
-            _input.LeftClicked += LeftClicked;
-            _input.RightClicked += RightClicked;
-            _input.MouseEnterCardArea += OnEnterCardArea;
-
-
-            cardtarget = (int)card.GetTarget();
-            switch (cardtarget)
-            {
-                case 0: //Friendly
-                    dragger = currentCard.GetComponent<Dragger>();
-
-                    var player = FightManager_Obsolete.CurrentPlayer;
-                    targets.Add(player);
-                    player.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
-                    break;
-
-                ///////////////////////////////////////////////
-
-                case 1: //Enemy
-                    //Hand is still reseting
-                    _input.GetComponent<CardHandManager>().StopAllCoroutines();
-
-                    _input.EnemyMouseOver += OnEnemyMouseOver;
-
-                    Vector3 cardCenterPosition = _input.cardCam.ViewportToWorldPoint(new Vector3(0.5f, 0.25f, CardConfiguration.CAMERA_DISTANCE - 3f));
-
-                    mover = currentCard.gameObject.AddComponent<Mover>();
-                    mover.Initialize(cardCenterPosition, 40f);
-                    mover.StartCoroutine(mover.MoveGameObjectCoroutine());
-
-                    targetingArrow = currentCard.gameObject.AddComponent<TargetingArrow>();
-                    targetingArrow.cardCam = _input.cardCam;
-
-                    break;
-
-                ///////////////////////////////////////////////
-
-                case 2: //RandomEnemy
-                    dragger = currentCard.GetComponent<Dragger>();
-
-                    foreach (Enemy e in FightManager_Obsolete.CurrentEnemies)
-                    {
-                        targets.Add(e);
-                        e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
-                    }
-                    break;
-
-                ///////////////////////////////////////////////
-
-                case 3: //AllEnemies
-                    dragger = currentCard.GetComponent<Dragger>();
-
-                    foreach (Enemy e in FightManager_Obsolete.CurrentEnemies)
-                    {
-                        targets.Add(e);
-                        e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
-                    }
-                    break;
-
-                ///////////////////////////////////////////////
-
-                case 4: //All
-                    dragger = currentCard.GetComponent<Dragger>();
-
-
-                    foreach (Enemy e in FightManager_Obsolete.CurrentEnemies)
-                    {
-                        targets.Add(e);
-
-                        e.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
-                    }
-
-                    targets.Add(FightManager_Obsolete.CurrentPlayer);
-                    FightManager_Obsolete.CurrentPlayer.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
-
-                    break;
-
-                ///////////////////////////////////////////////
-
-                case 5: //None
-                    dragger = currentCard.GetComponent<Dragger>();
-                    break;
-            }
+            this.cardView = cardView;
+            this.defaultState = defaultState;
+            this.targetingArrowView = targetingArrowView;
+            this.playerHandViewSettings = playerHandViewSettings;
         }
 
-        public override PlayerInputState Transition()
+        public override void OnEnter()
         {
-            switch (changeStateTo)
-            {
-                case ChangeStateTo.Default:
-                    Exit();
-                    return new DefaultState();
-                case ChangeStateTo.Targeting:
-                    return this;
-            }
+            base.OnEnter();
 
-            return this;
+            shouldDrawCurve = cardView.Model.PlayEffects.Any(effect => effect.Targeting == Cards.Targeting.Options.Enemy);
+            targetingArrowView.SetActive(shouldDrawCurve);
         }
 
-        void LeftClicked()
+        public override void OnExit()
         {
-            if (targets.Count > 0)
-            {
-                //Trigger playing the card event
-                cardMovementManager.TriggerPlayCard(currentCard, targets);
-                changeStateTo = ChangeStateTo.Default;
-            }
+            targetingArrowView.SetActive(false);
         }
-        void RightClicked() => changeStateTo = ChangeStateTo.Default;
-        void OnEnterCardArea() => changeStateTo = ChangeStateTo.Default;
-        void OnEnemyMouseOver(Enemy enemy)
+
+        public override void Update()
         {
-            if (enemy != null)
+            if (!dragAction.inProgress)
             {
+                NextState = defaultState;
+                return;
+            }
 
-                if (enemy != previousEnemy)
-                {
-                    RemoveTargets();
-                    enemy.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = true;
-                    targets.Add(enemy);
-                    previousEnemy = enemy;
+            var playerInputScreenPosition = dragAction.ReadValue<UnityEngine.Vector2>();
 
-                    currentCard.UpdateDescription(enemy);
+            if (playerHandView.Camera.ScreenToViewportPoint(playerInputScreenPosition).y < playerHandViewSettings.PositionOnScreenWhereTargetingStarts)
+            {
+                NextState = defaultState;
+                return;
+            }
 
-                    //targetingArrow.ChangeColor(Resources.Load<Material>("Arrow_Red"));
-                }
+            if (shouldDrawCurve)
+            {
+                targetingArrowView.DrawCurveForCardAndScreenPoint(cardView.transform.position, playerInputScreenPosition);
             }
             else
             {
-                RemoveTargets();
-                previousEnemy = null;
-                currentCard.UpdateDescription(null);
-
-                //targetingArrow.ChangeColor(Resources.Load<Material>("Arrow"));
-            }
-        }
-        void RemoveTargets()
-        {
-            for (int i = 0; i < targets.Count; i++)
-            {
-                var target = targets[i];
-                target.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = false;
-                targets.Remove(target);
-            }
-        }
-        public override void Exit()
-        {
-            _input.LeftClicked -= LeftClicked;
-            _input.RightClicked -= RightClicked;
-            _input.MouseEnterCardArea -= OnEnterCardArea;
-
-            currentCard.UpdateDescription(null);
-
-            //reset the hand
-            _input.GetComponent<CardHandManager>().CreateHand();
-
-            foreach (Character character in targets)
-            {
-                if (character == null) continue;
-                character.GetComponent<Targeting_Border>().border.GetComponent<SpriteRenderer>().enabled = false;
-            }
-
-            switch (cardtarget)
-            {
-                case 0: //Friendly
-                    StopDragging();
-                    break;
-
-                case 1: //Enemy
-                    if (mover) GameObject.Destroy(mover);
-
-                    _input.EnemyMouseOver -= OnEnemyMouseOver;
-
-                    GameObject.Destroy(targetingArrow);
-                    break;
-
-                case 2: //RandomEnemy
-                    StopDragging();
-                    break;
-
-                case 3: //AllEnemies
-                    StopDragging();
-                    break;
-
-                case 4: //All
-                    StopDragging();
-                    break;
-
-                case 5: //None
-                    StopDragging();
-                    break;
+                var playerInputWorldPosition = playerHandView.Camera.ScreenToWorldPoint(new UnityEngine.Vector3(playerInputScreenPosition.x, playerInputScreenPosition.y));
+                cardView.transform.position = new UnityEngine.Vector3(playerInputWorldPosition.x,
+                    playerInputWorldPosition.y,
+                    cardView.transform.position.z
+                );
             }
         }
 
-        void StopDragging()
-        {
-            dragger.StopDragging();
-            GameObject.Destroy(dragger);
-        } */
+        public class Factory : PlaceholderFactory<CardView, TargetingState> { }
     }
 }

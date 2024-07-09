@@ -16,7 +16,8 @@ namespace Models.CardEffects
     {
         List<IBattleEvent> Execute(List<IBuffable> targets);
         List<IBattleEvent> Execute(List<IHealth> targets);
-        string Description { get;}
+        string Description { get; }
+        Targeting.Options Targeting { get; }
     }
 
     /// <summary>
@@ -31,6 +32,6 @@ namespace Models.CardEffects
         public virtual List<IBattleEvent> Execute(List<IBuffable> targets)
             => Execute(targets.Select(target => target as IHealth).ToList());
         public abstract List<IBattleEvent> Execute(List<IHealth> targets);
-        public abstract string Description { get;}
+        public abstract string Description { get; }
     }
 }

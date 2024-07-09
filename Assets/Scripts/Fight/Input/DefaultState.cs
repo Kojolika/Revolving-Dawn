@@ -1,24 +1,31 @@
-using Tooling.Logging;
-using UnityEngine;
+using Settings;
 using UnityEngine.InputSystem;
 using Views;
 
-namespace Fight
+namespace Fight.Input
 {
     public class DefaultState : PlayerInputState
     {
         private readonly HoveringState.Factory hoveringStateFactory;
-        public DefaultState(InputActionAsset playerHandInputActionAsset, PlayerHandView playerHandView, HoveringState.Factory hoveringStateFactory) : base(playerHandInputActionAsset, playerHandView)
+        private readonly PlayerHandViewSettings playerHandViewSettings;
+        public DefaultState(InputActionAsset playerHandInputActionAsset,
+            PlayerHandView playerHandView,
+            HoveringState.Factory hoveringStateFactory,
+            PlayerHandViewSettings playerHandViewSettings)
+            : base(playerHandInputActionAsset, playerHandView)
         {
             this.hoveringStateFactory = hoveringStateFactory;
+            this.playerHandViewSettings = playerHandViewSettings;
         }
 
         public override void OnEnter()
         {
             base.OnEnter();
-            _ = playerHandView.CreateHandCurve();
+            _ = playerHandView.CreateHandCurve(playerHandViewSettings.CardHoverMoveSpeedInHand,
+                playerHandViewSettings.CardHoverRotateSpeedInHand,
+                playerHandViewSettings.CardHoverMoveFunction);
         }
-        public override void Tick()
+        public override void Update()
         {
             if (hoverAction.WasPerformedThisFrame())
             {

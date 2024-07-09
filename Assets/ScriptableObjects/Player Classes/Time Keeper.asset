@@ -16,9 +16,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
   - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
   - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
-  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
-  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
-  - {fileID: 11400000, guid: 372c951ab5bb37048bc2c0c4073af1a3, type: 2}
+  - {fileID: 11400000, guid: c533e310efb320143aaa4dd16504edb8, type: 2}
+  - {fileID: 11400000, guid: c533e310efb320143aaa4dd16504edb8, type: 2}
+  - {fileID: 11400000, guid: c533e310efb320143aaa4dd16504edb8, type: 2}
   healthDefinition:
     MaxHealth: 40
   description: Keeps time, moves time, loses time.

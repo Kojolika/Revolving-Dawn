@@ -1,8 +1,7 @@
 using Cysharp.Threading.Tasks;
-using Fight;
+using Settings;
 using Systems.Managers;
 using TMPro;
-using Tooling.Logging;
 using UnityEngine;
 using Zenject;
 
@@ -15,16 +14,15 @@ namespace Views
         [SerializeField] TextMeshPro nameText;
         [SerializeField] TextMeshPro descriptionText;
 
-        private Models.CardModel cardModel;
+        public Models.CardModel Model { get; private set; }
 
         public Collider Collider { get; private set; }
         public Vector3 DefaultScale { get; private set; }
-        public Vector3 FocusScale => DefaultScale * 1.5f;
 
         [Inject]
         private void Construct(AddressablesManager addressablesManager, Models.CardModel cardModel)
         {
-            this.cardModel = cardModel;
+            this.Model = cardModel;
             nameText.SetText(cardModel.Name);
 
             var description = "";

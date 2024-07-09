@@ -28,7 +28,7 @@ namespace Systems.Managers
 
         CardHandManager _cardHandManager;
         PlayerTurnInputManager _playerTurnInputManager;
-        PlayerInputState state;
+        //PlayerInputState state;
 
         [SerializeField] Camera worldUICam;
         [SerializeField] GameObject cardsCamAndGameAreaPrefab;
