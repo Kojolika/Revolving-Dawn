@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Core Fight
+  m_EditorClassIdentifier: 
+  m_GroupName: Core Fight
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 5374f536527135341a7f66c2a6b5be73
+  m_SerializeEntries:
+  - m_GUID: 518b59da1374a6a4f8a5fd72ce261ce4
+    m_Address: material_enemy_outline
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - core_fight
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c52f5a46dbcd879419a3e65e0cfaeda3
+    m_Address: material_friendly_outline
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - core_fight
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9af8fb84781c5cc4f9a9f5861bf8c764
+    m_Address: material_sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - core_fight
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc7caa9635bbf37498fb038f24effdd6
+    m_Address: DrawCardEventAnimation
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - core_fight
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c31475ea3382804e818fbacaf522435
+    m_Address: BattleStartedEventAnimation
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - core_fight
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea5b84f0c94189243ad89243b3700040
+    m_Address: TurnStartedEventAnimation
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - core_fight
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3788ab0c79ab5ed46b258ba64fadb02d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 670693c6f1755c74a97820edc28de455, type: 2}
+    - {fileID: 11400000, guid: 09eb5a7f5c54a764d9b3dc18c25cb1d1, type: 2}

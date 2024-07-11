@@ -15,7 +15,7 @@ MonoBehaviour:
   manas:
   - {fileID: 11400000, guid: cf92ef4110406784cb00b29170e2560c, type: 2}
   artReference:
-    m_AssetGUID: 6d8d3d623dbde1b43aa737841443db60
+    m_AssetGUID: 083b62d404bf9bd47bed1e084f79134d
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

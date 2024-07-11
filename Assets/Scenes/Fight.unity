@@ -990,6 +990,10 @@ PrefabInstance:
       propertyPath: playerHandInputSettings
       value: 
       objectReference: {fileID: 11400000, guid: 9dac15a4eb650324d872bd421dca4125, type: 2}
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: addressableAssetLabelLoader
+      value: 
+      objectReference: {fileID: 11400000, guid: 97c477eae4a6b294cb7a19e795365578, type: 2}
     - target: {fileID: 3050639727896682978, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

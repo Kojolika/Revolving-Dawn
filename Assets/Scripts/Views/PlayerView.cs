@@ -1,29 +1,32 @@
 using Cysharp.Threading.Tasks;
+using Models.Characters;
 using Systems.Managers;
 using UnityEngine;
 using Zenject;
 
 namespace Views
 {
-    public class PlayerView : MonoBehaviour
+    public class PlayerView : MonoBehaviour, IChangeMaterial
     {
         [SerializeField] SpriteRenderer spriteRenderer;
-        public Models.Player.PlayerClassModel PlayerClassModel { get; private set; }
+        public PlayerCharacter PlayerCharacter { get; private set; }
+
+        public void SetMaterial(Material material)
+        {
+            spriteRenderer.material = material;
+        }
 
         [Inject]
-        private void Construct(Models.Player.PlayerClassModel playerClassModel, AddressablesManager addressablesManager)
+        private void Construct(PlayerCharacter playerCharacter, AddressablesManager addressablesManager)
         {
-            PlayerClassModel = playerClassModel;
+            PlayerCharacter = playerCharacter;
 
-            _ = addressablesManager.LoadGenericAsset(playerClassModel.CharacterAvatarReference,
+            _ = addressablesManager.LoadGenericAsset(playerCharacter.Class.CharacterAvatarReference,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset => spriteRenderer.sprite = asset
             );
         }
 
-        public class Factory : PlaceholderFactory<Models.Player.PlayerClassModel, PlayerView>
-        {
-
-        }
+        public class Factory : PlaceholderFactory<PlayerCharacter, PlayerView> { }
     }
 }

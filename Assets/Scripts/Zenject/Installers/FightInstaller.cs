@@ -26,6 +26,7 @@ namespace Zenject.Installers
         [SerializeField] InputActionAsset playerHandInput;
         [SerializeField] PlayerHandViewSettings playerHandInputSettings;
         [SerializeField] TargetingArrowView targetingArrowView;
+        [SerializeField] GameLoop.AddressableAssetLabelLoader addressableAssetLabelLoader;
 
         public override void InstallBindings()
         {
@@ -49,7 +50,7 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(cardView)
                 .AsSingle();
 
-            Container.BindFactory<Models.Player.PlayerClassModel, PlayerView, PlayerView.Factory>()
+            Container.BindFactory<PlayerCharacter, PlayerView, PlayerView.Factory>()
                 .FromComponentInNewPrefab(playerView)
                 .AsSingle();
 
@@ -68,7 +69,7 @@ namespace Zenject.Installers
             Container.Bind<PlayerHandView>()
                 .FromComponentInNewPrefab(playerHandView)
                 .AsSingle();
-            
+
             Container.Bind<TargetingArrowView>()
                 .FromComponentInNewPrefab(targetingArrowView)
                 .AsSingle()
@@ -86,6 +87,7 @@ namespace Zenject.Installers
 
             InstallBattleEventFactories();
             InstallPlayerHandInputs();
+            InstallAddressableAssets();
         }
 
         private void InstallBattleEventFactories()
@@ -101,7 +103,7 @@ namespace Zenject.Installers
         {
             Container.Bind<InputActionAsset>()
                 .FromInstance(playerHandInput);
-            
+
             Container.Bind<PlayerHandViewSettings>()
                 .FromInstance(playerHandInputSettings);
 
@@ -117,9 +119,15 @@ namespace Zenject.Installers
 
             Container.BindFactory<CardView, DraggingState, DraggingState.Factory>()
                 .AsSingle();
-            
+
             Container.BindFactory<CardView, TargetingState, TargetingState.Factory>()
                 .AsSingle();
+        }
+
+        private void InstallAddressableAssets()
+        {
+            Container.BindInterfacesAndSelfTo<GameLoop.AddressableAssetLabelLoader>()
+                .FromInstance(addressableAssetLabelLoader);
         }
     }
 }

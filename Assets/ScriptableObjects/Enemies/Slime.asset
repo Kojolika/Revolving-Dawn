@@ -15,7 +15,7 @@ MonoBehaviour:
   healthDefinition:
     MaxHealth: 30
   avatarReference:
-    m_AssetGUID: 8f05220f1e9b7cc4f835f8332dbf5ac4
+    m_AssetGUID: 5ff4328c22e7278409f5165d5e4f8aaa
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Settings
 {
@@ -38,6 +39,11 @@ namespace Settings
         [Tooltip("Duration of scaling a card after it was the hovering focus")]
         [SerializeField] private float scaleAnimationDuration;
 
+        [SerializeField] private AssetReferenceT<Material> enemyOutlineMaterial;
+        [SerializeField] private AssetReferenceT<Material> friendlyOutlineMaterial;
+        [SerializeField] private AssetReferenceT<Material> defaultSpriteMaterial;
+
+
         public float PositionOnScreenWhereTargetingStarts => positionOnScreenWhereTargetingStarts;
         public int NumberOfArrowPiecesForTargetingArrow => numberOfArrowPiecesForTargetingArrow;
         public float CardDrawMoveSpeed => cardDrawMoveSpeed;
@@ -48,5 +54,8 @@ namespace Settings
         public PrimeTween.Ease CardHoverMoveFunction => cardHoverMoveFunction;
         public float CardHoverScaleFactor => cardHoverScaleFactor;
         public float ScaleAnimationDuration => scaleAnimationDuration;
+        public AssetReferenceT<Material> EnemyOutlineMaterial => enemyOutlineMaterial;
+        public AssetReferenceT<Material> FriendlyOutlineMaterial => friendlyOutlineMaterial;
+        public AssetReferenceT<Material> DefaultSpriteMaterial => defaultSpriteMaterial;
     }
 }

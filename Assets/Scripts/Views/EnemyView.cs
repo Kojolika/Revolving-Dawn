@@ -6,11 +6,16 @@ using Zenject;
 
 namespace Views
 {
-    public class EnemyView : MonoBehaviour
+    public class EnemyView : MonoBehaviour, IChangeMaterial
     {
         [SerializeField] SpriteRenderer spriteRenderer;
 
         private Enemy enemy;
+
+        public void SetMaterial(Material material)
+        {
+            spriteRenderer.material = material;
+        }
 
         [Inject]
         private void Construct(Enemy enemy, AddressablesManager addressablesManager)

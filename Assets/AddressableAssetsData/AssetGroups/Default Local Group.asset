@@ -52,7 +52,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d1ee13283cbbd2e409b03a6d2b373c01
+  - m_GUID: a3a4a3e0270bea94291ee1e632d80a47
     m_Address: class_sprite_warrior
     m_ReadOnly: 0
     m_SerializedLabels: []
@@ -147,7 +147,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8f05220f1e9b7cc4f835f8332dbf5ac4
+  - m_GUID: 5ff4328c22e7278409f5165d5e4f8aaa
     m_Address: enemy_slime
     m_ReadOnly: 0
     m_SerializedLabels: []
@@ -182,11 +182,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 35ae9a42ae3ef2a42a2090ef1fd50fe2
-    m_Address: class_sprite_time_keeper
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 97608a3c0220d3c418750a48d3ed8f83
     m_Address: player_class_time_keeper
     m_ReadOnly: 0
@@ -217,23 +212,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fc7caa9635bbf37498fb038f24effdd6
-    m_Address: DrawCardEventAnimation
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8c31475ea3382804e818fbacaf522435
-    m_Address: BattleStartedEventAnimation
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ea5b84f0c94189243ad89243b3700040
-    m_Address: TurnStartedEventAnimation
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c533e310efb320143aaa4dd16504edb8
     m_Address: card_watch_slap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35ae9a42ae3ef2a42a2090ef1fd50fe2
+    m_Address: class_sprite_time_keeper
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

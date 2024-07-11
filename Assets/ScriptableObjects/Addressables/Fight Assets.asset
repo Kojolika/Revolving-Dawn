@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f7d1e68bdae3e946b708c69212737f1, type: 3}
-  m_Name: Default Character Settings
+  m_Script: {fileID: 11500000, guid: c3ee8869d26128542a375a849259c423, type: 3}
+  m_Name: Fight Assets
   m_EditorClassIdentifier: 
-  handSize: 8
-  drawAmount: 8
-  usableManaPerTurn: 1
+  assetLabelReferences:
+  - m_LabelString: core_fight
