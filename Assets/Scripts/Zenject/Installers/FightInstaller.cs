@@ -128,6 +128,8 @@ namespace Zenject.Installers
         {
             Container.BindInterfacesAndSelfTo<GameLoop.AddressableAssetLabelLoader>()
                 .FromInstance(addressableAssetLabelLoader);
+            
+            Container.QueueForInject(addressableAssetLabelLoader);
         }
     }
 }
