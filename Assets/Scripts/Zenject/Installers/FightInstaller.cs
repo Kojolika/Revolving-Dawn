@@ -4,6 +4,7 @@ using Fight.Animations;
 using Fight.Events;
 using Fight.Input;
 using Mana;
+using Models;
 using Models.Characters;
 using Settings;
 using Systems.Managers;
@@ -19,6 +20,7 @@ namespace Zenject.Installers
         [SerializeField] CardView cardView;
         [SerializeField] PlayerView playerView;
         [SerializeField] EnemyView enemyView;
+        [SerializeField] HealthView healthView;
         [SerializeField] PlayerHandView playerHandView;
         [SerializeField] ManaPoolView manaPoolView;
         [SerializeField] ManaView manaView;
@@ -46,6 +48,9 @@ namespace Zenject.Installers
             Container.BindFactory<IBattleEvent, IBattleAnimation, IBattleAnimation.Factory>()
                 .FromFactory<IBattleAnimation.CustomFactory>();
 
+            Container.Bind<Camera>()
+                .FromInstance(Camera.main);
+
             Container.BindFactory<Models.CardModel, CardView, CardView.Factory>()
                 .FromComponentInNewPrefab(cardView)
                 .AsSingle();
@@ -56,6 +61,10 @@ namespace Zenject.Installers
 
             Container.BindFactory<Enemy, EnemyView, EnemyView.Factory>()
                 .FromComponentInNewPrefab(enemyView)
+                .AsSingle();
+
+            Container.BindFactory<Health, ICharacterView, HealthView, HealthView.Factory>()
+                .FromComponentInNewPrefab(healthView)
                 .AsSingle();
 
             Container.BindFactory<Models.Mana.ManaSODefinition, ManaView, ManaView.Factory>()
@@ -128,7 +137,7 @@ namespace Zenject.Installers
         {
             Container.BindInterfacesAndSelfTo<GameLoop.AddressableAssetLabelLoader>()
                 .FromInstance(addressableAssetLabelLoader);
-            
+
             Container.QueueForInject(addressableAssetLabelLoader);
         }
     }

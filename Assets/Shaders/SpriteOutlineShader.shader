@@ -26,6 +26,7 @@ Shader "Custom/SpriteOutlineShader"
             "RenderType"="Transparent"
             "PreviewType"="Plane"
             "CanUseSpriteAtlas"="True"
+            "LightMode" = "ForwardBase"
         }
 
         Cull Off
@@ -51,7 +52,7 @@ Shader "Custom/SpriteOutlineShader"
 
         
         float GetWave(float2 coord){
-            float wave = cos( (coord +  _Time.y * 3) * .75) * 0.5 + .75;
+            float wave = cos( (coord +  _Time.y * 5) * .75) * 0.5 + .75;
             wave *= 1-coord;
 
             return wave;
@@ -84,7 +85,7 @@ Shader "Custom/SpriteOutlineShader"
                 float direction = pixelDown.a + pixelLeft.a - (pixelRight.a + pixelUp.a);
                 if (pixelUp.a > 0 || pixelRight.a > 0 || pixelLeft.a > 0 || pixelDown.a > 0) {
                     c.rgba = _OutlineColor;
-                    c.a *= GetWave(IN.uv_MainTex.yx * 2 - 1);
+                    c.a *= GetWave(IN.uv_MainTex.yx * 0.5 );
                 }
             }
             

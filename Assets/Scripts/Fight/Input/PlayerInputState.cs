@@ -15,7 +15,7 @@ namespace Fight.Input
 
         public PlayerInputState NextState { get; protected set; }
 
-        private readonly RaycastHit[] raycastHitsBuffer;
+        protected readonly RaycastHit[] raycastHitsBuffer;
 
         public PlayerInputState(InputActionAsset playerHandInputActionAsset, PlayerHandView playerHandView)
         {

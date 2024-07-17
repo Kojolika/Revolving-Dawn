@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.45036817, g: 0.50038505, b: 0.57526517, a: 1}
+  m_IndirectSpecularColor: {r: 0.17554447, g: 0.21207765, b: 0.25869608, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -863,13 +863,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.34012467, y: -0.21702814, z: -0.03786923, w: 0.91421}
+  m_LocalRotation: {x: 0.98967046, y: 0.064947955, z: 0.0659002, w: 0.10950537}
   m_LocalPosition: {x: 3.7, y: 9.67, z: -3.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 37.261, y: -32.07, z: -15.813}
+  m_LocalEulerAnglesHint: {x: 12.016, y: -188.505, z: -188.406}
 --- !u!1 &867809713
 GameObject:
   m_ObjectHideFlags: 0
@@ -962,6 +962,10 @@ PrefabInstance:
       propertyPath: levelView
       value: 
       objectReference: {fileID: 4115722748415284752, guid: 1c4ff16ac40f02748aaaedf5c473db3a, type: 3}
+    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
+      propertyPath: healthView
+      value: 
+      objectReference: {fileID: 4416358815584914835, guid: a41dcbc925d094b4096a704ad71db853, type: 3}
     - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
       propertyPath: playerView
       value: 
@@ -1262,13 +1266,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13055032, y: -0, z: -0, w: 0.9914417}
-  m_LocalPosition: {x: 0, y: 3.82, z: -4.2}
+  m_LocalRotation: {x: -0.01987316, y: -0, z: -0, w: 0.99980253}
+  m_LocalPosition: {x: 0, y: -3.41, z: -3.78}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 15.003, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -2.277, y: 0, z: 0}
 --- !u!95 &963194229
 Animator:
   serializedVersion: 5

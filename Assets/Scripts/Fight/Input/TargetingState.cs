@@ -2,8 +2,10 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Fight.Input;
+using Models.Characters;
 using Settings;
 using Systems.Managers;
+using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Views;
@@ -18,12 +20,13 @@ namespace Fight
         private readonly TargetingArrowView targetingArrowView;
         private readonly PlayerHandViewSettings playerHandViewSettings;
         private readonly LevelView levelView;
+        private readonly Camera mainCamera;
 
         private bool shouldDrawCurve = false;
 
         private Material enemyOutlineMaterial;
         private Material friendlyOutlineMaterial;
-        private Material spriteMaterial;
+        private Material defaultSpriteMaterial;
 
         public TargetingState(InputActionAsset playerHandInputActionAsset,
             PlayerHandView playerHandView,
@@ -32,7 +35,8 @@ namespace Fight
             TargetingArrowView targetingArrowView,
             PlayerHandViewSettings playerHandViewSettings,
             LevelView levelView,
-            AddressablesManager addressablesManager)
+            AddressablesManager addressablesManager,
+            Camera mainCamera)
             : base(playerHandInputActionAsset, playerHandView)
         {
             this.cardView = cardView;
@@ -40,6 +44,7 @@ namespace Fight
             this.targetingArrowView = targetingArrowView;
             this.playerHandViewSettings = playerHandViewSettings;
             this.levelView = levelView;
+            this.mainCamera = mainCamera;
 
             var cancellationToken = playerHandView.GetCancellationTokenOnDestroy();
             _ = addressablesManager.LoadGenericAsset(playerHandViewSettings.EnemyOutlineMaterial,
@@ -52,7 +57,7 @@ namespace Fight
             );
             _ = addressablesManager.LoadGenericAsset(playerHandViewSettings.DefaultSpriteMaterial,
                 () => cancellationToken.IsCancellationRequested,
-                asset => spriteMaterial = asset
+                asset => defaultSpriteMaterial = asset
             );
         }
 
@@ -77,7 +82,10 @@ namespace Fight
             if (cardView.Model.PlayEffects.Any(effect => effect.Targeting == Cards.Targeting.Options.Friendly
                 || effect.Targeting == Cards.Targeting.Options.All))
             {
-                levelView.PlayerLookup.Values.First().SetMaterial(friendlyOutlineMaterial);
+                foreach (var player in levelView.PlayerLookup.Values)
+                {
+                    player.SetMaterial(friendlyOutlineMaterial);
+                }
             }
         }
 
@@ -87,9 +95,9 @@ namespace Fight
 
             foreach (var enemy in levelView.EnemyLookup.Values)
             {
-                enemy.SetMaterial(spriteMaterial);
+                enemy.SetMaterial(defaultSpriteMaterial);
             }
-            levelView.PlayerLookup.Values.First().SetMaterial(spriteMaterial);
+            levelView.PlayerLookup.Values.First().SetMaterial(defaultSpriteMaterial);
         }
 
         public override void Update()
@@ -100,8 +108,7 @@ namespace Fight
                 return;
             }
 
-            var playerInputScreenPosition = dragAction.ReadValue<UnityEngine.Vector2>();
-
+            var playerInputScreenPosition = dragAction.ReadValue<Vector2>();
             if (playerHandView.Camera.ScreenToViewportPoint(playerInputScreenPosition).y < playerHandViewSettings.PositionOnScreenWhereTargetingStarts)
             {
                 NextState = defaultState;
@@ -114,12 +121,29 @@ namespace Fight
             }
             else
             {
-                var playerInputWorldPosition = playerHandView.Camera.ScreenToWorldPoint(new UnityEngine.Vector3(playerInputScreenPosition.x, playerInputScreenPosition.y));
-                cardView.transform.position = new UnityEngine.Vector3(playerInputWorldPosition.x,
+                var playerInputWorldPosition = playerHandView.Camera.ScreenToWorldPoint(new Vector3(playerInputScreenPosition.x, playerInputScreenPosition.y));
+                cardView.transform.position = new Vector3(playerInputWorldPosition.x,
                     playerInputWorldPosition.y,
                     cardView.transform.position.z
                 );
             }
+        }
+
+        private ICharacterView PollCharacterHovering()
+        {
+            Ray ray = mainCamera.ScreenPointToRay(dragAction.ReadValue<Vector2>());
+            var numHits = Physics.RaycastNonAlloc(ray, raycastHitsBuffer, 500.0F);
+
+            for (int i = 0; i < numHits; i++)
+            {
+                var hit = raycastHitsBuffer[i];
+                var characterView = hit.transform.GetComponentInParent<ICharacterView>();
+                if (characterView != null)
+                {
+                    return characterView;
+                }
+            }
+            return null;
         }
 
         public class Factory : PlaceholderFactory<CardView, TargetingState> { }
