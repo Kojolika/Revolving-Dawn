@@ -63,9 +63,14 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(enemyView)
                 .AsSingle();
 
-            Container.BindFactory<Health, ICharacterView, HealthView, HealthView.Factory>()
-                .FromComponentInNewPrefab(healthView)
-                .AsSingle();
+            // We bind the factory here for the HealthView, and then bind the prefab of the HealthView
+            // in the binding statement after this. The prefab is then injected into this factory
+            Container.BindFactory<ICharacterView, HealthView, HealthView.Factory>()
+                .FromFactory<HealthView.CustomFactory>();
+
+            Container.Bind<HealthView>()
+                .FromInstance(healthView)
+                .WhenInjectedInto<HealthView.CustomFactory>();
 
             Container.BindFactory<Models.Mana.ManaSODefinition, ManaView, ManaView.Factory>()
                 .FromComponentInNewPrefab(manaView)
