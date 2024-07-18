@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Default Character Settings
   m_EditorClassIdentifier: 
   handSize: 8
-  drawAmount: 5
+  drawAmount: 8
   usableManaPerTurn: 1

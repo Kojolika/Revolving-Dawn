@@ -33,6 +33,7 @@ namespace Fight.Animations
 
             var animatorGO = animator.gameObject;
             animatorGO.SetActive(false);
+            //Destroy(animator);
             Destroy(animatorGO);
             Addressables.Release(AsyncOperationHandle);
         }

@@ -20,42 +20,49 @@ MonoBehaviour:
   - m_GUID: 34bb1059df7294043a5b9b9a55e742ea
     m_Address: EscapeMenu
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c9fecdcbb8c377e4eaff6ce333f70dc0
     m_Address: DeckViewerMenu
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 277dd4b502ee62249970eead111b7aba
     m_Address: MainMenu
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6d8d3d623dbde1b43aa737841443db60
     m_Address: placeholder_sprite
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cedf1387dc9bc8f4b8d9ff925314c924
     m_Address: CharacterSelect
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 23b28f9fc57e09c46a8a98833ebf1404
     m_Address: MapView
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9099f4eb8d17ce479cbe26843dec538
     m_Address: DealDamageEventAnimation
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d1ee13283cbbd2e409b03a6d2b373c01
+  - m_GUID: a3a4a3e0270bea94291ee1e632d80a47
     m_Address: class_sprite_warrior
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6af42a237ab01c94dbf849795a6c9fb1
     m_Address: card_border_neutral
@@ -65,7 +72,8 @@ MonoBehaviour:
   - m_GUID: cb928e790e6382a4cbc364a9596de11f
     m_Address: player_class_warrior
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 800bb8b75bced384981baaac7271f2b8
     m_Address: card_block
@@ -90,64 +98,75 @@ MonoBehaviour:
   - m_GUID: d0451e7e856f014469c51cbe25b209d0
     m_Address: mana_green
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cf92ef4110406784cb00b29170e2560c
     m_Address: mana_red
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fc30a61ee75aac346922ceb5affbc23a
     m_Address: mana_white
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dd2ec971384a2b742b328932315cfb03
     m_Address: mana_gold
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: db0d8289709d075419d8283e0629229b
     m_Address: mana_blue
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 587b78225009f0943b437218d9d071bc
     m_Address: mana_black
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 205954ae161227c418555d528d4ef5be
     m_Address: node_event_enemy
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e35cc54cea8489b4ea21bc3508317060
     m_Address: node_event_elite_enemy
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7b920439d31f14e4fbaf16b35db655ff
     m_Address: node_event_encounter
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bff0b98fa576ffd418785c1f4eab6cd1
     m_Address: node_event_campfire
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 54e96a69d0d5f524bbb6cdcfb36b432b
     m_Address: node_event_shop
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5105e0a6e442b714086873ea82c359d4
     m_Address: node_player_indicator
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8f05220f1e9b7cc4f835f8332dbf5ac4
+  - m_GUID: 5ff4328c22e7278409f5165d5e4f8aaa
     m_Address: enemy_slime
     m_ReadOnly: 0
     m_SerializedLabels: []
@@ -182,15 +201,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 35ae9a42ae3ef2a42a2090ef1fd50fe2
-    m_Address: class_sprite_time_keeper
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 97608a3c0220d3c418750a48d3ed8f83
     m_Address: player_class_time_keeper
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d64d33cd3d35f84b846fd22e87ff5fa
     m_Address: card_mana_socket
@@ -217,25 +232,22 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fc7caa9635bbf37498fb038f24effdd6
-    m_Address: DrawCardEventAnimation
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8c31475ea3382804e818fbacaf522435
-    m_Address: BattleStartedEventAnimation
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ea5b84f0c94189243ad89243b3700040
-    m_Address: TurnStartedEventAnimation
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c533e310efb320143aaa4dd16504edb8
     m_Address: card_watch_slap
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35ae9a42ae3ef2a42a2090ef1fd50fe2
+    m_Address: class_sprite_time_keeper
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - core
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47ab7adadd0c70547a964e9c71171eca
+    m_Address: healthview_sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - core_fight
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3788ab0c79ab5ed46b258ba64fadb02d, type: 2}

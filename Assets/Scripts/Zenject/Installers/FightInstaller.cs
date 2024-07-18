@@ -4,6 +4,7 @@ using Fight.Animations;
 using Fight.Events;
 using Fight.Input;
 using Mana;
+using Models;
 using Models.Characters;
 using Settings;
 using Systems.Managers;
@@ -19,6 +20,7 @@ namespace Zenject.Installers
         [SerializeField] CardView cardView;
         [SerializeField] PlayerView playerView;
         [SerializeField] EnemyView enemyView;
+        [SerializeField] HealthView healthView;
         [SerializeField] PlayerHandView playerHandView;
         [SerializeField] ManaPoolView manaPoolView;
         [SerializeField] ManaView manaView;
@@ -26,6 +28,7 @@ namespace Zenject.Installers
         [SerializeField] InputActionAsset playerHandInput;
         [SerializeField] PlayerHandViewSettings playerHandInputSettings;
         [SerializeField] TargetingArrowView targetingArrowView;
+        [SerializeField] GameLoop.AddressableAssetLabelLoader addressableAssetLabelLoader;
 
         public override void InstallBindings()
         {
@@ -45,16 +48,23 @@ namespace Zenject.Installers
             Container.BindFactory<IBattleEvent, IBattleAnimation, IBattleAnimation.Factory>()
                 .FromFactory<IBattleAnimation.CustomFactory>();
 
+            Container.Bind<Camera>()
+                .FromInstance(Camera.main);
+
             Container.BindFactory<Models.CardModel, CardView, CardView.Factory>()
                 .FromComponentInNewPrefab(cardView)
                 .AsSingle();
 
-            Container.BindFactory<Models.Player.PlayerClassModel, PlayerView, PlayerView.Factory>()
+            Container.BindFactory<PlayerCharacter, PlayerView, PlayerView.Factory>()
                 .FromComponentInNewPrefab(playerView)
                 .AsSingle();
 
             Container.BindFactory<Enemy, EnemyView, EnemyView.Factory>()
                 .FromComponentInNewPrefab(enemyView)
+                .AsSingle();
+
+            Container.BindFactory<Health, ICharacterView, HealthView, HealthView.Factory>()
+                .FromComponentInNewPrefab(healthView)
                 .AsSingle();
 
             Container.BindFactory<Models.Mana.ManaSODefinition, ManaView, ManaView.Factory>()
@@ -68,7 +78,7 @@ namespace Zenject.Installers
             Container.Bind<PlayerHandView>()
                 .FromComponentInNewPrefab(playerHandView)
                 .AsSingle();
-            
+
             Container.Bind<TargetingArrowView>()
                 .FromComponentInNewPrefab(targetingArrowView)
                 .AsSingle()
@@ -86,6 +96,7 @@ namespace Zenject.Installers
 
             InstallBattleEventFactories();
             InstallPlayerHandInputs();
+            InstallAddressableAssets();
         }
 
         private void InstallBattleEventFactories()
@@ -101,7 +112,7 @@ namespace Zenject.Installers
         {
             Container.Bind<InputActionAsset>()
                 .FromInstance(playerHandInput);
-            
+
             Container.Bind<PlayerHandViewSettings>()
                 .FromInstance(playerHandInputSettings);
 
@@ -117,9 +128,17 @@ namespace Zenject.Installers
 
             Container.BindFactory<CardView, DraggingState, DraggingState.Factory>()
                 .AsSingle();
-            
+
             Container.BindFactory<CardView, TargetingState, TargetingState.Factory>()
                 .AsSingle();
+        }
+
+        private void InstallAddressableAssets()
+        {
+            Container.BindInterfacesAndSelfTo<GameLoop.AddressableAssetLabelLoader>()
+                .FromInstance(addressableAssetLabelLoader);
+
+            Container.QueueForInject(addressableAssetLabelLoader);
         }
     }
 }

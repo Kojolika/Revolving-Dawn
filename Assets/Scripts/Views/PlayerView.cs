@@ -1,29 +1,46 @@
 using Cysharp.Threading.Tasks;
+using Models.Characters;
 using Systems.Managers;
 using UnityEngine;
 using Zenject;
 
 namespace Views
 {
-    public class PlayerView : MonoBehaviour
+    public class PlayerView : MonoBehaviour, ICharacterView, IChangeMaterial
     {
         [SerializeField] SpriteRenderer spriteRenderer;
-        public Models.Player.PlayerClassModel PlayerClassModel { get; private set; }
+
+        public PlayerCharacter PlayerCharacter { get; private set; }
+
+        #region ICharacterView
+        public Character Character => PlayerCharacter;
+        public Collider Collider { get; private set; }
+        public HealthView HealthView { get; private set; }
+        #endregion
 
         [Inject]
-        private void Construct(Models.Player.PlayerClassModel playerClassModel, AddressablesManager addressablesManager)
+        private void Construct(PlayerCharacter playerCharacter, AddressablesManager addressablesManager, HealthView.Factory healthViewFactory)
         {
-            PlayerClassModel = playerClassModel;
+            PlayerCharacter = playerCharacter;
 
-            _ = addressablesManager.LoadGenericAsset(playerClassModel.CharacterAvatarReference,
+            _ = addressablesManager.LoadGenericAsset(playerCharacter.Class.CharacterAvatarReference,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
-                asset => spriteRenderer.sprite = asset
+                asset =>
+                {
+                    spriteRenderer.sprite = asset;
+                    Collider = spriteRenderer.gameObject.AddComponent<BoxCollider>();
+                    HealthView = healthViewFactory.Create(Character.Health, this);
+                }
             );
         }
 
-        public class Factory : PlaceholderFactory<Models.Player.PlayerClassModel, PlayerView>
+        #region IChangeMaterial
+        public void SetMaterial(Material material)
         {
-
+            spriteRenderer.material = material;
         }
+        #endregion
+
+        public class Factory : PlaceholderFactory<PlayerCharacter, PlayerView> { }
     }
 }
