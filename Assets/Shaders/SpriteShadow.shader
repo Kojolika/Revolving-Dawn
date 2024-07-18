@@ -1,4 +1,4 @@
-wqShader "Sprites/Shadow"
+Shader "Sprites/Shadow"
 {
     Properties
     {
@@ -30,7 +30,6 @@ wqShader "Sprites/Shadow"
         #pragma surface surf Lambert vertex:vert nofog nolightmap nodynlightmap keepalpha noinstancing addshadow
         #pragma multi_compile_local _ PIXELSNAP_ON
         #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
-        #pragma multi_compile _ SHADOWS_SCREEN
         #include "UnitySprites.cginc"
 
         struct Input
