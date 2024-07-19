@@ -19,6 +19,7 @@ namespace Models
         [SerializeField] private AssetReferenceT<PlayerClassSODefinition> playerClassDefinition;
         [SerializeField] private CardSODefinition nextCard;
         [SerializeField] private CardSODefinition previousCard;
+        [SerializeField] private bool isLostOnPlay;
         [SerializeReference, DisplayAbstract(typeof(ICombatEffect))] private List<ICombatEffect> playEffects;
 
         public List<ManaSODefinition> Manas => manas;
@@ -26,6 +27,7 @@ namespace Models
         public AssetReferenceT<PlayerClassSODefinition> PlayerClassDefinition => playerClassDefinition;
         public CardSODefinition NextCard => nextCard;
         public CardSODefinition PreviousCard => previousCard;
+        public bool IsLostOnPlay => isLostOnPlay;
         public List<ICombatEffect> PlayEffects => playEffects;
 
         private CardModel representation;
@@ -60,6 +62,9 @@ namespace Models
         [JsonProperty("previous_card")]
         public readonly CardModel PreviousCard;
 
+        [JsonProperty("is_lost_on_play")]
+        public readonly bool IsLostOnPlay;
+
         [JsonProperty("play_effects")]
         public readonly List<ICombatEffect> PlayEffects;
 
@@ -77,6 +82,7 @@ namespace Models
             PlayerClass = card.PlayerClassDefinition;
             NextCard = card.NextCard == null ? null : card.NextCard.Representation;
             PreviousCard = card.PreviousCard == null ? null : card.PreviousCard.Representation;
+            IsLostOnPlay = card.IsLostOnPlay;
             PlayEffects = card.PlayEffects;
         }
     }

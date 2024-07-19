@@ -14,7 +14,6 @@ namespace Models.CardEffects
     /// </summary>
     public interface ICombatEffect
     {
-        List<IBattleEvent> Execute(List<IBuffable> targets);
         List<IBattleEvent> Execute(List<IHealth> targets);
         string Description { get; }
         Targeting.Options Targeting { get; }
@@ -26,11 +25,8 @@ namespace Models.CardEffects
     [Serializable]
     public abstract class CombatEffect : ICombatEffect
     {
-        [SerializeField] private Targeting.Options targeting;
+        [SerializeField, Newtonsoft.Json.JsonProperty("targeting")] private Targeting.Options targeting;
         public Targeting.Options Targeting => targeting;
-
-        public virtual List<IBattleEvent> Execute(List<IBuffable> targets)
-            => Execute(targets.Select(target => target as IHealth).ToList());
         public abstract List<IBattleEvent> Execute(List<IHealth> targets);
         public abstract string Description { get; }
     }

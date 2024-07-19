@@ -40,8 +40,9 @@ namespace Fight
             battleEventQueue.Insert(indexOfEvent, battleEventToInsert);
         }
 
-        public void InsertAfterEvent(IBattleEvent battleEventInQueue, IBattleEvent battleEventToInsert)
+        public void InsertAfterEvent(IBattleEvent battleEventToInsert, IBattleEvent battleEventInQueue)
         {
+            MyLogger.Log($"Inserting {battleEventToInsert.GetType()} after {battleEventInQueue.GetType()}");
             var indexOfEvent = battleEventQueue.IndexOf(battleEventInQueue);
             if (indexOfEvent < 0)
             {
@@ -76,7 +77,7 @@ namespace Fight
                 }
                 else
                 {
-                    await UniTask.Delay(500);
+                    await UniTask.Yield(PlayerLoopTiming.Update);
                 }
             }
         }

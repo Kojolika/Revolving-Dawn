@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Controllers;
 using Fight;
 using Fight.Animations;
@@ -110,6 +111,9 @@ namespace Zenject.Installers
                 .AsSingle();
 
             Container.BindFactory<Character, TurnStartedEvent, TurnStartedEvent.BattleEventFactoryT<TurnStartedEvent>>()
+                .AsSingle();
+
+            Container.BindFactory<CardView, List<IHealth>[], PlayCardEvent, PlayCardEvent.BattleEventFactoryST<PlayCardEvent>>()
                 .AsSingle();
         }
 

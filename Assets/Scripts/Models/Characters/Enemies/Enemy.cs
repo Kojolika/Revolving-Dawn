@@ -1,3 +1,4 @@
+using Models.Buffs;
 using Newtonsoft.Json;
 
 namespace Models.Characters
@@ -18,6 +19,7 @@ namespace Models.Characters
             Name = enemyDefinition.name;
             Model = enemyDefinition.Representation;
             Health = health;
+            Buffs = new();
         }
     }
 }

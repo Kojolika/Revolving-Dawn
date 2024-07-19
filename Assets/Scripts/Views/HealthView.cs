@@ -24,7 +24,7 @@ namespace Views
         [Inject]
         private void Construct(ICharacterView characterView, BattleEngine battleEngine)
         {
-            this.health = characterView.Character.Health;
+            this.health = characterView.CharacterModel.Health;
             this.battleEngine = battleEngine;
             this.characterView = characterView;
             this.healthFillStartingPointX = transform.position.x - healthFillRenderer.bounds.extents.x;

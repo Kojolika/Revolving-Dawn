@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Models.Buffs;
 using Models.Player;
 using Newtonsoft.Json;
 using Settings;
@@ -46,6 +47,7 @@ namespace Models.Characters
             HandSize = characterSettings.HandSize;
             DrawAmount = characterSettings.DrawAmount;
             UsableManaPerTurn = characterSettings.UsableManaPerTurn;
+            Buffs = new();
         }
     }
 }

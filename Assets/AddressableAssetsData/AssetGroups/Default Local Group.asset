@@ -249,6 +249,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - core_fight
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9d53c562953cfc41af9282991fdd5e8
+    m_Address: PlayCardEventAnimation
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3788ab0c79ab5ed46b258ba64fadb02d, type: 2}
   m_SchemaSet:

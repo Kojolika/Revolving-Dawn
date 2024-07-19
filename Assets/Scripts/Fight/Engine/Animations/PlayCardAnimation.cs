@@ -6,8 +6,8 @@ using Views;
 
 namespace Fight.Animations
 {
-    [CreateAssetMenu(menuName = "RevolvingDawn/Fight/Animations/" + nameof(DrawCardAnimation), fileName = "New " + nameof(DrawCardAnimation))]
-    public class DrawCardAnimation : ScriptableObjectAnimation<DrawCardEvent>
+    [CreateAssetMenu(menuName = "RevolvingDawn/Fight/Animations/" + nameof(PlayCardAnimation), fileName = "New " + nameof(PlayCardAnimation))]
+    public class PlayCardAnimation : ScriptableObjectAnimation<PlayCardEvent>
     {
         private PlayerHandView playerHandView;
 
@@ -17,13 +17,13 @@ namespace Fight.Animations
             this.playerHandView = playerHandView;
         }
 
-        public async override UniTask Play(DrawCardEvent battleEvent)
+        public async override UniTask Play(PlayCardEvent battleEvent)
         {
-            await playerHandView.DrawCard(battleEvent.CardDrawn);
+            await playerHandView.PlayCard(battleEvent.CardViewPlayed);
             Addressables.Release(AsyncOperationHandle);
         }
 
-        public override UniTask Undo(DrawCardEvent battleEvent)
+        public override UniTask Undo(PlayCardEvent battleEvent)
         {
             throw new System.NotImplementedException();
         }

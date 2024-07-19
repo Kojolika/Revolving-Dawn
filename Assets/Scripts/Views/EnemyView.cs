@@ -15,7 +15,7 @@ namespace Views
 
         #region ICharacterView
         public SpriteRenderer SpriteRenderer => spriteRenderer;
-        public Character Character => Enemy;
+        public Character CharacterModel => Enemy;
         public Collider Collider { get; private set; }
         public HealthView HealthView { get; private set; }
         public Transform HealthViewLocation => healthViewLocation;

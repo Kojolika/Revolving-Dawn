@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,6 +7,7 @@ using Models.Characters.Player;
 using Settings;
 using Systems.Managers;
 using Tooling.Logging;
+using UnityEngine.XR;
 using Utils.Extensions;
 using Views;
 
@@ -102,6 +104,15 @@ namespace Controllers
                 MyLogger.LogError($"Cannot upgrade a card without an upgrade!");
             }
             card = card.NextCard;
+        }
+
+        public void PlayCard(CardModel card)
+        {
+            if (!decks.Hand.Remove(card))
+            {
+                MyLogger.LogError($"Trying to play a card thats not in the player hand!");
+            }
+            decks.Discard.Add(card);
         }
 
         public void DowngradeCard(CardModel card)

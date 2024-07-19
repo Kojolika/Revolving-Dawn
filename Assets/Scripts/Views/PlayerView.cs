@@ -15,7 +15,7 @@ namespace Views
         public PlayerCharacter PlayerCharacter { get; private set; }
 
         #region ICharacterView
-        public Character Character => PlayerCharacter;
+        public Character CharacterModel => PlayerCharacter;
         public Collider Collider { get; private set; }
         public HealthView HealthView { get; private set; }
         public Transform HealthViewLocation => healthViewLocation;

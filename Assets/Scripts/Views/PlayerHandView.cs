@@ -9,6 +9,9 @@ using Utils;
 using Fight.Animations;
 using Fight;
 using Fight.Input;
+using System.Linq;
+using UI.Common;
+using Tooling.Logging;
 
 namespace Views
 {
@@ -58,9 +61,73 @@ namespace Views
             await CreateHandCurve(playerHandViewSettings.CardDrawMoveSpeed, playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
         }
 
-        public void DiscardCard(CardModel card)
+        public async UniTask PlayCard(CardView cardView)
         {
+            if (!hand.Remove(cardView))
+            {
+                MyLogger.LogError($"Trying to play a card that doesn't exist in the hand!");
+            }
+            cardView.Collider.enabled = false;
 
+            if (!cardView.Model.IsLostOnPlay)
+            {
+                await DiscardCard(cardView);
+            }
+            else
+            {
+                await LoseCard(cardView);
+            }
+        }
+
+        public async UniTask DiscardCard(CardView cardView)
+        {
+            var playCardSeq = Sequence.Create();
+
+            _ = playCardSeq.Insert(0f, Tween.Position(cardView.transform,
+                new Vector3(cardView.transform.position.x, cardView.transform.position.y + 3, cardView.transform.position.z),
+                0.1f,
+                ease: playerHandViewSettings.CardPlayEaseFunction)
+            );
+
+            _ = playCardSeq.Insert(playerHandViewSettings.CardPlayAnimationDuration / 2,
+                Tween.Position(cardView.transform,
+                   cardDiscardLocation.position,
+                   playerHandViewSettings.CardPlayAnimationDuration / 2,
+                   ease: playerHandViewSettings.CardPlayEaseFunction)
+            );
+
+            _ = playCardSeq.Insert(0f, Tween.Rotation(cardView.transform,
+                new Vector3(cardView.transform.rotation.x, cardView.transform.rotation.y, cardView.transform.rotation.z - 90f),
+                playerHandViewSettings.CardPlayAnimationDuration,
+                ease: playerHandViewSettings.CardPlayEaseFunction)
+            );
+
+            _ = playCardSeq.Insert(0f, Tween.Scale(cardView.transform,
+                new Vector3(0.2f, 0.2f, 0.2f),
+                playerHandViewSettings.CardPlayAnimationDuration,
+                ease: playerHandViewSettings.CardPlayEaseFunction)
+            );
+
+            Destroy(cardView);
+
+            await CreateHandCurve(playerHandViewSettings.CardDrawMoveSpeed, playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
+        }
+
+        public async UniTask LoseCard(CardView cardView)
+        {
+            var loseCardSeq = Sequence.Create();
+
+            _ = loseCardSeq.Insert(0f, Tween.Position(cardView.transform,
+                new Vector3(cardView.transform.position.x, cardView.transform.position.y + 3, cardView.transform.position.z),
+                0.1f,
+                ease: playerHandViewSettings.CardPlayEaseFunction)
+            );
+
+            await UniTask.WaitWhile(() => loseCardSeq.isAlive);
+
+            Destroy(cardView);
+
+            await CreateHandCurve(playerHandViewSettings.CardDrawMoveSpeed, playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
         }
 
         public async UniTask CreateHandCurve(float cardSpeed, float cardRotateSpeed, Ease easeFunction)

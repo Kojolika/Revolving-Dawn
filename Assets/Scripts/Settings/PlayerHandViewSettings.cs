@@ -1,3 +1,4 @@
+using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -35,6 +36,12 @@ namespace Settings
         [Tooltip("How much the card is scaled by when its being hovered over.")]
         [SerializeField] private float cardHoverScaleFactor;
 
+        [Tooltip("Time in seconds for the play animation.")]
+        [SerializeField] private float cardPlayAnimationDuration;
+
+        [Tooltip("Play animation ease function.")]
+        [SerializeField] private PrimeTween.Ease cardPlayEaseFunction;
+
 
         [Tooltip("Duration of scaling a card after it was the hovering focus")]
         [SerializeField] private float scaleAnimationDuration;
@@ -54,6 +61,8 @@ namespace Settings
         public PrimeTween.Ease CardHoverMoveFunction => cardHoverMoveFunction;
         public float CardHoverScaleFactor => cardHoverScaleFactor;
         public float ScaleAnimationDuration => scaleAnimationDuration;
+        public float CardPlayAnimationDuration => cardPlayAnimationDuration;
+        public PrimeTween.Ease CardPlayEaseFunction => cardPlayEaseFunction;
         public AssetReferenceT<Material> EnemyOutlineMaterial => enemyOutlineMaterial;
         public AssetReferenceT<Material> FriendlyOutlineMaterial => friendlyOutlineMaterial;
         public AssetReferenceT<Material> DefaultSpriteMaterial => defaultSpriteMaterial;
