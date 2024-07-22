@@ -6,9 +6,11 @@ using Fight.Events;
 using Fight.Input;
 using Mana;
 using Models;
+using Models.Buffs;
 using Models.Characters;
 using Settings;
 using Systems.Managers;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Views;
@@ -21,7 +23,7 @@ namespace Zenject.Installers
         [SerializeField] CardView cardView;
         [SerializeField] PlayerView playerView;
         [SerializeField] EnemyView enemyView;
-        [SerializeField] HealthView healthView;
+        [SerializeField] HealthView healthViewPrefab;
         [SerializeField] PlayerHandView playerHandView;
         [SerializeField] ManaPoolView manaPoolView;
         [SerializeField] ManaView manaView;
@@ -30,6 +32,9 @@ namespace Zenject.Installers
         [SerializeField] PlayerHandViewSettings playerHandInputSettings;
         [SerializeField] TargetingArrowView targetingArrowView;
         [SerializeField] GameLoop.AddressableAssetLabelLoader addressableAssetLabelLoader;
+        [SerializeField] BuffsView buffsViewPrefab;
+        [SerializeField] BuffElement buffElementPrefab;
+
 
         public override void InstallBindings()
         {
@@ -52,7 +57,7 @@ namespace Zenject.Installers
             Container.Bind<Camera>()
                 .FromInstance(Camera.main);
 
-            Container.BindFactory<Models.CardModel, CardView, CardView.Factory>()
+            Container.BindFactory<CardModel, CardView, CardView.Factory>()
                 .FromComponentInNewPrefab(cardView)
                 .AsSingle();
 
@@ -70,7 +75,7 @@ namespace Zenject.Installers
                 .FromFactory<HealthView.CustomFactory>();
 
             Container.Bind<HealthView>()
-                .FromInstance(healthView)
+                .FromInstance(healthViewPrefab)
                 .WhenInjectedInto<HealthView.CustomFactory>();
 
             Container.BindFactory<Models.Mana.ManaSODefinition, ManaView, ManaView.Factory>()
@@ -103,6 +108,7 @@ namespace Zenject.Installers
             InstallBattleEventFactories();
             InstallPlayerHandInputs();
             InstallAddressableAssets();
+            InstallWorldUI();
         }
 
         private void InstallBattleEventFactories()
@@ -148,6 +154,23 @@ namespace Zenject.Installers
                 .FromInstance(addressableAssetLabelLoader);
 
             Container.QueueForInject(addressableAssetLabelLoader);
+        }
+
+        private void InstallWorldUI()
+        {
+            Container.Bind<BuffsView>()
+                .FromInstance(buffsViewPrefab)
+                .WhenInjectedInto<BuffsView.CustomFactory>();
+
+            Container.BindFactory<ICharacterView, BuffsView, BuffsView.Factory>()
+                .FromFactory<BuffsView.CustomFactory>();
+
+            Container.Bind<BuffElement>()
+                .FromInstance(buffElementPrefab)
+                .WhenInjectedInto<BuffElement.CustomFactory>();
+
+            Container.BindFactory<Buff, BuffElement, BuffElement.Factory>()
+                .FromFactory<BuffElement.CustomFactory>();
         }
     }
 }

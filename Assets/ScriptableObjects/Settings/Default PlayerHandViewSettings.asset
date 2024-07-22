@@ -21,8 +21,8 @@ MonoBehaviour:
   cardHoverRotateSpeedInHand: 0.6
   cardHoverMoveFunction: 18
   cardHoverScaleFactor: 1.5
-  cardPlayAnimationDuration: 1
-  cardPlayEaseFunction: 10
+  cardPlayAnimationDuration: 0.5
+  cardPlayEaseFunction: 20
   scaleAnimationDuration: 0.5
   enemyOutlineMaterial:
     m_AssetGUID: 518b59da1374a6a4f8a5fd72ce261ce4

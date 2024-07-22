@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Models.Characters;
 using Systems.Managers;
-using Tooling.Logging;
 using UnityEngine;
 using Zenject;
 
@@ -12,20 +11,23 @@ namespace Views
         [SerializeField] SpriteRenderer spriteRenderer;
         [SerializeField] Transform healthViewLocation;
 
-        public PlayerCharacter PlayerCharacter { get; private set; }
+        private PlayerCharacter playerCharacter;
+        private BuffsView buffsView;
 
         #region ICharacterView
-        public Character CharacterModel => PlayerCharacter;
+        public Character CharacterModel => playerCharacter;
         public Collider Collider { get; private set; }
         public HealthView HealthView { get; private set; }
         public Transform HealthViewLocation => healthViewLocation;
-        public SpriteRenderer CharacterRenderer => spriteRenderer;
         #endregion
 
         [Inject]
-        private void Construct(PlayerCharacter playerCharacter, AddressablesManager addressablesManager, HealthView.Factory healthViewFactory)
+        private void Construct(PlayerCharacter playerCharacter, 
+            AddressablesManager addressablesManager, 
+            HealthView.Factory healthViewFactory,
+             BuffsView.Factory buffsViewFactory )
         {
-            PlayerCharacter = playerCharacter;
+            this.playerCharacter = playerCharacter;
 
             _ = addressablesManager.LoadGenericAsset(playerCharacter.Class.CharacterAvatarReference,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
@@ -34,6 +36,7 @@ namespace Views
                     spriteRenderer.sprite = asset;
                     Collider = spriteRenderer.gameObject.AddComponent<BoxCollider>();
                     HealthView = healthViewFactory.Create(this);
+                    buffsView = buffsViewFactory.Create(this); 
                 }
             );
         }

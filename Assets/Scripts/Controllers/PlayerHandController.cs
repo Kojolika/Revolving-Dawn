@@ -36,7 +36,7 @@ namespace Controllers
         /// <param name="deck">Deck to shuffle.</param>
         public void ShuffleDeck(List<CardModel> deck)
         {
-            var rng = new System.Random();
+            var rng = new Random();
             int deckSize = deck.Count - 1;
             while (deckSize > 1)
             {
@@ -113,6 +113,7 @@ namespace Controllers
                 MyLogger.LogError($"Trying to play a card thats not in the player hand!");
             }
             decks.Discard.Add(card);
+            playerHandView.RemoveCardFromHand(card);
         }
 
         public void DowngradeCard(CardModel card)

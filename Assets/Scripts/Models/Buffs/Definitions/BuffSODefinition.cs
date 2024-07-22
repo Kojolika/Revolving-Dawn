@@ -19,18 +19,7 @@ namespace Models.Buffs
         public AssetReferenceSprite Icon => icon;
         public ulong MaxStackSize => maxStackSize;
         public List<IBuffProperty> BuffProperties => buffProperties;
-
-
-        private SerializableBuffDefinition representation;
-        public SerializableBuffDefinition Representation
-        {
-            get
-            {
-                representation ??= new SerializableBuffDefinition(this);
-                return representation;
-            }
-            set => representation = value;
-        }
+        public SerializableBuffDefinition Representation => new (this);
     }
 
     public class SerializableBuffDefinition

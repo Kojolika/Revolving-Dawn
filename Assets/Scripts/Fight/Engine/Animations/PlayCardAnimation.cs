@@ -19,7 +19,7 @@ namespace Fight.Animations
 
         public async override UniTask Play(PlayCardEvent battleEvent)
         {
-            await playerHandView.PlayCard(battleEvent.CardViewPlayed);
+            await playerHandView.PlayCardAnimation(battleEvent.CardViewPlayed);
             Addressables.Release(AsyncOperationHandle);
         }
 

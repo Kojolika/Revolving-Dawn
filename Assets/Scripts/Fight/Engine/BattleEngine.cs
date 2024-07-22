@@ -42,7 +42,6 @@ namespace Fight
 
         public void InsertAfterEvent(IBattleEvent battleEventToInsert, IBattleEvent battleEventInQueue)
         {
-            MyLogger.Log($"Inserting {battleEventToInsert.GetType()} after {battleEventInQueue.GetType()}");
             var indexOfEvent = battleEventQueue.IndexOf(battleEventInQueue);
             if (indexOfEvent < 0)
             {

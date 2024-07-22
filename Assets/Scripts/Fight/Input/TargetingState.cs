@@ -195,11 +195,11 @@ namespace Fight
                         targetingList.Add(hoveredCharacterView.CharacterModel);
                         break;
                     case Cards.Targeting.Options.RandomEnemy:
-                        var enemyArray = levelView.EnemyLookup.Values.ToArray();
-                        var numEnemies = enemyArray.Length;
+                        var enemyViewArray = levelView.EnemyLookup.Values.ToArray();
+                        var numEnemies = enemyViewArray.Length;
                         var rng = new System.Random();
                         var enemyNum = rng.Next(numEnemies - 1);
-                        targetingList.Add(enemyArray[enemyNum].Enemy);
+                        targetingList.Add(enemyViewArray[enemyNum].Enemy);
                         break;
                     case Cards.Targeting.Options.AllEnemies:
                         targetingList.AddRange(levelView.EnemyLookup.Values.Select(enemyView => enemyView.Enemy));

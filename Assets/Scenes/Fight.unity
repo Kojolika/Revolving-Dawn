@@ -947,57 +947,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: cardView
+      propertyPath: worldUICamera
       value: 
-      objectReference: {fileID: 5688237593754736355, guid: f4de30e169568b540a79161afe6ac71f, type: 3}
+      objectReference: {fileID: 3568659023452448295, guid: 1e4bcbecdc417f4498a6e7e92a717688, type: 3}
     - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: manaView
+      propertyPath: worldUICanvas
       value: 
-      objectReference: {fileID: 6056615806283124606, guid: e388ebfbc81f23f48aafdb9d746d5b17, type: 3}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: enemyView
-      value: 
-      objectReference: {fileID: 669354274644052179, guid: 8931cf9159f557642add1ca147fa21de, type: 3}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: levelView
-      value: 
-      objectReference: {fileID: 4115722748415284752, guid: 1c4ff16ac40f02748aaaedf5c473db3a, type: 3}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: healthView
-      value: 
-      objectReference: {fileID: 4416358815584914835, guid: a41dcbc925d094b4096a704ad71db853, type: 3}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: playerView
-      value: 
-      objectReference: {fileID: 2830729349787752623, guid: cbf9eabb409d3a648adb6b60a69d297e, type: 3}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: manaPoolView
-      value: 
-      objectReference: {fileID: 5870496563720125087, guid: 03e4e9f04c8d42f4887c32baa366a57b, type: 3}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: playerHandView
-      value: 
-      objectReference: {fileID: 2466177272251067132, guid: 0698591aca8ef854ba4dc07a2623558d, type: 3}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: playerHandInput
-      value: 
-      objectReference: {fileID: -944628639613478452, guid: 10cb80aa9e274ce46bfec653475a6800, type: 3}
+      objectReference: {fileID: 2994827023560284074, guid: 9dd547bdcddba6443ad8b4e801b9b2d9, type: 3}
     - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
       propertyPath: fightOverlayCanvas
       value: 
       objectReference: {fileID: 1712375764}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: targetingArrowView
-      value: 
-      objectReference: {fileID: 1663575585176223094, guid: 103665c0efeea1b42bee8a46f52d3826, type: 3}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: playerHandInputSettings
-      value: 
-      objectReference: {fileID: 11400000, guid: 9dac15a4eb650324d872bd421dca4125, type: 2}
-    - target: {fileID: -2186297904051007242, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
-      propertyPath: addressableAssetLabelLoader
-      value: 
-      objectReference: {fileID: 11400000, guid: 97c477eae4a6b294cb7a19e795365578, type: 2}
     - target: {fileID: 3050639727896682978, guid: 21b56309a79ed274ba3b94ed2107f9f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1246,7 +1206,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 16439
+    m_Bits: 17463
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2426,12 +2386,12 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0

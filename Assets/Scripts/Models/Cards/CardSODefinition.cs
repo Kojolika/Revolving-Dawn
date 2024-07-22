@@ -29,17 +29,7 @@ namespace Models
         public CardSODefinition PreviousCard => previousCard;
         public bool IsLostOnPlay => isLostOnPlay;
         public List<ICombatEffect> PlayEffects => playEffects;
-
-        private CardModel representation;
-        public CardModel Representation
-        {
-            get
-            {
-                representation ??= new CardModel(this);
-                return representation;
-            }
-            private set => representation = value;
-        }
+        public CardModel Representation => new(this);
     }
 
     public class CardModel

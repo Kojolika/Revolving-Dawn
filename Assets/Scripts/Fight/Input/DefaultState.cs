@@ -21,7 +21,7 @@ namespace Fight.Input
         public override void OnEnter()
         {
             base.OnEnter();
-            _ = playerHandView.CreateHandCurve(playerHandViewSettings.CardHoverMoveSpeedInHand,
+            _ = playerHandView.CreateHandCurveAnimation(playerHandViewSettings.CardHoverMoveSpeedInHand,
                 playerHandViewSettings.CardHoverRotateSpeedInHand,
                 playerHandViewSettings.CardHoverMoveFunction);
         }
