@@ -2,16 +2,16 @@ using Cysharp.Threading.Tasks;
 using Models.Buffs;
 using Systems.Managers;
 using TMPro;
+using Tooling.Logging;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 namespace Views
 {
     public class BuffElement : MonoBehaviour
     {
-        [SerializeField] Image buffArt;
-        [SerializeField] TextMeshProUGUI buffAmount;
+        [SerializeField] SpriteRenderer buffArt;
+        [SerializeField] TextMeshPro buffAmount;
 
         public Buff Buff { get; private set; }
 
@@ -20,6 +20,7 @@ namespace Views
         {
             Buff = buff;
             SetStackSize(buff.StackSize);
+            MyLogger.Log($"Icon : {buff.Definition.Icon}");
             _ = addressablesManager.LoadGenericAsset(buff.Definition.Icon,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset => buffArt.sprite = asset

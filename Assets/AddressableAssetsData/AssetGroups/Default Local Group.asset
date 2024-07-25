@@ -191,11 +191,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 63102531cc50a29459bb58fbf0d12221
-    m_Address: buff_block
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 083b62d404bf9bd47bed1e084f79134d
     m_Address: card_art_rewind
     m_ReadOnly: 0
@@ -242,17 +237,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - core
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 47ab7adadd0c70547a964e9c71171eca
-    m_Address: healthview_sprite
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core_fight
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c9d53c562953cfc41af9282991fdd5e8
-    m_Address: PlayCardEventAnimation
-    m_ReadOnly: 0
-    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3788ab0c79ab5ed46b258ba64fadb02d, type: 2}

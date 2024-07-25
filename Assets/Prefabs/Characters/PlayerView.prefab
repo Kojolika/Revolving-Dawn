@@ -116,7 +116,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2050995922989576365}
-  - {fileID: 7932950794104574881}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2830729349787752623
@@ -132,7 +131,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6947203264631182340}
-  healthViewLocation: {fileID: 7932950794104574881}
 --- !u!114 &3146523260729729364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,34 +143,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc3c569283f690e4b821b63f21655074, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &8758544425232858945
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7932950794104574881}
-  m_Layer: 0
-  m_Name: HealthViewLocation
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7932950794104574881
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8758544425232858945}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.584, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1023268657031817424}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

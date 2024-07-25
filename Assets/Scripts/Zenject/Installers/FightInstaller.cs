@@ -9,6 +9,7 @@ using Models;
 using Models.Buffs;
 using Models.Characters;
 using Settings;
+using Systems;
 using Systems.Managers;
 using UI;
 using UnityEngine;
@@ -32,6 +33,7 @@ namespace Zenject.Installers
         [SerializeField] PlayerHandViewSettings playerHandInputSettings;
         [SerializeField] TargetingArrowView targetingArrowView;
         [SerializeField] GameLoop.AddressableAssetLabelLoader addressableAssetLabelLoader;
+        [SerializeField] WorldUI worldUIPrefab;
         [SerializeField] BuffsView buffsViewPrefab;
         [SerializeField] BuffElement buffElementPrefab;
 
@@ -158,6 +160,11 @@ namespace Zenject.Installers
 
         private void InstallWorldUI()
         {
+            Container.Bind<WorldUI>()
+                .FromComponentInNewPrefab(worldUIPrefab)
+                .AsSingle()
+                .NonLazy();
+
             Container.Bind<BuffsView>()
                 .FromInstance(buffsViewPrefab)
                 .WhenInjectedInto<BuffsView.CustomFactory>();

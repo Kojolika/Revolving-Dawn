@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6317859447510527332}
   - component: {fileID: 4000840512813737353}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7440742769955836602}
   - component: {fileID: 500508520124509758}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,7 +181,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5234166543892061936}
   - component: {fileID: 4416358815584914835}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HealthView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -233,7 +233,7 @@ GameObject:
   - component: {fileID: 2767716191507644541}
   - component: {fileID: 6607583890933167551}
   - component: {fileID: 3364924423455359066}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -373,7 +373,7 @@ GameObject:
   - component: {fileID: 7058212578343174699}
   - component: {fileID: 360564240933691413}
   - component: {fileID: 3815793341152141564}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

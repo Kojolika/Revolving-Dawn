@@ -7,8 +7,7 @@ namespace Views
     {
         Character CharacterModel { get; }
         Collider Collider { get; }
-        HealthView HealthView { get; }
-        Transform HealthViewLocation { get; }
         Transform transform { get; }
+        Renderer Renderer { get; }
     }
 }

@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Fight.Events;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Views;
 
 namespace Fight.Animations
@@ -20,7 +19,7 @@ namespace Fight.Animations
         public async override UniTask Play(PlayCardEvent battleEvent)
         {
             await playerHandView.PlayCardAnimation(battleEvent.CardViewPlayed);
-            Addressables.Release(AsyncOperationHandle);
+            IsFinished = true;
         }
 
         public override UniTask Undo(PlayCardEvent battleEvent)

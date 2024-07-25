@@ -4,10 +4,10 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Systems.Managers.Base;
 using Tooling.Logging;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
+using Utils.Extensions;
 
 namespace Systems.Managers
 {
@@ -39,8 +39,54 @@ namespace Systems.Managers
             CancellationToken cancellationToken = default
         ) where T : UnityEngine.Object
         {
-            var locations = await Addressables.LoadResourceLocationsAsync(assetReference);
-            return await LoadGenericAsset(locations[0], releaseCondition, onSuccess, onFail, cancellationToken);
+            var locationsOpHandle = Addressables.LoadResourceLocationsAsync(assetReference, typeof(T));
+
+            var locations = await locationsOpHandle.Task;
+            if (locations.IsNullOrEmpty())
+            {
+                onFail?.Invoke();
+                MyLogger.LogError($"Attempted to load asset {assetReference} of type {typeof(T)} but could not find a resource location for the asset.");
+                Addressables.Release(locationsOpHandle);
+                return null;
+            }
+            var asset = await LoadGenericAsset(locations[0], releaseCondition, onSuccess, onFail, cancellationToken);
+            Addressables.Release(locationsOpHandle);
+            return asset;
+        }
+
+        public T LoadGenericAssetSync<T>(AssetReferenceT<T> assetReference,
+            Func<bool> releaseCondition,
+            CancellationToken cancellationToken = default)
+            where T : UnityEngine.Object
+        {
+            var locationsOpHandle = Addressables.LoadResourceLocationsAsync(assetReference, typeof(T));
+            locationsOpHandle.WaitForCompletion();
+
+            var locations = locationsOpHandle.Result;
+            if (locations.IsNullOrEmpty())
+            {
+                MyLogger.LogError($"Attempted to load asset {assetReference} of type {typeof(T)} but could not find a resource location for the asset.");
+                Addressables.Release(locationsOpHandle);
+                return null;
+            }
+            return LoadAssetInternalSync<T>(locations[0].PrimaryKey, releaseCondition, cancellationToken);
+        }
+        public T LoadGenericAssetSync<T>(string key,
+            Func<bool> releaseCondition,
+            CancellationToken cancellationToken = default)
+            where T : UnityEngine.Object
+        {
+            var locationsOpHandle = Addressables.LoadResourceLocationsAsync(key, typeof(T));
+            locationsOpHandle.WaitForCompletion();
+
+            var locations = locationsOpHandle.Result;
+            if (locations.IsNullOrEmpty())
+            {
+                MyLogger.LogError($"Attempted to load asset {key} of type {typeof(T)} but could not find a resource location for the asset.");
+                Addressables.Release(locationsOpHandle);
+                return null;
+            }
+            return LoadAssetInternalSync<T>(locations[0].PrimaryKey, releaseCondition, cancellationToken);
         }
 
         public async UniTask<T> LoadGenericAsset<T>(
@@ -52,6 +98,20 @@ namespace Systems.Managers
         ) where T : UnityEngine.Object
             => await LoadAssetInternal(resourceLocation.PrimaryKey, releaseCondition, onSuccess, onFail, cancellationToken);
 
+        private T LoadAssetInternalSync<T>(
+            string key,
+            Func<bool> releaseCondition,
+            CancellationToken cancellationToken = default
+        ) where T : UnityEngine.Object
+        {
+            if (loadedAssets.TryGetValue(key, out var asset))
+            {
+                return asset as T;
+            }
+
+            var opHandle = Addressables.LoadAssetAsync<T>(key);
+            return HandleAsyncOperationInternalSync<T>(opHandle, key, releaseCondition, cancellationToken);
+        }
         private async UniTask<T> LoadAssetInternal<T>(
             string key,
             Func<bool> releaseCondition,
@@ -70,8 +130,31 @@ namespace Systems.Managers
             return await HandleAsyncOperationInternal(opHandle, key, releaseCondition, onSuccess, onFail, cancellationToken);
         }
 
-        private async UniTask<T> HandleAsyncOperationInternal<T>(AsyncOperationHandle opHandle,
-            object key,
+        private T HandleAsyncOperationInternalSync<T>(
+            AsyncOperationHandle opHandle,
+            string key,
+            Func<bool> releaseCondition,
+            CancellationToken cancellationToken = default
+            ) where T : UnityEngine.Object
+        {
+            opHandle.WaitForCompletion();
+
+            var asset = opHandle.Result as T;
+            if (asset == null)
+            {
+                return null;
+            }
+
+            loadedAssets[key] = asset;
+
+            _ = ReleaseWhen(releaseCondition, opHandle, key, cancellationToken);
+
+            return asset;
+        }
+
+        private async UniTask<T> HandleAsyncOperationInternal<T>(
+            AsyncOperationHandle opHandle,
+            string key,
             Func<bool> releaseCondition,
             Action<T> onSuccess = null,
             Action onFail = null,

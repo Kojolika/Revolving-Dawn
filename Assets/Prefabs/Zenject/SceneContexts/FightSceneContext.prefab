@@ -90,7 +90,6 @@ MonoBehaviour:
   playerHandInputSettings: {fileID: 11400000, guid: 9dac15a4eb650324d872bd421dca4125, type: 2}
   targetingArrowView: {fileID: 1663575585176223094, guid: 103665c0efeea1b42bee8a46f52d3826, type: 3}
   addressableAssetLabelLoader: {fileID: 11400000, guid: 97c477eae4a6b294cb7a19e795365578, type: 2}
-  worldUICamera: {fileID: 0}
-  worldUICanvas: {fileID: 0}
-  buffsViewPrefab: {fileID: 6798320585891665881, guid: 5d8979dca5914224183c3d5583b4c368, type: 3}
-  buffElementPrefab: {fileID: 3395566377912740150, guid: 735d6661b94c7714eb3c1164b7a6b71c, type: 3}
+  worldUIPrefab: {fileID: 2132309057057465988, guid: f328537a1f2d6d2428536e8a4186b1bb, type: 3}
+  buffsViewPrefab: {fileID: 1757414581884165114, guid: 5d8979dca5914224183c3d5583b4c368, type: 3}
+  buffElementPrefab: {fileID: 3209747162711031200, guid: 735d6661b94c7714eb3c1164b7a6b71c, type: 3}

@@ -9,23 +9,22 @@ namespace Views
     public class PlayerView : MonoBehaviour, ICharacterView, IChangeMaterial
     {
         [SerializeField] SpriteRenderer spriteRenderer;
-        [SerializeField] Transform healthViewLocation;
 
         private PlayerCharacter playerCharacter;
         private BuffsView buffsView;
+        private HealthView healthView;
 
         #region ICharacterView
         public Character CharacterModel => playerCharacter;
         public Collider Collider { get; private set; }
-        public HealthView HealthView { get; private set; }
-        public Transform HealthViewLocation => healthViewLocation;
+        public Renderer Renderer => spriteRenderer;
         #endregion
 
         [Inject]
-        private void Construct(PlayerCharacter playerCharacter, 
-            AddressablesManager addressablesManager, 
+        private void Construct(PlayerCharacter playerCharacter,
+            AddressablesManager addressablesManager,
             HealthView.Factory healthViewFactory,
-             BuffsView.Factory buffsViewFactory )
+            BuffsView.Factory buffsViewFactory)
         {
             this.playerCharacter = playerCharacter;
 
@@ -35,8 +34,8 @@ namespace Views
                 {
                     spriteRenderer.sprite = asset;
                     Collider = spriteRenderer.gameObject.AddComponent<BoxCollider>();
-                    HealthView = healthViewFactory.Create(this);
-                    buffsView = buffsViewFactory.Create(this); 
+                    healthView = healthViewFactory.Create(this);
+                    buffsView = buffsViewFactory.Create(this);
                 }
             );
         }

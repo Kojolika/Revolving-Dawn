@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Systems.Managers;
-using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -41,7 +40,7 @@ namespace GameLoop
                 var resourceLocation = resourceLocationsHandle.Result[i];
                 loadTasks[i] = addressablesManager.LoadGenericAsset<UnityEngine.Object>(resourceLocation, () => cts.Token.IsCancellationRequested);
             }
-            await UniTask.WhenAll(loadTasks);
+            await UniTask.WhenAll(loadTasks).SuppressCancellationThrow();
         }
 
         public void UnloadAssets()

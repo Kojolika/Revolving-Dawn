@@ -9,7 +9,8 @@ namespace Views
     public class EnemyView : MonoBehaviour, ICharacterView, IChangeMaterial
     {
         [SerializeField] SpriteRenderer spriteRenderer;
-        [SerializeField] Transform healthViewLocation;
+
+        private HealthView healthView;
 
         public Enemy Enemy { get; private set; }
 
@@ -17,9 +18,7 @@ namespace Views
         public SpriteRenderer SpriteRenderer => spriteRenderer;
         public Character CharacterModel => Enemy;
         public Collider Collider { get; private set; }
-        public HealthView HealthView { get; private set; }
-        public Transform HealthViewLocation => healthViewLocation;
-        public SpriteRenderer CharacterRenderer => spriteRenderer;
+        public Renderer Renderer => spriteRenderer;
         #endregion
 
         [Inject]
@@ -32,7 +31,7 @@ namespace Views
                 {
                     spriteRenderer.sprite = asset;
                     Collider = spriteRenderer.gameObject.AddComponent<BoxCollider>();
-                    HealthView = healthViewFactory.Create(this);
+                    healthView = healthViewFactory.Create(this);
                 }
             );
         }

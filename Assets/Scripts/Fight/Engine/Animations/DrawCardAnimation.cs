@@ -20,7 +20,7 @@ namespace Fight.Animations
         public async override UniTask Play(DrawCardEvent battleEvent)
         {
             await playerHandView.DrawCard(battleEvent.CardDrawn);
-            Addressables.Release(AsyncOperationHandle);
+            IsFinished = true;
         }
 
         public override UniTask Undo(DrawCardEvent battleEvent)

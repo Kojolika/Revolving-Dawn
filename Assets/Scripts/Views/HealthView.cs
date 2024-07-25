@@ -1,9 +1,12 @@
+using System.Runtime.InteropServices;
 using Fight;
 using Models;
+using Systems;
 using TMPro;
 using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 using Utils;
 using Zenject;
 
@@ -18,8 +21,6 @@ namespace Views
         private Health health;
         private BattleEngine battleEngine;
         private ICharacterView characterView;
-        private float healthFillStartingPointX;
-        private float healthFillSizeX;
 
         [Inject]
         private void Construct(ICharacterView characterView, BattleEngine battleEngine)
@@ -27,8 +28,11 @@ namespace Views
             this.health = characterView.CharacterModel.Health;
             this.battleEngine = battleEngine;
             this.characterView = characterView;
-            this.healthFillStartingPointX = transform.position.x - healthFillRenderer.bounds.extents.x;
-            this.healthFillSizeX = healthFillRenderer.bounds.size.x;
+
+            transform.SetParent(characterView.transform);
+            var localBoundsSizeY = characterView.Renderer.localBounds.size.y;
+            var buffer = localBoundsSizeY * .1f;
+            transform.localPosition = new Vector3(0, localBoundsSizeY + buffer, 0);
 
             UpdateHealthDisplay();
             health.HealthUpdated += OnHealthUpdated;
@@ -40,22 +44,32 @@ namespace Views
         }
 
         private void OnHealthUpdated(ulong amount) => UpdateHealthDisplay();
+
+        /// <summary>
+        /// This changes the scale of the healthBar with the assumption the initial scale is 1.
+        /// </summary>
         private void UpdateHealthDisplay()
         {
             float healthPercent = (float)health.CurrentHealth / health.MaxHealth;
             healthAmountText.SetText($"{health.CurrentHealth}/{health.MaxHealth}");
+
+            // We need to convert the bounds size from world to local space since 
+            // we are moving the fill of the healthBar in local space
+            var boundsSizeBefore = transform.InverseTransformVector(healthFillRenderer.bounds.size).x;
+            var scaleBefore = healthFillRenderer.transform.localScale;
             healthFillRenderer.transform.localScale = new Vector3(
                 healthPercent,
-                healthFillRenderer.transform.localScale.y,
-                healthFillRenderer.transform.localScale.z
+                scaleBefore.y,
+                scaleBefore.z
             );
 
-            /*             var normalizedFillPosition = Computations.Normalize(healthPercent, 0, 1, healthFillStartingPointX, healthFillSizeX);
-                        healthFillRenderer.transform.position = new Vector3(
-                            normalizedFillPosition,
-                            healthFillRenderer.transform.position.y,
-                            healthFillRenderer.transform.position.z
-                        ); */
+            var boundsAfter = transform.InverseTransformVector(healthFillRenderer.bounds.size).x;
+            var positionBefore = healthFillRenderer.transform.localPosition;
+            healthFillRenderer.transform.localPosition = new Vector3(
+                positionBefore.x - (boundsSizeBefore - boundsAfter) / 2f,
+                positionBefore.y,
+                positionBefore.z
+            );
         }
 
         private void OnDestroy()
@@ -77,10 +91,8 @@ namespace Views
 
             public HealthView Create(ICharacterView characterView)
             {
-                var characterViewTransform = characterView.transform;
-                var newHealthView = Instantiate(healthViewPrefab, characterViewTransform);
-                newHealthView.transform.position = characterView.HealthViewLocation.position;
-                diContainer.Inject(newHealthView, new object[] { characterView });
+                var newHealthView = Instantiate(healthViewPrefab, characterView.transform);
+                diContainer.Inject(newHealthView, new ICharacterView[] { characterView });
 
                 return newHealthView;
             }

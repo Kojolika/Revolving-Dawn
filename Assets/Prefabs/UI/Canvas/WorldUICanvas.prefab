@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &6345395597451291307
+--- !u!1001 &7709583558533995384
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -88,6 +88,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 362698057462254006, guid: 3386c82e0ba212c49a44fe96073a4040, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4761672638179503328, guid: 3386c82e0ba212c49a44fe96073a4040, type: 3}
       propertyPath: m_Name
       value: WorldUICanvas
@@ -100,7 +104,8 @@ PrefabInstance:
       propertyPath: m_RenderMode
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7640572954953462668, guid: 3386c82e0ba212c49a44fe96073a4040, type: 3}
     m_RemovedGameObjects:
     - {fileID: 362698057462254006, guid: 3386c82e0ba212c49a44fe96073a4040, type: 3}
     m_AddedGameObjects: []
