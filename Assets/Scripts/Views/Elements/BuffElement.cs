@@ -20,10 +20,12 @@ namespace Views
         {
             Buff = buff;
             SetStackSize(buff.StackSize);
-            MyLogger.Log($"Icon : {buff.Definition.Icon}");
             _ = addressablesManager.LoadGenericAsset(buff.Definition.Icon,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
-                asset => buffArt.sprite = asset
+                asset =>
+                {
+                    buffArt.sprite = asset;
+                }
             );
         }
 

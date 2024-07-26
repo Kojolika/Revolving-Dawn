@@ -13,15 +13,66 @@ namespace Systems.Managers
 {
     public class AddressablesManager : IManager
     {
-        async UniTask IManager.Startup()
+        private Dictionary<string, Dictionary<Type, UnityEngine.Object>> loadedAssets = new();
+        public async UniTask LoadAssetsFromLabels(
+            List<AssetLabelReference> assetLabelReferences,
+            Func<bool> releaseCondition,
+            Action<UnityEngine.Object> onSuccess = null,
+            CancellationToken cancellationToken = default,
+            Action onFail = null)
         {
-            MyLogger.Log("Booting up Addressables.");
-            var addressableHandle = Addressables.InitializeAsync();
-            await UniTask.WaitUntil(() => addressableHandle.IsDone);
+            var resourceLocationsHandle = Addressables.LoadResourceLocationsAsync(assetLabelReferences, Addressables.MergeMode.Union);
+            await resourceLocationsHandle.Task;
+
+            int resourceLocationCount = resourceLocationsHandle.Result.Count;
+            var loadTasks = new UniTask[resourceLocationCount];
+            for (int i = 0; i < resourceLocationCount; i++)
+            {
+                var resourceLocation = resourceLocationsHandle.Result[i];
+                loadTasks[i] = LoadAsset(resourceLocation, releaseCondition, onSuccess, cancellationToken);
+            }
+            await UniTask.WhenAll(loadTasks).SuppressCancellationThrow();
         }
+        private async UniTask LoadAsset(
+            IResourceLocation resourceLocation,
+            Func<bool> releaseCondition,
+            Action<UnityEngine.Object> onSuccess,
+            CancellationToken cancellationToken,
+            Action onFail = null)
+        {
+            var key = resourceLocation.PrimaryKey;
+            var assetType = resourceLocation.ResourceType;
 
-        private Dictionary<object, UnityEngine.Object> loadedAssets = new();
+            if (loadedAssets.TryGetValue(key, out var assetDictionary) && assetDictionary.TryGetValue(assetType, out var asset))
+            {
+                onSuccess?.Invoke(asset);
+            }
+            else
+            {
+                var opHandle = Addressables.LoadAssetAsync<UnityEngine.Object>(resourceLocation);
+                try
+                {
+                    await opHandle.Task;
 
+                    if (!loadedAssets.ContainsKey(key))
+                    {
+                        loadedAssets[key] = new();
+                    }
+                    loadedAssets[key][assetType] = opHandle.Result;
+
+                    onSuccess?.Invoke(opHandle.Result);
+
+                    _ = ReleaseWhen(releaseCondition, opHandle, key, cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    MyLogger.LogError($"Failed to load addressable {key} of type {assetType} with exception {e.Message}");
+
+                    onFail?.Invoke();
+                }
+
+            }
+        }
         /// <summary>
         /// Load an asset defined in the addressable groups.
         /// </summary>
@@ -40,7 +91,6 @@ namespace Systems.Managers
         ) where T : UnityEngine.Object
         {
             var locationsOpHandle = Addressables.LoadResourceLocationsAsync(assetReference, typeof(T));
-
             var locations = await locationsOpHandle.Task;
             if (locations.IsNullOrEmpty())
             {
@@ -54,9 +104,7 @@ namespace Systems.Managers
             return asset;
         }
 
-        public T LoadGenericAssetSync<T>(AssetReferenceT<T> assetReference,
-            Func<bool> releaseCondition,
-            CancellationToken cancellationToken = default)
+        public T LoadGenericAssetSync<T>(AssetReferenceT<T> assetReference, Func<bool> releaseCondition, CancellationToken cancellationToken = default)
             where T : UnityEngine.Object
         {
             var locationsOpHandle = Addressables.LoadResourceLocationsAsync(assetReference, typeof(T));
@@ -71,9 +119,7 @@ namespace Systems.Managers
             }
             return LoadAssetInternalSync<T>(locations[0].PrimaryKey, releaseCondition, cancellationToken);
         }
-        public T LoadGenericAssetSync<T>(string key,
-            Func<bool> releaseCondition,
-            CancellationToken cancellationToken = default)
+        public T LoadGenericAssetSync<T>(string key, Func<bool> releaseCondition, CancellationToken cancellationToken = default)
             where T : UnityEngine.Object
         {
             var locationsOpHandle = Addressables.LoadResourceLocationsAsync(key, typeof(T));
@@ -104,9 +150,9 @@ namespace Systems.Managers
             CancellationToken cancellationToken = default
         ) where T : UnityEngine.Object
         {
-            if (loadedAssets.TryGetValue(key, out var asset))
+            if (loadedAssets.TryGetValue(key, out var assetDictionary) && assetDictionary.TryGetValue(typeof(T), out var asset))
             {
-                return asset as T;
+                return (T)asset;
             }
 
             var opHandle = Addressables.LoadAssetAsync<T>(key);
@@ -120,10 +166,10 @@ namespace Systems.Managers
             CancellationToken cancellationToken = default
         ) where T : UnityEngine.Object
         {
-            if (loadedAssets.TryGetValue(key, out var asset))
+            if (loadedAssets.TryGetValue(key, out var assetDictionary) && assetDictionary.TryGetValue(typeof(T), out var asset))
             {
-                onSuccess?.Invoke(asset as T);
-                return asset as T;
+                onSuccess?.Invoke((T)asset);
+                return (T)asset;
             }
 
             var opHandle = Addressables.LoadAssetAsync<T>(key);
@@ -139,13 +185,18 @@ namespace Systems.Managers
         {
             opHandle.WaitForCompletion();
 
-            var asset = opHandle.Result as T;
+            var asset = (T)opHandle.Result;
             if (asset == null)
             {
                 return null;
             }
 
-            loadedAssets[key] = asset;
+            if (!loadedAssets.ContainsKey(key))
+            {
+                loadedAssets[key] = new();
+            }
+
+            loadedAssets[key][typeof(T)] = (T)opHandle.Result;
 
             _ = ReleaseWhen(releaseCondition, opHandle, key, cancellationToken);
 
@@ -164,26 +215,31 @@ namespace Systems.Managers
             try
             {
                 await opHandle.Task;
-                loadedAssets[key] = opHandle.Result as T;
+
+                if (!loadedAssets.ContainsKey(key))
+                {
+                    loadedAssets[key] = new();
+                }
+                loadedAssets[key][typeof(T)] = (T)opHandle.Result;
+
+                onSuccess?.Invoke((T)opHandle.Result);
 
                 _ = ReleaseWhen(releaseCondition, opHandle, key, cancellationToken);
             }
             catch (Exception e)
             {
-                MyLogger.LogError($"Failed to load addressable {key} of type {typeof(T)} with exception {e}");
+                MyLogger.LogError($"Failed to load addressable {key} of type {typeof(T)} with exception {e.Message}");
 
                 onFail?.Invoke();
             }
 
-            onSuccess?.Invoke(opHandle.Result as T);
-
-            return opHandle.Result as T;
+            return (T)opHandle.Result;
         }
 
         async UniTask ReleaseWhen(
             Func<bool> condition,
             AsyncOperationHandle operationHandle,
-            object key,
+            string key,
             CancellationToken cancellationToken
         )
         {

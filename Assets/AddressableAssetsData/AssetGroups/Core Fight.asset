@@ -77,4 +77,3 @@ MonoBehaviour:
     m_Schemas:
     - {fileID: 11400000, guid: 670693c6f1755c74a97820edc28de455, type: 2}
     - {fileID: 11400000, guid: 09eb5a7f5c54a764d9b3dc18c25cb1d1, type: 2}
-    - {fileID: 11400000, guid: dcbf28686d3b98546a89c82e5d279b4d, type: 2}

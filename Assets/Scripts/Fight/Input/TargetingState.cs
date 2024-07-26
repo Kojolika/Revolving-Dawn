@@ -118,7 +118,7 @@ namespace Fight
 
                 // If there is a play affect that needs a specific target and there is no target chosen,
                 // return to the default state (prevent the card from being played)
-                if (shouldDrawCurve && previousFrameHoveredCharacter == null)
+                if (shouldDrawCurve && previousFrameHoveredCharacter == null && previousFrameHoveredCharacter is not EnemyView)
                 {
                     return;
                 }

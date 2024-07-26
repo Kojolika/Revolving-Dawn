@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ooze
   m_EditorClassIdentifier: 
   icon:
-    m_AssetGUID: 4f29e4772184bae4d9f6977d4877148c
+    m_AssetGUID: 70fcb16acd035b94c83693e80d6a7b79
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

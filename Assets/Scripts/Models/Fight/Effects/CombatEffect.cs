@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using System;
 using Fight.Events;
+using Newtonsoft.Json;
 
 
 namespace Models.CardEffects
@@ -25,8 +26,12 @@ namespace Models.CardEffects
     [Serializable]
     public abstract class CombatEffect : ICombatEffect
     {
-        [SerializeField, Newtonsoft.Json.JsonProperty("targeting")] private Targeting.Options targeting;
+        [SerializeField, JsonProperty("targeting")]
+        private Targeting.Options targeting;
+
+        [JsonIgnore]
         public Targeting.Options Targeting => targeting;
+
         public abstract List<IBattleEvent> Execute(List<IHealth> targets);
         public abstract string Description { get; }
     }
