@@ -10,18 +10,23 @@ namespace Views
     {
         [SerializeField] SpriteRenderer spriteRenderer;
 
-        public PlayerCharacter PlayerCharacter { get; private set; }
+        private PlayerCharacter playerCharacter;
+        private BuffsView buffsView;
+        private HealthView healthView;
 
         #region ICharacterView
-        public Character Character => PlayerCharacter;
+        public Character CharacterModel => playerCharacter;
         public Collider Collider { get; private set; }
-        public HealthView HealthView { get; private set; }
+        public Renderer Renderer => spriteRenderer;
         #endregion
 
         [Inject]
-        private void Construct(PlayerCharacter playerCharacter, AddressablesManager addressablesManager, HealthView.Factory healthViewFactory)
+        private void Construct(PlayerCharacter playerCharacter,
+            AddressablesManager addressablesManager,
+            HealthView.Factory healthViewFactory,
+            BuffsView.Factory buffsViewFactory)
         {
-            PlayerCharacter = playerCharacter;
+            this.playerCharacter = playerCharacter;
 
             _ = addressablesManager.LoadGenericAsset(playerCharacter.Class.CharacterAvatarReference,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
@@ -29,7 +34,8 @@ namespace Views
                 {
                     spriteRenderer.sprite = asset;
                     Collider = spriteRenderer.gameObject.AddComponent<BoxCollider>();
-                    HealthView = healthViewFactory.Create(Character.Health, this);
+                    healthView = healthViewFactory.Create(this);
+                    buffsView = buffsViewFactory.Create(this);
                 }
             );
         }

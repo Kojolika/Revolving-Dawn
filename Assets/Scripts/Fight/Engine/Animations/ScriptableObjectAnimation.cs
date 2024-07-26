@@ -13,7 +13,7 @@ namespace Fight.Animations
         [SerializeField] protected Animator animatorPrefab;
 
         public bool ShouldWait => shouldWait;
-        public AsyncOperationHandle AsyncOperationHandle { get; set; }
+        public bool IsFinished { get; protected set; }
 
         public virtual async UniTask Play(IBattleEvent battleEvent) => await PlayAndReleaseAnimator(Instantiate(animatorPrefab));
         public virtual UniTask Undo(IBattleEvent battleEvent)
@@ -35,7 +35,7 @@ namespace Fight.Animations
             animatorGO.SetActive(false);
             //Destroy(animator);
             Destroy(animatorGO);
-            Addressables.Release(AsyncOperationHandle);
+            IsFinished = true;
         }
     }
 

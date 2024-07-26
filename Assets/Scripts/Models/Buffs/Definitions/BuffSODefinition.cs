@@ -8,7 +8,7 @@ using Utils.Attributes;
 namespace Models.Buffs
 {
     [CreateAssetMenu(fileName = nameof(BuffSODefinition), menuName = "RevolvingDawn/Buffs/" + nameof(BuffSODefinition))]
-    public class BuffSODefinition : ScriptableObject, IHaveSerializableRepresentation<SerializableBuffDefinition>
+    public class BuffSODefinition : ScriptableObject, IHaveSerializableRepresentation<BuffDefinition>
     {
         [SerializeField] private AssetReferenceSprite icon;
         [SerializeField] private ulong maxStackSize;
@@ -19,21 +19,10 @@ namespace Models.Buffs
         public AssetReferenceSprite Icon => icon;
         public ulong MaxStackSize => maxStackSize;
         public List<IBuffProperty> BuffProperties => buffProperties;
-
-
-        private SerializableBuffDefinition representation;
-        public SerializableBuffDefinition Representation
-        {
-            get
-            {
-                representation ??= new SerializableBuffDefinition(this);
-                return representation;
-            }
-            set => representation = value;
-        }
+        public BuffDefinition Representation => new (this);
     }
 
-    public class SerializableBuffDefinition
+    public class BuffDefinition
     {
         [JsonProperty("name")]
         public readonly string Name;
@@ -48,12 +37,12 @@ namespace Models.Buffs
         public readonly List<IBuffProperty> BuffProperties;
 
         [JsonConstructor]
-        public SerializableBuffDefinition()
+        public BuffDefinition()
         {
 
         }
 
-        public SerializableBuffDefinition(BuffSODefinition buffDefinition)
+        public BuffDefinition(BuffSODefinition buffDefinition)
         {
             Name = buffDefinition.Name;
             Icon = buffDefinition.Icon;

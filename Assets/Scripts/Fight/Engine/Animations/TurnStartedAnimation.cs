@@ -26,6 +26,7 @@ namespace Fight.Animations
             text.SetText(battleEvent.Log());
 
             await PlayAndReleaseAnimator(Instantiate(animatorPrefab, canvas.transform));
+            IsFinished = true;
         }
 
         public override UniTask Undo(TurnStartedEvent battleEvent)

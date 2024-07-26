@@ -186,16 +186,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4f29e4772184bae4d9f6977d4877148c
-    m_Address: buff_ooze
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 63102531cc50a29459bb58fbf0d12221
-    m_Address: buff_block
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 083b62d404bf9bd47bed1e084f79134d
     m_Address: card_art_rewind
     m_ReadOnly: 0
@@ -243,11 +233,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - core
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 47ab7adadd0c70547a964e9c71171eca
-    m_Address: healthview_sprite
+  - m_GUID: be9f5ffc098f09d4ab131751facf4b75
+    m_Address: buff_weaken
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - core_fight
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70fcb16acd035b94c83693e80d6a7b79
+    m_Address: buff_silence
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 861c7ff9e4dea1846871fe896cfca3e4
+    m_Address: buff_fracture
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3788ab0c79ab5ed46b258ba64fadb02d, type: 2}

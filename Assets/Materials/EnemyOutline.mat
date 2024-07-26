@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: EnemyOutline
-  m_Shader: {fileID: 4800000, guid: 7822449158600ec41b7c18041abf3fcd, type: 3}
+  m_Shader: {fileID: 4800000, guid: 2a7bfe53bd8b7734c8ce7f26294fda9d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:

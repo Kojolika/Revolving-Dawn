@@ -5,8 +5,9 @@ namespace Views
 {
     public interface ICharacterView
     {
-        Character Character { get; }
+        Character CharacterModel { get; }
         Collider Collider { get; }
-        HealthView HealthView { get; }
+        Transform transform { get; }
+        Renderer Renderer { get; }
     }
 }

@@ -77,7 +77,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d80f348b0444b64c961a95e75fd1e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelView: {fileID: 0}
-  cardView: {fileID: 0}
-  playerView: {fileID: 0}
-  enemyView: {fileID: 0}
+  levelView: {fileID: 4115722748415284752, guid: 1c4ff16ac40f02748aaaedf5c473db3a, type: 3}
+  cardView: {fileID: 5688237593754736355, guid: f4de30e169568b540a79161afe6ac71f, type: 3}
+  playerView: {fileID: 2830729349787752623, guid: cbf9eabb409d3a648adb6b60a69d297e, type: 3}
+  enemyView: {fileID: 669354274644052179, guid: 8931cf9159f557642add1ca147fa21de, type: 3}
+  healthViewPrefab: {fileID: 4416358815584914835, guid: a41dcbc925d094b4096a704ad71db853, type: 3}
+  playerHandView: {fileID: 2466177272251067132, guid: 0698591aca8ef854ba4dc07a2623558d, type: 3}
+  manaPoolView: {fileID: 5870496563720125087, guid: 03e4e9f04c8d42f4887c32baa366a57b, type: 3}
+  manaView: {fileID: 6056615806283124606, guid: e388ebfbc81f23f48aafdb9d746d5b17, type: 3}
+  fightOverlayCanvas: {fileID: 0}
+  playerHandInput: {fileID: -944628639613478452, guid: 10cb80aa9e274ce46bfec653475a6800, type: 3}
+  playerHandInputSettings: {fileID: 11400000, guid: 9dac15a4eb650324d872bd421dca4125, type: 2}
+  targetingArrowView: {fileID: 1663575585176223094, guid: 103665c0efeea1b42bee8a46f52d3826, type: 3}
+  addressableAssetLabelLoader: {fileID: 11400000, guid: 97c477eae4a6b294cb7a19e795365578, type: 2}
+  worldUIPrefab: {fileID: 2132309057057465988, guid: f328537a1f2d6d2428536e8a4186b1bb, type: 3}
+  buffsViewPrefab: {fileID: 1757414581884165114, guid: 5d8979dca5914224183c3d5583b4c368, type: 3}
+  buffElementPrefab: {fileID: 3209747162711031200, guid: 735d6661b94c7714eb3c1164b7a6b71c, type: 3}

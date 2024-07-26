@@ -21,17 +21,7 @@ namespace Models.Player
         public string Description => description;
         public AssetReferenceSprite CharacterAvatarReference => characterAvatarReference;
         public AssetReferenceSprite CardBorderReference => cardBorderReference;
-
-        private PlayerClassModel representation;
-        public PlayerClassModel Representation
-        {
-            get
-            {
-                representation ??= new PlayerClassModel(this);
-                return representation;
-            }
-            private set => representation = value;
-        }
+        public PlayerClassModel Representation => new(this);
     }
 
     public class PlayerClassModel

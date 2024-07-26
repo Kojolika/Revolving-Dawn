@@ -1,3 +1,4 @@
+using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -12,7 +13,7 @@ namespace Settings
         [Tooltip("The amount of pieces of the arrow curve when targeting with cards.")]
         [SerializeField] int numberOfArrowPiecesForTargetingArrow;
 
-
+        [Space(20)]
         [Tooltip("The type of move function cards use when being drawn.")]
         [SerializeField] private PrimeTween.Ease cardDrawMoveFunction;
 
@@ -22,7 +23,7 @@ namespace Settings
         [Tooltip("The speed which cards will be rotated around in the player hand when drawn or discarded")]
         [SerializeField] private float cardDrawRotateSpeed;
 
-
+        [Space(20)]
         [Tooltip("The speed which cards will be moved around in the player hand when hovering a card.")]
         [SerializeField] private float cardHoverMoveSpeedInHand;
 
@@ -35,10 +36,17 @@ namespace Settings
         [Tooltip("How much the card is scaled by when its being hovered over.")]
         [SerializeField] private float cardHoverScaleFactor;
 
-
         [Tooltip("Duration of scaling a card after it was the hovering focus")]
         [SerializeField] private float scaleAnimationDuration;
 
+        [Space(20)]
+        [Tooltip("Time in seconds for the play animation.")]
+        [SerializeField] private float cardPlayAnimationDuration;
+
+        [Tooltip("Play animation ease function.")]
+        [SerializeField] private PrimeTween.Ease cardPlayEaseFunction;
+
+        [Space(20)]
         [SerializeField] private AssetReferenceT<Material> enemyOutlineMaterial;
         [SerializeField] private AssetReferenceT<Material> friendlyOutlineMaterial;
         [SerializeField] private AssetReferenceT<Material> defaultSpriteMaterial;
@@ -54,6 +62,8 @@ namespace Settings
         public PrimeTween.Ease CardHoverMoveFunction => cardHoverMoveFunction;
         public float CardHoverScaleFactor => cardHoverScaleFactor;
         public float ScaleAnimationDuration => scaleAnimationDuration;
+        public float CardPlayAnimationDuration => cardPlayAnimationDuration;
+        public PrimeTween.Ease CardPlayEaseFunction => cardPlayEaseFunction;
         public AssetReferenceT<Material> EnemyOutlineMaterial => enemyOutlineMaterial;
         public AssetReferenceT<Material> FriendlyOutlineMaterial => friendlyOutlineMaterial;
         public AssetReferenceT<Material> DefaultSpriteMaterial => defaultSpriteMaterial;

@@ -21,7 +21,7 @@ namespace Fight.Events
         public virtual void OnAfterExecute(S source, T target, BattleEngine battleEngine) { }
         public override void OnAfterExecute(BattleEngine battleEngine) => OnAfterExecute(Source, Target, battleEngine);
 
-        public class BattleEventFactoryST<E> : PlaceholderFactory<S, T, E> where E : BattleEvent<T> { }
+        public class BattleEventFactoryST<E> : PlaceholderFactory<S, T, E> where E : BattleEvent<S,T> { }
     }
 
     public abstract class BattleEvent<T> : BattleEvent
@@ -46,7 +46,7 @@ namespace Fight.Events
 
     public abstract class BattleEvent : IBattleEvent
     {
-        public bool IsCharacterAction { get; private set; }
+        public bool IsCharacterAction { get; protected set; }
         public BattleEvent(bool isCharacterAction = false)
         {
             IsCharacterAction = isCharacterAction;

@@ -21,7 +21,7 @@ namespace Fight.Events
                 playerCharacter.Decks.Draw = playerCharacter.Decks.Full;
                 for (int i = 0; i < playerCharacter.DrawAmount; i++)
                 {
-                    battleEngine.InsertAfterEvent(this, drawCardFactory.Create(playerCharacter));
+                    battleEngine.InsertAfterEvent(drawCardFactory.Create(playerCharacter), this);
                 }
             }
         }

@@ -1,8 +1,6 @@
 using Controllers;
-using Cysharp.Threading.Tasks;
 using Models;
 using Models.Characters;
-using Tooling.Logging;
 
 namespace Fight.Events
 {

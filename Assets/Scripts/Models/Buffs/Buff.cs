@@ -15,9 +15,9 @@ namespace Models.Buffs
         private ulong stackSize;
 
         [JsonProperty("definition")]
-        private SerializableBuffDefinition definition;
+        private BuffDefinition definition;
 
-        public SerializableBuffDefinition Definition
+        public BuffDefinition Definition
         {
             get
             {
@@ -27,7 +27,7 @@ namespace Models.Buffs
                     {
                         throw new Exception("Cannot create definition without a SO definition Specified!");
                     }
-                    definition = new SerializableBuffDefinition(buffSODefinition);
+                    definition = new BuffDefinition(buffSODefinition);
                 }
                 return definition;
             }

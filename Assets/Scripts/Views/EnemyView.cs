@@ -10,12 +10,15 @@ namespace Views
     {
         [SerializeField] SpriteRenderer spriteRenderer;
 
+        private HealthView healthView;
+
         public Enemy Enemy { get; private set; }
 
         #region ICharacterView
-        public Character Character => Enemy;
+        public SpriteRenderer SpriteRenderer => spriteRenderer;
+        public Character CharacterModel => Enemy;
         public Collider Collider { get; private set; }
-        public HealthView HealthView { get; private set; }
+        public Renderer Renderer => spriteRenderer;
         #endregion
 
         [Inject]
@@ -28,7 +31,7 @@ namespace Views
                 {
                     spriteRenderer.sprite = asset;
                     Collider = spriteRenderer.gameObject.AddComponent<BoxCollider>();
-                    HealthView = healthViewFactory.Create(Character.Health, this);
+                    healthView = healthViewFactory.Create(this);
                 }
             );
         }

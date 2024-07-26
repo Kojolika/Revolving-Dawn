@@ -30,18 +30,8 @@ namespace GameLoop
 
         public async UniTask LoadAssetsByLabel()
         {
-            resourceLocationsHandle = Addressables.LoadResourceLocationsAsync(assetLabelReferences.Select(labelRef => labelRef.labelString), Addressables.MergeMode.Union);
-            await resourceLocationsHandle.Task;
             cts = new();
-            
-            int resourceLocationCount = resourceLocationsHandle.Result.Count;
-            var loadTasks = new UniTask[resourceLocationCount];
-            for (int i = 0; i < resourceLocationCount; i++)
-            {
-                var resourceLocation = resourceLocationsHandle.Result[i];
-                loadTasks[i] = addressablesManager.LoadGenericAsset<UnityEngine.Object>(resourceLocation, () => cts.Token.IsCancellationRequested);
-            }
-            await UniTask.WhenAll(loadTasks);
+            await addressablesManager.LoadAssetsFromLabels(assetLabelReferences, () => cts.Token.IsCancellationRequested, cancellationToken: cts.Token);
         }
 
         public void UnloadAssets()

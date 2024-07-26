@@ -1,9 +1,8 @@
-using System;
 using Cysharp.Threading.Tasks;
 using Fight.Events;
+using Systems.Managers;
 using Tooling.Logging;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using Zenject;
 
 namespace Fight.Animations
@@ -11,7 +10,7 @@ namespace Fight.Animations
     public interface IBattleAnimation
     {
         bool ShouldWait { get; }
-        AsyncOperationHandle AsyncOperationHandle { get; set; }
+        bool IsFinished { get; }
         UniTask Play(IBattleEvent battleEvent);
         UniTask Undo(IBattleEvent battleEvent);
 
@@ -19,28 +18,24 @@ namespace Fight.Animations
         public class CustomFactory : IFactory<IBattleEvent, IBattleAnimation>
         {
             private readonly DiContainer diContainer;
-            public CustomFactory(DiContainer diContainer)
+            private readonly AddressablesManager addressablesManager;
+            public CustomFactory(DiContainer diContainer, AddressablesManager addressablesManager)
             {
                 this.diContainer = diContainer;
+                this.addressablesManager = addressablesManager;
             }
 
             public IBattleAnimation Create(IBattleEvent battleEvent)
             {
                 IBattleAnimation battleAnimation = null;
-                try
+
+                var animationConventionKey = $"{battleEvent.GetType().Name}Animation";
+
+                battleAnimation = addressablesManager.LoadGenericAssetSync<ScriptableObjectAnimation>(animationConventionKey, () => battleAnimation.IsFinished);
+
+                if (battleAnimation != null)
                 {
-                    var opHandle = Addressables.LoadAssetAsync<IBattleAnimation>($"{battleEvent.GetType().Name}Animation");
-                    battleAnimation = opHandle.WaitForCompletion();
-                    
-                    if (battleAnimation != null)
-                    {
-                        battleAnimation.AsyncOperationHandle = opHandle;
-                        diContainer.Inject(battleAnimation);
-                    }
-                }
-                catch (InvalidKeyException)
-                {
-                    MyLogger.LogWarning($"No addressable animation for event of type {battleEvent.GetType()}!");
+                    diContainer.Inject(battleAnimation);
                 }
 
                 return battleAnimation;

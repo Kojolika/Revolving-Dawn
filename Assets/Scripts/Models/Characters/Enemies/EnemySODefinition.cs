@@ -16,18 +16,7 @@ namespace Models.Characters
         public AssetReferenceSprite AvatarReference => avatarReference;
         public HealthDefinition HealthDefinition => healthDefinition;
         public List<EnemyMove> EnemyMoves => enemyMoves;
-
-
-        private EnemyModel representation;
-        public EnemyModel Representation
-        {
-            get
-            {
-                representation ??= new EnemyModel(this);
-                return representation;
-            }
-            private set => representation = value;
-        }
+        public EnemyModel Representation => new(this);
     }
 
     public class EnemyModel

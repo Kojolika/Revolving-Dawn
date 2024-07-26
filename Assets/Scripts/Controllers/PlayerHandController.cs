@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,6 +7,7 @@ using Models.Characters.Player;
 using Settings;
 using Systems.Managers;
 using Tooling.Logging;
+using UnityEngine.XR;
 using Utils.Extensions;
 using Views;
 
@@ -34,7 +36,7 @@ namespace Controllers
         /// <param name="deck">Deck to shuffle.</param>
         public void ShuffleDeck(List<CardModel> deck)
         {
-            var rng = new System.Random();
+            var rng = new Random();
             int deckSize = deck.Count - 1;
             while (deckSize > 1)
             {
@@ -102,6 +104,16 @@ namespace Controllers
                 MyLogger.LogError($"Cannot upgrade a card without an upgrade!");
             }
             card = card.NextCard;
+        }
+
+        public void PlayCard(CardModel card)
+        {
+            if (!decks.Hand.Remove(card))
+            {
+                MyLogger.LogError($"Trying to play a card thats not in the player hand!");
+            }
+            decks.Discard.Add(card);
+            playerHandView.RemoveCardFromHand(card);
         }
 
         public void DowngradeCard(CardModel card)

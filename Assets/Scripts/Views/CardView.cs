@@ -15,7 +15,7 @@ namespace Views
         [SerializeField] TextMeshPro descriptionText;
 
         public Models.CardModel Model { get; private set; }
-
+        
         public Collider Collider { get; private set; }
         public Vector3 DefaultScale { get; private set; }
 

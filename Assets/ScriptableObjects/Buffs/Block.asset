@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Block
   m_EditorClassIdentifier: 
   icon:
-    m_AssetGUID: 63102531cc50a29459bb58fbf0d12221
+    m_AssetGUID: 96717bb03f74be54490a7eb298976144
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

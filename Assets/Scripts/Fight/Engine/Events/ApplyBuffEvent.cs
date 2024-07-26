@@ -15,7 +15,7 @@ namespace Fight.Events
             target.Buffs.Add(Buff);
         }
 
-        public override string Log() => $"Applied {Buff} to {Target}";
+        public override string Log() => $"Applied {Buff.Definition.Name} to {Target}";
 
         public override void Undo()
         {

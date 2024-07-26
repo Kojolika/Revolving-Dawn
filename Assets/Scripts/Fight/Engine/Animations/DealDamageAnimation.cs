@@ -18,6 +18,7 @@ namespace Fight.Animations
 
         public override UniTask Play(DealDamageEvent dealDamageEvent)
         {
+            IsFinished = true;
             // Play all animations
             return UniTask.CompletedTask;
         }

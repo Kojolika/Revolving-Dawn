@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Controllers;
 using Fight;
 using Fight.Animations;
@@ -5,9 +6,12 @@ using Fight.Events;
 using Fight.Input;
 using Mana;
 using Models;
+using Models.Buffs;
 using Models.Characters;
 using Settings;
+using Systems;
 using Systems.Managers;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Views;
@@ -20,7 +24,7 @@ namespace Zenject.Installers
         [SerializeField] CardView cardView;
         [SerializeField] PlayerView playerView;
         [SerializeField] EnemyView enemyView;
-        [SerializeField] HealthView healthView;
+        [SerializeField] HealthView healthViewPrefab;
         [SerializeField] PlayerHandView playerHandView;
         [SerializeField] ManaPoolView manaPoolView;
         [SerializeField] ManaView manaView;
@@ -29,6 +33,10 @@ namespace Zenject.Installers
         [SerializeField] PlayerHandViewSettings playerHandInputSettings;
         [SerializeField] TargetingArrowView targetingArrowView;
         [SerializeField] GameLoop.AddressableAssetLabelLoader addressableAssetLabelLoader;
+        [SerializeField] WorldUI worldUIPrefab;
+        [SerializeField] BuffsView buffsViewPrefab;
+        [SerializeField] BuffElement buffElementPrefab;
+
 
         public override void InstallBindings()
         {
@@ -51,7 +59,7 @@ namespace Zenject.Installers
             Container.Bind<Camera>()
                 .FromInstance(Camera.main);
 
-            Container.BindFactory<Models.CardModel, CardView, CardView.Factory>()
+            Container.BindFactory<CardModel, CardView, CardView.Factory>()
                 .FromComponentInNewPrefab(cardView)
                 .AsSingle();
 
@@ -63,9 +71,14 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(enemyView)
                 .AsSingle();
 
-            Container.BindFactory<Health, ICharacterView, HealthView, HealthView.Factory>()
-                .FromComponentInNewPrefab(healthView)
-                .AsSingle();
+            // We bind the factory here for the HealthView, and then bind the prefab of the HealthView
+            // in the binding statement after this. The prefab is then injected into this factory
+            Container.BindFactory<ICharacterView, HealthView, HealthView.Factory>()
+                .FromFactory<HealthView.CustomFactory>();
+
+            Container.Bind<HealthView>()
+                .FromInstance(healthViewPrefab)
+                .WhenInjectedInto<HealthView.CustomFactory>();
 
             Container.BindFactory<Models.Mana.ManaSODefinition, ManaView, ManaView.Factory>()
                 .FromComponentInNewPrefab(manaView)
@@ -97,6 +110,7 @@ namespace Zenject.Installers
             InstallBattleEventFactories();
             InstallPlayerHandInputs();
             InstallAddressableAssets();
+            InstallWorldUI();
         }
 
         private void InstallBattleEventFactories()
@@ -105,6 +119,9 @@ namespace Zenject.Installers
                 .AsSingle();
 
             Container.BindFactory<Character, TurnStartedEvent, TurnStartedEvent.BattleEventFactoryT<TurnStartedEvent>>()
+                .AsSingle();
+
+            Container.BindFactory<CardView, List<IHealth>[], PlayCardEvent, PlayCardEvent.BattleEventFactoryST<PlayCardEvent>>()
                 .AsSingle();
         }
 
@@ -139,6 +156,28 @@ namespace Zenject.Installers
                 .FromInstance(addressableAssetLabelLoader);
 
             Container.QueueForInject(addressableAssetLabelLoader);
+        }
+
+        private void InstallWorldUI()
+        {
+            Container.Bind<WorldUI>()
+                .FromComponentInNewPrefab(worldUIPrefab)
+                .AsSingle()
+                .NonLazy();
+
+            Container.Bind<BuffsView>()
+                .FromInstance(buffsViewPrefab)
+                .WhenInjectedInto<BuffsView.CustomFactory>();
+
+            Container.BindFactory<ICharacterView, BuffsView, BuffsView.Factory>()
+                .FromFactory<BuffsView.CustomFactory>();
+
+            Container.Bind<BuffElement>()
+                .FromInstance(buffElementPrefab)
+                .WhenInjectedInto<BuffElement.CustomFactory>();
+
+            Container.BindFactory<Buff, BuffElement, BuffElement.Factory>()
+                .FromFactory<BuffElement.CustomFactory>();
         }
     }
 }

@@ -8,7 +8,8 @@ using UnityEngine;
 using Utils;
 using Fight.Animations;
 using Fight;
-using Fight.Input;
+using Tooling.Logging;
+using System.Linq;
 
 namespace Views
 {
@@ -23,12 +24,12 @@ namespace Views
 
         private CardView.Factory cardViewFactory;
         private ManaPoolView manaPoolView;
-        private List<CardView> hand;
         private PlayerHandViewSettings playerHandViewSettings;
         private readonly List<Sequence> currentMoveTweens = new();
+        public Dictionary<CardModel, CardView> CardViewsLookup { get; private set; }
+        private List<CardView> orderedCardViews;
         public BattleEngine BattleEngine { get; private set; }
         public BattleAnimationEngine BattleAnimationEngine { get; private set; }
-        private PlayerInputState playerInputState;
 
         public Camera Camera => handViewCamera;
 
@@ -42,7 +43,8 @@ namespace Views
             this.cardViewFactory = cardViewFactory;
             this.manaPoolView = manaPoolView;
             manaPoolView.transform.position = manaPoolViewLocation.position;
-            hand = new List<CardView>();
+            CardViewsLookup = new();
+            orderedCardViews = new();
             this.playerHandViewSettings = playerHandViewSettings;
             BattleEngine = battleEngine;
             BattleAnimationEngine = battleAnimationEngine;
@@ -53,21 +55,87 @@ namespace Views
             var newCardView = cardViewFactory.Create(cardModel);
             newCardView.transform.position = cardSpawnLocation.position;
             newCardView.transform.SetParent(handParent);
-            hand.Add(newCardView);
+            CardViewsLookup.Add(cardModel, newCardView);
+            orderedCardViews.Add(newCardView);
 
-            await CreateHandCurve(playerHandViewSettings.CardDrawMoveSpeed, playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
+            await CreateHandCurveAnimation(playerHandViewSettings.CardDrawMoveSpeed, playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
         }
 
-        public void DiscardCard(CardModel card)
+        public async UniTask PlayCardAnimation(CardView cardView)
         {
-
+            if (!cardView.Model.IsLostOnPlay)
+            {
+                await DiscardCardAnimation(cardView);
+            }
+            else
+            {
+                await LoseCardAnimation(cardView);
+            }
         }
 
-        public async UniTask CreateHandCurve(float cardSpeed, float cardRotateSpeed, Ease easeFunction)
+        public void RemoveCardFromHand(CardModel cardModel)
+        {
+            CardViewsLookup[cardModel].Collider.enabled = false;
+
+            if (!CardViewsLookup.Remove(cardModel))
+            {
+                MyLogger.LogError($"Trying to set a card that doesn't exist in the hand.");
+            }
+
+            orderedCardViews.Remove(
+                orderedCardViews.First(cardView => cardView.Model == cardModel)
+            );
+        }
+
+        public async UniTask DiscardCardAnimation(CardView cardView)
+        {
+            var discardCardSeq = Sequence.Create();
+
+            _ = discardCardSeq.Insert(playerHandViewSettings.CardPlayAnimationDuration * .1f,
+                Tween.Position(cardView.transform,
+                   cardDiscardLocation.position,
+                   playerHandViewSettings.CardPlayAnimationDuration,
+                   ease: playerHandViewSettings.CardPlayEaseFunction)
+            );
+            _ = discardCardSeq.Insert(0f, 
+                Tween.Rotation(cardView.transform,
+                    new Vector3(cardView.transform.rotation.x, cardView.transform.rotation.y, cardView.transform.rotation.z - 90f),
+                    playerHandViewSettings.CardPlayAnimationDuration,
+                    ease: playerHandViewSettings.CardPlayEaseFunction)
+            );
+
+            _ = discardCardSeq.Insert(0f, 
+                Tween.Scale(cardView.transform,
+                    new Vector3(0.2f, 0.2f, 0.2f),
+                    playerHandViewSettings.CardPlayAnimationDuration,
+                    ease: playerHandViewSettings.CardPlayEaseFunction)
+            );
+
+            await UniTask.WaitWhile(() => discardCardSeq.isAlive);
+
+            Destroy(cardView);
+        }
+
+        public async UniTask LoseCardAnimation(CardView cardView)
+        {
+            var loseCardSeq = Sequence.Create();
+
+            _ = loseCardSeq.Insert(0f, Tween.Position(cardView.transform,
+                new Vector3(cardView.transform.position.x, cardView.transform.position.y + 3, cardView.transform.position.z),
+                0.1f,
+                ease: playerHandViewSettings.CardPlayEaseFunction)
+            );
+
+            await UniTask.WaitWhile(() => loseCardSeq.isAlive);
+
+            Destroy(cardView);
+        }
+
+        public async UniTask CreateHandCurveAnimation(float cardSpeed, float cardRotateSpeed, Ease easeFunction)
         {
             ClearMoveTweens();
 
-            var handSize = hand.Count;
+            var handSize = orderedCardViews.Count;
             var moveTasks = new UniTask[handSize];
             for (int i = 0; i < handSize; i++)
             {
@@ -78,7 +146,7 @@ namespace Views
 
                 var newRotation = new Vector3(0f, 0f, GetZRotationForCard(handSize, i + 1));
 
-                moveTasks[i] = MoveCard(hand[i], newPosition, newRotation, cardSpeed, cardRotateSpeed, easeFunction);
+                moveTasks[i] = MoveCard(orderedCardViews[i], newPosition, newRotation, cardSpeed, cardRotateSpeed, easeFunction);
             }
 
             await UniTask.WhenAll(moveTasks);
@@ -135,10 +203,10 @@ namespace Views
         public async UniTask HoverCard(CardView cardView)
         {
             ClearMoveTweens();
-            var cardIndex = hand.IndexOf(cardView);
-            var handSize = hand.Count;
+            var cardIndex = orderedCardViews.IndexOf(cardView);
+            var handSize = orderedCardViews.Count;
             var moveTasks = new UniTask[handSize];
-            for (int i = 0; i < hand.Count; i++)
+            for (int i = 0; i < orderedCardViews.Count; i++)
             {
                 if (i == cardIndex)
                 {
@@ -153,19 +221,19 @@ namespace Views
                     Vector3 bottomMiddleOfScreen = handViewCamera.ViewportToWorldPoint(new Vector3(0, 0));
                     var currentCardPosition = cardView.transform.position;
                     cardView.transform.position = new Vector3(
-                        handCurve.GetPoint(GetCardPosition(hand.Count, i + 1)).x,
-                        bottomMiddleOfScreen.y + hand[i].Collider.bounds.extents.y,
+                        handCurve.GetPoint(GetCardPosition(orderedCardViews.Count, i + 1)).x,
+                        bottomMiddleOfScreen.y + orderedCardViews[i].Collider.bounds.extents.y,
                         currentCardPosition.z - 1f);
 
                     continue;
                 }
 
-                UnsetSelectionEffects(hand[i]);
+                UnsetSelectionEffects(orderedCardViews[i]);
 
                 // Move Cards relative to their position of the selected card
                 // i.e. cards closer more farther away
                 float positionDifference = 1.75f / (i - cardIndex);
-                float moveAmount = GetCardPosition(hand.Count, i + 1) + positionDifference * .05f;
+                float moveAmount = GetCardPosition(orderedCardViews.Count, i + 1) + positionDifference * .05f;
 
                 // turn curve point into vector space
                 Vector3 newPosition = handCurve.GetPoint(moveAmount);
@@ -174,7 +242,7 @@ namespace Views
                 // Gives a sense of realism to the card hand
                 newPosition.z -= i * 0.5f;
 
-                moveTasks[i] = MoveCard(hand[i],
+                moveTasks[i] = MoveCard(orderedCardViews[i],
                     newPosition,
                     new Vector3(0f, 0f, GetZRotationForCard(cardIndex, i + 1)),
                     playerHandViewSettings.CardHoverMoveSpeedInHand,
@@ -201,9 +269,9 @@ namespace Views
         /// </summary>
         /// <param name="handSize">size of the card hand</param>
         /// <param name="cardPosition">1-indexed position of the card in the hand</param>
+        /// <returns> Returns the amount of rotation on the z axis on which the card will rotate. </returns>
         private float GetZRotationForCard(int handSize, int cardPosition)
         {
-            //Returns the amount of rotation on the x axis on which the card will rotate
             float maxAngle = 2.5f * handSize;
             float minAngle = 1f;
 
@@ -228,14 +296,13 @@ namespace Views
         }
 
         /// <summary>
-        /// Returns the x position from 0,1 for a card given its position and hand size.
+        /// Returns the position from 0,1 for a card given its position and hand size.
         /// </summary>
         /// <param name="handSize">size of the hand</param>
         /// <param name="cardPosition">1-indexed position of the card in the hand</param>
-        /// <returns></returns>
+        /// <returns> Returns a position between 0 and 1 for the bezier curve.</returns>
         private float GetCardPosition(int handSize, int cardPosition)
         {
-            //returns a position between 0 and 1 for the bezier curve
             float result = 0.5f;
 
             switch (handSize)
