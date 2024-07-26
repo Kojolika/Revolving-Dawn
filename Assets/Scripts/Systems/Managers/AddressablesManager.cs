@@ -32,6 +32,8 @@ namespace Systems.Managers
                 loadTasks[i] = LoadAsset(resourceLocation, releaseCondition, onSuccess, cancellationToken);
             }
             await UniTask.WhenAll(loadTasks).SuppressCancellationThrow();
+
+            Addressables.Release(resourceLocationsHandle);
         }
         private async UniTask LoadAsset(
             IResourceLocation resourceLocation,
