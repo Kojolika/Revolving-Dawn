@@ -216,6 +216,7 @@ MonoBehaviour:
   cardArtRenderer: {fileID: 8860031963702891208}
   nameText: {fileID: 8720104262675490854}
   descriptionText: {fileID: 1777166560988056099}
+  cardCollider: {fileID: 2816146933572643542}
 --- !u!210 &7430106791570601248
 SortingGroup:
   m_ObjectHideFlags: 0

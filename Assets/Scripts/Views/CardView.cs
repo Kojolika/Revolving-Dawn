@@ -13,10 +13,12 @@ namespace Views
         [SerializeField] SpriteRenderer cardArtRenderer;
         [SerializeField] TextMeshPro nameText;
         [SerializeField] TextMeshPro descriptionText;
+        [SerializeField] Collider cardCollider;
 
         public Models.CardModel Model { get; private set; }
-        
-        public Collider Collider { get; private set; }
+
+        public Collider Collider => cardCollider;
+        public SpriteRenderer CardBorderRenderer => cardBorderRenderer;
         public Vector3 DefaultScale { get; private set; }
 
         [Inject]
@@ -52,7 +54,6 @@ namespace Views
 
         private void Awake()
         {
-            Collider = GetComponentInChildren<Collider>();
             DefaultScale = transform.localScale;
         }
 

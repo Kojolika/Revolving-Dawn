@@ -97,14 +97,14 @@ namespace Views
                    playerHandViewSettings.CardPlayAnimationDuration,
                    ease: playerHandViewSettings.CardPlayEaseFunction)
             );
-            _ = discardCardSeq.Insert(0f, 
+            _ = discardCardSeq.Insert(0f,
                 Tween.Rotation(cardView.transform,
                     new Vector3(cardView.transform.rotation.x, cardView.transform.rotation.y, cardView.transform.rotation.z - 90f),
                     playerHandViewSettings.CardPlayAnimationDuration,
                     ease: playerHandViewSettings.CardPlayEaseFunction)
             );
 
-            _ = discardCardSeq.Insert(0f, 
+            _ = discardCardSeq.Insert(0f,
                 Tween.Scale(cardView.transform,
                     new Vector3(0.2f, 0.2f, 0.2f),
                     playerHandViewSettings.CardPlayAnimationDuration,
@@ -218,11 +218,11 @@ namespace Views
 
                     cardView.transform.rotation = Quaternion.Euler(Vector3.zero);
 
-                    Vector3 bottomMiddleOfScreen = handViewCamera.ViewportToWorldPoint(new Vector3(0, 0));
+                    Vector3 bottomOfScreen = handViewCamera.ViewportToWorldPoint(new Vector3(0, 0));
                     var currentCardPosition = cardView.transform.position;
                     cardView.transform.position = new Vector3(
                         handCurve.GetPoint(GetCardPosition(orderedCardViews.Count, i + 1)).x,
-                        bottomMiddleOfScreen.y + orderedCardViews[i].Collider.bounds.extents.y,
+                        bottomOfScreen.y + orderedCardViews[i].CardBorderRenderer.bounds.extents.y,
                         currentCardPosition.z - 1f);
 
                     continue;
@@ -293,6 +293,15 @@ namespace Views
                 rotation *= -1f;
             }
             return -rotation;
+        }
+
+        private Vector3 GetCardRotationForHandSizeAndPosition(int handSize, int cardPosition)
+        {
+            float maxAngle = 2.5f * handSize;
+            float minAngle = 1f;
+            float rotation = 0f;
+
+            return new Vector3(0f, 0f, rotation);
         }
 
         /// <summary>
