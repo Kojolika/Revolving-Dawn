@@ -7,6 +7,9 @@ namespace Settings
     [CreateAssetMenu(fileName = "New " + nameof(PlayerHandViewSettings), menuName = "RevolvingDawn/Settings/" + nameof(PlayerHandViewSettings))]
     public class PlayerHandViewSettings : ScriptableObject
     {
+        [Tooltip("Controls the rotation amount of the fan in the card hand.")]
+        [SerializeField] float cardHandRotationModifier;
+
         [Tooltip("Y position as a percentage on viewport where the card is considered in it's targeting phase.")]
         [Range(0f, 1f), SerializeField] float positionOnScreenWhereTargetingStarts;
 
@@ -51,7 +54,7 @@ namespace Settings
         [SerializeField] private AssetReferenceT<Material> friendlyOutlineMaterial;
         [SerializeField] private AssetReferenceT<Material> defaultSpriteMaterial;
 
-
+        public float CardHandRotationModifier => cardHandRotationModifier;
         public float PositionOnScreenWhereTargetingStarts => positionOnScreenWhereTargetingStarts;
         public int NumberOfArrowPiecesForTargetingArrow => numberOfArrowPiecesForTargetingArrow;
         public float CardDrawMoveSpeed => cardDrawMoveSpeed;

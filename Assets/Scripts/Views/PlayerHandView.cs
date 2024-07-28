@@ -144,7 +144,7 @@ namespace Views
                 var newPosition = handCurve.GetPoint(pointOnCurve);
                 newPosition.z -= i * .5f;
 
-                var newRotation = new Vector3(0f, 0f, GetZRotationForCard(handSize, i + 1));
+                var newRotation = GetCardRotationForHandSizeAndPosition(handSize, i);
 
                 moveTasks[i] = MoveCard(orderedCardViews[i], newPosition, newRotation, cardSpeed, cardRotateSpeed, easeFunction);
             }
@@ -244,7 +244,7 @@ namespace Views
 
                 moveTasks[i] = MoveCard(orderedCardViews[i],
                     newPosition,
-                    new Vector3(0f, 0f, GetZRotationForCard(cardIndex, i + 1)),
+                    GetCardRotationForHandSizeAndPosition(handSize, i),
                     playerHandViewSettings.CardHoverMoveSpeedInHand,
                     playerHandViewSettings.CardHoverRotateSpeedInHand,
                     playerHandViewSettings.CardHoverMoveFunction
@@ -264,42 +264,29 @@ namespace Views
             cardView.transform.localScale = cardView.DefaultScale;
         }
 
-        /// <summary>
-        /// Returns the angle of rotation of the card given its position in the hand.
-        /// </summary>
-        /// <param name="handSize">size of the card hand</param>
-        /// <param name="cardPosition">1-indexed position of the card in the hand</param>
-        /// <returns> Returns the amount of rotation on the z axis on which the card will rotate. </returns>
-        private float GetZRotationForCard(int handSize, int cardPosition)
-        {
-            float maxAngle = 2.5f * handSize;
-            float minAngle = 1f;
-
-            float rotation;
-            int numToNormalize = cardPosition;
-
-            float midpoint = (handSize / 2) + 1;
-
-            if (cardPosition == (int)midpoint && ((handSize % 2) != 0)) rotation = 0f;
-            else if (cardPosition > midpoint - 1)
-            {
-                numToNormalize = cardPosition - (int)midpoint;
-                rotation = Computations.Normalize((float)numToNormalize, 0f, (float)midpoint, minAngle, maxAngle);
-            }
-            else
-            {
-                rotation = Computations.Normalize((float)numToNormalize, 0f, (float)midpoint, minAngle, maxAngle);
-                rotation = maxAngle - rotation;
-                rotation *= -1f;
-            }
-            return -rotation;
-        }
-
         private Vector3 GetCardRotationForHandSizeAndPosition(int handSize, int cardPosition)
         {
-            float maxAngle = 2.5f * handSize;
-            float minAngle = 1f;
-            float rotation = 0f;
+            // We want to rotate the cards more when the hand size is smaller
+            float sizeMultiplier = -1 / (float)handSize;
+
+            // Edit this to change how much the cards should be rotated
+            float rotationMultiplier = playerHandViewSettings.CardHandRotationModifier;
+
+            // The rotation is determined based on the midpoint
+            int midpoint = handSize / 2;
+
+            // We need to mirror the rotation on the either side of the midpoint
+            cardPosition -= midpoint;
+
+            // Since cardHands with an even amount dont have a single card midpoint
+            // we need to shift all rotations to center them    
+            float evenModifier = 0f;
+            if (handSize % 2 == 0)
+            {
+                evenModifier = rotationMultiplier / -2f;
+            }
+
+            float rotation = handSize * cardPosition * sizeMultiplier * rotationMultiplier + evenModifier;
 
             return new Vector3(0f, 0f, rotation);
         }
