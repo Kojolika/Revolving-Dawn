@@ -23,10 +23,12 @@ namespace Views
         [Inject]
         private void Construct(PlayerCharacter playerCharacter,
             AddressablesManager addressablesManager,
-            HealthView.Factory healthViewFactory,
-            BuffsView.Factory buffsViewFactory)
+            HealthView healthView,
+            BuffsView buffsView)
         {
             this.playerCharacter = playerCharacter;
+            this.healthView = healthView;
+            this.buffsView = buffsView;
 
             _ = addressablesManager.LoadGenericAsset(playerCharacter.Class.CharacterAvatarReference,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
@@ -34,8 +36,6 @@ namespace Views
                 {
                     spriteRenderer.sprite = asset;
                     Collider = spriteRenderer.gameObject.AddComponent<BoxCollider>();
-                    healthView = healthViewFactory.Create(this);
-                    buffsView = buffsViewFactory.Create(this);
                 }
             );
         }

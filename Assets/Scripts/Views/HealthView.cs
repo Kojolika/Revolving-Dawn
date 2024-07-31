@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using Fight;
 using Models;
+using Models.Characters;
 using Systems;
 using TMPro;
 using Tooling.Logging;
@@ -20,19 +21,12 @@ namespace Views
 
         private Health health;
         private BattleEngine battleEngine;
-        private ICharacterView characterView;
 
         [Inject]
-        private void Construct(ICharacterView characterView, BattleEngine battleEngine)
+        private void Construct(Character character, BattleEngine battleEngine)
         {
-            this.health = characterView.CharacterModel.Health;
+            this.health = character.Health;
             this.battleEngine = battleEngine;
-            this.characterView = characterView;
-
-            transform.SetParent(characterView.transform);
-            var localBoundsSizeY = characterView.Renderer.localBounds.size.y;
-            var buffer = localBoundsSizeY * .1f;
-            transform.localPosition = new Vector3(0, localBoundsSizeY + buffer, 0);
 
             UpdateHealthDisplay();
             health.HealthUpdated += OnHealthUpdated;
@@ -75,27 +69,6 @@ namespace Views
         private void OnDestroy()
         {
             health.HealthUpdated -= OnHealthUpdated;
-        }
-
-        public class Factory : PlaceholderFactory<ICharacterView, HealthView> { }
-
-        public class CustomFactory : IFactory<ICharacterView, HealthView>
-        {
-            private readonly HealthView healthViewPrefab;
-            private readonly DiContainer diContainer;
-            public CustomFactory(HealthView healthViewPrefab, DiContainer diContainer)
-            {
-                this.healthViewPrefab = healthViewPrefab;
-                this.diContainer = diContainer;
-            }
-
-            public HealthView Create(ICharacterView characterView)
-            {
-                var newHealthView = Instantiate(healthViewPrefab, characterView.transform);
-                diContainer.Inject(newHealthView, new ICharacterView[] { characterView });
-
-                return newHealthView;
-            }
         }
     }
 }

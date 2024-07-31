@@ -15,6 +15,7 @@ using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Views;
+using Zenject.Installers.Facades;
 
 namespace Zenject.Installers
 {
@@ -64,21 +65,14 @@ namespace Zenject.Installers
                 .AsSingle();
 
             Container.BindFactory<PlayerCharacter, PlayerView, PlayerView.Factory>()
-                .FromComponentInNewPrefab(playerView)
+                .FromSubContainerResolve()
+                .ByNewContextPrefab<PlayerViewInstaller>(playerView)
                 .AsSingle();
 
             Container.BindFactory<Enemy, EnemyView, EnemyView.Factory>()
-                .FromComponentInNewPrefab(enemyView)
+                .FromSubContainerResolve()
+                .ByNewContextPrefab<EnemyViewInstaller>(enemyView)
                 .AsSingle();
-
-            // We bind the factory here for the HealthView, and then bind the prefab of the HealthView
-            // in the binding statement after this. The prefab is then injected into this factory
-            Container.BindFactory<ICharacterView, HealthView, HealthView.Factory>()
-                .FromFactory<HealthView.CustomFactory>();
-
-            Container.Bind<HealthView>()
-                .FromInstance(healthViewPrefab)
-                .WhenInjectedInto<HealthView.CustomFactory>();
 
             Container.BindFactory<Models.Mana.ManaSODefinition, ManaView, ManaView.Factory>()
                 .FromComponentInNewPrefab(manaView)
@@ -164,13 +158,6 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(worldUIPrefab)
                 .AsSingle()
                 .NonLazy();
-
-            Container.Bind<BuffsView>()
-                .FromInstance(buffsViewPrefab)
-                .WhenInjectedInto<BuffsView.CustomFactory>();
-
-            Container.BindFactory<ICharacterView, BuffsView, BuffsView.Factory>()
-                .FromFactory<BuffsView.CustomFactory>();
 
             Container.Bind<BuffElement>()
                 .FromInstance(buffElementPrefab)

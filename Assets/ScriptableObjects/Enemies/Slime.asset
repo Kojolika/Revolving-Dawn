@@ -19,47 +19,52 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  enemyMoves:
-  - moveIntentSprite:
-      m_AssetGUID: 74fdc7ee74478604dab6857ff5cc204c
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    enemyMoves:
-    - rid: 3824537175778918400
+  selectMoveStrategy:
+    rid: 8469310016818774021
+  moves:
   - moveIntentSprite:
       m_AssetGUID: 76a8a3a7098bf3c4c89e2d0700bf39d6
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     enemyMoves:
-    - rid: 3824537175778918401
+    - rid: 8469310016818774018
   - moveIntentSprite:
-      m_AssetGUID: ee805cdaee4f17644a3b4e802f2301fe
+      m_AssetGUID: 74fdc7ee74478604dab6857ff5cc204c
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     enemyMoves:
-    - rid: 503764604246032385
+    - rid: 8469310016818774019
+  - moveIntentSprite:
+      m_AssetGUID: ee805cdaee4f17644a3b4e802f2301fe
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 1
+    enemyMoves:
+    - rid: 8469310016818774020
   references:
     version: 2
     RefIds:
-    - rid: 503764604246032385
+    - rid: 8469310016818774018
+      type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+      data:
+        targeting: 1
+        damageAmount: 5
+    - rid: 8469310016818774019
+      type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
+      data:
+        targeting: 0
+        buff:
+          buffSODefinition: {fileID: 11400000, guid: df6fdde0fd15eb14e980f3a79fc7385e, type: 2}
+          stackSize: 6
+    - rid: 8469310016818774020
       type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
       data:
         targeting: 1
         buff:
           buffSODefinition: {fileID: 11400000, guid: 92f7311f2a63890489a88cbb2f5563c1, type: 2}
           stackSize: 2
-    - rid: 3824537175778918400
-      type: {class: ApplyBuffEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
-      data:
-        targeting: 0
-        buff:
-          buffSODefinition: {fileID: 11400000, guid: df6fdde0fd15eb14e980f3a79fc7385e, type: 2}
-          stackSize: 4
-    - rid: 3824537175778918401
-      type: {class: DealDamageEffect, ns: Models.CardEffects, asm: Assembly-CSharp}
-      data:
-        targeting: 1
-        damageAmount: 2
+    - rid: 8469310016818774021
+      type: {class: SelectRandomStrategy, ns: Models.Characters.Enemies.Strategies, asm: Assembly-CSharp}
+      data: 

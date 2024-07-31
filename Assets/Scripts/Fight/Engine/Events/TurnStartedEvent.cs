@@ -1,4 +1,5 @@
 using Models.Characters;
+using Systems.Managers;
 using Zenject;
 
 namespace Fight.Events
@@ -6,9 +7,15 @@ namespace Fight.Events
     public class TurnStartedEvent : BattleEventTargetingIBuffable<Character>
     {
         private readonly DrawCardEvent.BattleEventFactoryT<DrawCardEvent> drawCardFactory;
-        public TurnStartedEvent(Character target, DrawCardEvent.BattleEventFactoryT<DrawCardEvent> drawCardFactory) : base(target)
+        private readonly PlayerDataManager playerDataManager;
+        public TurnStartedEvent(
+            Character target,
+            DrawCardEvent.BattleEventFactoryT<DrawCardEvent> drawCardFactory,
+            PlayerDataManager playerDataManager
+        ) : base(target)
         {
             this.drawCardFactory = drawCardFactory;
+            this.playerDataManager = playerDataManager;
         }
 
         public override void Execute(Character target, BattleEngine battleEngine) { }
@@ -22,6 +29,11 @@ namespace Fight.Events
                 for (int i = 0; i < playerCharacter.DrawAmount; i++)
                 {
                     battleEngine.InsertAfterEvent(drawCardFactory.Create(playerCharacter), this);
+                }
+
+                foreach (var enemy in playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.Enemies)
+                {
+                    enemy.SelectMove();
                 }
             }
         }

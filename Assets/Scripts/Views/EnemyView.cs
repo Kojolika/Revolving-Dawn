@@ -11,6 +11,8 @@ namespace Views
         [SerializeField] SpriteRenderer spriteRenderer;
 
         private HealthView healthView;
+        private EnemyMoveView enemyMoveView;
+        private BuffsView buffsView;
 
         public Enemy Enemy { get; private set; }
 
@@ -22,16 +24,24 @@ namespace Views
         #endregion
 
         [Inject]
-        private void Construct(Enemy enemy, AddressablesManager addressablesManager, HealthView.Factory healthViewFactory)
+        private void Construct(
+            Enemy enemy,
+            HealthView healthView,
+            EnemyMoveView enemyMoveView,
+            BuffsView buffsView,
+            AddressablesManager addressablesManager)
         {
             Enemy = enemy;
+            this.healthView = healthView;
+            this.enemyMoveView = enemyMoveView;
+            this.buffsView = buffsView;
+
             _ = addressablesManager.LoadGenericAsset(enemy.Model.AvatarReference,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset =>
                 {
                     spriteRenderer.sprite = asset;
                     Collider = spriteRenderer.gameObject.AddComponent<BoxCollider>();
-                    healthView = healthViewFactory.Create(this);
                 }
             );
         }

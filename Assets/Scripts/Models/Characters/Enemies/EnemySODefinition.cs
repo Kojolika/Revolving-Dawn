@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Models.Characters.Enemies.Strategies;
 using Newtonsoft.Json;
 using Serialization;
 using UnityEngine;
@@ -11,11 +12,13 @@ namespace Models.Characters
     {
         [SerializeField] private HealthDefinition healthDefinition;
         [SerializeField] private AssetReferenceSprite avatarReference;
-        [SerializeField] private List<EnemyMove> enemyMoves;
+        [SerializeReference, Utils.Attributes.DisplayAbstract(typeof(ISelectMoveStrategy))] ISelectMoveStrategy selectMoveStrategy;
+        [SerializeField] private List<EnemyMove> moves;
 
         public AssetReferenceSprite AvatarReference => avatarReference;
         public HealthDefinition HealthDefinition => healthDefinition;
-        public List<EnemyMove> EnemyMoves => enemyMoves;
+        public ISelectMoveStrategy SelectMoveStrategy => selectMoveStrategy;
+        public List<EnemyMove> Moves => moves;
         public EnemyModel Representation => new(this);
     }
 
@@ -30,8 +33,11 @@ namespace Models.Characters
         [JsonProperty("avatar_reference")]
         public readonly AssetReferenceSprite AvatarReference;
 
-        [JsonProperty("enemy_moves")]
-        public readonly List<EnemyMove> EnemyMoves;
+        [JsonProperty("select_move_strategy")]
+        public readonly ISelectMoveStrategy SelectMoveStrategy;
+
+        [JsonProperty("moves")]
+        public readonly List<EnemyMove> Moves;
 
         [JsonConstructor]
         public EnemyModel()
@@ -44,7 +50,8 @@ namespace Models.Characters
             Name = enemySODefinition.name;
             HealthDefinition = enemySODefinition.HealthDefinition;
             AvatarReference = enemySODefinition.AvatarReference;
-            EnemyMoves = enemySODefinition.EnemyMoves;
+            SelectMoveStrategy = enemySODefinition.SelectMoveStrategy;
+            Moves = enemySODefinition.Moves;
         }
     }
 }

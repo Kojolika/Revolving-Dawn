@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Models.Buffs;
+using Models.Characters;
 using Systems;
 using UI;
 using UnityEngine;
@@ -9,24 +10,25 @@ namespace Views
 {
     public class BuffsView : MonoBehaviour
     {
-        private ICharacterView characterView;
         private Transform characterViewTransform;
         private BuffElement.Factory buffElementFactory;
         private Dictionary<Buff, BuffElement> buffLookup;
 
         [Inject]
-        private void Construct(ICharacterView characterView, BuffElement.Factory buffElementFactory)
+        private void Construct(Character character, BuffElement.Factory buffElementFactory)
         {
-            this.characterView = characterView;
-            this.characterViewTransform = characterView.transform;
             this.buffElementFactory = buffElementFactory;
 
-            var characterBuffs = characterView.CharacterModel.Buffs;
+            var characterBuffs = character.Buffs;
             buffLookup = new();
             foreach (var buff in characterBuffs)
             {
                 AddBuffElement(buff);
             }
+
+            // We want to display below the health
+            // TODO: Link them in the inspector instead of hardcoding it here
+            transform.localPosition = new Vector3(0f, -0.075f, 0f);
 
             characterBuffs.BuffRemoved += RemoveBuffElement;
             characterBuffs.BuffAdded += AddBuffElement;
@@ -48,26 +50,6 @@ namespace Views
         private void UpdateBuffElement(Buff buff)
         {
             buffLookup[buff].SetStackSize(buff.StackSize);
-        }
-
-        public class Factory : PlaceholderFactory<ICharacterView, BuffsView> { }
-        public class CustomFactory : IFactory<ICharacterView, BuffsView>
-        {
-            private readonly BuffsView buffsViewPrefab;
-            private readonly DiContainer diContainer;
-            public CustomFactory(BuffsView buffsViewPrefab, DiContainer diContainer)
-            {
-                this.buffsViewPrefab = buffsViewPrefab;
-                this.diContainer = diContainer;
-            }
-
-            public BuffsView Create(ICharacterView characterView)
-            {
-                var newBuffsView = Instantiate(buffsViewPrefab, characterView.transform);
-                diContainer.Inject(newBuffsView, new ICharacterView[] { characterView });
-
-                return newBuffsView;
-            }
         }
     }
 }
