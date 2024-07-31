@@ -1,20 +1,15 @@
-using QuikGraph;
 using Models.Map;
 using Utils.Attributes;
 using UnityEngine;
 using UI.DisplayElements;
-using Tooling.Logging;
-using Cysharp.Threading.Tasks;
-using UnityEngine.UI;
 using System.Collections.Generic;
 using Utils.Extensions;
 using System.Linq;
-using System;
 using Zenject;
 
 namespace UI.Menus
 {
-    public class MapView : UI.Menus.Common.Menu<MapView.Data>
+    public class MapView : Common.Menu<MapView.Data>
     {
         public class Data
         {

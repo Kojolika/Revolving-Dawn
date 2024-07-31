@@ -18,7 +18,6 @@ namespace GameLoop
     {
         [SerializeField] List<AssetLabelReference> assetLabelReferences;
 
-        private AsyncOperationHandle<IList<IResourceLocation>> resourceLocationsHandle;
         private AddressablesManager addressablesManager;
         private CancellationTokenSource cts;
 
@@ -36,7 +35,6 @@ namespace GameLoop
 
         public void UnloadAssets()
         {
-            Addressables.Release(resourceLocationsHandle);
             cts.Cancel();
             cts.Dispose();
         }
