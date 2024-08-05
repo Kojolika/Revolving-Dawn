@@ -10,9 +10,9 @@ namespace Models.Characters
     public class EnemyMove
     {
         [SerializeField] private AssetReferenceSprite moveIntentSprite;
-        [SerializeReference, DisplayAbstract(typeof(ICombatEffect))] private List<ICombatEffect> enemyMoves;
+        [SerializeReference, DisplayAbstract(typeof(ICombatEffect))] private List<ICombatEffect> moveEffects;
 
         public AssetReferenceSprite MoveIntentSprite => moveIntentSprite;
-        public List<ICombatEffect> EnemyMoves => enemyMoves;
+        public List<ICombatEffect> MoveEffects => moveEffects;
     }
 }

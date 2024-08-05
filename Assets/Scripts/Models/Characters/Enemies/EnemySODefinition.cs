@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Models.Characters.Enemies.Strategies;
+using Controllers.Strategies;
 using Newtonsoft.Json;
 using Serialization;
 using UnityEngine;

@@ -1,3 +1,5 @@
+using Controllers.Strategies;
+
 namespace Models.Characters.Enemies.Strategies
 {
     [System.Serializable]

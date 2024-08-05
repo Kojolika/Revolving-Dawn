@@ -77,6 +77,7 @@ namespace Controllers
 
             decks.Hand.Remove(card);
             decks.Discard.Add(card);
+            playerHandView.RemoveCardFromHand(card);
         }
 
         public void LoseCard(CardModel card)

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Models.Map;
 using Systems.Managers;
 using Tooling.Logging;
@@ -43,7 +44,7 @@ namespace UI.DisplayElements
             });
 
             _ = addressablesManager.LoadGenericAsset(data.Definition.Event.MapIconReference,
-                () => gameObject == null,
+                () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset => image.sprite = asset
             );
         }

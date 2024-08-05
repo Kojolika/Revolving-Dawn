@@ -29,7 +29,7 @@ namespace Zenject.Installers
         [SerializeField] PlayerHandView playerHandView;
         [SerializeField] ManaPoolView manaPoolView;
         [SerializeField] ManaView manaView;
-        [SerializeField] Canvas fightOverlayCanvas;
+        [SerializeField] FightOverlay fightOverlayPrefab;
         [SerializeField] InputActionAsset playerHandInput;
         [SerializeField] PlayerHandViewSettings playerHandInputSettings;
         [SerializeField] TargetingArrowView targetingArrowView;
@@ -98,8 +98,9 @@ namespace Zenject.Installers
             Container.Bind<PlayerHandController>()
                 .AsSingle();
 
-            Container.Bind<Canvas>()
-                .FromInstance(fightOverlayCanvas);
+            Container.Bind<FightOverlay>()
+                .FromComponentInNewPrefab(fightOverlayPrefab)
+                .AsSingle();
 
             InstallBattleEventFactories();
             InstallPlayerHandInputs();
@@ -116,6 +117,9 @@ namespace Zenject.Installers
                 .AsSingle();
 
             Container.BindFactory<CardView, List<IHealth>[], PlayCardEvent, PlayCardEvent.BattleEventFactoryST<PlayCardEvent>>()
+                .AsSingle();
+
+            Container.BindFactory<CardView, DiscardCardEvent, DiscardCardEvent.Factory>()
                 .AsSingle();
         }
 

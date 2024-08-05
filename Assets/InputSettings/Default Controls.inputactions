@@ -1,5 +1,5 @@
 {
-    "name": "Player Hand Controls",
+    "name": "Default Controls",
     "maps": [
         {
             "name": "PlayerHand",
@@ -190,6 +190,54 @@
                     "processors": "",
                     "groups": "",
                     "action": "hoverCard",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "54a42569-3307-4fb6-a9a7-b8d9d711d927",
+            "actions": [
+                {
+                    "name": "Primary",
+                    "type": "Button",
+                    "id": "e06cfda9-7c78-404f-8070-7c5fdf6916de",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Back",
+                    "type": "Button",
+                    "id": "81698b59-573d-4792-8ef8-8d9c46eeedf6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "323f8956-0883-4be0-abeb-6f77d7cd8fe1",
+                    "path": "<Mouse>/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3495319d-6b64-4356-8d0f-b7b33e77150f",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Back",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

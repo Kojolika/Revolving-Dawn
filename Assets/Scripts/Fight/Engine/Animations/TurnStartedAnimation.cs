@@ -1,23 +1,22 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Fight.Events;
-using Models.Characters;
-using PrimeTween;
 using TMPro;
+using UI;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+
 
 namespace Fight.Animations
 {
     [CreateAssetMenu(menuName = "RevolvingDawn/Fight/Animations/" + nameof(TurnStartedEventAnimation), fileName = "New " + nameof(TurnStartedEventAnimation))]
     public class TurnStartedEventAnimation : ScriptableObjectAnimation<TurnStartedEvent>
     {
-        private Canvas canvas;
+        private FightOverlay fightOverlay;
 
         [Zenject.Inject]
-        void Construct(Canvas canvas)
+        void Construct(FightOverlay fightOverlay)
         {
-            this.canvas = canvas;
+            this.fightOverlay = fightOverlay;
         }
 
         public async override UniTask Play(TurnStartedEvent battleEvent)
@@ -25,7 +24,7 @@ namespace Fight.Animations
             var text = animatorPrefab.GetComponentInChildren<TextMeshProUGUI>();
             text.SetText(battleEvent.Log());
 
-            await PlayAndReleaseAnimator(Instantiate(animatorPrefab, canvas.transform));
+            await PlayAndReleaseAnimator(Instantiate(animatorPrefab, fightOverlay.Canvas.transform));
             IsFinished = true;
         }
 

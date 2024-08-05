@@ -85,7 +85,7 @@ MonoBehaviour:
   playerHandView: {fileID: 2466177272251067132, guid: 0698591aca8ef854ba4dc07a2623558d, type: 3}
   manaPoolView: {fileID: 5870496563720125087, guid: 03e4e9f04c8d42f4887c32baa366a57b, type: 3}
   manaView: {fileID: 6056615806283124606, guid: e388ebfbc81f23f48aafdb9d746d5b17, type: 3}
-  fightOverlayCanvas: {fileID: 0}
+  fightOverlayPrefab: {fileID: 17364924099883698, guid: bd6e63bbc2fe0b5498404a9b4e240afa, type: 3}
   playerHandInput: {fileID: -944628639613478452, guid: 10cb80aa9e274ce46bfec653475a6800, type: 3}
   playerHandInputSettings: {fileID: 11400000, guid: 9dac15a4eb650324d872bd421dca4125, type: 2}
   targetingArrowView: {fileID: 1663575585176223094, guid: 103665c0efeea1b42bee8a46f52d3826, type: 3}
