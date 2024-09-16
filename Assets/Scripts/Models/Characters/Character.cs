@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Models.Buffs;
+using Models.Fight;
 using Newtonsoft.Json;
 
 namespace Models.Characters
@@ -18,5 +18,16 @@ namespace Models.Characters
 
         public void DealDamage(ulong amount) => Health.RemoveHealth(amount);
         public void Heal(ulong amount) => Health.AddHealth(amount);
+
+        public bool IsEnemy(FightDefinition fightDefinition, Character character)
+        {
+            if (character == this)
+            {
+                return false;
+            }
+            
+            var isEnemyInFight = character is Enemy enemy && fightDefinition.Enemies.Contains(enemy);
+            return default;
+        }
     }
 }

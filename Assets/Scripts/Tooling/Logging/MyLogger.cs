@@ -3,12 +3,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using ModestTree;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace Tooling.Logging
 {
-    public static class MyLogger
+    public class MyLogger : ILogger
     {
         private static readonly StackTrace stackTrace = new StackTrace(true);
 
@@ -100,5 +101,13 @@ namespace Tooling.Logging
             internal static string GetFilenameColor(string fileName)
                 => $"#{Convert.ToString(fileName.GetHashCode(), 16)}";
         }
+
+        #region ILogger
+
+        public void Log(string message) => MyLogger.Log(message);
+        public void LogWarning(string message) => MyLogger.LogWarning(message);
+        public void LogError(string message) => MyLogger.LogError(message);
+
+        #endregion
     }
 }

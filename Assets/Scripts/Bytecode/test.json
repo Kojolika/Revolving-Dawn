@@ -1,0 +1,14 @@
+{
+    "card_effects": [
+        "get_class",
+        "IHealth",
+        "get_method",
+        "DealDamage",
+        "get_class",
+        "IBuffable",
+        "get_property",
+        "Buffs",
+        "get_property",
+        "Count"
+    ]
+}
