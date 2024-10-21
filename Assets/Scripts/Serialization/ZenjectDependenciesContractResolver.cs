@@ -6,7 +6,7 @@ using Zenject;
 namespace Serialization
 {
     /// <summary>
-    /// This class is used to inject dependencies into classes which are deserialzed form JSON.
+    /// This class is used to inject dependencies into classes which are deserialzed from JSON.
     /// </summary>
     public class ZenjectDependenciesContractResolver : DefaultContractResolver
     {
