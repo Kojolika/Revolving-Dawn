@@ -21,7 +21,7 @@ namespace Models.Buffs
                 var rng = new System.Random();
                 var randomNum = rng.Next(0, playerCharacter.Decks.Hand.Count - 1);
                 var randomCard = playerCharacter.Decks.Hand[randomNum];
-                playerHandController.DowngradeCard(randomCard);
+                playerHandController.DowngradeCard(ref randomCard);
             }
 
             return buff.StackSize - 1;

@@ -1,32 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Fight.Engine;
 using Fight.Events;
 using Tooling.Logging;
+using UnityEngine;
+using Utils.Extensions;
 
 namespace Fight
 {
     public class BattleEngine
     {
-        public bool IsRunning { get; private set; }
+        public Stack<IBattleEvent> BattleEventHistory { get; private set; } = new();
+        
         private List<IBattleEvent> battleEventQueue;
-        public Stack<IBattleEvent> BattleEventHistory { get; private set; } = new Stack<IBattleEvent>();
-
-        public event Action<IBattleEvent> EventOccurred;
-
+        private readonly Dictionary<Type, List<IEventSubscriber>> battleEventSubscribers = new();
+        
         public void Run()
         {
             battleEventQueue = new List<IBattleEvent>();
-            IsRunning = true;
             _ = EngineLoop();
-        }
-
-        public void Stop()
-        {
-            battleEventQueue.Clear();
-            IsRunning = false;
         }
 
         public void InsertBeforeEvent(IBattleEvent battleEventInQueue, IBattleEvent battleEventToInsert)
@@ -47,7 +40,8 @@ namespace Fight
             {
                 return;
             }
-            if (indexOfEvent == battleEventQueue.Count() - 1)
+
+            if (indexOfEvent == battleEventQueue.Count - 1)
             {
                 AddEvent(battleEventToInsert);
             }
@@ -57,10 +51,10 @@ namespace Fight
             }
         }
 
-        async UniTask EngineLoop()
+        private async UniTask EngineLoop()
         {
             int eventIndex = 0;
-            while (IsRunning)
+            while (Application.isPlaying)
             {
                 if (eventIndex < battleEventQueue.Count)
                 {
@@ -68,7 +62,9 @@ namespace Fight
 
                     battleEventQueue[eventIndex].Execute(this);
                     BattleEventHistory.Push(battleEventQueue[eventIndex]);
-                    EventOccurred?.Invoke(battleEventQueue[eventIndex]);
+                    
+                    DispatchEvent(battleEventQueue[eventIndex]);
+
                     MyLogger.Log($"{battleEventQueue[eventIndex].GetType().Name}: {battleEventQueue[eventIndex].Log()}");
 
                     battleEventQueue[eventIndex].OnAfterExecute(this);
@@ -82,5 +78,41 @@ namespace Fight
         }
 
         public void AddEvent(IBattleEvent battleEvent) => battleEventQueue.Add(battleEvent);
+
+        public void SubscribeToEvent<T>(IEventSubscriber subscriber) where T : IBattleEvent
+        {
+            var eventType = typeof(T);
+            if (!battleEventSubscribers.ContainsKey(eventType))
+            {
+                battleEventSubscribers[eventType] = new();
+            }
+
+            battleEventSubscribers[eventType].Add(subscriber);
+        }
+
+        public void UnsubscribeToEvent<T>(IEventSubscriber subscriber) where T : IBattleEvent
+        {
+            var eventType = typeof(T);
+            if (!battleEventSubscribers.TryGetValue(eventType, out var eventSubscriber))
+            {
+                MyLogger.LogError($"Trying to unsubscribe from an event type that has no subscribers!");
+                return;
+            }
+
+            eventSubscriber.Remove(subscriber);
+        }
+
+        private void DispatchEvent<T>(T evt) where T : IBattleEvent
+        {
+            if (!battleEventSubscribers.ContainsKey(typeof(T)) || battleEventSubscribers[typeof(T)].IsNullOrEmpty())
+            {
+                return;
+            }
+
+            foreach (var subscriber in battleEventSubscribers[typeof(T)])
+            {
+                subscriber.OnEvent(evt);
+            }
+        }
     }
 }

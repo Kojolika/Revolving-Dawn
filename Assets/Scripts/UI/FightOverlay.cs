@@ -2,21 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fight;
+using Fight.Engine;
 using Fight.Events;
 using Models;
 using Models.Characters;
 using Systems.Managers;
-using UI.Common;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Views;
 
 namespace UI
 {
-    public class FightOverlay : MonoBehaviour
+    public class FightOverlay : MonoBehaviour, IEventSubscriber<TurnStartedEvent>
     {
-        [SerializeField] ActionButton endTurnButton;
+        [SerializeField] Button endTurnButton;
         [SerializeField] Canvas canvas;
 
         public Canvas Canvas => canvas;
@@ -37,19 +36,11 @@ namespace UI
             this.discardCardEventFactory = discardCardEventFactory;
             this.battleEngine = battleEngine;
 
-            endTurnButton.OnPerformed += EndPlayerTurn;
-            battleEngine.EventOccurred += OnPlayerTurnStarted;
+            endTurnButton.onClick.AddListener(EndPlayerTurn);
+            this.battleEngine.SubscribeToEvent<TurnStartedEvent>(this);
         }
-
-        private void OnPlayerTurnStarted(IBattleEvent battleEvent)
-        {
-            if (battleEvent is TurnStartedEvent turnStartedEvent && turnStartedEvent.Target is PlayerCharacter)
-            {
-                endTurnButton.interactable = true;
-            }
-        }
-
-        private void EndPlayerTurn(InputAction.CallbackContext context)
+        
+        private void EndPlayerTurn()
         {
             endTurnButton.interactable = false;
             var playerCharacter = playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter;
@@ -78,6 +69,20 @@ namespace UI
             {
                 battleEngine.AddEvent(enemyEvent);
             }
+        }
+        
+        public void OnEvent(TurnStartedEvent eventData)
+        {
+            if (eventData.Target is PlayerCharacter)
+            {
+                endTurnButton.interactable = true;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            endTurnButton?.onClick?.RemoveAllListeners();
+            battleEngine?.UnsubscribeToEvent<TurnEndedEvent>(this);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Fight.Animations
             this.fightOverlay = fightOverlay;
         }
 
-        public async override UniTask Play(TurnStartedEvent battleEvent)
+        public override async UniTask Play(TurnStartedEvent battleEvent)
         {
             var text = animatorPrefab.GetComponentInChildren<TextMeshProUGUI>();
             text.SetText(battleEvent.Log());
