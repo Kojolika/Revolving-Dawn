@@ -15,27 +15,32 @@ namespace Controllers
 {
     public class PlayerHandController
     {
-        public readonly AddressablesManager addressablesManager;
-        public readonly PlayerHandView playerHandView;
-        public readonly Decks decks;
-        public readonly CardSettings cardSettings;
+        public readonly AddressablesManager AddressablesManager;
+        public readonly PlayerHandView PlayerHandView;
+        public readonly Decks Decks;
+        public readonly CardSettings CardSettings;
         public PlayerHandController(PlayerDataManager playerDataManager,
             AddressablesManager addressablesManager,
             PlayerHandView playerHandView,
             CardSettings cardSettings)
         {
-            decks = playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter.Decks;
-            this.addressablesManager = addressablesManager;
-            this.playerHandView = playerHandView;
-            this.cardSettings = cardSettings;
+            Decks = playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter.Decks;
+            AddressablesManager = addressablesManager;
+            PlayerHandView = playerHandView;
+            CardSettings = cardSettings;
         }
 
         /// <summary>
         /// Shuffle the specified deck by using the Fisher-Yates shuffle algorithm.
         /// </summary>
         /// <param name="deck">Deck to shuffle.</param>
-        public void ShuffleDeck(List<CardModel> deck)
+        public static void ShuffleDeck(ref List<CardModel> deck)
         {
+            if (deck.IsNullOrEmpty())
+            {
+                return;
+            }
+            
             var rng = new Random();
             int deckSize = deck.Count - 1;
             while (deckSize > 1)
@@ -48,57 +53,57 @@ namespace Controllers
 
         public CardModel DrawCard()
         {
-            if (decks.Draw.Count == 0)
+            if (Decks.Draw.Count == 0)
             {
-                if (decks.Discard.Count == 0)
+                if (Decks.Discard.Count == 0)
                 {
                     MyLogger.LogError($"Fatal: No cards in the draw pile or discard pile!");
                 }
 
-                ShuffleDeck(decks.Discard);
-                decks.Draw = decks.Discard;
-                decks.Discard.Clear();
+                ShuffleDeck(ref Decks.Discard);
+                Decks.Draw = Decks.Discard;
+                Decks.Discard.Clear();
             }
 
-            var cardDrawn = decks.Draw[^1];
-            decks.Draw.Remove(cardDrawn);
+            var cardDrawn = Decks.Draw[^1];
+            Decks.Draw.Remove(cardDrawn);
 
-            decks.Hand.Add(cardDrawn);
+            Decks.Hand.Add(cardDrawn);
 
             return cardDrawn;
         }
 
         public void DiscardCard(CardModel card)
         {
-            if (!decks.Hand.Contains(card))
+            if (!Decks.Hand.Contains(card))
             {
                 MyLogger.LogError($"Cannot discard card {card.Name} because its not in the players hand!");
             }
 
-            decks.Hand.Remove(card);
-            decks.Discard.Add(card);
-            playerHandView.RemoveCardFromHand(card);
+            Decks.Hand.Remove(card);
+            Decks.Discard.Add(card);
+            PlayerHandView.RemoveCardFromHand(card);
         }
 
         public void LoseCard(CardModel card)
         {
-            if (decks.Hand.Contains(card))
+            if (Decks.Hand.Contains(card))
             {
-                decks.Hand.Remove(card);
+                Decks.Hand.Remove(card);
             }
-            else if (decks.Discard.Contains(card))
+            else if (Decks.Discard.Contains(card))
             {
-                decks.Discard.Remove(card);
+                Decks.Discard.Remove(card);
             }
-            else if (decks.Draw.Contains(card))
+            else if (Decks.Draw.Contains(card))
             {
-                decks.Draw.Remove(card);
+                Decks.Draw.Remove(card);
             }
 
-            decks.Lost.Add(card);
+            Decks.Lost.Add(card);
         }
 
-        public void UpgradeCard(CardModel card)
+        public void UpgradeCard(ref CardModel card)
         {
             if (card.NextCard == null)
             {
@@ -109,15 +114,15 @@ namespace Controllers
 
         public void PlayCard(CardModel card)
         {
-            if (!decks.Hand.Remove(card))
+            if (!Decks.Hand.Remove(card))
             {
                 MyLogger.LogError($"Trying to play a card thats not in the player hand!");
             }
-            decks.Discard.Add(card);
-            playerHandView.RemoveCardFromHand(card);
+            Decks.Discard.Add(card);
+            PlayerHandView.RemoveCardFromHand(card);
         }
 
-        public void DowngradeCard(CardModel card)
+        public void DowngradeCard(ref CardModel card)
         {
             if (card.PreviousCard == null)
             {
@@ -126,8 +131,9 @@ namespace Controllers
                     MyLogger.LogError($"Cannot downgrade card {card.Name} with zero mana to upgrade it.");
                 }
 
-                card = cardSettings.DowngradeBaseCardsForMana
-                    .Where(cardManaPair => cardManaPair.ManaSODefinition.Representation == card.Manas[0])
+                var cardModel = card;
+                card = CardSettings.DowngradeBaseCardsForMana
+                    .Where(cardManaPair => cardManaPair.ManaSODefinition.Representation == cardModel.Manas[0])
                     .Select(cardManaPair => cardManaPair.Card.Representation)
                     .First();
 

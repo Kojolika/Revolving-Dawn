@@ -245,8 +245,8 @@ namespace Input
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""323f8956-0883-4be0-abeb-6f77d7cd8fe1"",
-                    ""path"": ""<Mouse>/press"",
+                    ""id"": ""65beb479-340e-4597-b025-f58d2d4161bf"",
+                    ""path"": ""<Pointer>/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

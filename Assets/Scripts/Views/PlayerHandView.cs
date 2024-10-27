@@ -26,11 +26,13 @@ namespace Views
         private ManaPoolView manaPoolView;
         private PlayerHandViewSettings playerHandViewSettings;
         private readonly List<Sequence> currentMoveTweens = new();
+
+        private const float ApproxDistanceEquals = 0.1f;
+
         public Dictionary<CardModel, CardView> CardViewsLookup { get; private set; }
         private List<CardView> orderedCardViews;
         public BattleEngine BattleEngine { get; private set; }
         public BattleAnimationEngine BattleAnimationEngine { get; private set; }
-
         public Camera Camera => handViewCamera;
 
         [Zenject.Inject]
@@ -58,7 +60,8 @@ namespace Views
             CardViewsLookup.Add(cardModel, newCardView);
             orderedCardViews.Add(newCardView);
 
-            await CreateHandCurveAnimation(playerHandViewSettings.CardDrawMoveSpeed, playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
+            await CreateHandCurveAnimation(playerHandViewSettings.CardDrawMoveSpeed,
+                playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
         }
 
         public async UniTask PlayCardAnimation(CardView cardView)
@@ -93,13 +96,14 @@ namespace Views
 
             _ = discardCardSeq.Insert(playerHandViewSettings.CardPlayAnimationDuration * .1f,
                 Tween.Position(cardView.transform,
-                   cardDiscardLocation.position,
-                   playerHandViewSettings.CardPlayAnimationDuration,
-                   ease: playerHandViewSettings.CardPlayEaseFunction)
+                    cardDiscardLocation.position,
+                    playerHandViewSettings.CardPlayAnimationDuration,
+                    ease: playerHandViewSettings.CardPlayEaseFunction)
             );
             _ = discardCardSeq.Insert(0f,
                 Tween.Rotation(cardView.transform,
-                    new Vector3(cardView.transform.rotation.x, cardView.transform.rotation.y, cardView.transform.rotation.z - 90f),
+                    new Vector3(cardView.transform.rotation.x, cardView.transform.rotation.y,
+                        cardView.transform.rotation.z - 90f),
                     playerHandViewSettings.CardPlayAnimationDuration,
                     ease: playerHandViewSettings.CardPlayEaseFunction)
             );
@@ -121,7 +125,8 @@ namespace Views
             var loseCardSeq = Sequence.Create();
 
             _ = loseCardSeq.Insert(0f, Tween.Position(cardView.transform,
-                new Vector3(cardView.transform.position.x, cardView.transform.position.y + 3, cardView.transform.position.z),
+                new Vector3(cardView.transform.position.x, cardView.transform.position.y + 3,
+                    cardView.transform.position.z),
                 0.1f,
                 ease: playerHandViewSettings.CardPlayEaseFunction)
             );
@@ -161,7 +166,7 @@ namespace Views
         {
             var moveCardSeq = Sequence.Create();
 
-            if (cardView.transform.position != position)
+            if (Vector3.Distance(cardView.transform.position, position) > ApproxDistanceEquals)
             {
                 _ = moveCardSeq.Insert(0f, Tween.Position(cardView.transform,
                     position,
@@ -316,6 +321,7 @@ namespace Views
                             result = 0.58f;
                             break;
                     }
+
                     break;
                 case 3:
                     switch (cardPosition)
@@ -330,6 +336,7 @@ namespace Views
                             result = 0.65f;
                             break;
                     }
+
                     break;
                 case 4:
                     switch (cardPosition)
@@ -347,6 +354,7 @@ namespace Views
                             result = 0.74f;
                             break;
                     }
+
                     break;
                 case 5:
                     switch (cardPosition)
@@ -367,6 +375,7 @@ namespace Views
                             result = 0.80f;
                             break;
                     }
+
                     break;
                 case 6:
                     switch (cardPosition)
@@ -390,6 +399,7 @@ namespace Views
                             result = 0.80f;
                             break;
                     }
+
                     break;
                 case 7:
                     switch (cardPosition)
@@ -416,6 +426,7 @@ namespace Views
                             result = 0.80f;
                             break;
                     }
+
                     break;
                 case 8:
                     switch (cardPosition)
@@ -445,6 +456,7 @@ namespace Views
                             result = 0.85f;
                             break;
                     }
+
                     break;
                 case 9:
                     switch (cardPosition)
@@ -477,6 +489,7 @@ namespace Views
                             result = 0.90f;
                             break;
                     }
+
                     break;
                 case 10:
                     switch (cardPosition)
@@ -512,8 +525,10 @@ namespace Views
                             result = 0.95f;
                             break;
                     }
+
                     break;
             }
+
             return result;
         }
     }

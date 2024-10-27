@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Fight.Engine;
 using Fight.Events;
 using Tooling.Logging;
 
 namespace Fight.Animations
 {
-    public class BattleAnimationEngine
+    public class BattleAnimationEngine : IEventSubscriber<IBattleEvent>
     {
         public bool IsRunning { get; private set; }
         private Queue<BattleEventAnimation> battleAnimationQueue;
@@ -16,13 +17,13 @@ namespace Fight.Animations
         {
             this.battleEngine = battleEngine;
             this.animationFactory = animationFactory;
-
-            battleEngine.EventOccurred += LoadAndEnqueueAnimation;
+            
+            battleEngine.SubscribeToEvent<IBattleEvent>(this);
         }
 
         ~BattleAnimationEngine()
         {
-            battleEngine.EventOccurred -= LoadAndEnqueueAnimation;
+            battleEngine?.UnsubscribeToEvent<IBattleEvent>(this);
         }
 
         public void Run()
@@ -71,14 +72,15 @@ namespace Fight.Animations
 
         private void LoadAndEnqueueAnimation(IBattleEvent battleEvent)
         {
-            var animation = animationFactory.Create(battleEvent);
-            if (animation == null)
+            if (battleEvent == null)
             {
                 return;
             }
-
-            Enqueue(new BattleEventAnimation(battleEvent, animation));
+            
+            Enqueue(new BattleEventAnimation(battleEvent, animationFactory.Create(battleEvent)));
         }
+
+        public void OnEvent(IBattleEvent eventData) => LoadAndEnqueueAnimation(eventData);
     }
 
     public class BattleEventAnimation
