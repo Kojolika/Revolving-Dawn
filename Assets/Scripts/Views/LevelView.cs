@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Models.Characters;
 using Systems.Managers;
 using UnityEngine;
@@ -20,13 +21,13 @@ namespace Views
             EnemyView.Factory enemyViewFactory)
         {
             EnemyLookup = new();
-            var enemiesForLevel = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.Enemies;
-            var enemyViews = new List<EnemyView>();
+            var enemiesForLevel = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam.Members
+                .Select(character => character as Enemy).ToList();
+
             for (int i = 0; i < enemiesForLevel.Count; i++)
             {
                 var enemy = enemiesForLevel[i];
                 var newEnemyView = enemyViewFactory.Create(enemy);
-                enemyViews.Add(newEnemyView);
                 EnemyLookup.Add(enemy, newEnemyView);
                 newEnemyView.transform.SetParent(charactersParent);
                 newEnemyView.transform.position = enemySpawns[i].transform.position;

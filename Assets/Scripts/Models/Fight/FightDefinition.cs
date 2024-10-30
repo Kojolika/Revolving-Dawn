@@ -7,7 +7,10 @@ namespace Models.Fight
     [System.Serializable]
     public class FightDefinition
     {
-        [JsonProperty("enemies")]
-        public List<Enemy> Enemies;
+        [JsonProperty("player_team")] 
+        public Team PlayerTeam;
+
+        [JsonProperty("enemy_team")] 
+        public Team EnemyTeam;
     }
 }

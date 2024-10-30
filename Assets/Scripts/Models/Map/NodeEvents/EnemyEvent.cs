@@ -2,22 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Models.Characters;
+using Models.Fight;
 using Newtonsoft.Json;
-using Serialization;
 using Settings;
 using Systems.Managers;
-using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Zenject;
 
 namespace Models.Map
 {
-    [System.Serializable, JsonObject(MemberSerialization.OptIn)]
+    [Serializable, JsonObject(MemberSerialization.OptIn)]
     public class EnemyEvent : NodeEvent
     {
-        [JsonProperty("enemies")]
-        private readonly List<Enemy> enemies = new();
+        [JsonProperty("enemies")] private readonly List<Enemy> enemies = new();
 
         private PlayerDataManager playerDataManager;
         private MySceneManager mySceneManager;
@@ -53,7 +51,8 @@ namespace Models.Map
                 var enemyDifficultyRating = enemySetting.EnemyDifficultyRating;
                 if (currentDifficulty < difficultyForLevel && enemySetting.EnemyDifficultyRating <= difficultyForLevel)
                 {
-                    var enemyHealth = (ulong)(mapSettings.EnemyHealthMultiplier * node.Level) + enemySetting.Enemy.HealthDefinition.MaxHealth;
+                    var enemyHealth = (ulong)(mapSettings.EnemyHealthMultiplier * node.Level) +
+                                      enemySetting.Enemy.HealthDefinition.MaxHealth;
                     enemies.Add(
                         new Enemy(enemySetting.Enemy, new Health(enemyHealth, enemyHealth))
                     );
@@ -65,15 +64,22 @@ namespace Models.Map
 
         public override async void StartEvent()
         {
-            _ = playerDataManager.SaveFight(new Fight.FightDefinition() { Enemies = enemies });
+            // TODO: add place to set team names?
+            _ = playerDataManager.SaveFight(new FightDefinition
+            {
+                EnemyTeam = new Team(enemies.Select(enemy => enemy as Character).ToList(), Team.EnemyTeamName),
+                PlayerTeam = new Team(
+                    new() { playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter },
+                    Team.PlayerTeamName)
+            });
             await mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
         }
     }
 
-    [System.Serializable]
-    public class EliteEnemy : NodeEvent
+    [Serializable]
+    public class EliteEnemyEvent : NodeEvent
     {
-        public EliteEnemy(string name, AssetReferenceSprite mapIconReference) : base(name, mapIconReference)
+        public EliteEnemyEvent(string name, AssetReferenceSprite mapIconReference) : base(name, mapIconReference)
         {
         }
 

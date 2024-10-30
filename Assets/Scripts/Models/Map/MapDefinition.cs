@@ -13,6 +13,9 @@ namespace Models.Map
 
         [JsonProperty("map_nodes")]
         public List<NodeDefinition> Nodes;
+        
+        [JsonProperty("current_node")]
+        public NodeDefinition CurrentNode;
 
         [JsonProperty("x_dimension")]
         public int XDimension;

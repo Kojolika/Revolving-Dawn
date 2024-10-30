@@ -90,7 +90,7 @@ namespace Fight
             battleEventSubscribers[eventType].Add(subscriber);
         }
 
-        public void UnsubscribeToEvent<T>(IEventSubscriber subscriber) where T : IBattleEvent
+        public void UnsubscribeFromEvent<T>(IEventSubscriber subscriber) where T : IBattleEvent
         {
             var eventType = typeof(T);
             if (!battleEventSubscribers.TryGetValue(eventType, out var eventSubscriber))

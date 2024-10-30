@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using ModestTree;
+using Tooling.Logging;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -22,14 +24,18 @@ namespace Data.Utils.Editor
                 .GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
                 .Where(type => !type.IsAbstract
-                    && !type.IsInterface
-                    && abstractType.IsAssignableFrom(type)
-                    && type.HasAttribute<SerializableAttribute>())
+                               && !type.IsInterface
+                               && abstractType.IsAssignableFrom(type)
+                               && type.HasAttribute<SerializableAttribute>())
                 .ToArray();
 
             if (derivedTypes.Length == 0)
             {
-                root.Add(new Label($"No derived types of type {abstractType} can be displayed. They must be concrete types and have the System.SerializableAttribute to be shown in the inspector"));
+                root.Add(
+                    new Label($"No derived types of type {abstractType} can be displayed. " +
+                              "They must be concrete types and have the System.SerializableAttribute " +
+                              "to be shown in the inspector")
+                );
                 return root;
             }
 
@@ -41,7 +47,7 @@ namespace Data.Utils.Editor
             if (regex.IsMatch(currentType))
             {
                 defaultSelection = regex.Match(currentType).ToString();
-                defaultDisplayType = derivedTypes.Where(type => type.Name == defaultSelection).First();
+                defaultDisplayType = derivedTypes.First(type => type.Name == defaultSelection);
             }
             else
             {
@@ -54,9 +60,7 @@ namespace Data.Utils.Editor
 
             dropdown.RegisterCallback((ChangeEvent<string> evt) =>
             {
-                var newType = derivedTypes
-                    .Where(type => type.Name == evt.newValue)
-                    .FirstOrDefault();
+                var newType = derivedTypes.FirstOrDefault(type => type.Name == evt.newValue);
 
                 propertyField = DisplayConcreteType(newType, property);
             });
@@ -68,7 +72,7 @@ namespace Data.Utils.Editor
             return root;
         }
 
-        public PropertyField DisplayConcreteType(Type type, SerializedProperty property)
+        private PropertyField DisplayConcreteType(Type type, SerializedProperty property)
         {
             if (type == null)
             {
@@ -76,11 +80,27 @@ namespace Data.Utils.Editor
             }
 
             if (property.propertyType == SerializedPropertyType.ManagedReference
-                && (property.managedReferenceId == ManagedReferenceUtility.RefIdNull || property.type != $"managedReference<{type.Name}>"))
+                && (property.managedReferenceId == ManagedReferenceUtility.RefIdNull
+                    || property.type != $"managedReference<{type.Name}>"))
             {
                 property.serializedObject.Update();
-                property.managedReferenceValue = Activator.CreateInstance(type);
-                property.serializedObject.ApplyModifiedProperties();
+
+                var ctor = type.Constructors()
+                    .OrderBy(ctor => ctor.GetParameters().Length)
+                    .First();
+
+                var defaultCtorArgs = ctor.GetParameters()
+                    .Select(param => param.ParameterType.GetDefaultValue());
+
+                try
+                {
+                    property.managedReferenceValue = Convert.ChangeType(ctor.Invoke(defaultCtorArgs.ToArray()), type);
+                    property.serializedObject.ApplyModifiedProperties();
+                }
+                catch (Exception e)
+                {
+                    MyLogger.LogError($"Error creating instance of {type.Name}: {e.Message}");
+                }
             }
 
             var propertyField = new PropertyField(property);

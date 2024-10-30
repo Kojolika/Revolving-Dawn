@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fight;
@@ -13,7 +12,7 @@ using Views;
 
 namespace UI
 {
-    public class FightOverlay : MonoBehaviour, IEventSubscriber<TurnStartedEvent>
+    public class FightOverlay : MonoBehaviour, IEventSubscriber<PhaseEndedEvent>
     {
         [SerializeField] Button endTurnButton;
         [SerializeField] Canvas canvas;
@@ -53,7 +52,8 @@ namespace UI
 
             battleEngine.AddEvent(new TurnEndedEvent(playerCharacter));
 
-            var enemies = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.Enemies;
+            var enemies = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam.Members
+                .Select(member => member as Enemy);
             var enemyEvents = enemies
                 .SelectMany(enemy => enemy.NextMove.MoveEffects)
                 .SelectMany(effect =>
@@ -71,9 +71,9 @@ namespace UI
             }
         }
         
-        public void OnEvent(TurnStartedEvent eventData)
+        public void OnEvent(PhaseEndedEvent eventData)
         {
-            if (eventData.Target is PlayerCharacter)
+            if (eventData.Target.IsPlayerTeam())
             {
                 endTurnButton.interactable = true;
             }
@@ -82,7 +82,7 @@ namespace UI
         private void OnDestroy()
         {
             endTurnButton?.onClick?.RemoveAllListeners();
-            battleEngine?.UnsubscribeToEvent<TurnEndedEvent>(this);
+            battleEngine?.UnsubscribeFromEvent<TurnEndedEvent>(this);
         }
     }
 }

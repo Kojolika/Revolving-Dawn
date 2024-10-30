@@ -8,6 +8,9 @@ using Mana;
 using Models;
 using Models.Buffs;
 using Models.Characters;
+using Models.Characters.Player;
+using Models.Fight;
+using Models.Map;
 using Settings;
 using Systems;
 using Systems.Managers;
@@ -93,7 +96,8 @@ namespace Zenject.Installers
 
             Container.Bind<LevelView>()
                 .FromComponentInNewPrefab(levelView)
-                .AsSingle();
+                .AsSingle()
+                .NonLazy();
 
             Container.Bind<PlayerHandController>()
                 .AsSingle();
@@ -102,10 +106,36 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(fightOverlayPrefab)
                 .AsSingle();
 
+            InstallCurrentFightData();
             InstallBattleEventFactories();
             InstallPlayerHandInputs();
             InstallAddressableAssets();
             InstallWorldUI();
+        }
+
+        private void InstallCurrentFightData()
+        {
+            var playerDataManger = Container.Resolve<PlayerDataManager>();
+
+            Container.Bind<RunDefinition>()
+                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun);
+
+            Container.Bind<PlayerCharacter>()
+                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.PlayerCharacter);
+
+            Container.Bind<MapDefinition>()
+                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentMap);
+
+            Container.Bind<FightDefinition>()
+                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight);
+
+            Container.Bind<Team>()
+                .WithId(Team.PlayerTeamName)
+                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.PlayerTeam);
+
+            Container.Bind<Team>()
+                .WithId(Team.EnemyTeamName)
+                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam);
         }
 
         private void InstallBattleEventFactories()
@@ -116,7 +146,9 @@ namespace Zenject.Installers
             Container.BindFactory<Character, TurnStartedEvent, TurnStartedEvent.BattleEventFactoryT<TurnStartedEvent>>()
                 .AsSingle();
 
-            Container.BindFactory<CardView, List<IHealth>[], PlayCardEvent, PlayCardEvent.BattleEventFactoryST<PlayCardEvent>>()
+            Container
+                .BindFactory<CardView, List<IHealth>[], PlayCardEvent,
+                    PlayCardEvent.BattleEventFactoryST<PlayCardEvent>>()
                 .AsSingle();
 
             Container.BindFactory<CardView, DiscardCardEvent, DiscardCardEvent.Factory>()

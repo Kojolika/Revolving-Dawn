@@ -14,7 +14,6 @@ namespace UI.Menus
         public class Data
         {
             public MapDefinition MapDefinition;
-            public NodeDefinition CurrentNode;
         }
 
         [ResourcePath]
@@ -50,7 +49,7 @@ namespace UI.Menus
                 int xPos = Mathf.FloorToInt(mapSize.x * xNodeDataNormalized);
                 int yPos = Mathf.FloorToInt(mapSize.y * yNodeDataNormalized);
 
-                var newNode = nodeDisplayFactory.Create(new NodeDisplayElement.Data { Definition = node, CurrentPlayerNode = data.CurrentNode });
+                var newNode = nodeDisplayFactory.Create(new NodeDisplayElement.Data { Definition = node, CurrentPlayerNode = data.MapDefinition.CurrentNode });
                 newNode.transform.SetParent(nodeContainer);
                 var coordinates = new NodeDefinition.Coordinate(node.Coord.x, node.Coord.y);
                 nodeElementsLookup.Add(coordinates, newNode);

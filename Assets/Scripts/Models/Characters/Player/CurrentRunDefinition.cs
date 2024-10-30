@@ -16,9 +16,6 @@ namespace Models.Characters.Player
         [JsonProperty("current_map")]
         public MapDefinition CurrentMap;
 
-        [JsonProperty("current_node")]
-        public NodeDefinition CurrentMapNode;
-
         [JsonProperty("current_fight")]
         public FightDefinition CurrentFight;
     }

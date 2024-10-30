@@ -28,7 +28,6 @@ namespace Systems.Managers
 
             CurrentPlayerDefinition = await saveManager.TryLoadSavedData();
 
-
             if (CurrentPlayerDefinition == null)
             {
                 _ = CreateNewPlayer();
@@ -46,7 +45,7 @@ namespace Systems.Managers
 
         public async UniTask UpdateMapNode(NodeDefinition currentNode)
         {
-            CurrentPlayerDefinition.CurrentRun.CurrentMapNode = currentNode;
+            CurrentPlayerDefinition.CurrentRun.CurrentMap.CurrentNode = currentNode;
 
             await saveManager.Save(CurrentPlayerDefinition);
         }
@@ -65,7 +64,6 @@ namespace Systems.Managers
             {
                 Name = "Test",
                 CurrentMap = newMap,
-                CurrentMapNode = newMap.Nodes[0],
                 PlayerCharacter = new(playerClass, characterSettings)
             };
 

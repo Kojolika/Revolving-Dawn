@@ -31,9 +31,9 @@ namespace Fight.Events
                     battleEngine.InsertAfterEvent(drawCardFactory.Create(playerCharacter), this);
                 }
 
-                foreach (var enemy in playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.Enemies)
+                foreach (var enemy in playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam.Members)
                 {
-                    enemy.SelectMove();
+                    (enemy as Enemy)?.SelectMove();
                 }
             }
         }

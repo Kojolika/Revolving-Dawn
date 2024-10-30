@@ -23,7 +23,7 @@ namespace Fight.Animations
 
         ~BattleAnimationEngine()
         {
-            battleEngine?.UnsubscribeToEvent<IBattleEvent>(this);
+            battleEngine?.UnsubscribeFromEvent<IBattleEvent>(this);
         }
 
         public void Run()

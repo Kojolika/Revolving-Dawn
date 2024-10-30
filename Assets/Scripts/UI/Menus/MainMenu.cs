@@ -43,7 +43,9 @@ namespace UI.Menus
             quitButton.Pressed += QuitGame;
         }
 
-        public override void Populate(Null data) { }
+        public override void Populate(Null data)
+        {
+        }
 
         async void StartNewGameOrLoadCurrent()
         {
@@ -64,11 +66,7 @@ namespace UI.Menus
             else if (currentRun.CurrentMap != null)
             {
                 _ = menuManager.Open<MapView, MapView.Data>(
-                    new MapView.Data()
-                    {
-                        MapDefinition = currentRun.CurrentMap,
-                        CurrentNode = currentRun.CurrentMapNode
-                    }
+                    new MapView.Data { MapDefinition = currentRun.CurrentMap }
                 );
             }
         }

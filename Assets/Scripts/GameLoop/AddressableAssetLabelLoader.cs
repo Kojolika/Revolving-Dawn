@@ -1,14 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using Systems.Managers;
-using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceLocations;
 using Zenject;
 
 namespace GameLoop
@@ -27,19 +22,18 @@ namespace GameLoop
             this.addressablesManager = addressablesManager;
         }
 
-        public async UniTask LoadAssetsByLabel()
+        public void Initialize()
         {
             cts = new();
-            await addressablesManager.LoadAssetsFromLabels(assetLabelReferences, () => cts.Token.IsCancellationRequested, cancellationToken: cts.Token);
+            _ = addressablesManager.LoadAssetsFromLabels(assetLabelReferences, 
+                () => cts.Token.IsCancellationRequested,
+                cancellationToken: cts.Token);
         }
 
-        public void UnloadAssets()
+        public void Dispose()
         {
             cts.Cancel();
             cts.Dispose();
         }
-
-        public void Initialize() => _ = LoadAssetsByLabel();
-        public void Dispose() => UnloadAssets();
     }
 }

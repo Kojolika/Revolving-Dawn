@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Settings;
 using System;
+using Systems.Managers;
 using Utils.Extensions;
 using Zenject;
 
@@ -31,6 +32,7 @@ namespace Models.Map
             return new MapDefinition()
             {
                 Nodes = nodes,
+                CurrentNode = nodes?[0],
                 XDimension = mapSettings.XDimension,
                 YDimension = mapSettings.YDimension
             };

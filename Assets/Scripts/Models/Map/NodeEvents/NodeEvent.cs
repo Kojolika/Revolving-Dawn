@@ -4,17 +4,16 @@ using Newtonsoft.Json;
 using Settings;
 using Zenject;
 using System.Linq;
+using Systems.Managers;
 
 namespace Models.Map
 {
     [System.Serializable, JsonObject(MemberSerialization.OptIn)]
     public abstract class NodeEvent
     {
-        [JsonProperty("name")]
-        private readonly string name;
+        [JsonProperty("name")] private readonly string name;
 
-        [JsonProperty("map_icon_reference")]
-        private readonly AssetReferenceSprite mapIconReference;
+        [JsonProperty("map_icon_reference")] private readonly AssetReferenceSprite mapIconReference;
 
         public string Name => name;
         public AssetReferenceSprite MapIconReference => mapIconReference;
@@ -28,7 +27,9 @@ namespace Models.Map
         public abstract void StartEvent();
         public abstract void Populate(MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap);
 
-        public class Factory : PlaceholderFactory<NodeEventFactory.Data, NodeEvent> { }
+        public class Factory : PlaceholderFactory<NodeEventFactory.Data, NodeEvent>
+        {
+        }
     }
 
     public class NodeEventFactory : IFactory<NodeEventFactory.Data, NodeEvent>
@@ -87,7 +88,7 @@ namespace Models.Map
             else
             {
                 var randomNum = data.RandomNumberGenerator.Next(0, (int)data.TotalWeights);
-                for (int i = 0; i < data.MapSettings.EventSettings.Count(); i++)
+                for (int i = 0; i < data.MapSettings.EventSettings.Count; i++)
                 {
                     if (randomNum <= data.CumulativeSums[i])
                     {
@@ -98,12 +99,15 @@ namespace Models.Map
                 }
             }
 
+
             var newNodeEvent = instantiator.Instantiate(
                 nodeEventDefinition.EventAction.GetType(),
                 new object[] { nodeEventDefinition.name, nodeEventDefinition.MapIconReference }
             ) as NodeEvent;
 
-            newNodeEvent.Populate(data.MapSettings, data.CurrentNode, data.MaxNodeLevelForMap);
+            newNodeEvent?.Populate(data.MapSettings, data.CurrentNode, data.MaxNodeLevelForMap);
+
+            Debug.Assert(newNodeEvent != null, "Created a new node event but node event is null!");
 
             return newNodeEvent;
         }

@@ -18,10 +18,10 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   eventAction:
-    rid: 503764583087341588
+    rid: 2182470776907890695
   references:
     version: 2
     RefIds:
-    - rid: 503764583087341588
-      type: {class: EliteEnemy, ns: Models.Map, asm: Assembly-CSharp}
+    - rid: 2182470776907890695
+      type: {class: EliteEnemyEvent, ns: Models.Map, asm: Assembly-CSharp}
       data: 
