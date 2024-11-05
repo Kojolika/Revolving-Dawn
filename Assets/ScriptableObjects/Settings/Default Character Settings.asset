@@ -15,3 +15,10 @@ MonoBehaviour:
   handSize: 8
   drawAmount: 8
   usableManaPerTurn: 1
+  numberOfManaRefreshedPerTurn: 4
+  allManaTypesAvailable:
+  - {fileID: 11400000, guid: cf92ef4110406784cb00b29170e2560c, type: 2}
+  - {fileID: 11400000, guid: d0451e7e856f014469c51cbe25b209d0, type: 2}
+  - {fileID: 11400000, guid: db0d8289709d075419d8283e0629229b, type: 2}
+  - {fileID: 11400000, guid: fc30a61ee75aac346922ceb5affbc23a, type: 2}
+  - {fileID: 11400000, guid: 587b78225009f0943b437218d9d071bc, type: 2}

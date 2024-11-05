@@ -8,6 +8,7 @@ using Systems.Managers.Base;
 using Tooling.Logging;
 using UI.DisplayElements;
 using UnityEngine;
+using Views.Common;
 
 
 namespace Zenject.Installers
@@ -22,6 +23,7 @@ namespace Zenject.Installers
             InstallPrefabs();
             InstallMapObjects();
             InstallDependenciesForDeserializer();
+            InstallUIUtils();
         }
 
         private void InstallManagers()
@@ -32,9 +34,9 @@ namespace Zenject.Installers
                 .SelectMany(assembly => assembly.GetTypes())
                 .Where(type
                     => !type.IsAbstract
-                        && !type.IsInterface
-                        && typeof(IManager).IsAssignableFrom(type)
-                        && !typeof(IPartTimeManager).IsAssignableFrom(type))
+                       && !type.IsInterface
+                       && typeof(IManager).IsAssignableFrom(type)
+                       && !typeof(IPartTimeManager).IsAssignableFrom(type))
                 .ToArray();
 
             foreach (var managerType in managerTypes)
@@ -61,7 +63,15 @@ namespace Zenject.Installers
 
         private void InstallDependenciesForDeserializer()
         {
-            Container.Bind<ZenjectDependenciesContractResolver>().FromNew().AsSingle();
+            Container.Bind<ZenjectDependenciesContractResolver>()
+                .FromNew()
+                .AsSingle();
+        }
+
+        private void InstallUIUtils()
+        {
+            Container.Bind<ViewListFactory>()
+                .AsSingle();
         }
     }
 }

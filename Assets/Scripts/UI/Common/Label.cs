@@ -3,11 +3,7 @@ using UnityEngine;
 
 namespace UI.Common
 {
-    public interface ILabel
-    {
-        void SetText(string text);
-    }
-    public class Label : MonoBehaviour, ILabel
+    public class Label : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI textMeshProUGUI;
 

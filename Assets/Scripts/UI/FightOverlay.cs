@@ -5,7 +5,7 @@ using Fight.Engine;
 using Fight.Events;
 using Models;
 using Models.Characters;
-using Systems.Managers;
+using Models.Characters.Player;
 using UnityEngine;
 using UnityEngine.UI;
 using Views;
@@ -19,18 +19,18 @@ namespace UI
 
         public Canvas Canvas => canvas;
 
-        private PlayerDataManager playerDataManager;
+        private RunDefinition currentRun;
         private PlayerHandView playerHandView;
         private DiscardCardEvent.Factory discardCardEventFactory;
         private BattleEngine battleEngine;
 
         [Zenject.Inject]
-        private void Construct(PlayerDataManager playerDataManager,
+        private void Construct(RunDefinition currentRun,
             PlayerHandView playerHandView,
             DiscardCardEvent.Factory discardCardEventFactory,
             BattleEngine battleEngine)
         {
-            this.playerDataManager = playerDataManager;
+            this.currentRun = currentRun;
             this.playerHandView = playerHandView;
             this.discardCardEventFactory = discardCardEventFactory;
             this.battleEngine = battleEngine;
@@ -42,7 +42,7 @@ namespace UI
         private void EndPlayerTurn()
         {
             endTurnButton.interactable = false;
-            var playerCharacter = playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter;
+            var playerCharacter = currentRun.PlayerCharacter;
 
 
             foreach (var cardView in playerHandView.CardViewsLookup.Values)
@@ -52,7 +52,7 @@ namespace UI
 
             battleEngine.AddEvent(new TurnEndedEvent(playerCharacter));
 
-            var enemies = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam.Members
+            var enemies = currentRun.CurrentFight.EnemyTeam.Members
                 .Select(member => member as Enemy);
             var enemyEvents = enemies
                 .SelectMany(enemy => enemy.NextMove.MoveEffects)

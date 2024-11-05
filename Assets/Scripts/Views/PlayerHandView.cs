@@ -23,7 +23,6 @@ namespace Views
         [SerializeField] BezierCurve handCurve;
 
         private CardView.Factory cardViewFactory;
-        private ManaPoolView manaPoolView;
         private PlayerHandViewSettings playerHandViewSettings;
         private readonly List<Sequence> currentMoveTweens = new();
 
@@ -37,14 +36,11 @@ namespace Views
 
         [Zenject.Inject]
         private void Construct(CardView.Factory cardViewFactory,
-            ManaPoolView manaPoolView,
             PlayerHandViewSettings playerHandViewSettings,
             BattleEngine battleEngine,
             BattleAnimationEngine battleAnimationEngine)
         {
             this.cardViewFactory = cardViewFactory;
-            this.manaPoolView = manaPoolView;
-            manaPoolView.transform.position = manaPoolViewLocation.position;
             CardViewsLookup = new();
             orderedCardViews = new();
             this.playerHandViewSettings = playerHandViewSettings;

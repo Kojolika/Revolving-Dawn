@@ -35,11 +35,8 @@ namespace Systems.Managers
             MenuStackUpdated -= OnMenuStackUpdated;
         }
 
-        public void OnMenuStackUpdated()
-            => menuCanvas.gameObject.SetActive(MenuStack.Count > 0);
-
-        public MenuInfo LastOrDefault<T>()
-            => MenuStack.LastOrDefault(menu => menu.Type == typeof(T));
+        public void OnMenuStackUpdated() => menuCanvas.gameObject.SetActive(MenuStack.Count > 0);
+        public MenuInfo LastOrDefault<T>() => MenuStack.LastOrDefault(menu => menu.Type == typeof(T));
 
         public MenuInfo Peek() => MenuStack.Count > 0
             ? MenuStack[^1]
@@ -67,10 +64,9 @@ namespace Systems.Managers
             }
         }
 
-        public async UniTask Close(IMenuHandle menuHandle)
-            => await Close(
-                MenuStack.LastOrDefault(menu => menu.MenuHandle == menuHandle)
-            );
+        public async UniTask Close(IMenuHandle menuHandle) => await Close(
+            MenuStack.LastOrDefault(menu => menu.MenuHandle == menuHandle)
+        );
 
         void Push(MenuInfo menuInfo) => MenuStack.Add(menuInfo);
 
@@ -165,7 +161,8 @@ namespace Systems.Managers
             public AsyncOperationHandle AsyncOperationHandle;
             public int SortingOrder;
 
-            public MenuInfo(IMenuHandle menuHandle, Type type, AsyncOperationHandle asyncOperationHandle, int sortingOrder)
+            public MenuInfo(IMenuHandle menuHandle, Type type, AsyncOperationHandle asyncOperationHandle,
+                int sortingOrder)
             {
                 MenuHandle = menuHandle;
                 Type = type;

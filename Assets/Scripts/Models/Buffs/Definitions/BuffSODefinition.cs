@@ -12,34 +12,44 @@ namespace Models.Buffs
     {
         [SerializeField] private AssetReferenceSprite icon;
         [SerializeField] private ulong maxStackSize;
-        [SerializeReference, DisplayAbstract(typeof(IBuffProperty))] private List<IBuffProperty> buffProperties;
 
+        [SerializeReference, DisplayAbstract(typeof(IBuffProperty))]
+        private List<IBuffProperty> buffProperties;
 
         public string Name => name;
         public AssetReferenceSprite Icon => icon;
         public ulong MaxStackSize => maxStackSize;
         public List<IBuffProperty> BuffProperties => buffProperties;
-        public BuffDefinition Representation => new (this);
+        
+        private BuffDefinition representation;
+
+        public BuffDefinition Representation
+        {
+            get
+            {
+                representation ??= new BuffDefinition(this);
+                return representation;
+            }
+        }
     }
 
     public class BuffDefinition
     {
-        [JsonProperty("name")]
+        [JsonProperty("name")] 
         public readonly string Name;
 
-        [JsonProperty("icon_asset_reference")]
+        [JsonProperty("icon_asset_reference")] 
         public readonly AssetReferenceSprite Icon;
 
-        [JsonProperty("max_stack_size")]
+        [JsonProperty("max_stack_size")] 
         public readonly ulong MaxStackSize;
 
-        [JsonProperty("buff_properties")]
+        [JsonProperty("buff_properties")] 
         public readonly List<IBuffProperty> BuffProperties;
-
+        
         [JsonConstructor]
         public BuffDefinition()
         {
-
         }
 
         public BuffDefinition(BuffSODefinition buffDefinition)

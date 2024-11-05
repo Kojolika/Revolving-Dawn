@@ -10,7 +10,7 @@ namespace UI.Menus.Common
         void OnClose();
 
         /// <summary>
-        /// Set default so objects can obt into async method if needed.
+        /// Set default so objects can opt into using the async method if needed.
         /// </summary>
         UniTask OnCloseAsync() => UniTask.CompletedTask;
     }

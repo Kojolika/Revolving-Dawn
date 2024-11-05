@@ -81,10 +81,6 @@ namespace Zenject.Installers
                 .FromComponentInNewPrefab(manaView)
                 .AsSingle();
 
-            Container.Bind<ManaPoolView>()
-                .FromComponentInNewPrefab(manaPoolView)
-                .AsSingle();
-
             Container.Bind<PlayerHandView>()
                 .FromComponentInNewPrefab(playerHandView)
                 .AsSingle();
@@ -115,27 +111,37 @@ namespace Zenject.Installers
 
         private void InstallCurrentFightData()
         {
-            var playerDataManger = Container.Resolve<PlayerDataManager>();
-
             Container.Bind<RunDefinition>()
-                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun);
+                .FromResolveGetter<PlayerDataManager>(
+                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun)
+                .AsSingle();
 
             Container.Bind<PlayerCharacter>()
-                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.PlayerCharacter);
+                .FromResolveGetter<PlayerDataManager>(
+                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.PlayerCharacter)
+                .AsSingle();
 
             Container.Bind<MapDefinition>()
-                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentMap);
+                .FromResolveGetter<PlayerDataManager>(
+                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentMap)
+                .AsSingle();
 
             Container.Bind<FightDefinition>()
-                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight);
+                .FromResolveGetter<PlayerDataManager>(
+                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight)
+                .AsSingle();
 
             Container.Bind<Team>()
                 .WithId(Team.PlayerTeamName)
-                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.PlayerTeam);
+                .FromResolveGetter<PlayerDataManager>(
+                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.PlayerTeam)
+                .AsCached();
 
             Container.Bind<Team>()
                 .WithId(Team.EnemyTeamName)
-                .FromInstance(playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam);
+                .FromResolveGetter<PlayerDataManager>(
+                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam)
+                .AsCached();
         }
 
         private void InstallBattleEventFactories()

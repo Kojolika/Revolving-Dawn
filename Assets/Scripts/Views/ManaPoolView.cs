@@ -1,106 +1,49 @@
-using UnityEngine;
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using Fight;
+using Models.Mana;
+using Settings;
+using Tooling.Logging;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
+using Views.Common;
 
-namespace Mana
+namespace Views
 {
-    public class ManaPoolView : MonoBehaviour
+    public class ManaPoolView : MonoBehaviour, IView<List<(ManaModel, long)>>
     {
-        public List<ManaView> pool = new List<ManaView>();
-        [SerializeField] ManaView manaPrefab;
-        int manaCount;
+        [SerializeField] private PlayerManaView playerManaViewPrefab;
+        [SerializeField] private Transform contentAnchor;
 
-        public GameObject center;
-        float radius = .5f;
-        Vector2 circleCenter;
-        float rotateSpeed = 50f;
-        float z = 2f;
-        float[] angle;
-        bool rotating = false;
+        private CharacterSettings characterSettings;
+        private List<PlayerManaView> manaPool;
+        private ViewListFactory viewListFactory;
+        private ViewList<(ManaModel, long)> viewList;
 
-        void Start()
+        [Zenject.Inject]
+        private void Construct(CharacterSettings characterSettings, ViewListFactory viewListFactory)
         {
-            circleCenter = new Vector2(center.transform.localPosition.x, center.transform.localPosition.y);
-            ResetPool();
+            this.characterSettings = characterSettings;
+            this.viewListFactory = viewListFactory;
         }
 
-        Vector3[] GetStoppingPoints()
+        public void Start()
         {
-            Vector3[] points = new Vector3[manaCount];
-            angle = new float[manaCount];
-
-            for (int i = 0; i < manaCount; i++)
+            var manaList = new List<(ManaModel, long)>();
+            foreach (var mana in characterSettings.AllManaTypesAvailable)
             {
-                float offset = i * (360 / manaCount);
-                angle[i] = offset;
-
-                points[i] = new Vector3(
-                    circleCenter.x + (radius * Mathf.Cos(offset * Mathf.Deg2Rad)),
-                    circleCenter.y + (radius * Mathf.Sin(offset * Mathf.Deg2Rad)),
-                    z);
-            }
-            return points;
-        }
-
-        public bool IsRotating()
-        {
-            return rotating;
-        }
-        public void StopRotating()
-        {
-            rotating = false;
-            StopCoroutine(CircularRotateCoroutine());
-        }
-
-        public void StartCircularRotate()
-        {
-            rotating = true;
-            StartCoroutine(CircularRotateCoroutine());
-        }
-        IEnumerator CircularRotateCoroutine()
-        {
-            manaCount = pool.Count;
-            while (rotating)
-            {
-                for (int i = 0; i < manaCount; i++)
-                {
-                    var mana = this.pool[i];
-
-                    angle[i] += (Time.deltaTime * rotateSpeed);
-                    mana.transform.localPosition = new Vector3(
-                        circleCenter.x + radius + Mathf.Cos(angle[i] * Mathf.Deg2Rad),
-                        circleCenter.y + radius + Mathf.Sin(angle[i] * Mathf.Deg2Rad),
-                        z);
-                }
-
-                yield return null;
+                manaList.Add((mana.Representation, 0));
             }
 
+            Populate(manaList);
         }
 
-        public void AddMana(ManaType type)
-        {    
-            ManaView mana = Instantiate(manaPrefab, this.transform, true);
-
-            pool.Add(mana);
-            ResetPool();
-        }
-        public void RemoveMana(ManaView mana)
+        public void Populate(List<(ManaModel, long)> data)
         {
-            StopAllCoroutines();
-            pool.Remove(mana);
-            ResetPool();
+            viewList ??= viewListFactory.Create(data, CreateView, contentAnchor);
+            viewList.Populate(data);
         }
 
-        void ResetPool()
-        {
-            manaCount = this.pool.Count;
-            var points = GetStoppingPoints();
-            for (int i = 0; i < manaCount; i++)
-            {
-                pool[i].transform.localPosition = points[i];
-            }
-        }
+        private IView<(ManaModel, long)> CreateView() => Instantiate(playerManaViewPrefab, contentAnchor);
     }
 }

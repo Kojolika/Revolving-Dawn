@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Serialization;
+using Tooling.Logging;
 using UnityEngine;
 
 namespace Models.Mana
@@ -15,13 +16,19 @@ namespace Models.Mana
         {
             get
             {
-                representation ??= new ManaModel(this);
+                MyLogger.Log($"Getting mana rep, : {representation == null}, {representation?.Color}, {representation?.Name}");
+                if (representation == null)
+                {
+                    MyLogger.Log($"Rep is null");
+                    representation = new ManaModel(this);
+                    MyLogger.LogError($"Rep color is now {representation.Color}");
+                }
                 return representation;
             }
-            private set => representation = value;
         }
     }
 
+    [System.Serializable]
     public class ManaModel
     {
         public readonly string Name;
