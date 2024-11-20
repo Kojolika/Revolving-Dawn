@@ -26,9 +26,14 @@ namespace Systems.Managers
         private JsonSerializer jsonSerializer;
 
         [Inject]
-        void Construct(ZenjectDependenciesContractResolver zenjectDependencyContractResolver)
+        void Construct(CustomContractResolver customContractResolver)
         {
-            jsonSerializer = new JsonSerializer
+            jsonSerializer = CreateJsonSerializer(customContractResolver);
+        }
+
+        private static JsonSerializer CreateJsonSerializer(CustomContractResolver customContractResolver)
+        {
+            var jsonSerializer = new JsonSerializer
             {
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 TypeNameHandling = TypeNameHandling.Auto,
@@ -37,7 +42,13 @@ namespace Systems.Managers
             };
             jsonSerializer.Converters.Add(new AssetReferenceConverter());
             jsonSerializer.Converters.Add(new Serialization.ColorConverter());
-            jsonSerializer.ContractResolver = zenjectDependencyContractResolver;
+
+            if (customContractResolver != null)
+            {
+                jsonSerializer.ContractResolver = customContractResolver;
+            }
+
+            return jsonSerializer;
         }
 
         public async UniTask Save(PlayerDefinition playerDefinition)
@@ -51,7 +62,7 @@ namespace Systems.Managers
 
             await File.WriteAllTextAsync(PlayerSaveFilePath, playerDefinition.ToString());
 
-            using StreamWriter file = File.CreateText(PlayerSaveFilePath);
+            await using StreamWriter file = File.CreateText(PlayerSaveFilePath);
             using JsonTextWriter writer = new(file);
 
             JToken playerJson = JToken.FromObject(playerDefinition, jsonSerializer);

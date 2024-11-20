@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data.DB;
 using Models.Map;
 using Serialization;
 using Settings;
@@ -24,6 +25,7 @@ namespace Zenject.Installers
             InstallMapObjects();
             InstallDependenciesForDeserializer();
             InstallUIUtils();
+            InstallDB();
         }
 
         private void InstallManagers()
@@ -63,7 +65,7 @@ namespace Zenject.Installers
 
         private void InstallDependenciesForDeserializer()
         {
-            Container.Bind<ZenjectDependenciesContractResolver>()
+            Container.Bind<CustomContractResolver>()
                 .FromNew()
                 .AsSingle();
         }
@@ -71,6 +73,12 @@ namespace Zenject.Installers
         private void InstallUIUtils()
         {
             Container.Bind<ViewListFactory>()
+                .AsSingle();
+        }
+
+        private void InstallDB()
+        {
+            Container.BindInterfacesAndSelfTo<DBInterface>()
                 .AsSingle();
         }
     }

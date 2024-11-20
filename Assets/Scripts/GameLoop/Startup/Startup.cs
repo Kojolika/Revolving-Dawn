@@ -1,10 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
+using Data.DB;
 using Systems.Managers;
-using Systems.Managers.Base;
 using Tooling.Logging;
 using UI.Menus;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace GameLoop.Startup
 {
@@ -12,12 +11,14 @@ namespace GameLoop.Startup
     {
         private MySceneManager sceneManager;
         private MenuManager menuManager;
+        private DBInterface dbInterface;
 
         [Zenject.Inject]
-        void Construct(MySceneManager sceneManager, MenuManager menuManager)
+        void Construct(MySceneManager sceneManager, MenuManager menuManager, DBInterface dbInterface)
         {
             this.sceneManager = sceneManager;
             this.menuManager = menuManager;
+            this.dbInterface = dbInterface;
         }
 
         private void Awake()
@@ -29,8 +30,8 @@ namespace GameLoop.Startup
         {
             MyLogger.Log("Waiting for the dependency injection object graph is constructed...");
             await UniTask.WaitWhile(() => sceneManager == null && menuManager == null);
-
-            await UniTask.WaitForSeconds(2);
+            
+            dbInterface.OpenConnection();
 
             MyLogger.Log("Loading Main Menu...");
             await sceneManager.LoadScene(MySceneManager.SceneIndex.MainMenu);
