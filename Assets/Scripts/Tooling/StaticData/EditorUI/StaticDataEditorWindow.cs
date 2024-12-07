@@ -164,21 +164,24 @@ namespace Tooling.StaticData
                     var typeInstances = new List<StaticData>();
                     var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
 
-                    foreach (var file in Directory.EnumerateFiles(typeDirectory, "*.json"))
+                    if (Directory.Exists(typeDirectory))
                     {
-                        using var streamReader = File.OpenText(file);
-
-                        var staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
-                        if (staticDataFromJson == null)
+                        foreach (var file in Directory.EnumerateFiles(typeDirectory, "*.json"))
                         {
-                            MyLogger.LogError($"Static Data of type {type} could not be deserialized.");
-                            continue;
+                            using var streamReader = File.OpenText(file);
+
+                            var staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
+                            if (staticDataFromJson == null)
+                            {
+                                MyLogger.LogError($"Static Data of type {type} could not be deserialized.");
+                                continue;
+                            }
+
+                            var fileNameWithExtension = new FileInfo(file).Name;
+                            staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
+
+                            typeInstances.Add(staticDataFromJson);
                         }
-
-                        var fileNameWithExtension = new FileInfo(file).Name;
-                        staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
-
-                        typeInstances.Add(staticDataFromJson);
                     }
 
                     staticDataInstances.Add(type, typeInstances);
@@ -362,11 +365,10 @@ namespace Tooling.StaticData
             listView.selectionChanged += _ =>
             {
                 typeInstanceSelectedIndex = listView.selectedIndex;
-                var shouldRefreshView = selectedType != selectedInstanceType && HasOpenInstances<InstanceStaticDataEditorWindow>();
                 selectedInstanceType = selectedType;
                 var instanceEditor = GetWindow<InstanceStaticDataEditorWindow>();
 
-                if (shouldRefreshView)
+                if (HasOpenInstances<InstanceStaticDataEditorWindow>())
                 {
                     instanceEditor.rootVisualElement.Clear();
                     instanceEditor.CreateGUI();
