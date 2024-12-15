@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -12,38 +11,51 @@ namespace Tooling.Logging
     {
         private static readonly StackTrace stackTrace = new StackTrace(true);
 
+#if UNITY_EDITOR
         public static void Log(string message, [CallerFilePath] string filePath = "")
-            => Debug.Log(
+        {
+            Debug.Log(
                 FormatLog(message, filePath)
             );
+        }
 
         public static void Log(string message, GameObject context, [CallerFilePath] string filePath = "")
-            => Debug.Log(
+        {
+            Debug.Log(
                 FormatLog(message, filePath),
                 context
             );
+        }
 
         public static void LogWarning(string message, [CallerFilePath] string filePath = "")
-            => Debug.LogWarning(
+        {
+           Debug.LogWarning(
                 FormatLog(message, filePath)
             );
-
+        }
         public static void LogWarning(string message, GameObject context, [CallerFilePath] string filePath = "")
-            => Debug.LogWarning(
+        {
+            Debug.LogWarning(
                 FormatLog(message, filePath),
                 context
             );
+        }
 
         public static void LogError(string message, [CallerFilePath] string filePath = "")
-            => Debug.LogError(
+        {
+            Debug.LogError(
                 FormatLog(message, filePath)
             );
+        }
 
         public static void LogError(string message, GameObject context, [CallerFilePath] string filePath = "")
-            => Debug.LogError(
+        {
+           Debug.LogError(
                 FormatLog(message, filePath),
                 context
             );
+        }
+#endif
 
 
         private static string FormatLog(string message, string filePath)

@@ -16,10 +16,9 @@ namespace Tooling.StaticData
     /// </summary>
     public class GeneralField : VisualElement
     {
-        private FieldInfo fieldInfo;
-        private object objectFieldBelongsTo;
+        private readonly FieldInfo fieldInfo;
+        private readonly object objectFieldBelongsTo;
         private EventCallback<ChangeEvent<object>> callback;
-        private VisualElement visualElementFieldEditor;
 
         /// <summary>
         /// Index of the array that is being drawn.
@@ -32,7 +31,7 @@ namespace Tooling.StaticData
         private readonly Label arrayIndexLabel;
 
         /// <summary>
-        /// If <see cref="isArrayElementField"/> true, this is the type of element in the array.
+        /// If <see cref="isArrayElement"/> true, this is the type of element in the array.
         /// </summary>
         private readonly Type arrayElementType;
 
@@ -52,14 +51,17 @@ namespace Tooling.StaticData
             this.objectFieldBelongsTo = objectFieldBelongsTo;
             this.callback = callback;
 
-            visualElementFieldEditor = DrawEditorForType(fieldInfo.FieldType, callback);
-            Add(visualElementFieldEditor);
+            Add(DrawEditorForType(fieldInfo.FieldType, callback));
         }
 
         /// <summary>
         /// Used internally, when GeneralField draws a list type it will draw GeneralFields as list elements.
         /// </summary>
-        private GeneralField(FieldInfo fieldInfo, object objectFieldBelongsTo, int arrayIndex, Type arrayElementType, List<object> itemsSource)
+        private GeneralField(FieldInfo fieldInfo, 
+            object objectFieldBelongsTo, 
+            int arrayIndex, 
+            Type arrayElementType, 
+            List<object> itemsSource)
         {
             this.fieldInfo = fieldInfo;
             this.objectFieldBelongsTo = objectFieldBelongsTo;
@@ -128,8 +130,6 @@ namespace Tooling.StaticData
                 editorField = new Label($"No editor created for type {type}");
             }
 
-            editorField.style.minWidth = 100;
-
             return editorField;
         }
 
@@ -138,7 +138,12 @@ namespace Tooling.StaticData
         {
             var editorField = new TField
             {
-                value = (TType)fieldInfo.GetValue(objectFieldBelongsTo)
+                value = (TType)fieldInfo.GetValue(objectFieldBelongsTo),
+                style =
+                {
+                    marginLeft = 0,
+                    minWidth = 150
+                }
             };
 
             editorField.RegisterValueChangedCallback(evt =>
@@ -152,6 +157,7 @@ namespace Tooling.StaticData
                 {
                     fieldInfo.SetValue(objectFieldBelongsTo, evt.newValue);
                 }
+
                 onValueChanged?.Invoke(ChangeEvent<TType>.GetPooled(evt.previousValue, evt.newValue));
             });
 
@@ -162,7 +168,11 @@ namespace Tooling.StaticData
         {
             var root = new VisualElement
             {
-                style = { flexDirection = FlexDirection.Row }
+                style =
+                {
+                    flexDirection = FlexDirection.Row,
+                    minWidth = 200
+                }
             };
 
             itemsSource = ((fieldInfo.GetValue(objectFieldBelongsTo) as IList)
@@ -202,6 +212,10 @@ namespace Tooling.StaticData
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 reorderable = true,
                 showBorder = true,
+                style =
+                {
+                    minWidth = 150
+                }
             };
 
             root.Add(listView);
