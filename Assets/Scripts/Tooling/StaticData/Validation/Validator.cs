@@ -13,11 +13,12 @@ namespace Tooling.StaticData.Validation
         /// </summary>
         /// <param name="objects">List of objects to validate</param>
         /// <param name="bindingFlags">The flags to search the fields of the objects to validate</param>
-        /// <typeparam name="T"></typeparam>
         /// <returns>A dictionary mapping the type to the list of errors for that type.</returns>
-        public static Dictionary<Type, Dictionary<T, List<string>>> ValidateObjects<T>(List<T> objects, BindingFlags bindingFlags)
+        public static Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects,
+            BindingFlags bindingFlags)
         {
-            var errorDict = new Dictionary<Type, Dictionary<T, List<string>>>();
+            var errorDict = new Dictionary<Type, Dictionary<StaticData, List<string>>>();
+            
 
             var objectCount = objects.Count;
             for (int i = 0; i < objectCount; i++)
@@ -27,7 +28,7 @@ namespace Tooling.StaticData.Validation
 
                 EditorUtility.DisplayProgressBar("Validating", $"{objType.Name}", (float)i / objectCount);
 
-                if (IsValid(objType, objects[i], out var errors, bindingFlags))
+                if (IsValid(objType, objects[i], objects, out var errors, bindingFlags))
                 {
                     continue;
                 }
@@ -38,7 +39,7 @@ namespace Tooling.StaticData.Validation
                 }
                 else
                 {
-                    errorDict.Add(objType, new Dictionary<T, List<string>>());
+                    errorDict.Add(objType, new Dictionary<StaticData, List<string>>());
                     errorDict[objType].Add(obj, errors);
                 }
             }
@@ -48,8 +49,9 @@ namespace Tooling.StaticData.Validation
             return errorDict;
         }
 
-        public static bool IsValid(Type type, 
-            object obj,
+        public static bool IsValid(Type type,
+            StaticData obj,
+            List<StaticData> objects,
             out List<string> errorMessages,
             BindingFlags bindingFlags)
         {
@@ -75,7 +77,7 @@ namespace Tooling.StaticData.Validation
                     );
 
                     var validationAttribute = (IValidationAttribute)attribute;
-                    if (!validationAttribute.Validate(type, obj, tuple.field))
+                    if (!validationAttribute.Validate(type, obj, tuple.field, objects))
                     {
                         var tuple1 = tuple;
                         errorMessages.AddRange(validationAttribute.errorMessages

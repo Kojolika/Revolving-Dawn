@@ -21,7 +21,7 @@ namespace Tooling.StaticData.Validation
             this.allowDefaultValues = allowDefaultValues;
         }
 
-        public bool Validate(Type type, object obj, FieldInfo fieldInfo)
+        public bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
         {
             if (fieldInfo.FieldType.IsClass && fieldInfo.GetValue(obj) == null)
             {

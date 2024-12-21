@@ -17,7 +17,8 @@ namespace Tooling.StaticData.Validation
         /// <param name="type">The type this field belongs to</param>
         /// <param name="obj">The instance of the type</param>
         /// <param name="fieldInfo">The FieldInfo for this field</param>
+        /// <param name="allObjects">All static data objects including <see cref="obj"/></param>
         /// <returns>True if valid.</returns>
-        bool Validate(Type type, object obj, FieldInfo fieldInfo);
+        bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects);
     }
 }

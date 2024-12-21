@@ -97,8 +97,10 @@ namespace Tooling.StaticData
             topToolBar.Add(CreateValidateButton());
             root.Add(topToolBar);
 
-            staticDataTypes = LoadStaticDataTypes();
-            CreateStaticDataTypeInstanceDictionary();
+            staticDataTypes = typeof(StaticData).Assembly.GetTypes()
+                .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
+                .ToList();
+            CreateStaticDataTypeInstanceDictionary(staticDataTypes);
 
             typesListView = new TypesView();
             typesListView.ListView.selectionChanged += _ => selectedIndex = typesListView.ListView.selectedIndex;
@@ -116,15 +118,7 @@ namespace Tooling.StaticData
             root.Add(twoPanelSplit);
         }
 
-        private List<Type> LoadStaticDataTypes()
-        {
-            var staticDataType = typeof(StaticData);
-            return staticDataType.Assembly.GetTypes()
-                .Where(type => staticDataType.IsAssignableFrom(type) && !type.IsAbstract)
-                .ToList();
-        }
-
-        private void CreateStaticDataTypeInstanceDictionary()
+        private void CreateStaticDataTypeInstanceDictionary(List<Type> staticDataTypes)
         {
             staticDataInstances ??= new Dictionary<Type, List<StaticData>>();
 
@@ -312,7 +306,15 @@ namespace Tooling.StaticData
                 instancesView = new InstancesView(selectedType, true);
                 instancesView.ListView.selectionChanged += _ =>
                 {
+                    var previousSelection = typeInstanceSelectedIndex;
                     typeInstanceSelectedIndex = instancesView.ListView.selectedIndex;
+                    
+                    // show editor on double tap
+                    if (previousSelection != selectedIndex)
+                    {
+                        return;
+                    }
+                    
                     var instanceEditor = GetWindow<InstanceEditorWindow>();
 
                     if (HasOpenInstances<InstanceEditorWindow>())
@@ -391,7 +393,8 @@ namespace Tooling.StaticData
 
             public override void SaveChanges()
             {
-                if (!Validator.IsValid(selectedType, editingObj, out var errorMessages, BindingFlagsToSelectStaticDataFields))
+                // TODO: We don't need to validate on save here? only on save to json
+                /*if (!Validator.IsValid(selectedType, editingObj, out var errorMessages, BindingFlagsToSelectStaticDataFields))
                 {
                     // show error messages on UI somewhere
                     foreach (var error in errorMessages)
@@ -400,7 +403,7 @@ namespace Tooling.StaticData
                     }
 
                     return;
-                }
+                }*/
 
                 openedEditorWindow.staticDataInstances[selectedType][openedEditorWindow.typeInstanceSelectedIndex] = editingObj;
                 openedEditorWindow.instancesView.ListView.RefreshItems();

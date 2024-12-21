@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Tooling.Logging;
 using UnityEngine.UIElements;
 
 namespace Tooling.StaticData
@@ -13,7 +15,6 @@ namespace Tooling.StaticData
         private EditorWindow editorWindow => UnityEditor.EditorWindow.GetWindow<EditorWindow>();
         private Dictionary<Type, List<StaticData>> staticDataInstances => editorWindow.staticDataInstances;
         private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors => editorWindow.validationErrors;
-
 
         public InstancesView(Type selectedType, bool allowEditing)
         {
@@ -33,22 +34,18 @@ namespace Tooling.StaticData
                 unbindItem = (item, _) => (item as InstanceView)!.UnBindItem(),
                 itemsSource = staticDataInstances[selectedType],
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
-                showBorder = true
+                showBorder = true,
+                selectionType = SelectionType.Multiple,
+                showAddRemoveFooter = allowEditing,
             };
 
-            Add(new Label($"{selectedType.Name} Instances"));
-            if (allowEditing)
+            ListView.itemsAdded += ints =>
             {
-                Add(new Button(() =>
+                foreach (var index in ints)
                 {
-                    staticDataInstances[selectedType].Add(Activator.CreateInstance(selectedType) as StaticData);
-                    ListView.RefreshItems();
-                })
-                {
-                    text = $"Add new {selectedType.Name}",
-                    style = { width = 200 }
-                });
-            }
+                    staticDataInstances[selectedType][index] = Activator.CreateInstance(selectedType) as StaticData;
+                }
+            };
 
             Add(CreateInstanceHeader(selectedType));
             Add(ListView);
