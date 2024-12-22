@@ -16,8 +16,6 @@ namespace Tooling.StaticData.Validation
             var thisFieldValue = fieldInfo.GetValue(obj);
 
             errorMessages = new List<string>();
-            
-            MyLogger.LogError($"Validating: {fieldInfo.Name}, with value, ");
 
             foreach (var staticData in allObjects)
             {

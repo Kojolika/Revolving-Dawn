@@ -57,7 +57,7 @@ namespace Tooling.StaticData
         /// <summary>
         /// Stores the type of the static data instance that the user was looking at before hot reloading.
         /// </summary>
-        private Type selectedType;
+        public Type SelectedType { get; private set; }
 
         /// <summary>
         /// <see cref="ListView"/> wrapper of all our of different static data types.
@@ -294,38 +294,17 @@ namespace Tooling.StaticData
 
             staticDataTypesListView.selectionChanged += _ =>
             {
-                selectedType = staticDataTypes?[selectedIndex];
+                SelectedType = staticDataTypes?[selectedIndex];
 
                 root.Clear();
 
-                if (selectedType == null)
+                if (SelectedType == null)
                 {
                     return;
                 }
 
-                instancesView = new InstancesView(selectedType, true);
-                instancesView.ListView.selectionChanged += _ =>
-                {
-                    var previousSelection = typeInstanceSelectedIndex;
-                    typeInstanceSelectedIndex = instancesView.ListView.selectedIndex;
-                    
-                    // show editor on double tap
-                    if (previousSelection != selectedIndex)
-                    {
-                        return;
-                    }
-                    
-                    var instanceEditor = GetWindow<InstanceEditorWindow>();
-
-                    if (HasOpenInstances<InstanceEditorWindow>())
-                    {
-                        instanceEditor.rootVisualElement.Clear();
-                        instanceEditor.CreateGUI();
-                    }
-
-                    instanceEditor.Show();
-                    instanceEditor.Focus();
-                };
+                instancesView = new InstancesView(SelectedType, true);
+                instancesView.ListView.selectionChanged += _ => { typeInstanceSelectedIndex = instancesView.ListView.selectedIndex; };
 
                 root.Add(instancesView);
             };
@@ -335,34 +314,33 @@ namespace Tooling.StaticData
             return root;
         }
 
-        private class InstanceEditorWindow : UnityEditor.EditorWindow
+        public class InstanceEditorWindow : UnityEditor.EditorWindow
         {
             private Type selectedType;
             private StaticData editingObj;
-
             private EditorWindow openedEditorWindow;
+            private bool isInitialized;
+
+            public void Initialize(StaticData editingObj, Type selectedType)
+            {
+                rootVisualElement.Clear();
+                this.selectedType = selectedType;
+                this.editingObj = editingObj;
+                openedEditorWindow = GetWindow<EditorWindow>();
+
+                isInitialized = true;
+
+                CreateGUI();
+            }
 
             public void CreateGUI()
             {
+                if (!isInitialized)
+                {
+                    return;
+                }
+
                 var root = rootVisualElement;
-                openedEditorWindow = GetWindow<EditorWindow>();
-
-                selectedType = openedEditorWindow.selectedType;
-                if (selectedType == null)
-                {
-                    MyLogger.LogError("Closing instance editor since selected type is null");
-                    Close();
-                    return;
-                }
-
-                editingObj = openedEditorWindow.staticDataInstances?[selectedType]?[openedEditorWindow.typeInstanceSelectedIndex];
-
-                if (editingObj == null)
-                {
-                    MyLogger.LogError($"Closing instance editor object to edit is null for type {selectedType}");
-                    Close();
-                    return;
-                }
 
                 saveChangesMessage = "You have unsaved changes. Do you want to save these changes?";
 
@@ -393,19 +371,6 @@ namespace Tooling.StaticData
 
             public override void SaveChanges()
             {
-                // TODO: We don't need to validate on save here? only on save to json
-                /*if (!Validator.IsValid(selectedType, editingObj, out var errorMessages, BindingFlagsToSelectStaticDataFields))
-                {
-                    // show error messages on UI somewhere
-                    foreach (var error in errorMessages)
-                    {
-                        MyLogger.LogError(error);
-                    }
-
-                    return;
-                }*/
-
-                openedEditorWindow.staticDataInstances[selectedType][openedEditorWindow.typeInstanceSelectedIndex] = editingObj;
                 openedEditorWindow.instancesView.ListView.RefreshItems();
                 base.SaveChanges();
             }

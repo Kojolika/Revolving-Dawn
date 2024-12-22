@@ -36,7 +36,7 @@ namespace Tooling.StaticData
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 showBorder = true,
                 selectionType = SelectionType.Multiple,
-                showAddRemoveFooter = allowEditing,
+                showAddRemoveFooter = allowEditing
             };
 
             ListView.itemsAdded += ints =>
@@ -73,6 +73,24 @@ namespace Tooling.StaticData
                     borderBottomWidth = EditorWindow.BorderWidth,
                 }
             };
+
+            // So the column headers line up with the instance data
+            header.Add(new VisualElement
+            {
+                style =
+                {
+                    minWidth = InstanceView.EditButtonWidth,
+                    // match margins and padding with the Button element
+                    marginTop = 1,
+                    marginBottom = 1,
+                    marginLeft = 3,
+                    marginRight = 3,
+                    paddingTop = 1,
+                    paddingBottom = 1,
+                    paddingRight = 1,
+                    paddingLeft = 1
+                }
+            });
 
             header.Add(CreateInstanceColumn("Index"));
 

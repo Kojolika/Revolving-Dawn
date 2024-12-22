@@ -10,6 +10,8 @@ namespace Tooling.StaticData
         private readonly VisualElement row;
         private readonly Type staticDataType;
 
+        public const float EditButtonWidth = 40;
+
         public InstanceView(Type staticDataType)
         {
             this.staticDataType = staticDataType;
@@ -26,6 +28,7 @@ namespace Tooling.StaticData
         {
             row.Clear();
 
+            row.Add(CreateEditButton(instance, instance.GetType()));
             row.Add(InstancesView.CreateInstanceColumn(index.ToString()));
 
             foreach (var field in staticDataType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
@@ -37,6 +40,23 @@ namespace Tooling.StaticData
             {
                 style.backgroundColor = new Color(255, 0, 0, 0.5f); // dark red
             }
+        }
+
+        private Button CreateEditButton(StaticData instance, Type staticDataType)
+        {
+            return new Button(() =>
+            {
+                var instanceEditor = UnityEditor.EditorWindow.GetWindow<EditorWindow.InstanceEditorWindow>();
+
+                instanceEditor.Initialize(instance, staticDataType);
+
+                instanceEditor.Show();
+                instanceEditor.Focus();
+            })
+            {
+                text = "Edit",
+                style = { width = EditButtonWidth }
+            };
         }
 
         public void UnBindItem()
