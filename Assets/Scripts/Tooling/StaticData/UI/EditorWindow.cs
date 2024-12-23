@@ -50,11 +50,6 @@ namespace Tooling.StaticData
         private int selectedIndex;
 
         /// <summary>
-        /// Stores the index of the static data instance that the user was looking at before hot reloading.
-        /// </summary>
-        private int typeInstanceSelectedIndex;
-
-        /// <summary>
         /// Stores the type of the static data instance that the user was looking at before hot reloading.
         /// </summary>
         public Type SelectedType { get; private set; }
@@ -76,6 +71,7 @@ namespace Tooling.StaticData
 
         public static readonly StyleColor BorderColor = new(Color.gray);
         public static readonly StyleFloat BorderWidth = new(0.5f);
+        private const float ToolbarButtonWidth = 180;
 
         private JsonSerializer jsonSerializer;
         private static readonly string StaticDataDirectory = Path.Join(Application.dataPath, "StaticData");
@@ -92,9 +88,6 @@ namespace Tooling.StaticData
             var root = rootVisualElement;
 
             var topToolBar = CreateTopToolBar();
-            topToolBar.Add(CreateSaveAndExportJsonButton());
-            topToolBar.Add(CreateSaveAndExportDatabaseButton());
-            topToolBar.Add(CreateValidateButton());
             root.Add(topToolBar);
 
             staticDataTypes = typeof(StaticData).Assembly.GetTypes()
@@ -227,6 +220,11 @@ namespace Tooling.StaticData
                 }
             };
 
+            root.Add(CreateSaveAndExportJsonButton());
+            root.Add(CreateSaveAndExportDatabaseButton());
+            root.Add(CreateValidateButton());
+            root.Add(WipeJsonButton());
+
             return root;
         }
 
@@ -237,7 +235,7 @@ namespace Tooling.StaticData
             var button = new ToolbarButton(() => { _ = SaveAllStaticDataToJson(true); })
             {
                 text = "Validate then Save to Json",
-                style = { width = 200 }
+                style = { width = ToolbarButtonWidth }
             };
 
             root.Add(button);
@@ -252,7 +250,7 @@ namespace Tooling.StaticData
             var button = new ToolbarButton(() => { MyLogger.Log("Saving and exporting to database..."); })
             {
                 text = "Save and Export to Database",
-                style = { width = 200 }
+                style = { width = ToolbarButtonWidth }
             };
 
             root.Add(button);
@@ -267,7 +265,7 @@ namespace Tooling.StaticData
             var button = new ToolbarButton(ValidateStaticData)
             {
                 text = "Validate Data",
-                style = { width = 200 }
+                style = { width = ToolbarButtonWidth }
             };
 
             root.Add(button);
@@ -281,6 +279,34 @@ namespace Tooling.StaticData
                 staticDataInstances.SelectMany(kvp => kvp.Value).ToList(),
                 BindingFlagsToSelectStaticDataFields
             );
+
+            // can be null if a type hasn't been selected yet (like when the menu is first opened)
+            instancesView?.ListView?.RefreshItems();
+            typesListView.ListView.RefreshItems();
+        }
+
+        private VisualElement WipeJsonButton()
+        {
+            var root = new VisualElement();
+
+            var button = new ToolbarButton(RemoveAllJson)
+            {
+                text = "Remove All Json",
+                style = { width = ToolbarButtonWidth }
+            };
+
+            root.Add(button);
+
+            return root;
+        }
+
+        private void RemoveAllJson()
+        {
+            var staticDataDirectory = new DirectoryInfo(StaticDataDirectory);
+            foreach (var directory in staticDataDirectory.GetDirectories())
+            {
+                directory.Delete(true);
+            }
 
             // can be null if a type hasn't been selected yet (like when the menu is first opened)
             instancesView?.ListView?.RefreshItems();
@@ -304,8 +330,7 @@ namespace Tooling.StaticData
                     return;
                 }
 
-                instancesView = new InstancesView(SelectedType, true,
-                    _ => { typeInstanceSelectedIndex = instancesView.ListView.selectedIndex; });
+                instancesView = new InstancesView(SelectedType, true, null);
 
                 root.Add(instancesView);
             };
