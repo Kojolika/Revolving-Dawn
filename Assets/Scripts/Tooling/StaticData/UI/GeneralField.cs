@@ -40,6 +40,10 @@ namespace Tooling.StaticData
         /// </summary>
         private readonly bool isArrayElement;
 
+        /// <summary>
+        /// Fired if the array index for this editor field changes.
+        /// Only used if <see cref="isArrayElement"/> is true.
+        /// </summary>
         private Action<int> onArrayIndexChanged;
 
         public GeneralField(FieldInfo fieldInfo, object objectFieldBelongsTo, EventCallback<ChangeEvent<object>> callback = null)
@@ -75,6 +79,11 @@ namespace Tooling.StaticData
             Add(DrawEditorForType(arrayElementType));
         }
 
+        /// <summary>
+        /// Draws an editor field for the given type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private VisualElement DrawEditorForType(Type type)
         {
             VisualElement editorForFieldType;
@@ -88,6 +97,12 @@ namespace Tooling.StaticData
             else if (typeof(float).IsAssignableFrom(type))
             {
                 editorForFieldType = CreateFieldForType<float, FloatField>(evt =>
+                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
+                );
+            }
+            else if (typeof(bool).IsAssignableFrom(type))
+            {
+                editorForFieldType = CreateFieldForType<bool, Toggle>(evt =>
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
@@ -121,6 +136,16 @@ namespace Tooling.StaticData
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
+            else if (typeof(StaticData).IsAssignableFrom(type))
+            {
+                editorForFieldType = CreateStaticDataField(type, evt =>
+                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
+                );
+            }
+            else if (type.GetCustomAttribute<SerializableAttribute>() is not null)
+            {
+                editorForFieldType = RecursiveDrawElements(type, evt => callback?.Invoke(evt));
+            }
             else
             {
                 editorForFieldType = new Label($"No editor created for type {type}");
@@ -129,7 +154,14 @@ namespace Tooling.StaticData
             return editorForFieldType;
         }
 
-        private TField CreateFieldForType<TType, TField>(EventCallback<ChangeEvent<TType>> onValueChanged = null)
+        /// <summary>
+        /// Creates an editor field for a given type.
+        /// </summary>
+        /// <param name="onValueChanged"></param>
+        /// <typeparam name="TType"></typeparam>
+        /// <typeparam name="TField"></typeparam>
+        /// <returns></returns>
+        private TField CreateFieldForType<TType, TField>(EventCallback<ChangeEvent<TType>> onValueChanged)
             where TField : BaseField<TType>, new()
         {
             var editorForFieldType = new TField
@@ -170,7 +202,13 @@ namespace Tooling.StaticData
             return editorForFieldType;
         }
 
-        private VisualElement CreateListField(EventCallback<ChangeEvent<IList>> onValueChanged = null)
+        /// <summary>
+        /// Creates a custom list view field that draws GeneralFields as its listview elements
+        /// </summary>
+        /// <param name="onValueChanged">Fired when the number of elements in the list changes</param>
+        /// <returns>A visual element containing the list view.</returns>
+        /// <exception cref="ArgumentException">Fired if the fieldInfo is not a type of <see cref="IList"/></exception>
+        private VisualElement CreateListField(EventCallback<ChangeEvent<IList>> onValueChanged)
         {
             var root = new VisualElement
             {
@@ -261,7 +299,60 @@ namespace Tooling.StaticData
             return root;
         }
 
+        private VisualElement CreateStaticDataField(Type type, EventCallback<ChangeEvent<StaticData>> onValueChanged)
+        {
+            var root = new VisualElement
+            {
+                style = { flexDirection = FlexDirection.Row }
+            };
 
+            var nameLabel = new Label((fieldInfo.GetValue(objectFieldBelongsTo) as StaticData)?.Name ?? "None")
+            {
+                style = { alignSelf = Align.Center }
+            };
+
+            root.Add(nameLabel);
+            root.Add(new Button(() =>
+            {
+                InstancesView.Selector.Open(type,
+                    staticData =>
+                    {
+                        var prevValue = fieldInfo.GetValue(objectFieldBelongsTo) as StaticData;
+                        fieldInfo.SetValue(objectFieldBelongsTo, staticData);
+                        onValueChanged?.Invoke(ChangeEvent<StaticData>.GetPooled(prevValue, staticData));
+                    }
+                );
+            })
+            {
+                text = "Select Static Data"
+            });
+
+            return root;
+        }
+
+
+        /// <summary>
+        /// Similar to how the inspector draws serializable types. Draws all fields of the given type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="onValueChanged"></param>
+        /// <returns></returns>
+        private VisualElement RecursiveDrawElements(Type type, EventCallback<ChangeEvent<object>> onValueChanged)
+        {
+            var root = new VisualElement();
+            foreach (var field in type.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
+            {
+                root.Add(new GeneralField(field, objectFieldBelongsTo, onValueChanged));
+            }
+
+            return root;
+        }
+
+        /// <summary>
+        /// Only applies if this is drawing an element in a list. Notifies the editor field that index
+        /// is where the value should get retrieved from in <see cref="itemsSource"/>
+        /// </summary>
+        /// <param name="index"></param>
         private void BindArrayIndex(int index)
         {
             if (!isArrayElement)

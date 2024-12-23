@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-
 namespace Tooling.StaticData
 {
     public class Card : StaticData
     {
-        public List<string> Names;
+        public Card Upgrade;
+        public Card Downgrade;
+        public bool IsLostOnPlay;
     }
 }

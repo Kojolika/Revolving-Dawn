@@ -303,8 +303,8 @@ namespace Tooling.StaticData
                     return;
                 }
 
-                instancesView = new InstancesView(SelectedType, true);
-                instancesView.ListView.selectionChanged += _ => { typeInstanceSelectedIndex = instancesView.ListView.selectedIndex; };
+                instancesView = new InstancesView(SelectedType, true,
+                    _ => { typeInstanceSelectedIndex = instancesView.ListView.selectedIndex; });
 
                 root.Add(instancesView);
             };
@@ -331,6 +331,8 @@ namespace Tooling.StaticData
                 isInitialized = true;
 
                 CreateGUI();
+                Show();
+                Focus();
             }
 
             public void CreateGUI()
