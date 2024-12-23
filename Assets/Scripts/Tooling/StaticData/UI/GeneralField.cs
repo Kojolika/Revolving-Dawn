@@ -73,7 +73,7 @@ namespace Tooling.StaticData
             style.flexDirection = FlexDirection.Row;
             arrayIndexLabel = new Label(arrayIndex.ToString())
             {
-                style = { minWidth = 30 }
+                style = { minWidth = 40, alignSelf = Align.Center }
             };
             Add(arrayIndexLabel);
             Add(DrawEditorForType(arrayElementType));
@@ -191,13 +191,7 @@ namespace Tooling.StaticData
                 onValueChanged?.Invoke(ChangeEvent<TType>.GetPooled(evt.previousValue, evt.newValue));
             });
 
-            onArrayIndexChanged += index =>
-            {
-                // index is set to -1 when the element is not bound
-                editorForFieldType.value = index < 0
-                    ? default
-                    : (TType)itemsSource[index];
-            };
+            onArrayIndexChanged += index => { editorForFieldType.value = (TType)itemsSource[index]; };
 
             return editorForFieldType;
         }
@@ -308,30 +302,45 @@ namespace Tooling.StaticData
 
             var nameLabel = new Label((fieldInfo.GetValue(objectFieldBelongsTo) as StaticData)?.Name ?? "None")
             {
-                style = { alignSelf = Align.Center }
+                style = { alignSelf = Align.Center, minWidth = 40 }
             };
 
-            root.Add(nameLabel);
-            root.Add(new Button(() =>
-            {
-                InstancesView.Selector.Open(type,
-                    staticData =>
-                    {
-                        var prevValue = fieldInfo.GetValue(objectFieldBelongsTo) as StaticData;
-                        fieldInfo.SetValue(objectFieldBelongsTo, staticData);
-                        nameLabel.text = (fieldInfo.GetValue(objectFieldBelongsTo) as StaticData)?.Name ?? "None";
-                        onValueChanged?.Invoke(ChangeEvent<StaticData>.GetPooled(prevValue, staticData));
-                    }
-                );
-            })
+            root.Add(new Button(() => { InstancesView.Selector.Open(type, OnStaticDataReferenceChanged); })
             {
                 text = "Select Static Data"
             });
+            root.Add(nameLabel);
+
+            onArrayIndexChanged += arrayIndex => OnStaticDataReferenceChanged(itemsSource[arrayIndex] as StaticData);
 
             return root;
+
+            // local function
+            void OnStaticDataReferenceChanged(StaticData staticData)
+            {
+                if (isArrayElement)
+                {
+                    var prevList = fieldInfo.GetValue(objectFieldBelongsTo) as IList;
+                    var newList = prevList;
+                    newList![arrayIndex] = staticData;
+                    fieldInfo.SetValue(objectFieldBelongsTo, newList);
+                    nameLabel.text = ((fieldInfo.GetValue(objectFieldBelongsTo) as IList)?[arrayIndex] as StaticData)?.Name ??
+                                     "None";
+                    onValueChanged?.Invoke(ChangeEvent<StaticData>.GetPooled(prevList[arrayIndex] as StaticData,
+                        newList[arrayIndex] as StaticData));
+                }
+                else
+                {
+                    var prevValue = fieldInfo.GetValue(objectFieldBelongsTo) as StaticData;
+                    fieldInfo.SetValue(objectFieldBelongsTo, staticData);
+                    nameLabel.text = (fieldInfo.GetValue(objectFieldBelongsTo) as StaticData)?.Name ?? "None";
+                    onValueChanged?.Invoke(ChangeEvent<StaticData>.GetPooled(prevValue, staticData));
+                }
+            }
         }
 
 
+        // TODO: List support
         /// <summary>
         /// Similar to how the inspector draws serializable types. Draws all fields of the given type.
         /// </summary>
@@ -356,11 +365,13 @@ namespace Tooling.StaticData
         /// <param name="index"></param>
         private void BindArrayIndex(int index)
         {
-            if (!isArrayElement)
+            // index is set to -1 when the element is not bound
+            if (!isArrayElement || index < 0 || index >= itemsSource?.Count)
             {
                 return;
             }
-
+            
+            arrayIndex = index;
             onArrayIndexChanged?.Invoke(index);
         }
     }

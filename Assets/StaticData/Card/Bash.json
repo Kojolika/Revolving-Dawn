@@ -1,0 +1,14 @@
+{
+  "art": null,
+  "player_class": {
+    "class_art": null,
+    "card_border_art": null,
+    "starting_deck": [],
+    "description": {
+      "english_value": "Strong, hit hard."
+    }
+  },
+  "upgrade": null,
+  "downgrade": null,
+  "is_lost_on_play": false
+}
