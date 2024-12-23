@@ -17,7 +17,7 @@ namespace Serialization
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteValue((value as AssetReference).AssetGUID);
+            writer.WriteValue((value as AssetReference)!.AssetGUID);
         }
     }
 }

@@ -101,9 +101,7 @@ namespace Tooling.StaticData
                 });
             }
 
-            header.Add(CreateInstanceColumn("Index"));
-
-            foreach (var field in staticDataType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
+            foreach (var field in InstanceView.GetOrderedFields(staticDataType))
             {
                 header.Add(CreateInstanceColumn($"{field.Name}"));
             }
@@ -124,7 +122,7 @@ namespace Tooling.StaticData
             {
                 var instanceSelector = GetWindow<Selector>();
                 instanceSelector.Initialize(staticDataType, onSelectionChanged);
-                instanceSelector.Show();
+                instanceSelector.Show(true);
                 instanceSelector.Focus();
             }
 

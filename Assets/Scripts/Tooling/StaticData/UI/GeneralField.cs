@@ -319,6 +319,7 @@ namespace Tooling.StaticData
                     {
                         var prevValue = fieldInfo.GetValue(objectFieldBelongsTo) as StaticData;
                         fieldInfo.SetValue(objectFieldBelongsTo, staticData);
+                        nameLabel.text = (fieldInfo.GetValue(objectFieldBelongsTo) as StaticData)?.Name ?? "None";
                         onValueChanged?.Invoke(ChangeEvent<StaticData>.GetPooled(prevValue, staticData));
                     }
                 );

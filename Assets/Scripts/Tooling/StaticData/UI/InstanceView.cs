@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -40,9 +42,7 @@ namespace Tooling.StaticData
                 row.Add(CreateEditButton(instance, instance.GetType()));
             }
 
-            row.Add(InstancesView.CreateInstanceColumn(index.ToString()));
-
-            foreach (var field in staticDataType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
+            foreach (var field in GetOrderedFields(staticDataType))
             {
                 row.Add(
                     InstancesView.CreateInstanceColumn(
@@ -55,6 +55,31 @@ namespace Tooling.StaticData
             {
                 style.backgroundColor = new Color(255, 0, 0, 0.5f); // dark red
             }
+        }
+
+        /// <summary>
+        /// Orders the fields of a static data so the <see cref="StaticData.Name"/> property is displays first.
+        /// </summary>
+        /// <param name="staticDataType"></param>
+        /// <returns></returns>
+        public static IEnumerable<FieldInfo> GetOrderedFields(Type staticDataType)
+        {
+            var fields = staticDataType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields);
+            int nameIndex = 0;
+
+            for (int i = 0; i < fields.Length; i++)
+            {
+                if (fields[i].FieldType != typeof(string) || fields[i].Name != "Name")
+                {
+                    continue;
+                }
+
+                nameIndex = i;
+            }
+
+            (fields[0], fields[nameIndex]) = (fields[nameIndex], fields[0]);
+
+            return fields;
         }
 
         private string GetLabelForField(FieldInfo fieldInfo, StaticData instance)

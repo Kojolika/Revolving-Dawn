@@ -84,8 +84,9 @@ namespace Tooling.StaticData
         {
             jsonSerializer = new JsonSerializer
             {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 Formatting = Formatting.Indented,
-                Converters = { new AssetReferenceConverter(), new ColorConverter() },
+                Converters = { new AssetReferenceConverter(), new ColorConverter(), /*new StaticDataConverter()*/},
                 ContractResolver = new CustomContractResolver()
             };
 
@@ -281,8 +282,9 @@ namespace Tooling.StaticData
                 staticDataInstances.SelectMany(kvp => kvp.Value).ToList(),
                 BindingFlagsToSelectStaticDataFields
             );
-
-            instancesView.ListView.RefreshItems();
+            
+            // can be null if a type hasn't been selected yet (like when the menu is first opened)
+            instancesView?.ListView?.RefreshItems();
             typesListView.ListView.RefreshItems();
         }
 
