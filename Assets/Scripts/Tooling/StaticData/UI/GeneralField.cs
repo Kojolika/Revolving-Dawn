@@ -31,19 +31,16 @@ namespace Tooling.StaticData
         private readonly Label arrayIndexLabel;
 
         /// <summary>
-        /// If <see cref="isArrayElement"/> true, this is the type of element in the array.
-        /// </summary>
-        private readonly Type arrayElementType;
-
-        /// <summary>
         /// If GeneralField is drawing an array or list, this is the data source for the elements.
         /// </summary>
-        private List<object> itemsSource;
+        private IList itemsSource;
 
         /// <summary>
         /// Is this field drawing an element of an array.
         /// </summary>
         private readonly bool isArrayElement;
+
+        private Action<int> onArrayIndexChanged;
 
         public GeneralField(FieldInfo fieldInfo, object objectFieldBelongsTo, EventCallback<ChangeEvent<object>> callback = null)
         {
@@ -51,21 +48,20 @@ namespace Tooling.StaticData
             this.objectFieldBelongsTo = objectFieldBelongsTo;
             this.callback = callback;
 
-            Add(DrawEditorForType(fieldInfo.FieldType, callback));
+            Add(DrawEditorForType(fieldInfo.FieldType));
         }
 
         /// <summary>
         /// Used internally, when GeneralField draws a list type it will draw GeneralFields as list elements.
         /// </summary>
-        private GeneralField(FieldInfo fieldInfo, 
-            object objectFieldBelongsTo, 
-            int arrayIndex, 
-            Type arrayElementType, 
-            List<object> itemsSource)
+        private GeneralField(FieldInfo fieldInfo,
+            object objectFieldBelongsTo,
+            int arrayIndex,
+            Type arrayElementType,
+            IList itemsSource)
         {
             this.fieldInfo = fieldInfo;
             this.objectFieldBelongsTo = objectFieldBelongsTo;
-            this.arrayElementType = arrayElementType;
             this.arrayIndex = arrayIndex;
             this.isArrayElement = true;
             this.itemsSource = itemsSource;
@@ -79,66 +75,68 @@ namespace Tooling.StaticData
             Add(DrawEditorForType(arrayElementType));
         }
 
-        private VisualElement DrawEditorForType(Type type, EventCallback<ChangeEvent<object>> callback = null)
+        private VisualElement DrawEditorForType(Type type)
         {
-            VisualElement editorField;
+            VisualElement editorForFieldType;
 
             if (typeof(int).IsAssignableFrom(type))
             {
-                editorField = CreateFieldForType<int, IntegerField>(evt =>
+                editorForFieldType = CreateFieldForType<int, IntegerField>(evt =>
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
             else if (typeof(float).IsAssignableFrom(type))
             {
-                editorField = CreateFieldForType<float, FloatField>(evt =>
+                editorForFieldType = CreateFieldForType<float, FloatField>(evt =>
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
             else if (typeof(Enum).IsAssignableFrom(type))
             {
-                editorField = CreateFieldForType<Enum, EnumField>(evt =>
+                editorForFieldType = CreateFieldForType<Enum, EnumField>(evt =>
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
             else if (typeof(string).IsAssignableFrom(type))
             {
-                editorField = CreateFieldForType<string, TextField>(evt =>
+                editorForFieldType = CreateFieldForType<string, TextField>(evt =>
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
             else if (typeof(Object).IsAssignableFrom(type))
             {
-                editorField = CreateFieldForType<Object, ObjectField>(evt =>
+                editorForFieldType = CreateFieldForType<Object, ObjectField>(evt =>
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
             else if (typeof(Color).IsAssignableFrom(type))
             {
-                editorField = CreateFieldForType<Color, ColorField>(evt =>
+                editorForFieldType = CreateFieldForType<Color, ColorField>(evt =>
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
             else if (typeof(IList).IsAssignableFrom(type))
             {
-                editorField = CreateListField(evt =>
+                editorForFieldType = CreateListField(evt =>
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
             else
             {
-                editorField = new Label($"No editor created for type {type}");
+                editorForFieldType = new Label($"No editor created for type {type}");
             }
 
-            return editorField;
+            return editorForFieldType;
         }
 
         private TField CreateFieldForType<TType, TField>(EventCallback<ChangeEvent<TType>> onValueChanged = null)
             where TField : BaseField<TType>, new()
         {
-            var editorField = new TField
+            var editorForFieldType = new TField
             {
-                value = (TType)fieldInfo.GetValue(objectFieldBelongsTo),
+                value = isArrayElement
+                    ? (TType)(fieldInfo.GetValue(objectFieldBelongsTo) as IList)![arrayIndex]
+                    : (TType)fieldInfo.GetValue(objectFieldBelongsTo),
                 style =
                 {
                     marginLeft = 0,
@@ -146,12 +144,12 @@ namespace Tooling.StaticData
                 }
             };
 
-            editorField.RegisterValueChangedCallback(evt =>
+            editorForFieldType.RegisterValueChangedCallback(evt =>
             {
                 if (isArrayElement)
                 {
                     itemsSource[arrayIndex] = evt.newValue;
-                    fieldInfo.SetValue(objectFieldBelongsTo, itemsSource.Select(obj => (TType)obj).ToList());
+                    fieldInfo.SetValue(objectFieldBelongsTo, itemsSource);
                 }
                 else
                 {
@@ -161,7 +159,15 @@ namespace Tooling.StaticData
                 onValueChanged?.Invoke(ChangeEvent<TType>.GetPooled(evt.previousValue, evt.newValue));
             });
 
-            return editorField;
+            onArrayIndexChanged += index =>
+            {
+                // index is set to -1 when the element is not bound
+                editorForFieldType.value = index < 0
+                    ? default
+                    : (TType)itemsSource[index];
+            };
+
+            return editorForFieldType;
         }
 
         private VisualElement CreateListField(EventCallback<ChangeEvent<IList>> onValueChanged = null)
@@ -175,23 +181,16 @@ namespace Tooling.StaticData
                 }
             };
 
-            itemsSource = ((fieldInfo.GetValue(objectFieldBelongsTo) as IList)
-                    ?.Cast<object>() ?? new List<object>())
-                .ToList();
-
             // If the type is an array
             var elementType = fieldInfo.FieldType.IsArray
                 ? fieldInfo.FieldType.GetElementType()
                 // otherwise if it's a generic list
                 : fieldInfo.FieldType.IsGenericType
                     ? fieldInfo.FieldType.GetGenericArguments()[0]
-                    : null;
+                    : throw new ArgumentException($"Field value is an {typeof(IList)} but cannot find element type.");
 
-            if (elementType == null)
-            {
-                MyLogger.LogError($"Field value is an {typeof(IList)} but cannot find element type.");
-                return null;
-            }
+            itemsSource = fieldInfo.GetValue(objectFieldBelongsTo) as IList
+                          ?? Activator.CreateInstance(fieldInfo.FieldType) as IList;
 
             var listView = new ListView
             {
@@ -200,13 +199,13 @@ namespace Tooling.StaticData
                 bindItem = (item, index) =>
                 {
                     var generalField = item as GeneralField;
-                    generalField!.arrayIndex = index;
+                    generalField!.BindArrayIndex(index);
                     generalField.arrayIndexLabel.text = generalField.arrayIndex.ToString();
                 },
                 unbindItem = (item, _) =>
                 {
                     var generalField = item as GeneralField;
-                    generalField!.arrayIndex = -1;
+                    generalField!.BindArrayIndex(-1);
                     generalField.arrayIndexLabel.text = generalField.arrayIndex.ToString();
                 },
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
@@ -229,6 +228,7 @@ namespace Tooling.StaticData
             {
                 var previousList = itemsSource;
                 itemsSource.Add(default);
+                fieldInfo.SetValue(objectFieldBelongsTo, itemsSource);
                 onValueChanged?.Invoke(ChangeEvent<IList>.GetPooled(previousList, itemsSource));
                 listView.RefreshItems();
             })
@@ -250,6 +250,7 @@ namespace Tooling.StaticData
                 }
 
                 itemsSource.RemoveAt(selectedIndex);
+                fieldInfo.SetValue(objectFieldBelongsTo, itemsSource);
                 onValueChanged?.Invoke(ChangeEvent<IList>.GetPooled(previousList, itemsSource));
                 listView.RefreshItems();
             })
@@ -258,6 +259,17 @@ namespace Tooling.StaticData
             });
 
             return root;
+        }
+
+
+        private void BindArrayIndex(int index)
+        {
+            if (!isArrayElement)
+            {
+                return;
+            }
+
+            onArrayIndexChanged?.Invoke(index);
         }
     }
 }

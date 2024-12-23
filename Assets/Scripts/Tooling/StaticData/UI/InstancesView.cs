@@ -59,6 +59,7 @@ namespace Tooling.StaticData
                 paddingRight = RowPadding,
                 maxWidth = 200,
                 minWidth = 200,
+                overflow = Overflow.Hidden
             }
         };
 
