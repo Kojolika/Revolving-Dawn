@@ -59,10 +59,18 @@ namespace Tooling.StaticData
                 foreach (var index in ints)
                 {
                     instances[index] = Activator.CreateInstance(selectedType) as StaticData;
+                    instances[index].Name = $"{selectedType.Name}_{index}";
                 }
+
+                StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
             };
 
-            ListView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.First() as StaticData);
+            ListView.itemsRemoved += ints =>
+            {
+                StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
+            };
+
+            ListView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.FirstOrDefault() as StaticData);
 
             Add(CreateInstanceHeader(selectedType));
             Add(ListView);

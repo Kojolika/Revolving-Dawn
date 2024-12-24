@@ -216,6 +216,18 @@ namespace Tooling.StaticData
             );
         }
 
+        public void UpdateInstancesForType(Type type, List<StaticData> instances)
+        {
+            if (staticDataDictionary.TryGetValue(type, out var instanceDict))
+            {
+                instanceDict.Clear();
+                foreach (var instance in instances)
+                {
+                    instanceDict[instance.Name] = instance;
+                }
+            }
+        }
+
         public StaticData GetStaticDataInstance(Type type, string instanceName)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary)
