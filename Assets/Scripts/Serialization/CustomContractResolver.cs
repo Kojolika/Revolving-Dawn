@@ -17,11 +17,12 @@ namespace Serialization
         public CustomContractResolver(DiContainer diContainer)
         {
             this.diContainer = diContainer;
+            NamingStrategy = new DefaultNamingStrategy();
         }
 
         public CustomContractResolver()
         {
-            NamingStrategy = new SnakeCaseNamingStrategy();
+            NamingStrategy = new DefaultNamingStrategy();
         }
 
         protected override JsonObjectContract CreateObjectContract(Type objectType)

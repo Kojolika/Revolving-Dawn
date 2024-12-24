@@ -30,16 +30,6 @@ namespace Tooling.StaticData
         }
 
         /// <summary>
-        /// The list of types in our project that derive from <see cref="StaticData"/>.
-        /// </summary>
-        public List<Type> staticDataTypes { get; private set; }
-
-        /// <summary>
-        /// Dictionary which maps a derived <see cref="StaticData"/> type to saved instances of that type in json.
-        /// </summary>
-        public Dictionary<Type, List<StaticData>> staticDataInstances { get; private set; }
-
-        /// <summary>
         /// Dictionary that maps a static data type to instances and their current validation errors.
         /// </summary>
         public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; }
@@ -73,31 +63,16 @@ namespace Tooling.StaticData
         public static readonly StyleFloat BorderWidth = new(0.5f);
         private const float ToolbarButtonWidth = 180;
 
-        private JsonSerializer jsonSerializer;
         private static readonly string StaticDataDirectory = Path.Join(Application.dataPath, "StaticData");
 
         public void CreateGUI()
         {
-            jsonSerializer = new JsonSerializer
-            {
-                Formatting = Formatting.Indented,
-                ContractResolver = new CustomContractResolver(),
-                TraceWriter = new JsonTraceWriter(),
-                Converters =
-                {
-                    new AssetReferenceConverter(),
-                    new ColorConverter(),
-                    new StaticDataConverter()
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-            };
+            StaticDatabase.Instance.BuildDictionaryFromJson();
 
             var root = rootVisualElement;
 
             var topToolBar = CreateTopToolBar();
             root.Add(topToolBar);
-
-            ResetInstanceDictionary();
 
             typesListView = new TypesView();
             typesListView.ListView.selectionChanged += _ => selectedIndex = typesListView.ListView.selectedIndex;
@@ -113,113 +88,6 @@ namespace Tooling.StaticData
             twoPanelSplit.Add(typesListView);
             twoPanelSplit.Add(rightPanel);
             root.Add(twoPanelSplit);
-        }
-
-        private void ResetInstanceDictionary()
-        {
-            selectedType = null;
-            staticDataInstances = null;
-            staticDataTypes = typeof(StaticData).Assembly.GetTypes()
-                .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
-                .ToList();
-
-            CreateStaticDataTypeInstanceDictionary(staticDataTypes);
-        }
-
-        private void CreateStaticDataTypeInstanceDictionary(List<Type> staticDataTypes)
-        {
-            staticDataInstances ??= new Dictionary<Type, List<StaticData>>();
-
-            // If we hot reload while the window is open and a new static data type is created, add to our dict
-            foreach (var type in staticDataTypes)
-            {
-                if (staticDataInstances.ContainsKey(type))
-                {
-                    continue;
-                }
-
-                var typeInstances = new List<StaticData>();
-                var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
-
-                if (Directory.Exists(typeDirectory))
-                {
-                    foreach (var file in Directory.EnumerateFiles(typeDirectory, "*.json"))
-                    {
-                        using var streamReader = File.OpenText(file);
-
-                        var staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
-                        if (staticDataFromJson == null)
-                        {
-                            MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
-                            continue;
-                        }
-
-                        var fileNameWithExtension = new FileInfo(file).Name;
-                        staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
-
-                        typeInstances.Add(staticDataFromJson);
-                    }
-                }
-
-                staticDataInstances.Add(type, typeInstances);
-            }
-        }
-
-        private async UniTask SaveAllStaticDataToJson(bool shouldValidateData)
-        {
-            if (shouldValidateData)
-            {
-                ValidateStaticData();
-            }
-
-            var writeTasks = new List<UniTask>();
-            foreach (var kvp in staticDataInstances)
-            {
-                var staticDataFilePath = Path.GetFullPath(Path.Join(StaticDataDirectory, kvp.Key.Name));
-                var directoryInfo = Directory.CreateDirectory(staticDataFilePath);
-
-                foreach (var directory in directoryInfo.GetDirectories())
-                {
-                    directory.Delete();
-                }
-
-                foreach (var instance in kvp.Value)
-                {
-                    writeTasks.Add(SaveInstanceToJson(instance, staticDataFilePath));
-                }
-            }
-
-            EditorUtility.DisplayProgressBar("Saving to Json", "Saving...", 0.5f);
-
-            try
-            {
-                await UniTask.WhenAll(writeTasks);
-            }
-            catch (Exception e)
-            {
-                MyLogger.LogError(e.Message);
-            }
-
-            EditorUtility.ClearProgressBar();
-
-            return;
-
-            // Local function
-            async UniTask SaveInstanceToJson(StaticData instance, string typeDirectory)
-            {
-                if (!Directory.Exists(typeDirectory))
-                {
-                    MyLogger.LogError($"Type directory {typeDirectory} does not exist!");
-                    return;
-                }
-
-                var filePath = $"{Path.Join(typeDirectory, instance.Name)}.json";
-                MyLogger.Log($"Writing {instance.Name} to file: {filePath}");
-                await using StreamWriter file = new StreamWriter(filePath);
-                using JsonWriter writer = new JsonTextWriter(file);
-
-                jsonSerializer.Serialize(writer, instance);
-            }
         }
 
         private VisualElement CreateTopToolBar()
@@ -258,6 +126,16 @@ namespace Tooling.StaticData
             return root;
         }
 
+        private async UniTask SaveAllStaticDataToJson(bool shouldValidateData)
+        {
+            if (shouldValidateData)
+            {
+                ValidateStaticData();
+            }
+
+            await StaticDatabase.Instance.SaveAllStaticDataToJson();
+        }
+
         private VisualElement CreateSaveAndExportDatabaseButton()
         {
             var root = new VisualElement();
@@ -291,7 +169,7 @@ namespace Tooling.StaticData
         private void ValidateStaticData()
         {
             validationErrors = Validator.ValidateObjects(
-                staticDataInstances.SelectMany(kvp => kvp.Value).ToList(),
+                StaticDatabase.Instance.GetAllStaticDataInstances(),
                 BindingFlagsToSelectStaticDataFields
             );
 
@@ -323,7 +201,7 @@ namespace Tooling.StaticData
                 directory.Delete(true);
             }
 
-            ResetInstanceDictionary();
+            StaticDatabase.Instance.Clear();
 
             // can be null if a type hasn't been selected yet (like when the menu is first opened)
             instancesView?.ListView?.Rebuild();
@@ -338,7 +216,7 @@ namespace Tooling.StaticData
 
             staticDataTypesListView.selectionChanged += _ =>
             {
-                selectedType = staticDataTypes?[selectedIndex];
+                selectedType = StaticDatabase.Instance.GetAllStaticDataTypes()[selectedIndex];
 
                 root.Clear();
 
@@ -416,7 +294,8 @@ namespace Tooling.StaticData
 
             public override void SaveChanges()
             {
-                openedEditorWindow.instancesView.ListView.RefreshItems();
+                StaticDatabase.Instance.Add(editingObj);
+                openedEditorWindow.instancesView.Refresh();
                 base.SaveChanges();
             }
         }

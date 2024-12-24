@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Tooling.Logging;
 
 namespace Tooling.StaticData
 {
     /// <summary>
     /// The purpose is to only serialize each static data once and then reference that static data
-    /// when deserializing to get the data without copy pasting the same data everywhere.
+    /// when deserializing to get the data without duplicating the same data everywhere.
     /// </summary>
     public class StaticDataConverter : JsonConverter
     {
@@ -32,19 +32,14 @@ namespace Tooling.StaticData
             else
             {
                 // Serialize a reference to the static data, so we can load it at runtime
-                new JObject(new JProperty(nameof(StaticData), $"{value?.GetType().Name}.{(value as StaticData)?.Name}")).WriteTo(writer);
+                new JObject(new JProperty(nameof(StaticData), $"{value?.GetType().FullName}.{(value as StaticData)?.Name}"))
+                    .WriteTo(writer);
             }
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            MyLogger.Log($"reader path: {reader.Path}");
             var jObject = JObject.Load(reader);
-            foreach (var prop in jObject.Properties())
-            {
-                MyLogger.Log($"Prop: {prop.Name}");
-            }
-
             var staticData = jObject.ToObject(objectType) as StaticData;
             FindStaticDataReferences(jObject, staticData);
 
@@ -62,10 +57,8 @@ namespace Tooling.StaticData
             bool isArray = false,
             int arrayIndex = -1)
         {
-            MyLogger.Log($"JObject name: {jObject}");
             foreach (var prop in jObject.Properties())
             {
-                MyLogger.Log($"Prop: {prop.Name}, type: {prop.Value.Type}");
                 switch (prop.Value.Type)
                 {
                     case JTokenType.Object:
@@ -87,11 +80,11 @@ namespace Tooling.StaticData
                 return;
             }
 
-            MyLogger.Log($"Found static data, prop name is : {propertyName}");
             var stringReferenceValue = jObject[nameof(StaticData)]!.Value<string>();
             var referenceSplit = stringReferenceValue.Split(".");
-            var staticDataType = Type.GetType(referenceSplit[0]);
-            var instanceName = referenceSplit[1];
+            var typeWithNamespace = referenceSplit[..^1].Aggregate((string1, string2) => $"{string1}.{string2}");
+            var staticDataType = Type.GetType(typeWithNamespace);
+            var instanceName = referenceSplit[^1];
 
             if (isArray)
             {

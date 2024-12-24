@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Tooling.Logging;
 using UnityEngine.UIElements;
 
 namespace Tooling.StaticData
@@ -9,7 +10,7 @@ namespace Tooling.StaticData
         public readonly ListView ListView;
         
         private EditorWindow editorWindow => UnityEditor.EditorWindow.GetWindow<EditorWindow>();
-        private List<Type> staticDataTypes => editorWindow.staticDataTypes;
+        private List<Type> staticDataTypes => StaticDatabase.Instance.GetAllStaticDataTypes();
         private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors => editorWindow.validationErrors;
 
         public TypesView()

@@ -3,32 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using Tooling.Logging;
 using UnityEngine.UIElements;
+using Utils.Extensions;
 
 namespace Tooling.StaticData
 {
     public class InstancesView : VisualElement
     {
         public readonly ListView ListView;
+        private List<StaticData> instances;
+        private readonly Type selectedType;
         private readonly bool allowEditing;
 
         private const float RowPadding = 4f;
 
         private EditorWindow editorWindow => UnityEditor.EditorWindow.GetWindow<EditorWindow>();
-        private Dictionary<Type, List<StaticData>> staticDataInstances => editorWindow.staticDataInstances;
         private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors => editorWindow.validationErrors;
 
         public InstancesView(Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
         {
+            this.selectedType = selectedType;
             this.allowEditing = allowEditing;
+            instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
 
             ListView = new ListView
             {
                 makeItem = () => new InstanceView(selectedType, allowEditing),
                 bindItem = (item, index) =>
                 {
-                    if (!staticDataInstances.TryGetValue(selectedType, out var instances)
-                        || instances == null 
-                        || index < 0 
+                    if (instances.IsNullOrEmpty()
+                        || instances == null
+                        || index < 0
                         || index >= instances.Count)
                     {
                         return;
@@ -43,7 +47,7 @@ namespace Tooling.StaticData
                     );
                 },
                 unbindItem = (item, _) => (item as InstanceView)!.UnBindItem(),
-                itemsSource = staticDataInstances?[selectedType],
+                itemsSource = instances,
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 showBorder = true,
                 selectionType = SelectionType.Multiple,
@@ -54,7 +58,7 @@ namespace Tooling.StaticData
             {
                 foreach (var index in ints)
                 {
-                    staticDataInstances[selectedType][index] = Activator.CreateInstance(selectedType) as StaticData;
+                    instances[index] = Activator.CreateInstance(selectedType) as StaticData;
                 }
             };
 
@@ -116,6 +120,12 @@ namespace Tooling.StaticData
             }
 
             return header;
+        }
+
+        public void Refresh()
+        {
+            ListView.Rebuild();
+            instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
         }
 
         /// <summary>

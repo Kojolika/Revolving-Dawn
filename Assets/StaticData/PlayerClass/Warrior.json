@@ -1,21 +1,16 @@
 {
-  "class_art": null,
-  "card_border_art": null,
-  "starting_deck": [
+  "ClassArt": null,
+  "CardBorderArt": null,
+  "StartingDeck": [
     {
-      "StaticData": "Card.Bash"
+      "StaticData": "Tooling.StaticData.Card.bash"
     },
     {
-      "StaticData": "Card.Defend"
+      "StaticData": "Tooling.StaticData.Card.defend"
     },
     {
-      "StaticData": "Card.Bash"
-    },
-    {
-      "StaticData": "Card.Bash"
+      "StaticData": "Tooling.StaticData.Card.bash"
     }
   ],
-  "description": {
-    "StaticData": "LocKey."
-  }
+  "Description": null
 }

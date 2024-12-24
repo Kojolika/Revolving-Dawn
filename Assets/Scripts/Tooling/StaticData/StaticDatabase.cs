@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Serialization;
 using Tooling.Logging;
+using UnityEditor;
 using UnityEngine;
 
 namespace Tooling.StaticData
@@ -27,7 +29,7 @@ namespace Tooling.StaticData
 
         private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
 
-        public readonly JsonSerializer JsonSerializer = new()
+        private readonly JsonSerializer jsonSerializer = new()
         {
             Formatting = Formatting.Indented,
             ContractResolver = new CustomContractResolver(),
@@ -41,47 +43,6 @@ namespace Tooling.StaticData
         };
 
         private readonly List<StaticDataReferenceHandle> queuedInjections = new();
-
-        private struct StaticDataReferenceHandle
-        {
-            /// <summary>
-            /// The type of static data being referenced.
-            /// </summary>
-            public readonly Type Type;
-
-            /// <summary>
-            /// The instance name of the <see cref="Type"/> being referenced.
-            /// </summary>
-            public readonly string InstanceName;
-
-            /// <summary>
-            /// The StaticData that has the reference to another StaticData.
-            /// </summary>
-            public readonly StaticData ObjectWithReference;
-
-            /// <summary>
-            /// The propertyName that holds the reference to another StaticData.
-            /// </summary>
-            public readonly string PropertyName;
-
-            /// <summary>
-            /// If the property is an array, this will be set to a value > -1.
-            /// </summary>
-            public readonly int ArrayIndex;
-
-            public StaticDataReferenceHandle(Type type,
-                string instanceName,
-                StaticData objectWithReference,
-                string propertyName,
-                int arrayIndex = -1)
-            {
-                Type = type;
-                InstanceName = instanceName;
-                ObjectWithReference = objectWithReference;
-                PropertyName = propertyName;
-                ArrayIndex = arrayIndex;
-            }
-        }
 
         private StaticDatabase()
         {
@@ -113,7 +74,7 @@ namespace Tooling.StaticData
                     {
                         using var streamReader = File.OpenText(file);
 
-                        var staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
+                        var staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
                         if (staticDataFromJson == null)
                         {
                             MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
@@ -186,21 +147,62 @@ namespace Tooling.StaticData
                 {
                     staticDataField.SetValue(
                         referenceHandle.ObjectWithReference,
-                        GetStaticData(referenceHandle.Type, referenceHandle.InstanceName)
+                        GetStaticDataInstance(referenceHandle.Type, referenceHandle.InstanceName)
                     );
                 }
                 else
                 {
                     var list = (IList)(staticDataField.GetValue(referenceHandle.ObjectWithReference)
                                        ?? Activator.CreateInstance(staticDataField.FieldType));
-                    list[referenceHandle.ArrayIndex] = GetStaticData(referenceHandle.Type, referenceHandle.InstanceName);
+                    list[referenceHandle.ArrayIndex] = GetStaticDataInstance(referenceHandle.Type, referenceHandle.InstanceName);
 
                     staticDataField.SetValue(referenceHandle.ObjectWithReference, list);
                 }
             }
         }
 
-        public StaticData GetStaticData(Type type, string instanceName)
+        private struct StaticDataReferenceHandle
+        {
+            /// <summary>
+            /// The type of static data being referenced.
+            /// </summary>
+            public readonly Type Type;
+
+            /// <summary>
+            /// The instance name of the <see cref="Type"/> being referenced.
+            /// </summary>
+            public readonly string InstanceName;
+
+            /// <summary>
+            /// The StaticData that has the reference to another StaticData.
+            /// </summary>
+            public readonly StaticData ObjectWithReference;
+
+            /// <summary>
+            /// The propertyName that holds the reference to another StaticData.
+            /// </summary>
+            public readonly string PropertyName;
+
+            /// <summary>
+            /// If the property is an array, this will be set to a value > -1.
+            /// </summary>
+            public readonly int ArrayIndex;
+
+            public StaticDataReferenceHandle(Type type,
+                string instanceName,
+                StaticData objectWithReference,
+                string propertyName,
+                int arrayIndex = -1)
+            {
+                Type = type;
+                InstanceName = instanceName;
+                ObjectWithReference = objectWithReference;
+                PropertyName = propertyName;
+                ArrayIndex = arrayIndex;
+            }
+        }
+
+        public StaticData GetStaticDataInstance(Type type, string instanceName)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary)
                 && instanceDictionary.TryGetValue(instanceName, out var dataInstance))
@@ -209,6 +211,86 @@ namespace Tooling.StaticData
             }
 
             return null;
+        }
+
+        public List<StaticData> GetAllStaticDataInstances()
+        {
+            return staticDataDictionary.SelectMany(kvp => kvp.Value.Values).ToList();
+        }
+
+        public List<StaticData> GetInstancesForType(Type type)
+        {
+            if (staticDataDictionary.TryGetValue(type, out var instanceDictionary))
+            {
+                return instanceDictionary.Values.ToList();
+            }
+
+            return new List<StaticData>();
+        }
+
+        public List<Type> GetAllStaticDataTypes()
+        {
+            return staticDataDictionary.Select(kvp => kvp.Key).ToList();
+        }
+
+        public void Add(StaticData staticData)
+        {
+            if (staticDataDictionary.TryGetValue(staticData.GetType(), out var instanceDictionary))
+            {
+                instanceDictionary[staticData.Name] = staticData;
+            }
+        }
+
+        public async UniTask SaveAllStaticDataToJson()
+        {
+            var writeTasks = new List<UniTask>();
+            foreach (var kvp in staticDataDictionary)
+            {
+                var staticDataFilePath = Path.GetFullPath(Path.Join(StaticDataDirectory, kvp.Key.Name));
+                var directoryInfo = Directory.CreateDirectory(staticDataFilePath);
+
+                foreach (var directory in directoryInfo.GetDirectories())
+                {
+                    directory.Delete();
+                }
+
+                foreach (var staticDataInstance in kvp.Value.Values)
+                {
+                    writeTasks.Add(SaveInstanceToJson(staticDataInstance, staticDataFilePath));
+                }
+            }
+
+            EditorUtility.DisplayProgressBar("Saving to Json", "Saving...", 0.5f);
+
+            try
+            {
+                await UniTask.WhenAll(writeTasks);
+            }
+            catch (Exception e)
+            {
+                MyLogger.LogError(e.Message);
+            }
+
+            EditorUtility.ClearProgressBar();
+
+            return;
+
+            // Local function
+            async UniTask SaveInstanceToJson(StaticData instance, string typeDirectory)
+            {
+                if (!Directory.Exists(typeDirectory))
+                {
+                    MyLogger.LogError($"Type directory {typeDirectory} does not exist!");
+                    return;
+                }
+
+                var filePath = $"{Path.Join(typeDirectory, instance.Name)}.json";
+                MyLogger.Log($"Writing {instance.Name} to file: {filePath}");
+                await using StreamWriter file = new StreamWriter(filePath);
+                using JsonWriter writer = new JsonTextWriter(file);
+
+                jsonSerializer.Serialize(writer, instance);
+            }
         }
 
         public void Clear()
