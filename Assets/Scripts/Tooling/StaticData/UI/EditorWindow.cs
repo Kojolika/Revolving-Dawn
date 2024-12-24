@@ -30,11 +30,6 @@ namespace Tooling.StaticData
         }
 
         /// <summary>
-        /// Dictionary that maps a static data type to instances and their current validation errors.
-        /// </summary>
-        public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; }
-
-        /// <summary>
         /// Stores the index of the static data type that the user was looking at before hot reloading.
         /// </summary>
         private int selectedIndex;
@@ -168,10 +163,7 @@ namespace Tooling.StaticData
 
         private void ValidateStaticData()
         {
-            validationErrors = Validator.ValidateObjects(
-                StaticDatabase.Instance.GetAllStaticDataInstances(),
-                BindingFlagsToSelectStaticDataFields
-            );
+            StaticDatabase.Instance.ValidateStaticData();
 
             // can be null if a type hasn't been selected yet (like when the menu is first opened)
             instancesView?.ListView?.RefreshItems();
@@ -211,28 +203,37 @@ namespace Tooling.StaticData
         /// <param name="staticDataTypesListView">The list of static data types that the right panel reacts to.</param>
         private VisualElement CreateRightPanel(ListView staticDataTypesListView)
         {
-            var root = new VisualElement();
-            var label = new Label("Select a static data type.");
+            var twoPaneSplitView = new TwoPaneSplitView
+            {
+                fixedPaneIndex = 0,
+                fixedPaneInitialDimension = 100,
+                orientation = TwoPaneSplitViewOrientation.Vertical
+            };
+
+            // temp until we populate a type
+            twoPaneSplitView.Add(new Label("Select a static data type."));
+            twoPaneSplitView.Add(new VisualElement());
 
             staticDataTypesListView.selectionChanged += _ =>
             {
                 selectedType = StaticDatabase.Instance.GetAllStaticDataTypes()[selectedIndex];
 
-                root.Clear();
+                twoPaneSplitView.Clear();
 
                 if (selectedType == null)
                 {
                     return;
                 }
+            
+                // TODO: figure out why split view is being weird
+                var validatorErrorView = new ValidatorErrorView(selectedType);
+                instancesView = new InstancesView(selectedType, true, validatorErrorView.OnStaticDataSelected);
 
-                instancesView = new InstancesView(selectedType, true, null);
-
-                root.Add(instancesView);
+                twoPaneSplitView.Add(instancesView);
+                twoPaneSplitView.Add(validatorErrorView);
             };
 
-            root.Add(label);
-
-            return root;
+            return twoPaneSplitView;
         }
 
         public class InstanceEditorWindow : UnityEditor.EditorWindow

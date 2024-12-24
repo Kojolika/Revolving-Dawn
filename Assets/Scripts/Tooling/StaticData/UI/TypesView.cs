@@ -11,7 +11,7 @@ namespace Tooling.StaticData
         
         private EditorWindow editorWindow => UnityEditor.EditorWindow.GetWindow<EditorWindow>();
         private List<Type> staticDataTypes => StaticDatabase.Instance.GetAllStaticDataTypes();
-        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors => editorWindow.validationErrors;
+        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors => StaticDatabase.Instance.validationErrors;
 
         public TypesView()
         {

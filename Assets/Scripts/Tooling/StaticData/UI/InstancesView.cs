@@ -16,13 +16,13 @@ namespace Tooling.StaticData
 
         private const float RowPadding = 4f;
 
-        private EditorWindow editorWindow => UnityEditor.EditorWindow.GetWindow<EditorWindow>();
-        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors => editorWindow.validationErrors;
+        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors => StaticDatabase.Instance.validationErrors;
 
         public InstancesView(Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
         {
             this.selectedType = selectedType;
             this.allowEditing = allowEditing;
+            // TODO: Have a method on StaticDatabase that updates the databse with this list
             instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
 
             ListView = new ListView

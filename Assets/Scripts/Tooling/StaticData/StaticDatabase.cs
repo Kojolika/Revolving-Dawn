@@ -7,6 +7,7 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Serialization;
 using Tooling.Logging;
+using Tooling.StaticData.Validation;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,6 +29,11 @@ namespace Tooling.StaticData
         private static readonly string StaticDataDirectory = Path.Join(Application.dataPath, "StaticData");
 
         private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
+
+        /// <summary>
+        /// Dictionary that maps a static data type to instances and their current validation errors.
+        /// </summary>
+        public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
 
         private readonly JsonSerializer jsonSerializer = new()
         {
@@ -202,6 +208,14 @@ namespace Tooling.StaticData
             }
         }
 
+        public void ValidateStaticData()
+        {
+            validationErrors = Validator.ValidateObjects(
+                GetAllStaticDataInstances(),
+                EditorWindow.BindingFlagsToSelectStaticDataFields
+            );
+        }
+
         public StaticData GetStaticDataInstance(Type type, string instanceName)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary)
@@ -275,6 +289,8 @@ namespace Tooling.StaticData
 
             return;
 
+            // TODO: this doesn't update name changes (maybe just case insensitive)
+            // but if you chnage a name from bash.json -> Bash.json it doesn't save as Bash.json
             // Local function
             async UniTask SaveInstanceToJson(StaticData instance, string typeDirectory)
             {
