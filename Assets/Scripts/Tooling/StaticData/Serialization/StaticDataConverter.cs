@@ -69,7 +69,10 @@ namespace Tooling.StaticData
                         var jArray = (JArray)prop.Value;
                         for (int i = 0; i < jArray.Count; i++)
                         {
-                            FindStaticDataReferences((JObject)jArray[i], staticData, prop.Name, true, i);
+                            if (jArray[i] is JObject obj)
+                            {
+                                FindStaticDataReferences(obj, staticData, prop.Name, true, i);
+                            }
                         }
 
                         break;
