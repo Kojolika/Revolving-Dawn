@@ -1,0 +1,21 @@
+{
+  "class_art": null,
+  "card_border_art": null,
+  "starting_deck": [
+    {
+      "StaticData": "Card.Bash"
+    },
+    {
+      "StaticData": "Card.Defend"
+    },
+    {
+      "StaticData": "Card.Bash"
+    },
+    {
+      "StaticData": "Card.Bash"
+    }
+  ],
+  "description": {
+    "StaticData": "LocKey."
+  }
+}
