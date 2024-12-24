@@ -32,8 +32,9 @@ namespace Tooling.StaticData
             else
             {
                 // Serialize a reference to the static data, so we can load it at runtime
-                new JObject(new JProperty(nameof(StaticData), $"{value?.GetType().FullName}.{(value as StaticData)?.Name}"))
-                    .WriteTo(writer);
+                new JObject(
+                    new JProperty(nameof(StaticData), $"{value?.GetType().FullName}.{(value as StaticData)?.Name}")
+                ).WriteTo(writer);
             }
         }
 
