@@ -52,7 +52,7 @@ namespace Tooling.StaticData
         /// <summary>
         /// Stores the type of the static data instance that the user was looking at before hot reloading.
         /// </summary>
-        public Type SelectedType { get; private set; }
+        private Type selectedType;
 
         /// <summary>
         /// <see cref="ListView"/> wrapper of all our of different static data types.
@@ -81,8 +81,15 @@ namespace Tooling.StaticData
             jsonSerializer = new JsonSerializer
             {
                 Formatting = Formatting.Indented,
-                Converters = { new AssetReferenceConverter(), new ColorConverter(), /*new StaticDataConverter()*/ },
-                ContractResolver = new CustomContractResolver()
+                ContractResolver = new CustomContractResolver(),
+                TraceWriter = new JsonTraceWriter(),
+                Converters =
+                {
+                    new AssetReferenceConverter(),
+                    new ColorConverter(),
+                    new StaticDataConverter()
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
             };
 
             var root = rootVisualElement;
@@ -90,10 +97,7 @@ namespace Tooling.StaticData
             var topToolBar = CreateTopToolBar();
             root.Add(topToolBar);
 
-            staticDataTypes = typeof(StaticData).Assembly.GetTypes()
-                .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
-                .ToList();
-            CreateStaticDataTypeInstanceDictionary(staticDataTypes);
+            ResetInstanceDictionary();
 
             typesListView = new TypesView();
             typesListView.ListView.selectionChanged += _ => selectedIndex = typesListView.ListView.selectedIndex;
@@ -109,6 +113,17 @@ namespace Tooling.StaticData
             twoPanelSplit.Add(typesListView);
             twoPanelSplit.Add(rightPanel);
             root.Add(twoPanelSplit);
+        }
+
+        private void ResetInstanceDictionary()
+        {
+            selectedType = null;
+            staticDataInstances = null;
+            staticDataTypes = typeof(StaticData).Assembly.GetTypes()
+                .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
+                .ToList();
+
+            CreateStaticDataTypeInstanceDictionary(staticDataTypes);
         }
 
         private void CreateStaticDataTypeInstanceDictionary(List<Type> staticDataTypes)
@@ -135,7 +150,7 @@ namespace Tooling.StaticData
                         var staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
                         if (staticDataFromJson == null)
                         {
-                            MyLogger.LogError($"Static Data of type {type} could not be deserialized.");
+                            MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
                             continue;
                         }
 
@@ -308,9 +323,11 @@ namespace Tooling.StaticData
                 directory.Delete(true);
             }
 
+            ResetInstanceDictionary();
+
             // can be null if a type hasn't been selected yet (like when the menu is first opened)
-            instancesView?.ListView?.RefreshItems();
-            typesListView.ListView.RefreshItems();
+            instancesView?.ListView?.Rebuild();
+            typesListView.ListView.Rebuild();
         }
 
         /// <param name="staticDataTypesListView">The list of static data types that the right panel reacts to.</param>
@@ -321,16 +338,16 @@ namespace Tooling.StaticData
 
             staticDataTypesListView.selectionChanged += _ =>
             {
-                SelectedType = staticDataTypes?[selectedIndex];
+                selectedType = staticDataTypes?[selectedIndex];
 
                 root.Clear();
 
-                if (SelectedType == null)
+                if (selectedType == null)
                 {
                     return;
                 }
 
-                instancesView = new InstancesView(SelectedType, true, null);
+                instancesView = new InstancesView(selectedType, true, null);
 
                 root.Add(instancesView);
             };

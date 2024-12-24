@@ -7,7 +7,7 @@ using Debug = UnityEngine.Debug;
 
 namespace Tooling.Logging
 {
-    public static class MyLogger
+    public class MyLogger
     {
         private static readonly StackTrace stackTrace = new StackTrace(true);
 
@@ -29,10 +29,11 @@ namespace Tooling.Logging
 
         public static void LogWarning(string message, [CallerFilePath] string filePath = "")
         {
-           Debug.LogWarning(
+            Debug.LogWarning(
                 FormatLog(message, filePath)
             );
         }
+
         public static void LogWarning(string message, GameObject context, [CallerFilePath] string filePath = "")
         {
             Debug.LogWarning(
@@ -50,13 +51,12 @@ namespace Tooling.Logging
 
         public static void LogError(string message, GameObject context, [CallerFilePath] string filePath = "")
         {
-           Debug.LogError(
+            Debug.LogError(
                 FormatLog(message, filePath),
                 context
             );
         }
 #endif
-
 
         private static string FormatLog(string message, string filePath)
         {

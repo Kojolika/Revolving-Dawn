@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tooling.Logging;
 using UnityEngine.UIElements;
 
 namespace Tooling.StaticData
@@ -25,7 +26,15 @@ namespace Tooling.StaticData
                 makeItem = () => new InstanceView(selectedType, allowEditing),
                 bindItem = (item, index) =>
                 {
-                    var instance = staticDataInstances[selectedType][index];
+                    if (!staticDataInstances.TryGetValue(selectedType, out var instances)
+                        || instances == null 
+                        || index < 0 
+                        || index >= instances.Count)
+                    {
+                        return;
+                    }
+
+                    var instance = instances[index];
                     (item as InstanceView)!.BindItem(index,
                         instance,
                         validationErrors?.TryGetValue(selectedType, out var instanceValidationDict) ?? false
@@ -34,7 +43,7 @@ namespace Tooling.StaticData
                     );
                 },
                 unbindItem = (item, _) => (item as InstanceView)!.UnBindItem(),
-                itemsSource = staticDataInstances[selectedType],
+                itemsSource = staticDataInstances?[selectedType],
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 showBorder = true,
                 selectionType = SelectionType.Multiple,
