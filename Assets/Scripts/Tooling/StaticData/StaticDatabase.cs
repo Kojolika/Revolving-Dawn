@@ -30,10 +30,12 @@ namespace Tooling.StaticData
 
         private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
 
-        /// <summary>
-        /// Dictionary that maps a static data type to instances and their current validation errors.
-        /// </summary>
         public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
+
+        /// <summary>
+        /// Passes in a dictionary that maps a static data type to instances and their current validation errors.
+        /// </summary>
+        public event Action OnValidationCompleted;
 
         private readonly JsonSerializer jsonSerializer = new()
         {
@@ -214,6 +216,8 @@ namespace Tooling.StaticData
                 GetAllStaticDataInstances(),
                 EditorWindow.BindingFlagsToSelectStaticDataFields
             );
+
+            OnValidationCompleted?.Invoke();
         }
 
         public void UpdateInstancesForType(Type type, List<StaticData> instances)
@@ -225,6 +229,7 @@ namespace Tooling.StaticData
                 {
                     instanceDict[instance.Name] = instance;
                 }
+                staticDataDictionary[type] = instanceDict;
             }
         }
 
@@ -251,7 +256,7 @@ namespace Tooling.StaticData
                 return instanceDictionary.Values.ToList();
             }
 
-            return new List<StaticData>();
+            return null;
         }
 
         public List<Type> GetAllStaticDataTypes()

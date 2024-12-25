@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -14,18 +13,21 @@ namespace Tooling.StaticData
         {
             this.selectedType = selectedType;
 
-            OnValidate();
+            StaticDatabase.Instance.OnValidationCompleted += RefreshValidationView;
+        }
+
+        ~ValidatorErrorView()
+        {
+            StaticDatabase.Instance.OnValidationCompleted -= RefreshValidationView;
         }
 
         public void OnStaticDataSelected(StaticData staticData)
         {
             instance = staticData;
-
-            OnValidate();
+            RefreshValidationView();
         }
 
-        // TODO: add a callback in StaticDatabase when validation results are updated
-        private void OnValidate()
+        private void RefreshValidationView()
         {
             Clear();
 

@@ -125,7 +125,7 @@ namespace Tooling.StaticData
         {
             if (shouldValidateData)
             {
-                ValidateStaticData();
+                StaticDatabase.Instance.ValidateStaticData();
             }
 
             await StaticDatabase.Instance.SaveAllStaticDataToJson();
@@ -150,7 +150,7 @@ namespace Tooling.StaticData
         {
             var root = new VisualElement();
 
-            var button = new ToolbarButton(ValidateStaticData)
+            var button = new ToolbarButton(StaticDatabase.Instance.ValidateStaticData)
             {
                 text = "Validate Data",
                 style = { width = ToolbarButtonWidth }
@@ -159,15 +159,6 @@ namespace Tooling.StaticData
             root.Add(button);
 
             return root;
-        }
-
-        private void ValidateStaticData()
-        {
-            StaticDatabase.Instance.ValidateStaticData();
-
-            // can be null if a type hasn't been selected yet (like when the menu is first opened)
-            instancesView?.ListView?.RefreshItems();
-            typesListView.ListView.RefreshItems();
         }
 
         private VisualElement WipeJsonButton()
@@ -205,7 +196,7 @@ namespace Tooling.StaticData
         {
             var twoPaneSplitView = new TwoPaneSplitView
             {
-                fixedPaneIndex = 0,
+                fixedPaneIndex = 1,
                 fixedPaneInitialDimension = 100,
                 orientation = TwoPaneSplitViewOrientation.Vertical
             };
@@ -224,7 +215,7 @@ namespace Tooling.StaticData
                 {
                     return;
                 }
-            
+
                 // TODO: figure out why split view is being weird
                 var validatorErrorView = new ValidatorErrorView(selectedType);
                 instancesView = new InstancesView(selectedType, true, validatorErrorView.OnStaticDataSelected);

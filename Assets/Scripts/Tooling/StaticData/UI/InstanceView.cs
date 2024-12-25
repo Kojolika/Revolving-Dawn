@@ -31,7 +31,7 @@ namespace Tooling.StaticData
             Add(row);
         }
 
-        public void BindItem(int index, StaticData instance, List<string> validationErrors)
+        public void BindItem(StaticData instance, List<string> validationErrors)
         {
             Instance = instance;
 

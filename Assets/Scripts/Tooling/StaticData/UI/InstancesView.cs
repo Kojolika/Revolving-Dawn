@@ -16,14 +16,14 @@ namespace Tooling.StaticData
 
         private const float RowPadding = 4f;
 
-        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors => StaticDatabase.Instance.validationErrors;
-
+        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors = new();
         public InstancesView(Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
         {
             this.selectedType = selectedType;
             this.allowEditing = allowEditing;
-            // TODO: Have a method on StaticDatabase that updates the databse with this list
+
             instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
+            validationErrors = StaticDatabase.Instance.validationErrors;
 
             ListView = new ListView
             {
@@ -39,8 +39,7 @@ namespace Tooling.StaticData
                     }
 
                     var instance = instances[index];
-                    (item as InstanceView)!.BindItem(index,
-                        instance,
+                    (item as InstanceView)!.BindItem(instance,
                         validationErrors?.TryGetValue(selectedType, out var instanceValidationDict) ?? false
                             ? instanceValidationDict.GetValueOrDefault(instance)
                             : null
@@ -67,13 +66,21 @@ namespace Tooling.StaticData
 
             ListView.itemsRemoved += ints =>
             {
+                instances = instances.Where((_, index) => !ints.Contains(index)).ToList();
                 StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
             };
 
             ListView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.FirstOrDefault() as StaticData);
 
+            StaticDatabase.Instance.OnValidationCompleted += OnValidationCompleted;
+
             Add(CreateInstanceHeader(selectedType));
             Add(ListView);
+        }
+
+        ~InstancesView()
+        {
+            StaticDatabase.Instance.OnValidationCompleted -= OnValidationCompleted;
         }
 
         public static Label CreateInstanceColumn(string labelText) => new(labelText)
@@ -132,8 +139,14 @@ namespace Tooling.StaticData
 
         public void Refresh()
         {
-            ListView.Rebuild();
             instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
+            ListView.Rebuild();
+        }
+
+        private void OnValidationCompleted()
+        {
+            validationErrors = StaticDatabase.Instance.validationErrors;
+            ListView.RefreshItems();
         }
 
         /// <summary>

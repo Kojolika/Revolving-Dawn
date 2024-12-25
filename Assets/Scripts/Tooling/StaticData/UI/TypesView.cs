@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Tooling.Logging;
 using UnityEngine.UIElements;
 
 namespace Tooling.StaticData
@@ -8,10 +7,8 @@ namespace Tooling.StaticData
     public class TypesView : VisualElement
     {
         public readonly ListView ListView;
-        
-        private EditorWindow editorWindow => UnityEditor.EditorWindow.GetWindow<EditorWindow>();
         private List<Type> staticDataTypes => StaticDatabase.Instance.GetAllStaticDataTypes();
-        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors => StaticDatabase.Instance.validationErrors;
+        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors = new();
 
         public TypesView()
         {
@@ -31,7 +28,22 @@ namespace Tooling.StaticData
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All
             };
 
+            StaticDatabase.Instance.OnValidationCompleted += OnValidationCompleted;
+
+            validationErrors = StaticDatabase.Instance.validationErrors;
+
             Add(ListView);
+        }
+
+        ~TypesView()
+        {
+            StaticDatabase.Instance.OnValidationCompleted -= OnValidationCompleted;
+        }
+
+        private void OnValidationCompleted()
+        {
+            validationErrors = StaticDatabase.Instance.validationErrors;
+            ListView.RefreshItems();
         }
     }
 }
