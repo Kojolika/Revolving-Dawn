@@ -72,16 +72,13 @@ namespace Tooling.StaticData
             typesListView = new TypesView();
             typesListView.ListView.selectionChanged += _ => selectedIndex = typesListView.ListView.selectedIndex;
 
-            var rightPanel = new VisualElement();
-            rightPanel.Add(CreateRightPanel(typesListView.ListView));
-
             var twoPanelSplit = new TwoPaneSplitView
             {
                 fixedPaneInitialDimension = 140,
                 orientation = TwoPaneSplitViewOrientation.Horizontal
             };
             twoPanelSplit.Add(typesListView);
-            twoPanelSplit.Add(rightPanel);
+            twoPanelSplit.Add(CreateRightPanel(typesListView.ListView));
             root.Add(twoPanelSplit);
         }
 
@@ -192,7 +189,7 @@ namespace Tooling.StaticData
         }
 
         /// <param name="staticDataTypesListView">The list of static data types that the right panel reacts to.</param>
-        private VisualElement CreateRightPanel(ListView staticDataTypesListView)
+        private TwoPaneSplitView CreateRightPanel(ListView staticDataTypesListView)
         {
             var twoPaneSplitView = new TwoPaneSplitView
             {
@@ -217,6 +214,8 @@ namespace Tooling.StaticData
                 }
 
                 // TODO: figure out why split view is being weird
+                // Both validatorErrorView and instancesView are being added in one panel
+                // of the twol panel split for some reason
                 var validatorErrorView = new ValidatorErrorView(selectedType);
                 instancesView = new InstancesView(selectedType, true, validatorErrorView.OnStaticDataSelected);
 
