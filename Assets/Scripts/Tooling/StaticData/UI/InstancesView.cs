@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Tooling.Logging;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
@@ -16,7 +15,7 @@ namespace Tooling.StaticData
 
         private const float RowPadding = 4f;
 
-        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors = new();
+        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors;
         public InstancesView(Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
         {
             this.selectedType = selectedType;
