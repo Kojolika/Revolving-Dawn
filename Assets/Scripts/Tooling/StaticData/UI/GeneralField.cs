@@ -18,7 +18,7 @@ namespace Tooling.StaticData
     {
         private readonly FieldInfo fieldInfo;
         private readonly object objectFieldBelongsTo;
-        private EventCallback<ChangeEvent<object>> callback;
+        private readonly EventCallback<ChangeEvent<object>> callback;
 
         /// <summary>
         /// Index of the array that is being drawn.
@@ -94,6 +94,12 @@ namespace Tooling.StaticData
                     callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
                 );
             }
+            else if (typeof(long).IsAssignableFrom(type))
+            {
+                editorForFieldType = CreateFieldForType<long, LongField>(evt =>
+                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
+                );
+            }
             else if (typeof(float).IsAssignableFrom(type))
             {
                 editorForFieldType = CreateFieldForType<float, FloatField>(evt =>
@@ -138,9 +144,11 @@ namespace Tooling.StaticData
             }
             else if (typeof(StaticData).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateStaticDataField(type, evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateStaticDataField(type);
+            }
+            else if (type.IsInterface || type.IsAbstract)
+            {
+                editorForFieldType = CreateAbstractTypeSelection(type);
             }
             else if (type.GetCustomAttribute<SerializableAttribute>() is not null)
             {
@@ -293,7 +301,7 @@ namespace Tooling.StaticData
             return root;
         }
 
-        private VisualElement CreateStaticDataField(Type type, EventCallback<ChangeEvent<StaticData>> onValueChanged)
+        private VisualElement CreateStaticDataField(Type type)
         {
             var root = new VisualElement
             {
@@ -318,24 +326,8 @@ namespace Tooling.StaticData
             // local function
             void OnStaticDataReferenceChanged(StaticData staticData)
             {
-                if (isArrayElement)
-                {
-                    var prevList = fieldInfo.GetValue(objectFieldBelongsTo) as IList;
-                    var newList = prevList;
-                    newList![arrayIndex] = staticData;
-                    fieldInfo.SetValue(objectFieldBelongsTo, newList);
-                    nameLabel.text = ((fieldInfo.GetValue(objectFieldBelongsTo) as IList)?[arrayIndex] as StaticData)?.Name ??
-                                     "None";
-                    onValueChanged?.Invoke(ChangeEvent<StaticData>.GetPooled(prevList[arrayIndex] as StaticData,
-                        newList[arrayIndex] as StaticData));
-                }
-                else
-                {
-                    var prevValue = fieldInfo.GetValue(objectFieldBelongsTo) as StaticData;
-                    fieldInfo.SetValue(objectFieldBelongsTo, staticData);
-                    nameLabel.text = (fieldInfo.GetValue(objectFieldBelongsTo) as StaticData)?.Name ?? "None";
-                    onValueChanged?.Invoke(ChangeEvent<StaticData>.GetPooled(prevValue, staticData));
-                }
+                SetValue(staticData);
+                nameLabel.text = GetValue<StaticData>()?.Name ?? "None";
             }
         }
 
@@ -358,6 +350,26 @@ namespace Tooling.StaticData
             return root;
         }
 
+        private VisualElement CreateAbstractTypeSelection(Type type)
+        {
+            var concreteTypes = type.Assembly.DefinedTypes
+                .Where(t => type.IsAssignableFrom(t)
+                            && !t.IsAbstract
+                            && !t.IsInterface)
+                .Select(t => t.ToString())
+                .ToList();
+
+            if (concreteTypes.Count < 1)
+            {
+                return new Label($"No types inherit from {type}");
+            }
+
+            var dropDown = new DropdownField(concreteTypes, concreteTypes[0]);
+
+
+            return dropDown;
+        }
+
         /// <summary>
         /// Only applies if this is drawing an element in a list. Notifies the editor field that index
         /// is where the value should get retrieved from in <see cref="itemsSource"/>
@@ -370,9 +382,43 @@ namespace Tooling.StaticData
             {
                 return;
             }
-            
+
             arrayIndex = index;
             onArrayIndexChanged?.Invoke(index);
+        }
+
+
+        /// <summary>
+        /// Sets the value on the underlying instance this field is bound to.
+        /// The <see cref="objectFieldBelongsTo"/>.
+        /// </summary>
+        private void SetValue<T>(T value)
+        {
+            if (isArrayElement)
+            {
+                var prevList = fieldInfo.GetValue(objectFieldBelongsTo) as IList;
+                var newList = prevList;
+                newList![arrayIndex] = value;
+                fieldInfo.SetValue(objectFieldBelongsTo, newList);
+                callback?.Invoke(ChangeEvent<object>.GetPooled(prevList[arrayIndex], newList[arrayIndex]));
+            }
+            else
+            {
+                var prevValue = (T)fieldInfo.GetValue(objectFieldBelongsTo);
+                fieldInfo.SetValue(objectFieldBelongsTo, value);
+                callback?.Invoke(ChangeEvent<object>.GetPooled(prevValue, value));
+            }
+        }
+
+        /// <summary>
+        /// Gets the value on the underlying instance this field is bound to.
+        /// The <see cref="objectFieldBelongsTo"/>.
+        /// </summary>
+        private T GetValue<T>()
+        {
+            return isArrayElement
+                ? (T)(fieldInfo.GetValue(objectFieldBelongsTo) as IList)?[arrayIndex]
+                : (T)fieldInfo.GetValue(objectFieldBelongsTo);
         }
     }
 }
