@@ -33,7 +33,8 @@ namespace Tooling.StaticData
         public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
 
         /// <summary>
-        /// Passes in a dictionary that maps a static data type to instances and their current validation errors.
+        /// Notifies when validation has just been completed. The <see cref="validationErrors"/> will be populated after
+        /// this is called.
         /// </summary>
         public event Action OnValidationCompleted;
 
@@ -47,7 +48,8 @@ namespace Tooling.StaticData
                 new ColorConverter(),
                 new StaticDataConverter()
             },
-            ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+            ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+            TypeNameHandling = TypeNameHandling.Auto
         };
 
         private readonly List<StaticDataReferenceHandle> queuedInjections = new();
@@ -65,14 +67,8 @@ namespace Tooling.StaticData
             queuedInjections.Clear();
             staticDataDictionary.Clear();
 
-            // If we hot reload while the window is open and a new static data type is created, add to our dict
             foreach (var type in staticDataTypes)
             {
-                if (staticDataDictionary.ContainsKey(type))
-                {
-                    continue;
-                }
-
                 var instanceDictionary = new Dictionary<string, StaticData>();
                 var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
 
@@ -82,7 +78,16 @@ namespace Tooling.StaticData
                     {
                         using var streamReader = File.OpenText(file);
 
-                        var staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
+                        StaticData staticDataFromJson = null;
+                        try
+                        {
+                            staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
+                        }
+                        catch (Exception e)
+                        {
+                            MyLogger.LogError(e.Message);
+                        }
+
                         if (staticDataFromJson == null)
                         {
                             MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
@@ -106,11 +111,7 @@ namespace Tooling.StaticData
         /// Queues a <see cref="StaticData"/> to have its references to other <see cref="StaticData"/> injected
         /// after every <see cref="StaticData"/> is deserialized.
         /// </summary>
-        public void QueueReferenceForInject(
-            Type staticDataType,
-            string instanceName,
-            StaticData staticData,
-            string propertyName)
+        public void QueueReferenceForInject(Type staticDataType, string instanceName, StaticData staticData, string propertyName)
         {
             queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, staticData, propertyName));
         }
@@ -127,7 +128,15 @@ namespace Tooling.StaticData
             string propertyName,
             int index)
         {
-            queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, staticData, propertyName, index));
+            queuedInjections.Add(
+                new StaticDataReferenceHandle(
+                    staticDataType,
+                    instanceName,
+                    staticData,
+                    propertyName,
+                    index
+                )
+            );
         }
 
         /// <summary>
@@ -222,15 +231,18 @@ namespace Tooling.StaticData
 
         public void UpdateInstancesForType(Type type, List<StaticData> instances)
         {
-            if (staticDataDictionary.TryGetValue(type, out var instanceDict))
+            if (!staticDataDictionary.TryGetValue(type, out var instanceDict))
             {
-                instanceDict.Clear();
-                foreach (var instance in instances)
-                {
-                    instanceDict[instance.Name] = instance;
-                }
-                staticDataDictionary[type] = instanceDict;
+                return;
             }
+
+            instanceDict.Clear();
+            foreach (var inst in instances)
+            {
+                instanceDict[inst.Name] = inst;
+            }
+
+            staticDataDictionary[type] = instanceDict;
         }
 
         public StaticData GetStaticDataInstance(Type type, string instanceName)
@@ -244,7 +256,7 @@ namespace Tooling.StaticData
             return null;
         }
 
-        public List<StaticData> GetAllStaticDataInstances()
+        private List<StaticData> GetAllStaticDataInstances()
         {
             return staticDataDictionary.SelectMany(kvp => kvp.Value.Values).ToList();
         }
@@ -262,6 +274,14 @@ namespace Tooling.StaticData
         public List<Type> GetAllStaticDataTypes()
         {
             return staticDataDictionary.Select(kvp => kvp.Key).ToList();
+        }
+
+        public void Remove(Type type, string instanceName)
+        {
+            if (staticDataDictionary.TryGetValue(type, out var instanceDictionary))
+            {
+                instanceDictionary.Remove(instanceName);
+            }
         }
 
         public void Add(StaticData staticData)

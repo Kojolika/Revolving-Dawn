@@ -7,7 +7,7 @@ namespace Tooling.StaticData
     {
         public bool IsStackable;
         public long MaxStackSize;
-        public List<ICombatByte> BeforeTriggers;
-        public List<ICombatByte> AfterTriggers;
+        public List<ITriggerPoint> BeforeTriggers;
+        public List<ITriggerPoint> AfterTriggers;
     }
 }

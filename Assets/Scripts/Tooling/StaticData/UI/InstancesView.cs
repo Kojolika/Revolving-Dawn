@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tooling.Logging;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
@@ -8,7 +9,7 @@ namespace Tooling.StaticData
 {
     public class InstancesView : VisualElement
     {
-        public readonly ListView ListView;
+        private readonly ListView listView;
         private List<StaticData> instances;
         private readonly Type selectedType;
         private readonly bool allowEditing;
@@ -24,7 +25,7 @@ namespace Tooling.StaticData
             instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
             validationErrors = StaticDatabase.Instance.validationErrors;
 
-            ListView = new ListView
+            listView = new ListView
             {
                 makeItem = () => new InstanceView(selectedType, allowEditing),
                 bindItem = (item, index) =>
@@ -52,7 +53,7 @@ namespace Tooling.StaticData
                 showAddRemoveFooter = allowEditing
             };
 
-            ListView.itemsAdded += ints =>
+            listView.itemsAdded += ints =>
             {
                 foreach (var index in ints)
                 {
@@ -63,18 +64,18 @@ namespace Tooling.StaticData
                 StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
             };
 
-            ListView.itemsRemoved += ints =>
+            listView.itemsRemoved += ints =>
             {
                 instances = instances.Where((_, index) => !ints.Contains(index)).ToList();
                 StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
             };
 
-            ListView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.FirstOrDefault() as StaticData);
+            listView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.FirstOrDefault() as StaticData);
 
             StaticDatabase.Instance.OnValidationCompleted += OnValidationCompleted;
 
             Add(CreateInstanceHeader(selectedType));
-            Add(ListView);
+            Add(listView);
         }
 
         ~InstancesView()
@@ -139,13 +140,13 @@ namespace Tooling.StaticData
         public void Refresh()
         {
             instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
-            ListView.Rebuild();
+            listView.Rebuild();
         }
 
         private void OnValidationCompleted()
         {
             validationErrors = StaticDatabase.Instance.validationErrors;
-            ListView.RefreshItems();
+            listView.RefreshItems();
         }
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace Tooling.StaticData
                 }
 
                 var instancesView = new InstancesView(staticDataType, false, onSelectionChanged);
-                instancesView.ListView.selectionChanged += _ =>
+                instancesView.listView.selectionChanged += _ =>
                 {
                     Close();
                     var instanceEditorWindow = GetWindow<EditorWindow.InstanceEditorWindow>();

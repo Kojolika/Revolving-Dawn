@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Tooling.Logging;
 
 namespace Tooling.StaticData
 {
@@ -32,17 +33,29 @@ namespace Tooling.StaticData
             else
             {
                 // Serialize a reference to the static data, so we can load it at runtime
-                new JObject(
-                    new JProperty(nameof(StaticData), $"{value?.GetType().FullName}.{(value as StaticData)?.Name}")
-                ).WriteTo(writer);
+                var staticDataRef = new StaticDataReference(value?.GetType().FullName, (value as StaticData)?.Name);
+                serializer.Serialize(writer, staticDataRef);
             }
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var jObject = JObject.Load(reader);
-            var staticData = jObject.ToObject(objectType) as StaticData;
-            FindStaticDataReferences(jObject, staticData);
+            StaticData staticData;
+            if (string.IsNullOrEmpty(reader.Path))
+            {
+                staticDataTypes.Add(objectType);
+
+                staticData = serializer.Deserialize(reader, objectType) as StaticData;
+
+                staticDataTypes.Remove(objectType);
+            }
+            else
+            {
+                staticData = Activator.CreateInstance(objectType) as StaticData;
+
+                var serializedString = serializer.Deserialize<string>(reader);
+                MyLogger.Log($"String deser: {serializedString}");
+            }
 
             return staticData;
         }
@@ -52,7 +65,7 @@ namespace Tooling.StaticData
             return typeof(StaticData).IsAssignableFrom(objectType) && !staticDataTypes.Contains(objectType);
         }
 
-        private void FindStaticDataReferences(JObject jObject,
+        private bool TryFindStaticDataReferences(JObject jObject,
             StaticData staticData,
             string propertyName = null,
             bool isArray = false,
@@ -63,7 +76,7 @@ namespace Tooling.StaticData
                 switch (prop.Value.Type)
                 {
                     case JTokenType.Object:
-                        FindStaticDataReferences((JObject)prop.Value, staticData, prop.Name, isArray, arrayIndex);
+                        TryFindStaticDataReferences((JObject)prop.Value, staticData, prop.Name, isArray, arrayIndex);
                         break;
                     case JTokenType.Array:
                         var jArray = (JArray)prop.Value;
@@ -71,7 +84,7 @@ namespace Tooling.StaticData
                         {
                             if (jArray[i] is JObject obj)
                             {
-                                FindStaticDataReferences(obj, staticData, prop.Name, true, i);
+                                TryFindStaticDataReferences(obj, staticData, prop.Name, true, i);
                             }
                         }
 
@@ -81,7 +94,7 @@ namespace Tooling.StaticData
 
             if (!jObject.ContainsKey(nameof(StaticData)))
             {
-                return;
+                return false;
             }
 
             var stringReferenceValue = jObject[nameof(StaticData)]!.Value<string>();
@@ -108,6 +121,20 @@ namespace Tooling.StaticData
                     staticData,
                     propertyName
                 );
+            }
+
+            return true;
+        }
+
+        private class StaticDataReference
+        {
+            public readonly string FullTypeName;
+            public readonly string Name;
+
+            public StaticDataReference(string fullTypeName, string name)
+            {
+                FullTypeName = fullTypeName;
+                Name = name;
             }
         }
     }

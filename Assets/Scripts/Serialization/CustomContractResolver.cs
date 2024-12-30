@@ -1,5 +1,10 @@
 using System;
+using System.IO;
+using System.Reflection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Tooling.Logging;
+using Tooling.StaticData;
 using Zenject;
 
 namespace Serialization
@@ -10,6 +15,7 @@ namespace Serialization
     public class CustomContractResolver : DefaultContractResolver
     {
         private readonly DiContainer diContainer;
+        private readonly NamingStrategy namingStrategy = new DefaultNamingStrategy();
 
         /// <summary>
         /// Used during runtime to instantiate objects with our di container.
@@ -17,12 +23,12 @@ namespace Serialization
         public CustomContractResolver(DiContainer diContainer)
         {
             this.diContainer = diContainer;
-            NamingStrategy = new DefaultNamingStrategy();
+            NamingStrategy = namingStrategy;
         }
 
         public CustomContractResolver()
         {
-            NamingStrategy = new DefaultNamingStrategy();
+            NamingStrategy = namingStrategy;
         }
 
         protected override JsonObjectContract CreateObjectContract(Type objectType)

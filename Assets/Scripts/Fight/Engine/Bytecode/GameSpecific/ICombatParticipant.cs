@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Tooling.StaticData;
 
 namespace Fight.Engine.Bytecode
 {

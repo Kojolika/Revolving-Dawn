@@ -82,65 +82,45 @@ namespace Tooling.StaticData
         /// <summary>
         /// Draws an editor field for the given type.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         private VisualElement DrawEditorForType(Type type)
         {
             VisualElement editorForFieldType;
 
             if (typeof(int).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateFieldForType<int, IntegerField>(evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateFieldForType<int, IntegerField>();
             }
             else if (typeof(long).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateFieldForType<long, LongField>(evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateFieldForType<long, LongField>();
             }
             else if (typeof(float).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateFieldForType<float, FloatField>(evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateFieldForType<float, FloatField>();
             }
             else if (typeof(bool).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateFieldForType<bool, Toggle>(evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateFieldForType<bool, Toggle>();
             }
             else if (typeof(Enum).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateFieldForType<Enum, EnumField>(evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateFieldForType<Enum, EnumField>();
             }
             else if (typeof(string).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateFieldForType<string, TextField>(evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateFieldForType<string, TextField>();
             }
             else if (typeof(Object).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateFieldForType<Object, ObjectField>(evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateFieldForType<Object, ObjectField>();
             }
             else if (typeof(Color).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateFieldForType<Color, ColorField>(evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateFieldForType<Color, ColorField>();
             }
             else if (typeof(IList).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateListField(evt =>
-                    callback?.Invoke(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue))
-                );
+                editorForFieldType = CreateListField();
             }
             else if (typeof(StaticData).IsAssignableFrom(type))
             {
@@ -152,7 +132,7 @@ namespace Tooling.StaticData
             }
             else if (type.GetCustomAttribute<SerializableAttribute>() is not null)
             {
-                editorForFieldType = RecursiveDrawElements(type, evt => callback?.Invoke(evt));
+                editorForFieldType = RecursiveDrawElements(type);
             }
             else
             {
@@ -165,11 +145,10 @@ namespace Tooling.StaticData
         /// <summary>
         /// Creates an editor field for a given type.
         /// </summary>
-        /// <param name="onValueChanged"></param>
         /// <typeparam name="TType"></typeparam>
         /// <typeparam name="TField"></typeparam>
         /// <returns></returns>
-        private TField CreateFieldForType<TType, TField>(EventCallback<ChangeEvent<TType>> onValueChanged)
+        private TField CreateFieldForType<TType, TField>()
             where TField : BaseField<TType>, new()
         {
             var editorForFieldType = new TField
@@ -184,21 +163,7 @@ namespace Tooling.StaticData
                 }
             };
 
-            editorForFieldType.RegisterValueChangedCallback(evt =>
-            {
-                if (isArrayElement)
-                {
-                    itemsSource[arrayIndex] = evt.newValue;
-                    fieldInfo.SetValue(objectFieldBelongsTo, itemsSource);
-                }
-                else
-                {
-                    fieldInfo.SetValue(objectFieldBelongsTo, evt.newValue);
-                }
-
-                onValueChanged?.Invoke(ChangeEvent<TType>.GetPooled(evt.previousValue, evt.newValue));
-            });
-
+            editorForFieldType.RegisterValueChangedCallback(evt => SetValue(evt.newValue));
             onArrayIndexChanged += index => { editorForFieldType.value = (TType)itemsSource[index]; };
 
             return editorForFieldType;
@@ -207,10 +172,9 @@ namespace Tooling.StaticData
         /// <summary>
         /// Creates a custom list view field that draws GeneralFields as its listview elements
         /// </summary>
-        /// <param name="onValueChanged">Fired when the number of elements in the list changes</param>
         /// <returns>A visual element containing the list view.</returns>
         /// <exception cref="ArgumentException">Fired if the fieldInfo is not a type of <see cref="IList"/></exception>
-        private VisualElement CreateListField(EventCallback<ChangeEvent<IList>> onValueChanged)
+        private VisualElement CreateListField()
         {
             var root = new VisualElement
             {
@@ -266,10 +230,8 @@ namespace Tooling.StaticData
             root.Add(buttonContainer);
             buttonContainer.Add(new Button(() =>
             {
-                var previousList = itemsSource;
                 itemsSource.Add(default);
-                fieldInfo.SetValue(objectFieldBelongsTo, itemsSource);
-                onValueChanged?.Invoke(ChangeEvent<IList>.GetPooled(previousList, itemsSource));
+                SetValue(itemsSource);
                 listView.RefreshItems();
             })
             {
@@ -278,7 +240,6 @@ namespace Tooling.StaticData
 
             buttonContainer.Add(new Button(() =>
             {
-                var previousList = itemsSource;
                 var selectedIndex = listView.selectedIndex;
                 selectedIndex = selectedIndex == -1
                     ? itemsSource.Count - 1
@@ -290,8 +251,7 @@ namespace Tooling.StaticData
                 }
 
                 itemsSource.RemoveAt(selectedIndex);
-                fieldInfo.SetValue(objectFieldBelongsTo, itemsSource);
-                onValueChanged?.Invoke(ChangeEvent<IList>.GetPooled(previousList, itemsSource));
+                SetValue(itemsSource);
                 listView.RefreshItems();
             })
             {
@@ -337,14 +297,13 @@ namespace Tooling.StaticData
         /// Similar to how the inspector draws serializable types. Draws all fields of the given type.
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="onValueChanged"></param>
         /// <returns></returns>
-        private VisualElement RecursiveDrawElements(Type type, EventCallback<ChangeEvent<object>> onValueChanged)
+        private VisualElement RecursiveDrawElements(Type type)
         {
             var root = new VisualElement();
             foreach (var field in type.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
             {
-                root.Add(new GeneralField(field, objectFieldBelongsTo, onValueChanged));
+                root.Add(new GeneralField(field, objectFieldBelongsTo, callback));
             }
 
             return root;
@@ -365,7 +324,16 @@ namespace Tooling.StaticData
             }
 
             var dropDown = new DropdownField(concreteTypes, concreteTypes[0]);
-
+            dropDown.RegisterValueChangedCallback(evt =>
+            {
+                var dropDownType = Type.GetType(evt.newValue);
+                if (dropDownType == null)
+                {
+                    MyLogger.LogError($"Selected type {evt.newValue} but cannot find type in assembly!");
+                    return;
+                }
+                SetValue(Activator.CreateInstance(dropDownType));
+            });
 
             return dropDown;
         }

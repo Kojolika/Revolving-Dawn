@@ -85,8 +85,6 @@ namespace Tooling.StaticData
                 }
 
                 // TODO: figure out why split view is being weird
-                // Both validatorErrorView and instancesView are being added in one panel
-                // of the two panel split for some reason
                 var validatorErrorView = new ValidatorErrorView(selectedType);
                 instancesView = new InstancesView(selectedType, true, validatorErrorView.OnStaticDataSelected);
 
@@ -232,6 +230,7 @@ namespace Tooling.StaticData
             private StaticData editingObj;
             private EditorWindow openedEditorWindow;
             private bool isInitialized;
+            private string nameOnOpening;
 
             public void Initialize(StaticData editingObj, Type selectedType)
             {
@@ -239,6 +238,7 @@ namespace Tooling.StaticData
                 this.selectedType = selectedType;
                 this.editingObj = editingObj;
                 openedEditorWindow = GetWindow<EditorWindow>();
+                nameOnOpening = editingObj.Name;
 
                 isInitialized = true;
 
@@ -285,6 +285,11 @@ namespace Tooling.StaticData
 
             public override void SaveChanges()
             {
+                if (StaticDatabase.Instance.GetStaticDataInstance(selectedType, nameOnOpening) is not null)
+                {
+                    StaticDatabase.Instance.Remove(selectedType, nameOnOpening);
+                }
+
                 StaticDatabase.Instance.Add(editingObj);
                 openedEditorWindow.instancesView.Refresh();
                 base.SaveChanges();
