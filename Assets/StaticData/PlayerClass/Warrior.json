@@ -1,16 +1,6 @@
 {
-  "ClassArt": "class_sprite_warrior",
-  "CardBorderArt": "card_border_warrior",
-  "StartingDeck": [
-    {
-      "StaticData": "Tooling.StaticData.Card.bash"
-    },
-    {
-      "StaticData": "Tooling.StaticData.Card.bash"
-    },
-    {
-      "StaticData": "Tooling.StaticData.Card.defend"
-    }
-  ],
+  "ClassArt": null,
+  "CardBorderArt": null,
+  "StartingDeck": null,
   "Description": null
 }

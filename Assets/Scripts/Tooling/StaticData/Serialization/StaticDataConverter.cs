@@ -17,6 +17,7 @@ namespace Tooling.StaticData
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            MyLogger.Log($"Writing static data, path: {writer.Path}");
             // Only serialize top level objects, so the static data that is in its own file
             if (string.IsNullOrEmpty(writer.Path))
             {
@@ -53,8 +54,8 @@ namespace Tooling.StaticData
             {
                 staticData = Activator.CreateInstance(objectType) as StaticData;
 
-                var serializedString = serializer.Deserialize<string>(reader);
-                MyLogger.Log($"String deser: {serializedString}");
+                var staticDataReference = serializer.Deserialize<StaticDataReference>(reader);
+                MyLogger.Log($"String deser: {staticDataReference}");
             }
 
             return staticData;

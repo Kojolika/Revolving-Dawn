@@ -17,6 +17,11 @@ namespace Tooling.StaticData
                 makeItem = () => new TypeView(),
                 bindItem = (item, index) =>
                 {
+                    if (index < 0 || index >= staticDataTypes.Count)
+                    {
+                        return;
+                    }
+
                     int numValidationErrors = validationErrors?.TryGetValue(staticDataTypes[index], out var instanceValidationDict) ?? false
                         ? instanceValidationDict.Count
                         : 0;

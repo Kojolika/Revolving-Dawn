@@ -64,8 +64,7 @@ namespace Tooling.StaticData
                 .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
                 .ToList();
 
-            queuedInjections.Clear();
-            staticDataDictionary.Clear();
+            Clear();
 
             foreach (var type in staticDataTypes)
             {
