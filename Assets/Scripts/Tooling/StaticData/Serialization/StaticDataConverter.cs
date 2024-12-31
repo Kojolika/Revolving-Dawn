@@ -55,7 +55,12 @@ namespace Tooling.StaticData
                 staticData = Activator.CreateInstance(objectType) as StaticData;
 
                 var staticDataReference = serializer.Deserialize<StaticDataReference>(reader);
-                MyLogger.Log($"String deser: {staticDataReference}");
+                StaticDatabase.Instance.QueueReferenceForInject(
+                    Type.GetType(staticDataReference.FullTypeName),
+                    staticDataReference.InstanceName,
+                    staticData,
+                    reader.Path
+                );
             }
 
             return staticData;
@@ -66,76 +71,15 @@ namespace Tooling.StaticData
             return typeof(StaticData).IsAssignableFrom(objectType) && !staticDataTypes.Contains(objectType);
         }
 
-        private bool TryFindStaticDataReferences(JObject jObject,
-            StaticData staticData,
-            string propertyName = null,
-            bool isArray = false,
-            int arrayIndex = -1)
-        {
-            foreach (var prop in jObject.Properties())
-            {
-                switch (prop.Value.Type)
-                {
-                    case JTokenType.Object:
-                        TryFindStaticDataReferences((JObject)prop.Value, staticData, prop.Name, isArray, arrayIndex);
-                        break;
-                    case JTokenType.Array:
-                        var jArray = (JArray)prop.Value;
-                        for (int i = 0; i < jArray.Count; i++)
-                        {
-                            if (jArray[i] is JObject obj)
-                            {
-                                TryFindStaticDataReferences(obj, staticData, prop.Name, true, i);
-                            }
-                        }
-
-                        break;
-                }
-            }
-
-            if (!jObject.ContainsKey(nameof(StaticData)))
-            {
-                return false;
-            }
-
-            var stringReferenceValue = jObject[nameof(StaticData)]!.Value<string>();
-            var referenceSplit = stringReferenceValue.Split(".");
-            var typeWithNamespace = referenceSplit[..^1].Aggregate((string1, string2) => $"{string1}.{string2}");
-            var staticDataType = Type.GetType(typeWithNamespace);
-            var instanceName = referenceSplit[^1];
-
-            if (isArray)
-            {
-                StaticDatabase.Instance.QueueReferenceInArrayForInject(
-                    staticDataType,
-                    instanceName,
-                    staticData,
-                    propertyName,
-                    arrayIndex
-                );
-            }
-            else
-            {
-                StaticDatabase.Instance.QueueReferenceForInject(
-                    staticDataType,
-                    instanceName,
-                    staticData,
-                    propertyName
-                );
-            }
-
-            return true;
-        }
-
         private class StaticDataReference
         {
             public readonly string FullTypeName;
-            public readonly string Name;
+            public readonly string InstanceName;
 
-            public StaticDataReference(string fullTypeName, string name)
+            public StaticDataReference(string fullTypeName, string instanceName)
             {
                 FullTypeName = fullTypeName;
-                Name = name;
+                InstanceName = instanceName;
             }
         }
     }

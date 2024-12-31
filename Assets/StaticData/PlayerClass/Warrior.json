@@ -1,6 +1,11 @@
 {
   "ClassArt": null,
   "CardBorderArt": null,
-  "StartingDeck": null,
+  "StartingDeck": [
+    {
+      "FullTypeName": "Tooling.StaticData.Card",
+      "Name": "Defend"
+    }
+  ],
   "Description": null
 }

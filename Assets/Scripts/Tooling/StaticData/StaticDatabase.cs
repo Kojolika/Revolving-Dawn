@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Serialization;
@@ -112,30 +113,19 @@ namespace Tooling.StaticData
         /// </summary>
         public void QueueReferenceForInject(Type staticDataType, string instanceName, StaticData staticData, string propertyName)
         {
-            queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, staticData, propertyName));
-        }
-
-        /// <summary>
-        /// Queues a <see cref="StaticData"/> to have its references to other <see cref="StaticData"/> injected
-        /// after every <see cref="StaticData"/> is deserialized.
-        /// <remarks>The other <see cref="StaticData"/> references are part of an array like field.</remarks>
-        /// </summary>
-        public void QueueReferenceInArrayForInject(
-            Type staticDataType,
-            string instanceName,
-            StaticData staticData,
-            string propertyName,
-            int index)
-        {
-            queuedInjections.Add(
-                new StaticDataReferenceHandle(
-                    staticDataType,
-                    instanceName,
-                    staticData,
-                    propertyName,
-                    index
-                )
-            );
+            // TODO: do we want support for multidimensional arrays?
+            var arrayIndexRegex = new Regex(@"(?!.+\[)[0-9]+(?<!\])");
+            var match = arrayIndexRegex.Match(propertyName);
+            // This is an array property, grab the array index
+            if (match.Success)
+            {
+                var arrayIndex = int.Parse(match.Value);
+                queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, staticData, propertyName, arrayIndex));
+            }
+            else
+            {
+                queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, staticData, propertyName));
+            }
         }
 
         /// <summary>
