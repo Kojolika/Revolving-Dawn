@@ -202,6 +202,7 @@ namespace Tooling.StaticData
             }
 
             StaticDatabase.Instance.Clear();
+            StaticDatabase.Instance.BuildDictionaryFromJson();
 
             // can be null if a type hasn't been selected yet (like when the menu is first opened)
             instancesView?.Refresh();

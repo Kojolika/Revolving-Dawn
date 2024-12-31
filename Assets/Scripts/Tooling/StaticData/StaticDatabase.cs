@@ -120,7 +120,11 @@ namespace Tooling.StaticData
             if (match.Success)
             {
                 var arrayIndex = int.Parse(match.Value);
-                queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, staticData, propertyName, arrayIndex));
+
+                // remove the [index] from the propertyName
+                var propName = propertyName.Split('[')[0];
+                MyLogger.Log($"Adding type {staticDataType} with instnace {instanceName} and propname {propName} and {staticData} and {arrayIndex}");
+                queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, staticData, propName, arrayIndex));
             }
             else
             {
@@ -339,6 +343,7 @@ namespace Tooling.StaticData
         {
             queuedInjections.Clear();
             staticDataDictionary.Clear();
+            validationErrors.Clear();
         }
     }
 }

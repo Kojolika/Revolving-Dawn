@@ -55,12 +55,16 @@ namespace Tooling.StaticData
                 staticData = Activator.CreateInstance(objectType) as StaticData;
 
                 var staticDataReference = serializer.Deserialize<StaticDataReference>(reader);
-                StaticDatabase.Instance.QueueReferenceForInject(
-                    Type.GetType(staticDataReference.FullTypeName),
-                    staticDataReference.InstanceName,
-                    staticData,
-                    reader.Path
-                );
+
+                if (staticDataReference != null)
+                {
+                    StaticDatabase.Instance.QueueReferenceForInject(
+                        Type.GetType(staticDataReference.FullTypeName),
+                        staticDataReference.InstanceName,
+                        staticData,
+                        reader.Path
+                    );
+                }
             }
 
             return staticData;
