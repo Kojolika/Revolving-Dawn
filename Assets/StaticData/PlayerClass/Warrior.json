@@ -1,7 +1,12 @@
 {
   "ClassArt": null,
   "CardBorderArt": null,
-  "StartingDeck": null,
+  "StartingDeck": [
+    {
+      "FullTypeName": "Tooling.StaticData.Card",
+      "InstanceName": "Defend"
+    }
+  ],
   "Description": {
     "FullTypeName": "Tooling.StaticData.LocKey",
     "InstanceName": "Warrior_Desc"

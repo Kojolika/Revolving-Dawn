@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Tooling.Logging;
 
 namespace Tooling.StaticData
@@ -17,7 +15,6 @@ namespace Tooling.StaticData
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            MyLogger.Log($"Writing static data, path: {writer.Path}");
             // Only serialize top level objects, so the static data that is in its own file
             if (string.IsNullOrEmpty(writer.Path))
             {
@@ -35,6 +32,18 @@ namespace Tooling.StaticData
             {
                 // Serialize a reference to the static data, so we can load it at runtime
                 var staticDataRef = new StaticDataReference(value?.GetType().FullName, (value as StaticData)?.Name);
+                if (string.IsNullOrEmpty(staticDataRef.FullTypeName))
+                {
+                    MyLogger.LogError($"Trying to serialize a reference to object type {value?.GetType()} but" +
+                                      $"The FullTypeName of this reference is null!");
+                }
+
+                if (string.IsNullOrEmpty(staticDataRef.InstanceName))
+                {
+                    MyLogger.LogError($"Trying to serialize a reference to object type {value?.GetType()} but" +
+                                      $"The InstanceName of this reference is null!");
+                }
+
                 serializer.Serialize(writer, staticDataRef);
             }
         }
@@ -44,6 +53,7 @@ namespace Tooling.StaticData
             StaticData staticData;
             if (string.IsNullOrEmpty(reader.Path))
             {
+                // see WriteJson for why we do this
                 staticDataTypes.Add(objectType);
 
                 staticData = serializer.Deserialize(reader, objectType) as StaticData;
@@ -52,19 +62,14 @@ namespace Tooling.StaticData
             }
             else
             {
-                staticData = Activator.CreateInstance(objectType) as StaticData;
-
                 var staticDataReference = serializer.Deserialize<StaticDataReference>(reader);
-
-                if (staticDataReference != null)
+                if (staticDataReference == null)
                 {
-                    StaticDatabase.Instance.QueueReferenceForInject(
-                        Type.GetType(staticDataReference.FullTypeName),
-                        staticDataReference.InstanceName,
-                        staticData,
-                        reader.Path
-                    );
+                    return null;
                 }
+
+                staticData = Activator.CreateInstance(objectType) as StaticData;
+                staticData!.SerializedReference = staticDataReference;
             }
 
             return staticData;
@@ -73,18 +78,6 @@ namespace Tooling.StaticData
         public override bool CanConvert(Type objectType)
         {
             return typeof(StaticData).IsAssignableFrom(objectType) && !staticDataTypes.Contains(objectType);
-        }
-
-        private class StaticDataReference
-        {
-            public readonly string FullTypeName;
-            public readonly string InstanceName;
-
-            public StaticDataReference(string fullTypeName, string instanceName)
-            {
-                FullTypeName = fullTypeName;
-                InstanceName = instanceName;
-            }
         }
     }
 }

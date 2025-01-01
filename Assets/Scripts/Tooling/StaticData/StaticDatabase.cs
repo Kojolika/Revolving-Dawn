@@ -11,6 +11,7 @@ using Tooling.Logging;
 using Tooling.StaticData.Validation;
 using UnityEditor;
 using UnityEngine;
+using Utils.Extensions;
 
 namespace Tooling.StaticData
 {
@@ -30,6 +31,9 @@ namespace Tooling.StaticData
         private static readonly string StaticDataDirectory = Path.Join(Application.dataPath, "StaticData");
 
         private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
+
+        public event Action OnStaticDataInstancesBuilt;
+        public bool HaveStaticDataInstancesBeenBuilt { get; private set; } = false;
 
         public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
 
@@ -61,11 +65,11 @@ namespace Tooling.StaticData
 
         public void BuildDictionaryFromJson()
         {
+            Clear();
+
             var staticDataTypes = typeof(StaticData).Assembly.GetTypes()
                 .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
                 .ToList();
-
-            Clear();
 
             foreach (var type in staticDataTypes)
             {
@@ -78,16 +82,7 @@ namespace Tooling.StaticData
                     {
                         using var streamReader = File.OpenText(file);
 
-                        StaticData staticDataFromJson = null;
-                        try
-                        {
-                            staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
-                        }
-                        catch (Exception e)
-                        {
-                            MyLogger.LogError(e.Message);
-                        }
-
+                        StaticData staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
                         if (staticDataFromJson == null)
                         {
                             MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
@@ -108,28 +103,17 @@ namespace Tooling.StaticData
         }
 
         /// <summary>
-        /// Queues a <see cref="StaticData"/> to have its references to other <see cref="StaticData"/> injected
+        /// Queues an object to have its references to <see cref="StaticData"/> injected
         /// after every <see cref="StaticData"/> is deserialized.
         /// </summary>
-        public void QueueReferenceForInject(Type staticDataType, string instanceName, StaticData staticData, string propertyName)
+        public void QueueReferenceForInject(
+            Type staticDataType,
+            string instanceName,
+            object obj,
+            string propertyName,
+            int arrayIndex = -1)
         {
-            // TODO: do we want support for multidimensional arrays?
-            var arrayIndexRegex = new Regex(@"(?!.+\[)[0-9]+(?<!\])");
-            var match = arrayIndexRegex.Match(propertyName);
-            // This is an array property, grab the array index
-            if (match.Success)
-            {
-                var arrayIndex = int.Parse(match.Value);
-
-                // remove the [index] from the propertyName
-                var propName = propertyName.Split('[')[0];
-                MyLogger.Log($"Adding type {staticDataType} with instnace {instanceName} and propname {propName} and {staticData} and {arrayIndex}");
-                queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, staticData, propName, arrayIndex));
-            }
-            else
-            {
-                queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, staticData, propertyName));
-            }
+            queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, obj, propertyName, arrayIndex));
         }
 
         /// <summary>
@@ -184,9 +168,9 @@ namespace Tooling.StaticData
             public readonly string InstanceName;
 
             /// <summary>
-            /// The StaticData that has the reference to another StaticData.
+            /// The object that has the reference to a StaticData.
             /// </summary>
-            public readonly StaticData ObjectWithReference;
+            public readonly object ObjectWithReference;
 
             /// <summary>
             /// The propertyName that holds the reference to another StaticData.
@@ -200,7 +184,7 @@ namespace Tooling.StaticData
 
             public StaticDataReferenceHandle(Type type,
                 string instanceName,
-                StaticData objectWithReference,
+                object objectWithReference,
                 string propertyName,
                 int arrayIndex = -1)
             {
@@ -344,6 +328,18 @@ namespace Tooling.StaticData
             queuedInjections.Clear();
             staticDataDictionary.Clear();
             validationErrors.Clear();
+
+            HaveStaticDataInstancesBeenBuilt = false;
+            if (OnStaticDataInstancesBuilt?.GetInvocationList() is var subList
+                && subList.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            foreach (var subscriber in subList!)
+            {
+                OnStaticDataInstancesBuilt -= (Action)subscriber;
+            }
         }
     }
 }

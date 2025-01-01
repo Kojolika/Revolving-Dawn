@@ -334,6 +334,9 @@ namespace Tooling.StaticData
                 }
                 SetValue(Activator.CreateInstance(dropDownType));
             });
+            
+            // Set initialValue
+            SetValue(Activator.CreateInstance(Type.GetType(concreteTypes[0])!));
 
             return dropDown;
         }

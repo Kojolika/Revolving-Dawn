@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Tooling.Logging;
@@ -38,11 +40,83 @@ namespace Serialization
             // Instantiate objects that are bound to our container with its dependencies
             if (diContainer?.HasBinding(objectType) ?? false)
             {
-                // Override objection creation here
                 objectContract.OverrideCreator = args => diContainer.Instantiate(objectType, args);
             }
 
+            objectContract.OnDeserializedCallbacks.Add(FindStaticDataReferences);
+
             return objectContract;
+        }
+
+        private void FindStaticDataReferences(object obj, StreamingContext context)
+        {
+            RecursivelyResolveStaticDataReferences(obj);
+        }
+
+        private void RecursivelyResolveStaticDataReferences(object obj, int arrayIndex = -1)
+        {
+            var objType = obj.GetType();
+            foreach (var field in objType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
+            {
+                if (IsStaticDataField(obj, field, out var staticDataReference, arrayIndex)
+                    && (staticDataReference?.IsReferenceValid() ?? false))
+                {
+                    StaticDatabase.Instance.QueueReferenceForInject(
+                        Type.GetType(staticDataReference.FullTypeName),
+                        staticDataReference.InstanceName,
+                        obj,
+                        field.Name,
+                        arrayIndex
+                    );
+                }
+                else if (typeof(IList).IsAssignableFrom(field.FieldType))
+                {
+                    var fieldList = (IList)field.GetValue(obj);
+                    if (fieldList == null)
+                    {
+                        continue;
+                    }
+
+                    for (int i = 0; i < fieldList.Count; i++)
+                    {
+                        if (IsStaticDataField(obj, field, out var staticDataRef, i)
+                            && (staticDataRef?.IsReferenceValid() ?? false))
+                        {
+                            StaticDatabase.Instance.QueueReferenceForInject(
+                                Type.GetType(staticDataRef.FullTypeName),
+                                staticDataRef.InstanceName,
+                                obj,
+                                field.Name,
+                                i
+                            );
+                        }
+                        else
+                        {
+                            RecursivelyResolveStaticDataReferences(fieldList[i], i);
+                        }
+                    }
+                }
+            }
+
+            return;
+
+            bool IsStaticDataField(object objToCheck, FieldInfo field, out StaticDataReference staticDataReference, int index = -1)
+            {
+                var isListField = index > -1;
+                var staticData = isListField
+                    ? (field.GetValue(objToCheck) as IList)?[index] as StaticData
+                    : field.GetValue(objToCheck) as StaticData;
+
+                if (staticData == null)
+                {
+                    staticDataReference = null;
+                    return false;
+                }
+
+                staticDataReference = staticData?.SerializedReference;
+
+                return true;
+            }
         }
     }
 }

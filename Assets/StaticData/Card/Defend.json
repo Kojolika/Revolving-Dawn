@@ -1,0 +1,10 @@
+{
+  "Art": null,
+  "PlayerClass": {
+    "FullTypeName": "Tooling.StaticData.PlayerClass",
+    "InstanceName": "Warrior"
+  },
+  "Upgrade": null,
+  "Downgrade": null,
+  "IsLostOnPlay": false
+}
