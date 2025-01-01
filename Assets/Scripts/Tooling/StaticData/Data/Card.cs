@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Fight.Engine.Bytecode;
 using Tooling.StaticData.Validation;
 
 namespace Tooling.StaticData
@@ -9,5 +11,6 @@ namespace Tooling.StaticData
         public Card Upgrade;
         public Card Downgrade;
         public bool IsLostOnPlay;
+        public List<ICombatByte> PlayEffect;
     }
 }

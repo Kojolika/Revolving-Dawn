@@ -35,13 +35,13 @@ namespace Tooling.StaticData
                 if (string.IsNullOrEmpty(staticDataRef.FullTypeName))
                 {
                     MyLogger.LogError($"Trying to serialize a reference to object type {value?.GetType()} but" +
-                                      $"The FullTypeName of this reference is null!");
+                                      $"The {nameof(StaticDataReference.FullTypeName)} of this reference is null!");
                 }
 
                 if (string.IsNullOrEmpty(staticDataRef.InstanceName))
                 {
                     MyLogger.LogError($"Trying to serialize a reference to object type {value?.GetType()} but" +
-                                      $"The InstanceName of this reference is null!");
+                                      $"The {nameof(StaticDataReference.InstanceName)} of this reference is null!");
                 }
 
                 serializer.Serialize(writer, staticDataRef);

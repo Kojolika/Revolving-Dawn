@@ -1,0 +1,10 @@
+{
+  "IsStackable": false,
+  "MaxStackSize": 0,
+  "BeforeTriggers": [
+    {
+      "$type": "Fight.Engine.Bytecode.DealDamage, Assembly-CSharp"
+    }
+  ],
+  "AfterTriggers": null
+}
