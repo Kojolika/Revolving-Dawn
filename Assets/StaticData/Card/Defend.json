@@ -6,5 +6,6 @@
   },
   "Upgrade": null,
   "Downgrade": null,
-  "IsLostOnPlay": false
+  "IsLostOnPlay": false,
+  "PlayEffect": null
 }

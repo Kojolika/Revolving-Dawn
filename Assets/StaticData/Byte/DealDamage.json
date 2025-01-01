@@ -1,0 +1,10 @@
+{
+  "SubBytes": [
+    {
+      "$type": "Fight.Engine.Bytecode.GetStat, Assembly-CSharp"
+    },
+    {
+      "$type": "Fight.Engine.Bytecode.Or, Assembly-CSharp"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Tooling.Logging;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,13 +11,11 @@ namespace Tooling.StaticData
 {
     public class InstanceView : VisualElement
     {
-        public StaticData Instance { get; private set; }
-
         private readonly VisualElement row;
         private readonly Type staticDataType;
         private readonly bool allowEditing;
 
-        public const float EditButtonWidth = 40;
+        public const float EditButtonWidth = 32;
 
         public InstanceView(Type staticDataType, bool allowEditing)
         {
@@ -33,8 +32,6 @@ namespace Tooling.StaticData
 
         public void BindItem(StaticData instance, List<string> validationErrors)
         {
-            Instance = instance;
-
             row.Clear();
 
             if (allowEditing)
@@ -92,23 +89,24 @@ namespace Tooling.StaticData
             return $"{fieldInfo.GetValue(instance)}";
         }
 
-        private Button CreateEditButton(StaticData instance, Type staticDataType)
+        private ButtonIcon CreateEditButton(StaticData instance, Type staticDataType)
         {
-            return new Button(() =>
+            return new ButtonIcon(() =>
             {
                 var instanceEditor = UnityEditor.EditorWindow.GetWindow<EditorWindow.InstanceEditorWindow>();
-
                 instanceEditor.Initialize(instance, staticDataType);
-            })
+            }, IconPaths.Edit)
             {
-                text = "Edit",
-                style = { width = EditButtonWidth }
+                style =
+                {
+                    minWidth = EditButtonWidth,
+                    alignItems = Align.Center
+                }
             };
         }
 
         public void UnBindItem()
         {
-            Instance = null;
             row.Clear();
         }
     }

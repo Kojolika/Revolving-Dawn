@@ -256,10 +256,9 @@ namespace Tooling.StaticData
                 }
 
                 var root = rootVisualElement;
-
                 saveChangesMessage = "You have unsaved changes. Do you want to save these changes?";
 
-                titleContent = new GUIContent($"New {selectedType?.Name}");
+                titleContent = new GUIContent($"Edit {editingObj?.Name}");
                 root.Add(new Button(() =>
                 {
                     SaveChanges();

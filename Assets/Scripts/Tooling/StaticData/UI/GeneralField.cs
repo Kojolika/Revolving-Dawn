@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Tooling.Logging;
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -265,7 +266,11 @@ namespace Tooling.StaticData
         {
             var root = new VisualElement
             {
-                style = { flexDirection = FlexDirection.Row }
+                style =
+                {
+                    flexDirection = FlexDirection.Row,
+                    alignItems = Align.FlexStart
+                }
             };
 
             var nameLabel = new Label((fieldInfo.GetValue(objectFieldBelongsTo) as StaticData)?.Name ?? "None")
@@ -273,10 +278,7 @@ namespace Tooling.StaticData
                 style = { alignSelf = Align.Center, minWidth = 40 }
             };
 
-            root.Add(new Button(() => { InstancesView.Selector.Open(type, OnStaticDataReferenceChanged); })
-            {
-                text = "Select Static Data"
-            });
+            root.Add(new ButtonIcon(() => InstancesView.Selector.Open(type, OnStaticDataReferenceChanged), IconPaths.List));
             root.Add(nameLabel);
 
             onArrayIndexChanged += arrayIndex => OnStaticDataReferenceChanged(itemsSource[arrayIndex] as StaticData);
@@ -332,9 +334,10 @@ namespace Tooling.StaticData
                     MyLogger.LogError($"Selected type {evt.newValue} but cannot find type in assembly!");
                     return;
                 }
+
                 SetValue(Activator.CreateInstance(dropDownType));
             });
-            
+
             // Set initialValue
             SetValue(Activator.CreateInstance(Type.GetType(concreteTypes[0])!));
 
