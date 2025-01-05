@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
-using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Tooling.Logging;
 using Tooling.StaticData;
@@ -53,7 +51,7 @@ namespace Serialization
             RecursivelyResolveStaticDataReferences(obj);
         }
 
-        private void RecursivelyResolveStaticDataReferences(object obj, int arrayIndex = -1)
+        public static void RecursivelyResolveStaticDataReferences(object obj, int arrayIndex = -1)
         {
             var objType = obj.GetType();
             foreach (var field in objType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
@@ -62,7 +60,7 @@ namespace Serialization
                     && (staticDataReference?.IsReferenceValid() ?? false))
                 {
                     StaticDatabase.Instance.QueueReferenceForInject(
-                        Type.GetType(staticDataReference.FullTypeName),
+                        staticDataReference.Type,
                         staticDataReference.InstanceName,
                         obj,
                         field.Name,
@@ -83,7 +81,7 @@ namespace Serialization
                             && (staticDataRef?.IsReferenceValid() ?? false))
                         {
                             StaticDatabase.Instance.QueueReferenceForInject(
-                                Type.GetType(staticDataRef.FullTypeName),
+                                staticDataReference.Type,
                                 staticDataRef.InstanceName,
                                 obj,
                                 field.Name,

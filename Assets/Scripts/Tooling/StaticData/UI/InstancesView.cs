@@ -28,6 +28,7 @@ namespace Tooling.StaticData
                 // allow selection of null
                 instances.Insert(0, null);
             }
+
             validationErrors = StaticDatabase.Instance.validationErrors;
 
             listView = new ListView
@@ -45,7 +46,7 @@ namespace Tooling.StaticData
 
                     var instance = instances[index];
                     (item as InstanceView)!.BindItem(instance,
-                        validationErrors?.TryGetValue(selectedType, out var instanceValidationDict) ?? false
+                        instance != null && (validationErrors?.TryGetValue(selectedType, out var instanceValidationDict) ?? false)
                             ? instanceValidationDict.GetValueOrDefault(instance)
                             : null
                     );

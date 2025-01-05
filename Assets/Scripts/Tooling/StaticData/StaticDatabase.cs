@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Serialization;
@@ -43,7 +42,7 @@ namespace Tooling.StaticData
         /// </summary>
         public event Action OnValidationCompleted;
 
-        private readonly JsonSerializer jsonSerializer = new()
+        public static readonly JsonSerializerSettings JsonSerializerSettings = new()
         {
             Formatting = Formatting.Indented,
             ContractResolver = new CustomContractResolver(),
@@ -56,6 +55,8 @@ namespace Tooling.StaticData
             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
             TypeNameHandling = TypeNameHandling.Auto
         };
+
+        private static readonly JsonSerializer JsonSerializer = JsonSerializer.Create(JsonSerializerSettings);
 
         private readonly List<StaticDataReferenceHandle> queuedInjections = new();
 
@@ -82,7 +83,7 @@ namespace Tooling.StaticData
                     {
                         using var streamReader = File.OpenText(file);
 
-                        StaticData staticDataFromJson = (StaticData)jsonSerializer.Deserialize(streamReader, type);
+                        StaticData staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
                         if (staticDataFromJson == null)
                         {
                             MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
@@ -319,7 +320,7 @@ namespace Tooling.StaticData
                 await using StreamWriter file = new StreamWriter(filePath);
                 using JsonWriter writer = new JsonTextWriter(file);
 
-                jsonSerializer.Serialize(writer, instance);
+                JsonSerializer.Serialize(writer, instance);
             }
         }
 

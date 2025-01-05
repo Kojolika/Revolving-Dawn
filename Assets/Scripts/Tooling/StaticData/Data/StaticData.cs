@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 using Tooling.StaticData.Validation;
 
@@ -14,15 +15,15 @@ namespace Tooling.StaticData
 
     public class StaticDataReference
     {
-        public readonly string FullTypeName;
+        public Type Type;
         public readonly string InstanceName;
 
-        public StaticDataReference(string fullTypeName, string instanceName)
+        public StaticDataReference(Type type, string instanceName)
         {
-            FullTypeName = fullTypeName;
+            Type = type;
             InstanceName = instanceName;
         }
 
-        public bool IsReferenceValid() => !string.IsNullOrEmpty(FullTypeName) && !string.IsNullOrEmpty(InstanceName);
+        public bool IsReferenceValid() => Type != null && !string.IsNullOrEmpty(InstanceName);
     }
 }
