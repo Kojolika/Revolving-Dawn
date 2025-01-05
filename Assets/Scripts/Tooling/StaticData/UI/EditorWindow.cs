@@ -268,17 +268,27 @@ namespace Tooling.StaticData
                     text = "Save and close",
                     style = { minWidth = 200 }
                 });
+
                 foreach (var field in selectedType!.GetFields(BindingFlagsToSelectStaticDataFields))
                 {
                     var row = new VisualElement
                     {
                         style = { flexDirection = FlexDirection.Row }
                     };
+
                     row.Add(new Label($"{field.Name}")
                     {
                         style = { minWidth = 100 }
                     });
-                    row.Add(new GeneralField(field, editingObj, _ => { hasUnsavedChanges = true; }));
+
+                    row.Add(
+                        new GeneralField(
+                            field.FieldType,
+                            editingObj,
+                            new FieldValueProvider(field),
+                            _ => hasUnsavedChanges = true
+                        )
+                    );
                     root.Add(row);
                 }
             }

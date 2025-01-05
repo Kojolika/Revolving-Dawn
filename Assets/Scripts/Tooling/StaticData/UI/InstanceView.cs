@@ -34,7 +34,7 @@ namespace Tooling.StaticData
         {
             row.Clear();
 
-            if (allowEditing)
+            if (allowEditing && instance != null)
             {
                 row.Add(CreateEditButton(instance, instance.GetType()));
             }
@@ -81,12 +81,14 @@ namespace Tooling.StaticData
 
         private string GetLabelForField(FieldInfo fieldInfo, StaticData instance)
         {
-            if (typeof(StaticData).IsAssignableFrom(fieldInfo.FieldType))
+            if (instance == null)
             {
-                return (fieldInfo.GetValue(instance) as StaticData)?.Name;
+                return "null";
             }
 
-            return $"{fieldInfo.GetValue(instance)}";
+            return typeof(StaticData).IsAssignableFrom(fieldInfo.FieldType) 
+                ? (fieldInfo.GetValue(instance) as StaticData)?.Name 
+                : $"{fieldInfo.GetValue(instance)}";
         }
 
         private ButtonIcon CreateEditButton(StaticData instance, Type staticDataType)

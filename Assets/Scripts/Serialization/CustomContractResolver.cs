@@ -113,7 +113,7 @@ namespace Serialization
                     return false;
                 }
 
-                staticDataReference = staticData?.SerializedReference;
+                staticDataReference = staticData.SerializedReference;
 
                 return true;
             }

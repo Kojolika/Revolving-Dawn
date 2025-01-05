@@ -13,6 +13,7 @@ namespace Tooling.StaticData
     {
         private readonly HashSet<Type> staticDataTypes = new();
 
+        // TODO: Prevent infinite loop on serialziing a reference to itself
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             // Only serialize top level objects, so the static data that is in its own file
@@ -44,7 +45,7 @@ namespace Tooling.StaticData
                                       $"The {nameof(StaticDataReference.InstanceName)} of this reference is null!");
                 }
 
-                serializer.Serialize(writer, staticDataRef);
+                serializer.Serialize(writer, value);
             }
         }
 
