@@ -63,8 +63,9 @@ namespace Tooling.StaticData
             {
                 foreach (var index in ints)
                 {
-                    instances[index] = Activator.CreateInstance(selectedType) as StaticData;
-                    instances[index].Name = $"{selectedType.Name}_{index}";
+                    var newInstance = Activator.CreateInstance(selectedType) as StaticData;
+                    newInstance!.Name = $"{selectedType.Name}_{index}";
+                    instances.Insert(index, newInstance);
                 }
 
                 StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
