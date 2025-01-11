@@ -65,6 +65,7 @@ namespace Tooling.StaticData
             StaticDatabase.Instance.BuildDictionaryFromJson();
 
             var root = rootVisualElement;
+            root.Clear();
 
             var topToolBar = CreateTopToolBar();
             root.Add(topToolBar);
@@ -201,12 +202,13 @@ namespace Tooling.StaticData
                 directory.Delete(true);
             }
 
-            StaticDatabase.Instance.Clear();
-            StaticDatabase.Instance.BuildDictionaryFromJson();
+            foreach (var file in staticDataDirectory.GetFiles())
+            {
+                file.Delete();
+            }
 
-            // can be null if a type hasn't been selected yet (like when the menu is first opened)
-            instancesView?.Refresh();
-            typesListView.ListView.Rebuild();
+            StaticDatabase.Instance.Clear();
+            CreateGUI();
         }
 
         private TwoPaneSplitView CreateRightPanel()

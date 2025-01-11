@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
 using Serialization;
@@ -10,17 +11,24 @@ namespace Tooling.StaticData
     /// The purpose is to only serialize each static data once and then reference that static data
     /// when deserializing to get the data without duplicating the same data everywhere.
     /// </summary>
-    public class StaticDataConverter : JsonConverter<StaticData>
+    public class StaticDataConverter : JsonConverter
     {
-        // TODO: Prevent infinite loop on serialziing a reference to itself
-        public override void WriteJson(JsonWriter writer, StaticData value, JsonSerializer serializer)
+        private readonly HashSet<Type> typeVisiting = new();
+
+        public void OnSerializationComplete()
         {
+            typeVisiting.Clear();
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var staticDataType = value!.GetType();
+
             // Only serialize top level objects, so the static data that is in its own file
             if (string.IsNullOrEmpty(writer.Path))
             {
                 writer.WriteStartObject();
-
-                foreach (var field in value.GetType().GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
+                foreach (var field in staticDataType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
                 {
                     if (field.GetCustomAttribute<JsonIgnoreAttribute>() != null)
                     {
@@ -28,6 +36,7 @@ namespace Tooling.StaticData
                     }
 
                     writer.WritePropertyName(field.Name);
+
                     serializer.Serialize(writer, field.GetValue(value), field.FieldType);
                 }
 
@@ -36,28 +45,24 @@ namespace Tooling.StaticData
             else
             {
                 // Serialize a reference to the static data, so we can load it at runtime
-                var staticDataRef = new StaticDataReference(value?.GetType(), value?.Name);
+                var staticDataRef = new StaticDataReference(staticDataType, (value as StaticData)!.Name);
                 if (staticDataRef.Type == null)
                 {
-                    MyLogger.LogError($"Trying to serialize a reference to object type {value?.GetType()} but" +
+                    MyLogger.LogError($"Trying to serialize a reference to object type {staticDataType} but" +
                                       $"The {nameof(StaticDataReference.Type)} of this reference is null!");
                 }
 
                 if (string.IsNullOrEmpty(staticDataRef.InstanceName))
                 {
-                    MyLogger.LogError($"Trying to serialize a reference to object type {value?.GetType()} but" +
+                    MyLogger.LogError($"Trying to serialize a reference to object type {staticDataType} but" +
                                       $"The {nameof(StaticDataReference.InstanceName)} of this reference is null!");
                 }
 
-                serializer.Serialize(writer, value);
+                serializer.Serialize(writer, staticDataRef);
             }
         }
 
-        public override StaticData ReadJson(JsonReader reader,
-            Type objectType,
-            StaticData existingValue,
-            bool hasExistingValue,
-            JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var staticData = Activator.CreateInstance(objectType) as StaticData;
             if (string.IsNullOrEmpty(reader.Path))
@@ -95,6 +100,11 @@ namespace Tooling.StaticData
             }
 
             return staticData;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(StaticData).IsAssignableFrom(objectType) && !typeVisiting.Contains(objectType);
         }
     }
 }

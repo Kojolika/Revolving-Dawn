@@ -65,17 +65,14 @@ namespace Tooling.StaticData
                 {
                     var newInstance = Activator.CreateInstance(selectedType) as StaticData;
                     newInstance!.Name = $"{selectedType.Name}_{index}";
-                    instances.Insert(index, newInstance);
+                    instances[index] = newInstance;
                 }
 
                 StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
             };
 
-            listView.itemsRemoved += ints =>
-            {
-                instances = instances.Where((_, index) => !ints.Contains(index)).ToList();
-                StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
-            };
+            // listview already removes the element, just update our StaticData dict
+            listView.itemsRemoved += _ => StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
 
             listView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.FirstOrDefault() as StaticData);
 

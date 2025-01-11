@@ -72,33 +72,41 @@ namespace Tooling.StaticData
                 .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
                 .ToList();
 
-            foreach (var type in staticDataTypes)
+            try
             {
-                var instanceDictionary = new Dictionary<string, StaticData>();
-                var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
-
-                if (Directory.Exists(typeDirectory))
+                foreach (var type in staticDataTypes)
                 {
-                    foreach (var file in Directory.EnumerateFiles(typeDirectory, "*.json"))
+                    var instanceDictionary = new Dictionary<string, StaticData>();
+                    var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
+
+                    if (Directory.Exists(typeDirectory))
                     {
-                        using var streamReader = File.OpenText(file);
-
-                        StaticData staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
-                        if (staticDataFromJson == null)
+                        foreach (var file in Directory.EnumerateFiles(typeDirectory, "*.json"))
                         {
-                            MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
-                            continue;
+                            using var streamReader = File.OpenText(file);
+
+                            StaticData staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
+                            if (staticDataFromJson == null)
+                            {
+                                MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
+                                continue;
+                            }
+
+                            var fileNameWithExtension = new FileInfo(file).Name;
+                            staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
+
+                            instanceDictionary.Add(staticDataFromJson.Name, staticDataFromJson);
                         }
-
-                        var fileNameWithExtension = new FileInfo(file).Name;
-                        staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
-
-                        instanceDictionary.Add(staticDataFromJson.Name, staticDataFromJson);
                     }
-                }
 
-                staticDataDictionary.Add(type, instanceDictionary);
+                    staticDataDictionary.Add(type, instanceDictionary);
+                }
             }
+            catch (Exception e)
+            {
+                MyLogger.LogError($"Error building dictionary from JSON: {e.Message}");
+            }
+
 
             InjectReferences();
         }
@@ -217,6 +225,11 @@ namespace Tooling.StaticData
             instanceDict.Clear();
             foreach (var inst in instances)
             {
+                if (inst == null)
+                {
+                    return;
+                }
+
                 instanceDict[inst.Name] = inst;
             }
 
@@ -246,7 +259,7 @@ namespace Tooling.StaticData
                 return instanceDictionary.Values.ToList();
             }
 
-            return null;
+            return new List<StaticData>();
         }
 
         public List<Type> GetAllStaticDataTypes()
@@ -275,12 +288,22 @@ namespace Tooling.StaticData
             var writeTasks = new List<UniTask>();
             foreach (var kvp in staticDataDictionary)
             {
+                if (kvp.Value.IsNullOrEmpty())
+                {
+                    continue;
+                }
+
                 var staticDataFilePath = Path.GetFullPath(Path.Join(StaticDataDirectory, kvp.Key.Name));
                 var directoryInfo = Directory.CreateDirectory(staticDataFilePath);
 
                 foreach (var directory in directoryInfo.GetDirectories())
                 {
                     directory.Delete();
+                }
+
+                foreach (var file in directoryInfo.GetFiles())
+                {
+                    file.Delete();
                 }
 
                 foreach (var staticDataInstance in kvp.Value.Values)
@@ -295,12 +318,13 @@ namespace Tooling.StaticData
             {
                 await UniTask.WhenAll(writeTasks);
             }
-            catch (Exception e)
+            finally
             {
-                MyLogger.LogError(e.Message);
+                EditorUtility.ClearProgressBar();
             }
 
-            EditorUtility.ClearProgressBar();
+            // TODO: may need to add an interface if more need an on complete callback
+            JsonSerializer.Converters.OfType<StaticDataConverter>().FirstOrDefault()?.OnSerializationComplete();
 
             return;
 
@@ -309,6 +333,12 @@ namespace Tooling.StaticData
             // Local function
             async UniTask SaveInstanceToJson(StaticData instance, string typeDirectory)
             {
+                if (instance == null)
+                {
+                    MyLogger.LogError($"Trying to serialize null StaticData in typeDirectory: {typeDirectory}");
+                    return;
+                }
+
                 if (!Directory.Exists(typeDirectory))
                 {
                     MyLogger.LogError($"Type directory {typeDirectory} does not exist!");

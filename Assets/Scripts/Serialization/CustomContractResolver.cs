@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Tooling.Logging;
 using Tooling.StaticData;
@@ -78,10 +79,10 @@ namespace Serialization
                     for (int i = 0; i < fieldList.Count; i++)
                     {
                         if (IsStaticDataField(obj, field, out var staticDataRef, i)
-                            && (staticDataRef?.IsReferenceValid() ?? false))
+                            && staticDataRef.IsReferenceValid())
                         {
                             StaticDatabase.Instance.QueueReferenceForInject(
-                                staticDataReference.Type,
+                                staticDataRef.Type,
                                 staticDataRef.InstanceName,
                                 obj,
                                 field.Name,
