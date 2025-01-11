@@ -7,7 +7,7 @@ using Utils.Extensions;
 
 namespace Tooling.StaticData.Validation
 {
-    public class AddressableAssetKeyAttribute : Attribute, IValidationAttribute
+    public class AddressableAssetKeyAttribute : Attribute, IValidator
     {
         public List<string> errorMessages { get; } = new();
 
@@ -39,5 +39,7 @@ namespace Tooling.StaticData.Validation
 
             return errorMessages.Count == 0;
         }
+
+        public bool CanValidate(Type type) => type == typeof(string);
     }
 }

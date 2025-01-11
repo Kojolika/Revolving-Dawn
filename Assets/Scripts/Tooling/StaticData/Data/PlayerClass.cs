@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using Tooling.StaticData.Validation;
+using UnityEngine.AddressableAssets;
 
 namespace Tooling.StaticData
 {
     public class PlayerClass : StaticData
     {
-        [AddressableAssetKey] public string ClassArt;
-        [AddressableAssetKey] public string CardBorderArt;
+        public AssetReferenceSprite ClassArt;
+        public AssetReferenceSprite CardBorderArt;
         public List<Card> StartingDeck;
         public LocKey Description;
     }

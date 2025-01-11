@@ -2,24 +2,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Tooling.Logging;
 using UnityEditor;
+using Utils.Extensions;
 
 namespace Tooling.StaticData.Validation
 {
-    public class Validator
+    public class MainValidator
     {
+        private readonly List<IValidator> validators;
+
+        public MainValidator(List<IValidator> validators)
+        {
+            this.validators = validators;
+        }
+
+        public Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(
+            List<StaticData> objects,
+            BindingFlags bindingFlags)
+        {
+            return ValidateObjects(objects, bindingFlags, validators);
+        }
+
         /// <summary>
         /// Validates a list of objects and returns a dictionary that maps their type to the errors found
         /// </summary>
         /// <param name="objects">List of objects to validate</param>
         /// <param name="bindingFlags">The flags to search the fields of the objects to validate</param>
+        /// <param name="validators">List of custom validators</param>
         /// <returns>A dictionary mapping the type to the list of errors for that type.</returns>
-        public static Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects,
-            BindingFlags bindingFlags)
+        public static Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(
+            List<StaticData> objects,
+            BindingFlags bindingFlags,
+            List<IValidator> validators)
         {
             var errorDict = new Dictionary<Type, Dictionary<StaticData, List<string>>>();
-            
-
             var objectCount = objects.Count;
             for (int i = 0; i < objectCount; i++)
             {
@@ -28,7 +45,7 @@ namespace Tooling.StaticData.Validation
 
                 EditorUtility.DisplayProgressBar("Validating", $"{objType.Name}", (float)i / objectCount);
 
-                if (IsValid(objType, objects[i], objects, out var errors, bindingFlags))
+                if (IsValid(objType, objects[i], objects, out var errors, bindingFlags, validators))
                 {
                     continue;
                 }
@@ -49,15 +66,16 @@ namespace Tooling.StaticData.Validation
             return errorDict;
         }
 
-        public static bool IsValid(Type type,
+        private static bool IsValid(Type type,
             StaticData obj,
             List<StaticData> objects,
             out List<string> errorMessages,
-            BindingFlags bindingFlags)
+            BindingFlags bindingFlags,
+            List<IValidator> validators = null)
         {
             var fieldAttributesTuple = type.GetFields(bindingFlags)
                 .Select(field => (field, attributes: field.GetCustomAttributes(true)
-                    .Where(attribute => attribute is IValidationAttribute)))
+                    .Where(attribute => attribute is IValidator)))
                 .ToList();
 
             // use to display the progress on the progress bar
@@ -69,6 +87,22 @@ namespace Tooling.StaticData.Validation
             int attributeCounter = 0;
             foreach (var tuple in fieldAttributesTuple)
             {
+                var field = tuple.field;
+
+                // TODO: add progress bar for validators
+                if (!validators.IsNullOrEmpty())
+                {
+                    var fieldValidators = validators!.Where(validator => validator.CanValidate(field.FieldType));
+                    foreach (var validator in fieldValidators)
+                    {
+                        if (!validator.Validate(type, obj, field, objects))
+                        {
+                            errorMessages.AddRange(validator.errorMessages
+                                .Select(errorMessage => $"{validator.GetType().Name}: [{type.Name}.{field.Name}] error: {errorMessage}"));
+                        }
+                    }
+                }
+
                 foreach (var attribute in tuple.attributes)
                 {
                     EditorUtility.DisplayProgressBar(
@@ -76,7 +110,15 @@ namespace Tooling.StaticData.Validation
                         (float)attributeCounter / attributeCount
                     );
 
-                    var validationAttribute = (IValidationAttribute)attribute;
+                    var validationAttribute = (IValidator)attribute;
+                    if (!validationAttribute.CanValidate(field.FieldType))
+                    {
+                        MyLogger.LogError($"Validation attribute :{attribute.GetType()} is applied to field type {field.FieldType}" +
+                                          $"but the {nameof(IValidator.CanValidate)} returns false for the field type.");
+                        attributeCounter++;
+                        continue;
+                    }
+
                     if (!validationAttribute.Validate(type, obj, tuple.field, objects))
                     {
                         var tuple1 = tuple;

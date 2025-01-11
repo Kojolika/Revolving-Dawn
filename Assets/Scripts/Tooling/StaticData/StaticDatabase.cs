@@ -60,6 +60,13 @@ namespace Tooling.StaticData
 
         private readonly List<StaticDataReferenceHandle> queuedInjections = new();
 
+        private readonly MainValidator validator = new(
+            new List<IValidator>()
+            {
+                new AssetReferenceValidator()
+            }
+        );
+
         private StaticDatabase()
         {
         }
@@ -207,7 +214,7 @@ namespace Tooling.StaticData
 
         public void ValidateStaticData()
         {
-            validationErrors = Validator.ValidateObjects(
+            validationErrors = validator.ValidateObjects(
                 GetAllStaticDataInstances(),
                 EditorWindow.BindingFlagsToSelectStaticDataFields
             );

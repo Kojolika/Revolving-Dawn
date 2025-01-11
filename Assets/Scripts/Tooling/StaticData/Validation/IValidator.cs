@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Tooling.StaticData.Validation
 {
-    public interface IValidationAttribute
+    public interface IValidator
     {
         /// <summary>
         /// List of error messages if field is not valid.
@@ -20,5 +20,7 @@ namespace Tooling.StaticData.Validation
         /// <param name="allObjects">All static data objects including <see cref="obj"/></param>
         /// <returns>True if valid.</returns>
         bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects);
+
+        bool CanValidate(Type type);
     }
 }

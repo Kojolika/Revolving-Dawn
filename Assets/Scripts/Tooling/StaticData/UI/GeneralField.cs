@@ -2,9 +2,13 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Reflection;
+using Fight.Engine.Bytecode;
+using ModestTree;
 using Tooling.Logging;
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -31,7 +35,7 @@ namespace Tooling.StaticData
         /// The object this field is editing.
         /// </summary>
         private readonly object underlyingObject;
-        
+
         /// <summary>
         /// How the value is retrieved from the <see cref="underlyingObject"/>.
         /// </summary>
@@ -84,6 +88,11 @@ namespace Tooling.StaticData
         /// </summary>
         private VisualElement DrawEditorForType(Type type)
         {
+            if (type == null)
+            {
+                return new Label($"Passed null type to {nameof(DrawEditorForType)}");
+            }
+
             VisualElement editorForFieldType;
 
             if (typeof(int).IsAssignableFrom(type))
@@ -129,6 +138,10 @@ namespace Tooling.StaticData
             else if (type.IsInterface || type.IsAbstract)
             {
                 editorForFieldType = CreateAbstractTypeSelection(type);
+            }
+            else if (typeof(AssetReference).IsAssignableFrom(type))
+            {
+                editorForFieldType = CreateAssetReferenceObjectPicker(type);
             }
             else if (type.GetCustomAttribute<SerializableAttribute>() is not null)
             {
@@ -284,7 +297,7 @@ namespace Tooling.StaticData
             }
         }
 
-        // TODO: List support
+        // TODO: implement it, and List support
         /// <summary>
         /// Similar to how the inspector draws serializable types. Draws all fields of the given type.
         /// </summary>
@@ -345,6 +358,61 @@ namespace Tooling.StaticData
 
             // Set initialValue
             //SetValue(Activator.CreateInstance(Type.GetType(concreteTypes[0])!));
+
+            return root;
+        }
+
+
+        /// <summary>
+        /// Supports drawing an object picker for <see cref="AssetReference"/> and <see cref="AssetReferenceT{TObject}"/>
+        /// as well as any AssetReferences that inherit from <see cref="AssetReferenceT{TObject}"/>.
+        /// <remarks>
+        /// Does not support custom generic classes that inherit from <see cref="AssetReferenceT{TObject}"/>
+        /// </remarks>
+        /// </summary>
+        private VisualElement CreateAssetReferenceObjectPicker(Type type)
+        {
+            var root = new VisualElement();
+
+            var isGenericAssetReference = false;
+            var assetReferenceType = type;
+
+            while (assetReferenceType != typeof(AssetReference) && assetReferenceType != null && !isGenericAssetReference)
+            {
+                isGenericAssetReference = assetReferenceType.IsGenericType;
+                if (!isGenericAssetReference)
+                {
+                    assetReferenceType = assetReferenceType.BaseType;
+                }
+            }
+
+            var objectType = isGenericAssetReference
+                ? assetReferenceType.GetGenericArguments()[0]
+                : typeof(Object);
+
+            if (!typeof(Object).IsAssignableFrom(objectType))
+            {
+                MyLogger.LogError($"Invalid type {type}, cannot find asset reference type {objectType} because it does not" +
+                                  $"derive from {typeof(Object)}");
+                return null;
+            }
+
+            var objectPicker = new ObjectField
+            {
+                objectType = objectType,
+                style = { marginLeft = 0 },
+                value = (GetValue() as AssetReference)?.editorAsset
+            };
+
+            objectPicker.RegisterValueChangedCallback(evt =>
+            {
+                var assetPath = AssetDatabase.GetAssetPath(evt.newValue);
+                var guid = AssetDatabase.AssetPathToGUID(assetPath);
+                var assetReference = Activator.CreateInstance(type, guid);
+                SetValue(assetReference);
+            });
+
+            root.Add(objectPicker);
 
             return root;
         }

@@ -6,7 +6,7 @@ using System.Reflection;
 namespace Tooling.StaticData.Validation
 {
     [AttributeUsage(AttributeTargets.Field)]
-    public class RequiredAttribute : Attribute, IValidationAttribute
+    public class RequiredAttribute : Attribute, IValidator
     {
         /// <summary>
         /// Can this value be the default value for the field type?
@@ -46,5 +46,7 @@ namespace Tooling.StaticData.Validation
 
             return true;
         }
+
+        public bool CanValidate(Type type) => true;
     }
 }

@@ -6,7 +6,7 @@ using Tooling.Logging;
 namespace Tooling.StaticData.Validation
 {
     [AttributeUsage(AttributeTargets.Field)]
-    public class UniqueAttribute : Attribute, IValidationAttribute
+    public class UniqueAttribute : Attribute, IValidator
     {
         public List<string> errorMessages { get; private set; }
 
@@ -42,5 +42,7 @@ namespace Tooling.StaticData.Validation
 
             return errorMessages.Count == 0;
         }
+
+        public bool CanValidate(Type type) => true;
     }
 }
