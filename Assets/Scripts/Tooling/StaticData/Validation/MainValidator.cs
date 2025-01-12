@@ -17,23 +17,19 @@ namespace Tooling.StaticData.Validation
             this.validators = validators;
         }
 
-        public Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(
-            List<StaticData> objects,
-            BindingFlags bindingFlags)
+        public Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects)
         {
-            return ValidateObjects(objects, bindingFlags, validators);
+            return ValidateObjects(objects, validators);
         }
 
         /// <summary>
         /// Validates a list of objects and returns a dictionary that maps their type to the errors found
         /// </summary>
         /// <param name="objects">List of objects to validate</param>
-        /// <param name="bindingFlags">The flags to search the fields of the objects to validate</param>
         /// <param name="validators">List of custom validators</param>
         /// <returns>A dictionary mapping the type to the list of errors for that type.</returns>
         public static Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(
             List<StaticData> objects,
-            BindingFlags bindingFlags,
             List<IValidator> validators)
         {
             var errorDict = new Dictionary<Type, Dictionary<StaticData, List<string>>>();
@@ -45,7 +41,7 @@ namespace Tooling.StaticData.Validation
 
                 EditorUtility.DisplayProgressBar("Validating", $"{objType.Name}", (float)i / objectCount);
 
-                if (IsValid(objType, objects[i], objects, out var errors, bindingFlags, validators))
+                if (IsValid(objType, objects[i], objects, out var errors, validators))
                 {
                     continue;
                 }
@@ -70,10 +66,9 @@ namespace Tooling.StaticData.Validation
             StaticData obj,
             List<StaticData> objects,
             out List<string> errorMessages,
-            BindingFlags bindingFlags,
             List<IValidator> validators = null)
         {
-            var fieldAttributesTuple = type.GetFields(bindingFlags)
+            var fieldAttributesTuple = Utils.GetFields(type)
                 .Select(field => (field, attributes: field.GetCustomAttributes(true)
                     .Where(attribute => attribute is IValidator)))
                 .ToList();

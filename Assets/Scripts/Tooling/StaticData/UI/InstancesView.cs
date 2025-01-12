@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tooling.Logging;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
@@ -61,8 +62,10 @@ namespace Tooling.StaticData
 
             listView.itemsAdded += ints =>
             {
+                MyLogger.Log($"Instances count: {instances.Count}");
                 foreach (var index in ints)
                 {
+                    MyLogger.Log($"Added {index}");
                     var newInstance = Activator.CreateInstance(selectedType) as StaticData;
                     newInstance!.Name = $"{selectedType.Name}_{index}";
                     instances[index] = newInstance;

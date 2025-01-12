@@ -3,7 +3,7 @@ namespace Fight.Engine.Bytecode
     /// <summary>
     /// Gets the <see cref="ICombatParticipant"/> that the player is targeting.
     /// </summary>
-    public struct GetTargetedCombatParticipant : IPushByte<ICombatParticipant>
+    public struct GetTargetedCombatParticipant : IPush<ICombatParticipant>
     {
         public ICombatParticipant Push()
         {

@@ -1,7 +1,3 @@
-// ReSharper disable UnusedTypeParameter
-
-using System;
-
 namespace Fight.Engine.Bytecode
 {
     /// <summary>
@@ -11,8 +7,15 @@ namespace Fight.Engine.Bytecode
     {
     }
 
+    /// <summary>
+    /// Commands that hook up to the api of our game to push values but don't want to remain on the stack.
+    /// </summary>
+    public interface IPopSelf
+    {
+    }
+
     /// <typeparam name="T">Type that is on the popped off the stack prior to this byte</typeparam>
-    public interface IPopByte<in T> : ICombatByte
+    public interface IPop<in T> : ICombatByte
         where T : ICombatByte
     {
         void Pop(T input);
@@ -20,7 +23,7 @@ namespace Fight.Engine.Bytecode
 
     /// <typeparam name="T1">Type that is on the popped off the stack prior to this byte</typeparam>
     /// <typeparam name="T2">Type that is on the popped off the stack prior to this byte</typeparam>
-    public interface IPopByte<in T1, in T2> : ICombatByte
+    public interface IPop<in T1, in T2> : ICombatByte
         where T1 : ICombatByte
         where T2 : ICombatByte
     {
@@ -30,7 +33,7 @@ namespace Fight.Engine.Bytecode
     /// <typeparam name="T1">Type that is on the popped off the stack prior to this byte</typeparam>
     /// <typeparam name="T2">Type that is on the popped off the stack prior to this byte</typeparam>
     /// <typeparam name="T3">Type that is on the popped off the stack prior to this byte</typeparam>
-    public interface IPopByte<in T1, in T2, in T3> : ICombatByte
+    public interface IPop<in T1, in T2, in T3> : ICombatByte
         where T1 : ICombatByte
         where T2 : ICombatByte
         where T3 : ICombatByte
@@ -39,7 +42,7 @@ namespace Fight.Engine.Bytecode
     }
 
     /// <typeparam name="T">Type that is on the pushed on the stack after this byte</typeparam>
-    public interface IPushByte<out T> : ICombatByte
+    public interface IPush<out T> : ICombatByte
         where T : ICombatByte
     {
         T Push();
@@ -47,7 +50,7 @@ namespace Fight.Engine.Bytecode
 
     /// <typeparam name="T1">Type that is on the pushed on the stack after this byte</typeparam>
     /// <typeparam name="T2">Type that is on the pushed on the stack after this byte</typeparam>
-    public interface IPushByte<T1, T2> : ICombatByte
+    public interface IPush<T1, T2> : ICombatByte
         where T1 : ICombatByte
         where T2 : ICombatByte
     {
@@ -57,7 +60,7 @@ namespace Fight.Engine.Bytecode
     /// <typeparam name="T1">Type that is on the pushed on the stack after this byte</typeparam>
     /// <typeparam name="T2">Type that is on the pushed on the stack after this byte</typeparam>
     /// <typeparam name="T3">Type that is on the pushed on the stack after this byte</typeparam>
-    public interface IPushByte<T1, T2, T3> : ICombatByte
+    public interface IPush<T1, T2, T3> : ICombatByte
         where T1 : ICombatByte
         where T2 : ICombatByte
         where T3 : ICombatByte

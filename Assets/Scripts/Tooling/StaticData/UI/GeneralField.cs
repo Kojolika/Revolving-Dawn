@@ -10,7 +10,9 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
+using Utils.Extensions;
 using Object = UnityEngine.Object;
+using Type = System.Type;
 
 namespace Tooling.StaticData
 {
@@ -147,6 +149,10 @@ namespace Tooling.StaticData
             {
                 editorForFieldType = RecursiveDrawElements(type);
             }
+            else if (typeof(ICombatByte).IsAssignableFrom(type))
+            {
+                editorForFieldType = CreateByteDisplay(type);
+            }
             else
             {
                 editorForFieldType = new Label($"No editor created for type {type}");
@@ -220,7 +226,8 @@ namespace Tooling.StaticData
                     minWidth = 150
                 },
                 showBoundCollectionSize = true,
-                virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight
+                virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
+                reorderMode = ListViewReorderMode.Animated
             };
 
             root.Add(listView);
@@ -306,7 +313,7 @@ namespace Tooling.StaticData
         private VisualElement RecursiveDrawElements(Type type)
         {
             var root = new VisualElement();
-            foreach (var field in type.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
+            foreach (var field in Utils.GetFields(type))
             {
                 //root.Add(new GeneralField(field, objectFieldBelongsTo, callback));
             }
@@ -339,7 +346,7 @@ namespace Tooling.StaticData
             };
             root.Add(dropDown);
 
-            var interfaceField = new GeneralField(Type.GetType(concreteTypes[0]), underlyingObject, valueProvider);
+            var interfaceField = CreateFieldForInterfaceType(Type.GetType(concreteTypes[0]), null);
             root.Add(interfaceField);
             dropDown.RegisterValueChangedCallback(evt =>
             {
@@ -351,17 +358,97 @@ namespace Tooling.StaticData
                 }
 
                 root.Remove(interfaceField);
-                interfaceField = new GeneralField(dropDownType, underlyingObject, valueProvider);
+                interfaceField = CreateFieldForInterfaceType(dropDownType, Type.GetType(evt.previousValue));
                 root.Add(interfaceField);
             });
 
-
-            // Set initialValue
-            //SetValue(Activator.CreateInstance(Type.GetType(concreteTypes[0])!));
-
             return root;
+
+            GeneralField CreateFieldForInterfaceType(Type newType, Type previousType)
+            {
+                var generalField = new GeneralField(newType, underlyingObject, valueProvider);
+
+                // Create a default instance for objects
+                // we don't need this for unity engine objects or static data
+                // since we can select static data instances and unity objects
+                if (GetValue() == null &&
+                    previousType != newType &&
+                    !typeof(StaticData).IsAssignableFrom(newType) &&
+                    !typeof(Object).IsAssignableFrom(newType))
+                {
+                    MyLogger.Log($"Creating default instance for :{newType}");
+                    SetValue(Activator.CreateInstance(newType));
+                }
+
+                return generalField;
+            }
         }
 
+        private VisualElement CreateByteDisplay(Type type)
+        {
+            var root = new VisualElement();
+            var interfaces = type.Interfaces();
+            var popInterfaces = interfaces.Where(interfaceType =>
+            {
+                if (!interfaceType.IsGenericType)
+                {
+                    return false;
+                }
+
+                var genericTypeDef = interfaceType.GetGenericTypeDefinition();
+
+                return genericTypeDef == typeof(IPop<>) ||
+                       genericTypeDef == typeof(IPop<,>) ||
+                       genericTypeDef == typeof(IPop<,,>);
+            });
+
+            var pushInterfaces = interfaces.Where(interfaceType =>
+            {
+                if (!interfaceType.IsGenericType)
+                {
+                    return false;
+                }
+
+                var genericTypeDef = interfaceType.GetGenericTypeDefinition();
+
+                return genericTypeDef == typeof(IPush<>) ||
+                       genericTypeDef == typeof(IPush<,>) ||
+                       genericTypeDef == typeof(IPush<,,>);
+            });
+
+            foreach (var popInterface in popInterfaces)
+            {
+                root.Add(
+                    new Label("Pops: " + CreateFormattedListOfDrawGenericArguments(popInterface))
+                );
+            }
+
+            foreach (var pushInterface in pushInterfaces)
+            {
+                root.Add(
+                    new Label("Pushes: " + CreateFormattedListOfDrawGenericArguments(pushInterface))
+                );
+            }
+
+            return root;
+
+
+            string CreateFormattedListOfDrawGenericArguments(Type t)
+            {
+                string labelText = string.Empty;
+                for (var i = 0; i < t.GetGenericArguments().Length; i++)
+                {
+                    var genericType = t.GetGenericArguments()[i];
+                    labelText += $"{genericType.Name}";
+                    if (i != t.GetGenericArguments().Length - 1)
+                    {
+                        labelText += ", ";
+                    }
+                }
+
+                return labelText;
+            }
+        }
 
         /// <summary>
         /// Supports drawing an object picker for <see cref="AssetReference"/> and <see cref="AssetReferenceT{TObject}"/>

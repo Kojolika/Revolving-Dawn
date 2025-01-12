@@ -1,8 +1,6 @@
 namespace Fight.Engine.Bytecode
 {
-    public struct Or :
-        IPopByte<Boolean, Boolean>,
-        IPushByte<Boolean>
+    public struct Or : IPop<Boolean, Boolean>, IPush<Boolean>
     {
         private Boolean result;
 

@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace Tooling.StaticData
 {
+    /// <summary>
+    /// Abstracts how a <see cref="GeneralField"/> sets and gets the value of the object that it is represnting.
+    /// </summary>
     public interface IValueProvider
     {
         void SetValue(object obj, object value);

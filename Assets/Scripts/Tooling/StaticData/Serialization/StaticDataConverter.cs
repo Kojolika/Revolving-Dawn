@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
 using Serialization;
@@ -13,22 +12,17 @@ namespace Tooling.StaticData
     /// </summary>
     public class StaticDataConverter : JsonConverter
     {
-        private readonly HashSet<Type> typeVisiting = new();
-
-        public void OnSerializationComplete()
-        {
-            typeVisiting.Clear();
-        }
-
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var staticDataType = value!.GetType();
-
+ 
             // Only serialize top level objects, so the static data that is in its own file
             if (string.IsNullOrEmpty(writer.Path))
             {
                 writer.WriteStartObject();
-                foreach (var field in staticDataType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
+
+                var fields = Utils.GetFields(staticDataType);
+                foreach (var field in fields)
                 {
                     if (field.GetCustomAttribute<JsonIgnoreAttribute>() != null)
                     {
@@ -104,7 +98,7 @@ namespace Tooling.StaticData
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(StaticData).IsAssignableFrom(objectType) && !typeVisiting.Contains(objectType);
+            return typeof(StaticData).IsAssignableFrom(objectType);
         }
     }
 }

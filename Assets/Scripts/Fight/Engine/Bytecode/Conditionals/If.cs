@@ -3,8 +3,7 @@ namespace Fight.Engine.Bytecode
     /// <summary>
     /// If the Boolean evaluates to true, execute the next combat byte instruction.
     /// </summary>
-    public struct If : IPopByte<Boolean, ICombatByte>,
-        IPushByte<ICombatByte>
+    public struct If : IPop<Boolean, ICombatByte>, IPush<ICombatByte>
     {
         private ICombatByte nextInstruction;
 

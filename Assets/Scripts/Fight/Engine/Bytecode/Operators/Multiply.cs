@@ -1,8 +1,8 @@
 namespace Fight.Engine.Bytecode
 {
     public struct Multiply :
-        IPopByte<Literal, Literal>,
-        IPushByte<Literal>
+        IPop<Literal, Literal>,
+        IPush<Literal>
     {
         private Literal value;
 

@@ -1,12 +1,16 @@
+using UnityEngine;
+
 namespace Fight.Engine.Bytecode
 {
     public struct Literal : ICombatByte
     {
-        public readonly float Value;
+        [SerializeField] private float value;
+
+        public float Value => value;
 
         public Literal(float value)
         {
-            Value = value;
+            this.value = value;
         }
     }
 }

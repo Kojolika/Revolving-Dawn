@@ -49,11 +49,6 @@ namespace Tooling.StaticData
         /// </summary>
         private InstancesView instancesView;
 
-        /// <summary>
-        /// <see cref="BindingFlags"/> used to find fields on our static data instances.
-        /// </summary>
-        public const BindingFlags BindingFlagsToSelectStaticDataFields = BindingFlags.Instance | BindingFlags.Public;
-
         public static readonly StyleColor BorderColor = new(Color.gray);
         public static readonly StyleFloat BorderWidth = new(0.5f);
         private const float ToolbarButtonWidth = 180;
@@ -271,7 +266,7 @@ namespace Tooling.StaticData
                     style = { minWidth = 200 }
                 });
 
-                foreach (var field in selectedType!.GetFields(BindingFlagsToSelectStaticDataFields))
+                foreach (var field in Utils.GetFields(selectedType))
                 {
                     var row = new VisualElement
                     {

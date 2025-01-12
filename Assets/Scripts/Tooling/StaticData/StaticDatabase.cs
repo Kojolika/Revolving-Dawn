@@ -142,8 +142,7 @@ namespace Tooling.StaticData
             foreach (var referenceHandle in queuedInjections)
             {
                 var staticDataType = referenceHandle.ObjectWithReference.GetType();
-                var staticDataField = staticDataType.GetField(referenceHandle.PropertyName,
-                    EditorWindow.BindingFlagsToSelectStaticDataFields);
+                var staticDataField = Utils.GetField(staticDataType, referenceHandle.PropertyName);
 
                 if (staticDataField == null)
                 {
@@ -214,11 +213,7 @@ namespace Tooling.StaticData
 
         public void ValidateStaticData()
         {
-            validationErrors = validator.ValidateObjects(
-                GetAllStaticDataInstances(),
-                EditorWindow.BindingFlagsToSelectStaticDataFields
-            );
-
+            validationErrors = validator.ValidateObjects(GetAllStaticDataInstances());
             OnValidationCompleted?.Invoke();
         }
 
@@ -329,9 +324,6 @@ namespace Tooling.StaticData
             {
                 EditorUtility.ClearProgressBar();
             }
-
-            // TODO: may need to add an interface if more need an on complete callback
-            JsonSerializer.Converters.OfType<StaticDataConverter>().FirstOrDefault()?.OnSerializationComplete();
 
             return;
 

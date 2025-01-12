@@ -61,10 +61,10 @@ namespace Tooling.StaticData
         /// <returns></returns>
         public static IEnumerable<FieldInfo> GetOrderedFields(Type staticDataType)
         {
-            var fields = staticDataType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields);
+            var fields = Utils.GetFields(staticDataType);
             int nameIndex = 0;
 
-            for (int i = 0; i < fields.Length; i++)
+            for (int i = 0; i < fields.Count; i++)
             {
                 if (fields[i].FieldType != typeof(string) || fields[i].Name != "Name")
                 {
@@ -86,8 +86,8 @@ namespace Tooling.StaticData
                 return "null";
             }
 
-            return typeof(StaticData).IsAssignableFrom(fieldInfo.FieldType) 
-                ? (fieldInfo.GetValue(instance) as StaticData)?.Name 
+            return typeof(StaticData).IsAssignableFrom(fieldInfo.FieldType)
+                ? (fieldInfo.GetValue(instance) as StaticData)?.Name
                 : $"{fieldInfo.GetValue(instance)}";
         }
 

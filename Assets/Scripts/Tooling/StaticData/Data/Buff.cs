@@ -3,7 +3,7 @@ using Fight.Engine.Bytecode;
 
 namespace Tooling.StaticData
 {
-    public class Buff : StaticData
+    public class Buff : StaticData, ICombatByte
     {
         public bool IsStackable;
         public long MaxStackSize;

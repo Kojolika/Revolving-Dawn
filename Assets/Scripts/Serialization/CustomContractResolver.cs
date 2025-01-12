@@ -55,7 +55,7 @@ namespace Serialization
         public static void RecursivelyResolveStaticDataReferences(object obj, int arrayIndex = -1)
         {
             var objType = obj.GetType();
-            foreach (var field in objType.GetFields(EditorWindow.BindingFlagsToSelectStaticDataFields))
+            foreach (var field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (IsStaticDataField(obj, field, out var staticDataReference, arrayIndex)
                     && (staticDataReference?.IsReferenceValid() ?? false))
