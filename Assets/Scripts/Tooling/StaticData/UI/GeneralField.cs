@@ -10,9 +10,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
-using Utils.Extensions;
 using Object = UnityEngine.Object;
-using Type = System.Type;
 
 namespace Tooling.StaticData
 {
@@ -21,17 +19,7 @@ namespace Tooling.StaticData
     /// </summary>
     public class GeneralField : VisualElement
     {
-        private readonly EventCallback<ChangeEvent<object>> callback;
-
-        /// <summary>
-        /// Label when this is an array element, null otherwise.
-        /// </summary>
-        private readonly Label arrayIndexLabel;
-
-        /// <summary>
-        /// Fired if the array index for this editor field changes.
-        /// </summary>
-        private Action<int> onArrayIndexChanged;
+        private readonly Type type;
 
         /// <summary>
         /// The object this field is editing.
@@ -43,46 +31,30 @@ namespace Tooling.StaticData
         /// </summary>
         private readonly IValueProvider valueProvider;
 
+        private EventCallback<ChangeEvent<object>> callback;
+
+        /// <summary>
+        /// Label when this is an array element, null otherwise.
+        /// </summary>
+        private Label arrayIndexLabel;
+
+        private readonly bool isArrayElementField;
+
         private const string StaticDataNullLabel = "null";
 
         public GeneralField(Type type,
             object underlyingObject,
             IValueProvider valueProvider,
-            EventCallback<ChangeEvent<object>> callback = null)
+            EventCallback<ChangeEvent<object>> callback = null,
+            bool isArrayElementField = false)
         {
+            this.type = type;
             this.underlyingObject = underlyingObject;
             this.valueProvider = valueProvider;
             this.callback = callback;
+            this.isArrayElementField = isArrayElementField;
 
-            Add(DrawEditorForType(type));
-        }
-
-        /// <summary>
-        /// Used internally, when GeneralField draws a list type it will draw GeneralFields as list elements.
-        /// </summary>
-        private GeneralField(Type type,
-            IList underlyingObject,
-            ArrayValueProvider valueProvider,
-            EventCallback<ChangeEvent<object>> callback = null)
-        {
-            this.underlyingObject = underlyingObject;
-            this.valueProvider = valueProvider;
-            this.callback = callback;
-
-            style.flexDirection = FlexDirection.Row;
-            arrayIndexLabel = new Label(valueProvider.ArrayIndex.ToString())
-            {
-                style =
-                {
-                    minWidth = 16,
-                    alignSelf = Align.Center,
-                    alignItems = Align.Center,
-                    alignContent = Align.Center,
-                    unityTextAlign = TextAnchor.MiddleCenter,
-                }
-            };
-            Add(arrayIndexLabel);
-            Add(DrawEditorForType(type));
+            RefreshView(type);
         }
 
         /// <summary>
@@ -124,6 +96,7 @@ namespace Tooling.StaticData
             else if (typeof(Object).IsAssignableFrom(type))
             {
                 editorForFieldType = CreateFieldForType<Object, ObjectField>();
+                ((ObjectField)editorForFieldType).objectType = type;
             }
             else if (typeof(Color).IsAssignableFrom(type))
             {
@@ -164,9 +137,6 @@ namespace Tooling.StaticData
         /// <summary>
         /// Creates an editor field for a given type.
         /// </summary>
-        /// <typeparam name="TType"></typeparam>
-        /// <typeparam name="TField"></typeparam>
-        /// <returns></returns>
         private TField CreateFieldForType<TType, TField>()
             where TField : BaseField<TType>, new()
         {
@@ -181,7 +151,6 @@ namespace Tooling.StaticData
             };
 
             editorForFieldType.RegisterValueChangedCallback(evt => SetValue(evt.newValue));
-            onArrayIndexChanged += index => { editorForFieldType.value = (TType)((IList)underlyingObject)[index]; };
 
             return editorForFieldType;
         }
@@ -215,19 +184,17 @@ namespace Tooling.StaticData
             var listView = new ListView
             {
                 itemsSource = itemsSource,
-                makeItem = () => new GeneralField(elementType, itemsSource, new ArrayValueProvider(itemsSource.Count - 1)),
+                makeItem = () => new GeneralField(elementType, itemsSource, new ArrayValueProvider(itemsSource.Count - 1), null, true),
                 bindItem = (item, index) => ((GeneralField)item).BindArrayIndex(index),
                 unbindItem = (item, _) => ((GeneralField)item).BindArrayIndex(-1),
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 reorderable = true,
                 showBorder = true,
-                style =
-                {
-                    minWidth = 150
-                },
+                style = { minWidth = 150 },
                 showBoundCollectionSize = true,
                 virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-                reorderMode = ListViewReorderMode.Animated
+                reorderMode = ListViewReorderMode.Animated,
+                showFoldoutHeader = true
             };
 
             root.Add(listView);
@@ -292,7 +259,7 @@ namespace Tooling.StaticData
             root.Add(new ButtonIcon(() => InstancesView.Selector.Open(type, OnStaticDataReferenceChanged), IconPaths.List));
             root.Add(nameLabel);
 
-            onArrayIndexChanged += arrayIndex => OnStaticDataReferenceChanged(((IList)underlyingObject)[arrayIndex] as StaticData);
+            callback += evt => { OnStaticDataReferenceChanged(evt.newValue as StaticData); };
 
             return root;
 
@@ -328,15 +295,21 @@ namespace Tooling.StaticData
                 .Where(t => type.IsAssignableFrom(t)
                             && !t.IsAbstract
                             && !t.IsInterface)
-                .Select(t => t.ToString())
                 .ToList();
+
+            var concreteTypesAsStrings = concreteTypes.Select(t => t.ToString()).ToList();
 
             if (concreteTypes.Count < 1)
             {
                 return new Label($"No types inherit from {type}");
             }
 
-            var dropDown = new DropdownField(concreteTypes, concreteTypes[0])
+            var currentValueType = GetValue()?.GetType();
+            var typeToDisplay = concreteTypes.Contains(currentValueType)
+                ? currentValueType
+                : concreteTypes.First();
+
+            var dropDown = new DropdownField(concreteTypesAsStrings, typeToDisplay?.ToString())
             {
                 style =
                 {
@@ -344,43 +317,50 @@ namespace Tooling.StaticData
                     marginLeft = 0
                 }
             };
+
             root.Add(dropDown);
 
-            var interfaceField = CreateFieldForInterfaceType(Type.GetType(concreteTypes[0]), null);
+            var interfaceField = CreateGeneralFieldForInterfaceType(typeToDisplay);
             root.Add(interfaceField);
+
             dropDown.RegisterValueChangedCallback(evt =>
             {
-                var dropDownType = Type.GetType(evt.newValue);
-                if (dropDownType == null)
+                typeToDisplay = Type.GetType(evt.newValue);
+                if (typeToDisplay == null)
                 {
                     MyLogger.LogError($"Selected type {evt.newValue} but cannot find type in assembly!");
                     return;
                 }
 
+                OnTypeSelected(typeToDisplay, Type.GetType(evt.previousValue));
+
                 root.Remove(interfaceField);
-                interfaceField = CreateFieldForInterfaceType(dropDownType, Type.GetType(evt.previousValue));
+                interfaceField = CreateGeneralFieldForInterfaceType(typeToDisplay);
                 root.Add(interfaceField);
             });
 
+            OnTypeSelected(typeToDisplay, currentValueType);
+
             return root;
 
-            GeneralField CreateFieldForInterfaceType(Type newType, Type previousType)
+            GeneralField CreateGeneralFieldForInterfaceType(Type newType)
             {
-                var generalField = new GeneralField(newType, underlyingObject, valueProvider);
+                return new GeneralField(newType, underlyingObject, valueProvider);
+            }
 
-                // Create a default instance for objects
-                // we don't need this for unity engine objects or static data
-                // since we can select static data instances and unity objects
-                if (GetValue() == null &&
-                    previousType != newType &&
-                    !typeof(StaticData).IsAssignableFrom(newType) &&
-                    !typeof(Object).IsAssignableFrom(newType))
+            void OnTypeSelected(Type selectedType, Type previousSelectedType)
+            {
+                // Allow creating a default instance for objects
+                // We don't need this for unity engine objects or static data since we can select instances with the general field
+                var shouldCreateNewInstance = (GetValue() == null || selectedType != previousSelectedType) &&
+                                              (selectedType.IsValueType || selectedType.GetConstructor(Type.EmptyTypes) != null) &&
+                                              !typeof(StaticData).IsAssignableFrom(typeToDisplay) &&
+                                              !typeof(Object).IsAssignableFrom(typeToDisplay);
+
+                if (shouldCreateNewInstance)
                 {
-                    MyLogger.Log($"Creating default instance for :{newType}");
-                    SetValue(Activator.CreateInstance(newType));
+                    SetValue(Activator.CreateInstance(selectedType));
                 }
-
-                return generalField;
             }
         }
 
@@ -518,7 +498,32 @@ namespace Tooling.StaticData
 
             ((ArrayValueProvider)valueProvider).ArrayIndex = index;
             arrayIndexLabel.text = index.ToString();
-            onArrayIndexChanged?.Invoke(index);
+
+            RefreshView(type);
+        }
+
+        private void RefreshView(Type type)
+        {
+            Clear();
+
+            if (isArrayElementField)
+            {
+                style.flexDirection = FlexDirection.Row;
+                arrayIndexLabel = new Label(((ArrayValueProvider)valueProvider).ArrayIndex.ToString())
+                {
+                    style =
+                    {
+                        minWidth = 16,
+                        alignSelf = Align.Center,
+                        alignItems = Align.Center,
+                        alignContent = Align.Center,
+                        unityTextAlign = TextAnchor.MiddleCenter,
+                    }
+                };
+                Add(arrayIndexLabel);
+            }
+
+            Add(DrawEditorForType(type));
         }
 
         /// <summary>
