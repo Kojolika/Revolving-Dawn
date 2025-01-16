@@ -1,3 +1,4 @@
+using System.Globalization;
 using UnityEngine;
 
 namespace Fight.Engine.Bytecode
@@ -11,6 +12,11 @@ namespace Fight.Engine.Bytecode
         public Literal(float value)
         {
             this.value = value;
+        }
+
+        public string Log()
+        {
+            return value.ToString(CultureInfo.CurrentCulture);
         }
     }
 }

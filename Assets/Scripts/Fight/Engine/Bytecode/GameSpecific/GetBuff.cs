@@ -2,18 +2,25 @@ using Tooling.StaticData;
 
 namespace Fight.Engine.Bytecode
 {
-    public struct GetBuff : IPop<ICombatParticipant, Buff>, IPush<Literal>
+    public struct GetBuff : IPop<ICombatParticipant, Buff>, IReduceTo<Literal>
     {
         private Literal buffValue;
+        private ICombatParticipant target;
+        private Buff buff;
 
-        public void Pop(ICombatParticipant input, Buff input2)
+        public void OnBytesPopped(ICombatParticipant target, Buff buff)
         {
-            if (input.Buffs.TryGetValue(input2, out var statCount))
+            if (target.Buffs.TryGetValue(buff, out var statCount))
             {
                 buffValue = new Literal(statCount);
             }
         }
 
-        public Literal Push() => buffValue;
+        public Literal Reduce() => buffValue;
+
+        public string Log()
+        {
+            return $"{buffValue}: stacks of {buff} on {target.Name}";
+        }
     }
 }

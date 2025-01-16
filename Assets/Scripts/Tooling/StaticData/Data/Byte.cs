@@ -6,5 +6,10 @@ namespace Tooling.StaticData
     public class Byte : StaticData, ITriggerPoint
     {
         public List<ICombatByte> SubBytes;
+
+        public string Log()
+        {
+            return Name;
+        }
     }
 }

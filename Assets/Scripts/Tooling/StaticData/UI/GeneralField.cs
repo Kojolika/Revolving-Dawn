@@ -377,9 +377,7 @@ namespace Tooling.StaticData
 
                 var genericTypeDef = interfaceType.GetGenericTypeDefinition();
 
-                return genericTypeDef == typeof(IPop<>) ||
-                       genericTypeDef == typeof(IPop<,>) ||
-                       genericTypeDef == typeof(IPop<,,>);
+                return genericTypeDef == typeof(IPop<>) || genericTypeDef == typeof(IPop<,>);
             });
 
             var pushInterfaces = interfaces.Where(interfaceType =>
@@ -391,7 +389,7 @@ namespace Tooling.StaticData
 
                 var genericTypeDef = interfaceType.GetGenericTypeDefinition();
 
-                return genericTypeDef == typeof(IPush<>) ||
+                return genericTypeDef == typeof(IReduceTo<>) ||
                        genericTypeDef == typeof(IPush<,>) ||
                        genericTypeDef == typeof(IPush<,,>);
             });

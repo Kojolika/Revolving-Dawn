@@ -9,5 +9,10 @@ namespace Tooling.StaticData
         public long MaxStackSize;
         public List<ITriggerPoint> BeforeTriggers;
         public List<ITriggerPoint> AfterTriggers;
+
+        public string Log()
+        {
+            return Name;
+        }
     }
 }

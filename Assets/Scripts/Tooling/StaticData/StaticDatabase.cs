@@ -264,6 +264,16 @@ namespace Tooling.StaticData
             return new List<StaticData>();
         }
 
+        public List<T> GetInstancesForType<T>() where T : StaticData
+        {
+            if (staticDataDictionary.TryGetValue(typeof(T), out var instanceDictionary))
+            {
+                return instanceDictionary.Values.Select(data => data as T).ToList();
+            }
+
+            return new List<T>();
+        }
+
         public List<Type> GetAllStaticDataTypes()
         {
             return staticDataDictionary.Select(kvp => kvp.Key).ToList();

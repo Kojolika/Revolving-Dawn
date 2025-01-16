@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
+using Fight.Engine.Bytecode;
 using Newtonsoft.Json;
 using Serialization;
 using Tooling.Logging;
@@ -58,6 +59,14 @@ namespace Tooling.StaticData
         public void CreateGUI()
         {
             StaticDatabase.Instance.BuildDictionaryFromJson();
+
+            var interpreter = new Interpreter();
+
+            var stack = new Stack<ICombatByte>();
+            stack.Push(new MockCombatParticipant());
+            stack.Push(StaticDatabase.Instance.GetInstancesForType(typeof(Stat)).First() as Stat);
+            stack.Push(new GetStat());
+            interpreter.Interpret(stack);
 
             var root = rootVisualElement;
             root.Clear();

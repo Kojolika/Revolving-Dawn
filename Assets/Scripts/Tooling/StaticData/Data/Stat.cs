@@ -6,5 +6,10 @@ namespace Tooling.StaticData
     {
         public LocKey LocName;
         public LocKey Description;
+
+        public string Log()
+        {
+            return Name;
+        }
     }
 }

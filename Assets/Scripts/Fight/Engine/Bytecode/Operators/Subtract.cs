@@ -2,15 +2,20 @@ namespace Fight.Engine.Bytecode
 {
     public struct Subtract :
         IPop<Literal, Literal>,
-        IPush<Literal>
+        IReduceTo<Literal>
     {
         private Literal value;
 
-        public void Pop(Literal input, Literal input2)
+        public void OnBytesPopped(Literal input1, Literal input2)
         {
-            value = new Literal(input.Value - input2.Value);
+            value = new Literal(input1.Value - input2.Value);
         }
 
-        public Literal Push() => value;
+        public Literal Reduce() => value;
+
+        public string Log()
+        {
+            return value.Log();
+        }
     }
 }

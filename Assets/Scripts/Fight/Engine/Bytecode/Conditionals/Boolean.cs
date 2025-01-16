@@ -1,12 +1,21 @@
+using UnityEngine;
+
 namespace Fight.Engine.Bytecode
 {
     public struct Boolean : ICombatByte
     {
-        public readonly bool Value;
+        [SerializeField] private bool value;
+
+        public bool Value => value;
 
         public Boolean(bool value)
         {
-            Value = value;
+            this.value = value;
+        }
+
+        public string Log()
+        {
+            return Value.ToString();
         }
     }
 }
