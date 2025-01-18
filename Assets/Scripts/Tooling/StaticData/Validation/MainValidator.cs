@@ -28,7 +28,7 @@ namespace Tooling.StaticData.Validation
         /// <param name="objects">List of objects to validate</param>
         /// <param name="validators">List of custom validators</param>
         /// <returns>A dictionary mapping the type to the list of errors for that type.</returns>
-        public static Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(
+        private static Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(
             List<StaticData> objects,
             List<IValidator> validators)
         {

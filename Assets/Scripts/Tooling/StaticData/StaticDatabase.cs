@@ -61,9 +61,10 @@ namespace Tooling.StaticData
         private readonly List<StaticDataReferenceHandle> queuedInjections = new();
 
         private readonly MainValidator validator = new(
-            new List<IValidator>()
+            new List<IValidator>
             {
-                new AssetReferenceValidator()
+                new AssetReferenceValidator(),
+                new ByteValidator()
             }
         );
 

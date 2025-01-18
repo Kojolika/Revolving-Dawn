@@ -46,7 +46,11 @@ namespace Tooling.StaticData
             {
                 Add(new Label(error)
                 {
-                    style = { color = Color.red }
+                    style =
+                    {
+                        color = Color.red,
+                        whiteSpace = WhiteSpace.Normal
+                    }
                 });
             }
         }

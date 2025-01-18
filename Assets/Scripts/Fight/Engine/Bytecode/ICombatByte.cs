@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Tooling.Logging;
 
 namespace Fight.Engine.Bytecode
@@ -20,7 +21,7 @@ namespace Fight.Engine.Bytecode
         /// </summary>
         int Amount { get; }
 
-        void OnBytesPopped(params ICombatByte[] poppedBytes);
+        ValidationResult OnBytesPopped(params ICombatByte[] poppedBytes);
     }
 
     /// <typeparam name="T">Type that is on the popped off the stack prior to this byte</typeparam>
@@ -29,14 +30,16 @@ namespace Fight.Engine.Bytecode
     {
         int IPop.Amount => 1;
 
-        void IPop.OnBytesPopped(params ICombatByte[] poppedBytes)
+        ValidationResult IPop.OnBytesPopped(params ICombatByte[] poppedBytes)
         {
-            var first = poppedBytes[0];
+            var validationResult = Validator.ValidatePop(this, poppedBytes[0], out var successResult);
 
-            OnBytesPopped(first is IReduceTo<T> nextByte
-                ? nextByte.Reduce()
-                : (T)first
-            );
+            if (validationResult.IsSuccess)
+            {
+                OnBytesPopped(successResult);
+            }
+
+            return validationResult;
         }
 
         void OnBytesPopped(T input);
@@ -50,66 +53,21 @@ namespace Fight.Engine.Bytecode
     {
         int IPop.Amount => 2;
 
-        void IPop.OnBytesPopped(params ICombatByte[] poppedBytes)
+        ValidationResult IPop.OnBytesPopped(params ICombatByte[] poppedBytes)
         {
-            var first = poppedBytes?[0];
-            var second = poppedBytes?[1];
+            var validationResult = Validator.ValidatePop(this,
+                poppedBytes[0],
+                poppedBytes[1],
+                out var successResult1,
+                out var successResult2
+            );
 
-            T1 firstArg;
-            T2 secondArg;
-
-            if (TryGetArg(first, out T1 t1Arg))
+            if (validationResult.IsSuccess)
             {
-                firstArg = t1Arg;
-            }
-            else if (TryGetArg(second, out T1 t1Arg2))
-            {
-                firstArg = t1Arg2;
-            }
-            else
-            {
-                MyLogger.LogError($"Neither bytes that were popped off the stack match the corresponding types for {GetType()}" +
-                                  $"Expected: {typeof(T1)} and {typeof(T2)}" +
-                                  $"first={first?.GetType()}, second={second?.GetType()}");
-                return;
+                OnBytesPopped(successResult1, successResult2);
             }
 
-            if (TryGetArg(first, out T2 t2Arg))
-            {
-                secondArg = t2Arg;
-            }
-            else if (TryGetArg(second, out T2 t2Arg2))
-            {
-                secondArg = t2Arg2;
-            }
-            else
-            {
-                MyLogger.LogError($"Neither bytes that were popped off the stack match the corresponding types for {GetType()}" +
-                                  $"Expected: {typeof(T1)} and {typeof(T2)}" +
-                                  $"first={first?.GetType()}, second={second?.GetType()}");
-                return;
-            }
-
-
-            OnBytesPopped(firstArg, secondArg);
-
-            return;
-
-            bool TryGetArg<T>(ICombatByte cByte, out T arg) where T : ICombatByte
-            {
-                switch (cByte)
-                {
-                    case T tArg:
-                        arg = tArg;
-                        return true;
-                    case IReduceTo<T> reducer:
-                        arg = reducer.Reduce();
-                        return true;
-                    default:
-                        arg = default;
-                        return false;
-                }
-            }
+            return validationResult;
         }
 
         void OnBytesPopped(T1 input1, T2 input2);

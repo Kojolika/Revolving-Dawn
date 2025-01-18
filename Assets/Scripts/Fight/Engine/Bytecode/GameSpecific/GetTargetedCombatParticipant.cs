@@ -3,7 +3,7 @@ namespace Fight.Engine.Bytecode
     /// <summary>
     /// Gets the <see cref="ICombatParticipant"/> that the player is targeting.
     /// </summary>
-    public struct GetTargetedCombatParticipant : IReduceTo<ICombatParticipant>
+    public struct GetTargetedCombatParticipant : IReduceTo<ICombatParticipant>, IMockable
     {
         private ICombatParticipant combatParticipant;
 
