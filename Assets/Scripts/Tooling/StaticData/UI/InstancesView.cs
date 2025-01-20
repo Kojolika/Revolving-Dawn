@@ -66,10 +66,6 @@ namespace Tooling.StaticData
                 foreach (var index in ints)
                 {
                     MyLogger.Log($"Added {index}");
-                    if (index > instances.Count)
-                    {
-                        continue;
-                    }
 
                     var newInstance = Activator.CreateInstance(selectedType) as StaticData;
                     newInstance!.Name = $"{selectedType.Name}_{index}";

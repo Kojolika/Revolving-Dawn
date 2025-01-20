@@ -15,7 +15,7 @@ namespace Tooling.StaticData
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var staticDataType = value!.GetType();
- 
+
             // Only serialize top level objects, so the static data that is in its own file
             if (string.IsNullOrEmpty(writer.Path))
             {
@@ -58,6 +58,7 @@ namespace Tooling.StaticData
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            MyLogger.Log($"{objectType}, path: {reader.Path}");
             var staticData = Activator.CreateInstance(objectType) as StaticData;
             if (string.IsNullOrEmpty(reader.Path))
             {
@@ -69,6 +70,8 @@ namespace Tooling.StaticData
                             var propertyName = reader.Value as string;
                             // Move reader to the prop value
                             reader.Read();
+
+                            MyLogger.Log($"Property name: {propertyName}");
 
                             var field = objectType.GetField(propertyName);
                             var fieldValue = serializer.Deserialize(reader, field.FieldType);
@@ -84,6 +87,8 @@ namespace Tooling.StaticData
             }
             else
             {
+                // TODO: this is now deserializing a StaticData and not a StaticDataReference
+                // which is why its returning null
                 var staticDataReference = serializer.Deserialize<StaticDataReference>(reader);
                 if (staticDataReference == null)
                 {
@@ -94,6 +99,10 @@ namespace Tooling.StaticData
             }
 
             return staticData;
+        }
+
+        private void SetStaticDataReference(ref StaticData staticData)
+        {
         }
 
         public override bool CanConvert(Type objectType)

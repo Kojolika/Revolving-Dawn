@@ -1,8 +1,9 @@
 {
   "SubBytes": [
     {
-      "$type": "Fight.Engine.Bytecode.Literal, Assembly-CSharp",
-      "Value": 0.0
+      "$type": "Tooling.StaticData.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Type": "Tooling.StaticData.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "InstanceName": "Armor"
     },
     {
       "$type": "Fight.Engine.Bytecode.GetTargetedCombatParticipant, Assembly-CSharp"

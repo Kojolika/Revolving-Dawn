@@ -256,17 +256,20 @@ namespace Tooling.StaticData
                 }
             };
 
-            root.Add(new ButtonIcon(() => InstancesView.Selector.Open(type, OnStaticDataReferenceChanged), IconPaths.List));
+            root.Add(new ButtonIcon(
+                () => InstancesView.Selector.Open(type, staticData => OnStaticDataReferenceChanged(staticData, true)),
+                IconPaths.List)
+            );
             root.Add(nameLabel);
 
-            callback += evt => { OnStaticDataReferenceChanged(evt.newValue as StaticData); };
+            callback += evt => { OnStaticDataReferenceChanged(evt.newValue as StaticData, false); };
 
             return root;
 
             // local function
-            void OnStaticDataReferenceChanged(StaticData staticData)
+            void OnStaticDataReferenceChanged(StaticData staticData, bool notify)
             {
-                SetValue(staticData);
+                SetValue(staticData, notify);
                 nameLabel.text = (GetValue() as StaticData)?.Name ?? StaticDataNullLabel;
             }
         }
@@ -528,11 +531,15 @@ namespace Tooling.StaticData
         /// Sets the value on the underlying instance this field is bound to.
         /// The <see cref="underlyingObject"/>.
         /// </summary>
-        private void SetValue(object value)
+        private void SetValue(object value, bool notify = true)
         {
             var prevValue = valueProvider.GetValue(underlyingObject);
             valueProvider.SetValue(underlyingObject, value);
-            callback?.Invoke(ChangeEvent<object>.GetPooled(prevValue, value));
+
+            if (notify)
+            {
+                callback?.Invoke(ChangeEvent<object>.GetPooled(prevValue, value));
+            }
         }
 
         /// <summary>

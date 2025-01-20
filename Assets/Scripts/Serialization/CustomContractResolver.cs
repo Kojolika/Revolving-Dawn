@@ -106,7 +106,7 @@ namespace Serialization
                     ? (field.GetValue(objToCheck) as IList)?[index] as StaticData
                     : field.GetValue(objToCheck) as StaticData;
 
-                if (staticData == null)
+                if (staticData?.SerializedReference == null)
                 {
                     staticDataReference = null;
                     return false;

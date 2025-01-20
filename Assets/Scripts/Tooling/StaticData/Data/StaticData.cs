@@ -13,9 +13,20 @@ namespace Tooling.StaticData
         [JsonIgnore] public StaticDataReference SerializedReference { get; set; }
     }
 
+    /// <summary>
+    /// Used to serialize a reference to a <see cref="StaticData"/> so we can load it at runtime.
+    /// </summary>
     public class StaticDataReference
     {
-        public Type Type;
+        /// <summary>
+        /// The type of <see cref="StaticData"/> that we're referencing.
+        /// </summary>
+        public readonly Type Type;
+
+        /// <summary>
+        /// The instance name of <see cref="StaticData"/> we're referencing, at runtime the instance can be found in
+        /// the <see cref="StaticDatabase"/>
+        /// </summary>
         public readonly string InstanceName;
 
         public StaticDataReference(Type type, string instanceName)

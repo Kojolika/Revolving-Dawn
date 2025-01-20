@@ -42,7 +42,7 @@ namespace Tooling.StaticData
         /// </summary>
         public event Action OnValidationCompleted;
 
-        public static readonly JsonSerializerSettings JsonSerializerSettings = new()
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new()
         {
             Formatting = Formatting.Indented,
             ContractResolver = new CustomContractResolver(),
@@ -50,7 +50,8 @@ namespace Tooling.StaticData
             {
                 new AssetReferenceConverter(),
                 new ColorConverter(),
-                new StaticDataConverter()
+                new StaticDataConverter(),
+                new StaticDataReferenceConverter()
             },
             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
             TypeNameHandling = TypeNameHandling.Auto
@@ -80,41 +81,33 @@ namespace Tooling.StaticData
                 .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
                 .ToList();
 
-            try
+            foreach (var type in staticDataTypes)
             {
-                foreach (var type in staticDataTypes)
+                var instanceDictionary = new Dictionary<string, StaticData>();
+                var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
+
+                if (Directory.Exists(typeDirectory))
                 {
-                    var instanceDictionary = new Dictionary<string, StaticData>();
-                    var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
-
-                    if (Directory.Exists(typeDirectory))
+                    foreach (var file in Directory.EnumerateFiles(typeDirectory, "*.json"))
                     {
-                        foreach (var file in Directory.EnumerateFiles(typeDirectory, "*.json"))
+                        using var streamReader = File.OpenText(file);
+
+                        StaticData staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
+                        if (staticDataFromJson == null)
                         {
-                            using var streamReader = File.OpenText(file);
-
-                            StaticData staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
-                            if (staticDataFromJson == null)
-                            {
-                                MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
-                                continue;
-                            }
-
-                            var fileNameWithExtension = new FileInfo(file).Name;
-                            staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
-
-                            instanceDictionary.Add(staticDataFromJson.Name, staticDataFromJson);
+                            MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
+                            continue;
                         }
+
+                        var fileNameWithExtension = new FileInfo(file).Name;
+                        staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
+
+                        instanceDictionary.Add(staticDataFromJson.Name, staticDataFromJson);
                     }
-
-                    staticDataDictionary.Add(type, instanceDictionary);
                 }
-            }
-            catch (Exception e)
-            {
-                MyLogger.LogError($"Error building dictionary from JSON: {e.Message}");
-            }
 
+                staticDataDictionary.Add(type, instanceDictionary);
+            }
 
             InjectReferences();
         }
