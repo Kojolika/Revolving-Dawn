@@ -42,8 +42,6 @@ namespace Tooling.StaticData
         /// </summary>
         public event Action OnValidationCompleted;
 
-        //private static readonly StaticDataConverter StaticDataConverter = new();
-
         private static readonly JsonSerializerSettings JsonSerializerSettings = new()
         {
             Formatting = Formatting.Indented,
@@ -53,13 +51,10 @@ namespace Tooling.StaticData
                 new AssetReferenceConverter(),
                 new ColorConverter(),
                 new StaticDataConverter(),
-                //new StaticDataReferenceConverter()
-                //StaticDataConverter
             },
             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
             TypeNameHandling = TypeNameHandling.Auto,
-            TraceWriter = new MyLogger(),
-            //ReferenceResolverProvider = () => StaticDataConverter
+            //TraceWriter = new MyLogger(),
         };
 
         private static readonly JsonSerializer JsonSerializer = JsonSerializer.Create(JsonSerializerSettings);

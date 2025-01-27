@@ -101,7 +101,6 @@ namespace Serialization
 
             bool IsStaticDataField(object objToCheck, FieldInfo field, out StaticDataReference staticDataReference, int index = -1)
             {
-                MyLogger.Log($"Checking obj type: {objToCheck?.GetType()} field: {field?.Name} with index: {index}");
                 var isListField = index > -1;
                 var staticData = isListField
                     ? (field.GetValue(objToCheck) as IList)?[index] as StaticData
@@ -110,12 +109,10 @@ namespace Serialization
                 if (staticData?.Reference == null)
                 {
                     staticDataReference = null;
-                    MyLogger.Log($"false. ref = {staticData?.Reference}");
                     return false;
                 }
 
                 staticDataReference = staticData.Reference;
-                MyLogger.Log("true");
                 return true;
             }
         }
