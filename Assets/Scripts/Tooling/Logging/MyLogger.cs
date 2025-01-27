@@ -2,12 +2,13 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json.Serialization;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace Tooling.Logging
 {
-    public class MyLogger
+    public class MyLogger : ITraceWriter
     {
         private static readonly StackTrace stackTrace = new StackTrace(true);
 
@@ -112,5 +113,32 @@ namespace Tooling.Logging
             internal static string GetFilenameColor(string fileName)
                 => $"#{Convert.ToString(fileName.GetHashCode(), 16)}";
         }
+
+        #region ITraceWriter
+
+        public void Trace(TraceLevel level, string message, Exception ex)
+        {
+            switch (level)
+            {
+                case TraceLevel.Error:
+                    LogError(message);
+                    break;
+                case TraceLevel.Info:
+                    Log(message);
+                    break;
+                case TraceLevel.Verbose:
+                    Log(message);
+                    break;
+                case TraceLevel.Warning:
+                    LogWarning(message);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
+            }
+        }
+
+        public TraceLevel LevelFilter => TraceLevel.Verbose;
+
+        #endregion
     }
 }

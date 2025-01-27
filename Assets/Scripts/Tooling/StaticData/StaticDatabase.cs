@@ -42,6 +42,8 @@ namespace Tooling.StaticData
         /// </summary>
         public event Action OnValidationCompleted;
 
+        //private static readonly StaticDataConverter StaticDataConverter = new();
+
         private static readonly JsonSerializerSettings JsonSerializerSettings = new()
         {
             Formatting = Formatting.Indented,
@@ -51,10 +53,13 @@ namespace Tooling.StaticData
                 new AssetReferenceConverter(),
                 new ColorConverter(),
                 new StaticDataConverter(),
-                new StaticDataReferenceConverter()
+                //new StaticDataReferenceConverter()
+                //StaticDataConverter
             },
             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-            TypeNameHandling = TypeNameHandling.Auto
+            TypeNameHandling = TypeNameHandling.Auto,
+            TraceWriter = new MyLogger(),
+            //ReferenceResolverProvider = () => StaticDataConverter
         };
 
         private static readonly JsonSerializer JsonSerializer = JsonSerializer.Create(JsonSerializerSettings);
@@ -323,6 +328,10 @@ namespace Tooling.StaticData
             try
             {
                 await UniTask.WhenAll(writeTasks);
+            }
+            catch (Exception e)
+            {
+                MyLogger.LogError($"Error saving to json: {e}");
             }
             finally
             {

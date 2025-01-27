@@ -1,9 +1,0 @@
-{
-  "ClassArt": "a3a4a3e0270bea94291ee1e632d80a47",
-  "CardBorderArt": "199ea291b8dc10749814c60df5e5232a",
-  "StartingDeck": null,
-  "Description": {
-    "Type": "Tooling.StaticData.LocKey, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-    "InstanceName": "Warrior_Description"
-  }
-}

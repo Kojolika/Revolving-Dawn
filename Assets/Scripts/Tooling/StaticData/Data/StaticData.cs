@@ -4,13 +4,14 @@ using Tooling.StaticData.Validation;
 
 namespace Tooling.StaticData
 {
+    //[JsonObject(IsReference = true)]
     public abstract class StaticData
     {
         // we're using the name as file names, no need to serialize again
         [JsonIgnore, Required(allowDefaultValues: false), Unique]
         public string Name;
 
-        [JsonIgnore] public StaticDataReference SerializedReference { get; set; }
+       public StaticDataReference Reference { get; set; }
     }
 
     /// <summary>

@@ -20,7 +20,7 @@ namespace Fight.Engine.Bytecode
 
         public string Log()
         {
-            return $"{buffValue}: stacks of {buff} on {target.Name}";
+            return $"{buffValue}: stacks of {buff} on {target?.Name}";
         }
     }
 }

@@ -10,7 +10,6 @@ namespace Tooling.StaticData
     public class InstancesView : VisualElement
     {
         private readonly ListView listView;
-        private List<StaticData> instances;
         private readonly Type selectedType;
         private readonly bool allowEditing;
 
@@ -23,7 +22,7 @@ namespace Tooling.StaticData
             this.selectedType = selectedType;
             this.allowEditing = allowEditing;
 
-            instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
+            var instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
             if (!allowEditing)
             {
                 // allow selection of null
@@ -62,14 +61,11 @@ namespace Tooling.StaticData
 
             listView.itemsAdded += ints =>
             {
-                MyLogger.Log($"Instances count: {instances.Count}");
                 foreach (var index in ints)
                 {
-                    MyLogger.Log($"Added {index}");
-
                     var newInstance = Activator.CreateInstance(selectedType) as StaticData;
                     newInstance!.Name = $"{selectedType.Name}_{index}";
-                    instances[index] = newInstance;
+                    listView.itemsSource[index] = newInstance;
                 }
 
                 StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
@@ -147,7 +143,7 @@ namespace Tooling.StaticData
 
         public void Refresh()
         {
-            instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
+            listView.itemsSource = StaticDatabase.Instance.GetInstancesForType(selectedType);
             listView.Rebuild();
         }
 

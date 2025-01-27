@@ -2,8 +2,10 @@
   "SubBytes": [
     {
       "$type": "Tooling.StaticData.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "Type": "Tooling.StaticData.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "InstanceName": "Armor"
+      "Reference": {
+        "Type": "Tooling.StaticData.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "InstanceName": "Int"
+      }
     },
     {
       "$type": "Fight.Engine.Bytecode.GetTargetedCombatParticipant, Assembly-CSharp"
