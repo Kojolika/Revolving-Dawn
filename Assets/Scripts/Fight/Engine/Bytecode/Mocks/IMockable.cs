@@ -1,10 +1,13 @@
+using Tooling.StaticData.Attributes;
+
 namespace Fight.Engine.Bytecode
 {
-    public interface IMockable : ICombatByte
+    public interface IMockable : IInstruction
     {
     }
 
-    public interface IMock : ICombatByte
+    [GeneralFieldIgnore]
+    public interface IMock : IInstruction
     {
     }
 }

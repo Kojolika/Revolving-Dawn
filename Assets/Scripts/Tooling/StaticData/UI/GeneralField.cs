@@ -5,6 +5,7 @@ using System.Reflection;
 using Fight.Engine.Bytecode;
 using ModestTree;
 using Tooling.Logging;
+using Tooling.StaticData.Attributes;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -122,13 +123,9 @@ namespace Tooling.StaticData
             {
                 editorForFieldType = RecursiveDrawElements(type);
             }
-            else if (typeof(ICombatByte).IsAssignableFrom(type))
-            {
-                editorForFieldType = CreateByteDisplay(type);
-            }
             else
             {
-                editorForFieldType = new Label($"No editor created for type {type}");
+                editorForFieldType = GetErrorElement(type);
             }
 
             return editorForFieldType;
@@ -297,7 +294,10 @@ namespace Tooling.StaticData
             var concreteTypes = type.Assembly.DefinedTypes
                 .Where(t => type.IsAssignableFrom(t)
                             && !t.IsAbstract
-                            && !t.IsInterface)
+                            && !t.IsInterface
+                            && t.GetCustomAttribute<GeneralFieldIgnoreAttribute>() == null
+                            && t.GetInterfaces()
+                                .All(tInterface => tInterface.GetCustomAttribute<GeneralFieldIgnoreAttribute>() == null))
                 .ToList();
 
             var concreteTypesAsStrings = concreteTypes.Select(t => t.ToString()).ToList();
@@ -364,70 +364,6 @@ namespace Tooling.StaticData
                 {
                     SetValue(Activator.CreateInstance(selectedType));
                 }
-            }
-        }
-
-        private VisualElement CreateByteDisplay(Type type)
-        {
-            var root = new VisualElement();
-            var interfaces = type.Interfaces();
-            var popInterfaces = interfaces.Where(interfaceType =>
-            {
-                if (!interfaceType.IsGenericType)
-                {
-                    return false;
-                }
-
-                var genericTypeDef = interfaceType.GetGenericTypeDefinition();
-
-                return genericTypeDef == typeof(IPop<>) || genericTypeDef == typeof(IPop<,>);
-            });
-
-            var pushInterfaces = interfaces.Where(interfaceType =>
-            {
-                if (!interfaceType.IsGenericType)
-                {
-                    return false;
-                }
-
-                var genericTypeDef = interfaceType.GetGenericTypeDefinition();
-
-                return genericTypeDef == typeof(IReduceTo<>) ||
-                       genericTypeDef == typeof(IPush<,>) ||
-                       genericTypeDef == typeof(IPush<,,>);
-            });
-
-            foreach (var popInterface in popInterfaces)
-            {
-                root.Add(
-                    new Label("Pops: " + CreateFormattedListOfDrawGenericArguments(popInterface))
-                );
-            }
-
-            foreach (var pushInterface in pushInterfaces)
-            {
-                root.Add(
-                    new Label("Pushes: " + CreateFormattedListOfDrawGenericArguments(pushInterface))
-                );
-            }
-
-            return root;
-
-
-            string CreateFormattedListOfDrawGenericArguments(Type t)
-            {
-                string labelText = string.Empty;
-                for (var i = 0; i < t.GetGenericArguments().Length; i++)
-                {
-                    var genericType = t.GetGenericArguments()[i];
-                    labelText += $"{genericType.Name}";
-                    if (i != t.GetGenericArguments().Length - 1)
-                    {
-                        labelText += ", ";
-                    }
-                }
-
-                return labelText;
             }
         }
 
@@ -549,6 +485,14 @@ namespace Tooling.StaticData
         private object GetValue()
         {
             return valueProvider.GetValue(underlyingObject);
+        }
+
+        /// <summary>
+        /// Returns what to draw when the specified type cannot be drawn.
+        /// </summary>
+        private VisualElement GetErrorElement(Type type)
+        {
+            return new Label($"No editor created for type {type}");
         }
     }
 }

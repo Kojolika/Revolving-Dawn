@@ -1,21 +1,19 @@
 namespace Fight.Engine.Bytecode
 {
-    public struct Subtract :
-        IPop<Literal, Literal>,
-        IReduceTo<Literal>
+    public struct Subtract : IInstruction
     {
-        private Literal value;
-
-        public void OnBytesPopped(Literal input1, Literal input2)
+        public void Execute(Context context)
         {
-            value = new Literal(input1.Value - input2.Value);
-        }
-
-        public Literal Reduce() => value;
-
-        public string Log()
-        {
-            return value.Log();
+            if (context.Memory.TryPop<Literal>(out var literal1)
+                && context.Memory.TryPop<Literal>(out var literal2))
+            {
+                context.Memory.Push(new Literal(literal1.Value + literal2.Value));
+                context.Logger.Log(LogLevel.Info, $"{literal1.Value} + {literal2.Value}");
+            }
+            else
+            {
+                context.Logger.Log(LogLevel.Error, "Required 2 literals to be on the stack for this instruction to succeed!");
+            }
         }
     }
 }

@@ -1,6 +1,9 @@
 {
   "SubBytes": [
     {
+      "$type": "Fight.Engine.Bytecode.GetTargetedCombatParticipant, Assembly-CSharp"
+    },
+    {
       "$type": "Tooling.StaticData.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
       "Reference": {
         "Type": "Tooling.StaticData.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
@@ -8,10 +11,14 @@
       }
     },
     {
-      "$type": "Fight.Engine.Bytecode.GetTargetedCombatParticipant, Assembly-CSharp"
+      "$type": "Fight.Engine.Bytecode.GetStat, Assembly-CSharp"
     },
     {
-      "$type": "Fight.Engine.Bytecode.GetStat, Assembly-CSharp"
+      "$type": "Tooling.StaticData.Byte, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Reference": {
+        "Type": "Tooling.StaticData.Byte, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "InstanceName": "GetInt"
+      }
     }
   ]
 }

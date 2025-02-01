@@ -4,10 +4,10 @@ namespace Fight.Engine.Bytecode
 {
     public static class Validator
     {
-        public static ValidationResult ValidatePop<T>(IPop<T> iPopToValidate, ICombatByte combatByte, out T successResult)
-            where T : ICombatByte
+        /*public static ValidationResult ValidatePop<T>(IPop<T> iPopToValidate, IInstruction instruction, out T successResult)
+            where T : IInstruction
         {
-            var isValidType = combatByte is IReduceTo<T> or T;
+            var isValidType = instruction is IReduceTo<T> or T;
             if (!isValidType)
             {
                 successResult = default;
@@ -18,14 +18,14 @@ namespace Fight.Engine.Bytecode
                     {
                         $"Byte  popped off the stack does not match the corresponding type for {iPopToValidate.GetType()}" +
                         $"Expected: {typeof(T)}" +
-                        $"first={combatByte?.GetType()},"
+                        $"first={instruction?.GetType()},"
                     }
                 };
             }
 
-            var poppedByte = combatByte is IReduceTo<T> nextByte
+            var poppedByte = instruction is IReduceTo<T> nextByte
                 ? nextByte.Reduce()
-                : (T)combatByte;
+                : (T)instruction;
 
             successResult = poppedByte;
 
@@ -40,13 +40,13 @@ namespace Fight.Engine.Bytecode
         /// </summary>
         public static ValidationResult ValidatePop<T1, T2>(
             IPop<T1, T2> iPopToValidate,
-            ICombatByte combatByte1,
-            ICombatByte combatByte2,
+            IInstruction combatByte1,
+            IInstruction combatByte2,
             out T1 successResult1,
             out T2 successResult2
         )
-            where T1 : ICombatByte
-            where T2 : ICombatByte
+            where T1 : IInstruction
+            where T2 : IInstruction
         {
             successResult1 = default;
             successResult2 = default;
@@ -99,7 +99,7 @@ namespace Fight.Engine.Bytecode
                 Errors = errors
             };
 
-            bool TryGetArg<T>(ICombatByte cByte, out T arg) where T : ICombatByte
+            bool TryGetArg<T>(IInstruction cByte, out T arg) where T : IInstruction
             {
                 switch (cByte)
                 {
@@ -114,6 +114,6 @@ namespace Fight.Engine.Bytecode
                         return false;
                 }
             }
-        }
+        }*/
     }
 }

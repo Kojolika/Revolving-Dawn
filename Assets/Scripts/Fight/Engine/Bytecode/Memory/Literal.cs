@@ -1,9 +1,8 @@
-using System.Globalization;
 using UnityEngine;
 
 namespace Fight.Engine.Bytecode
 {
-    public struct Literal : ICombatByte
+    public struct Literal : IStoreable
     {
         [SerializeField] private float value;
 
@@ -12,11 +11,6 @@ namespace Fight.Engine.Bytecode
         public Literal(float value)
         {
             this.value = value;
-        }
-
-        public string Log()
-        {
-            return value.ToString(CultureInfo.CurrentCulture);
         }
     }
 }

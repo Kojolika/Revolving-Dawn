@@ -3,19 +3,14 @@ namespace Fight.Engine.Bytecode
     /// <summary>
     /// The <see cref="ICombatParticipant"/> that plays this will return itself.
     /// </summary>
-    public struct GetSelf : IReduceTo<ICombatParticipant>
+    public struct GetSelf : IInstruction
     {
-        private ICombatParticipant combatParticipant;
-
-        public ICombatParticipant Reduce()
+        public void Execute(Context context)
         {
-            //TODO: API to get self
-            return default;
-        }
+            var targetedCombatParticipant = context.Fight.GetTargetedCombatant();
+            context.Memory.Push(targetedCombatParticipant);
 
-        public string Log()
-        {
-            return $"Get self: {combatParticipant.Log()}";
+            context.Logger.Log(LogLevel.Info, $"Pushed {targetedCombatParticipant.Name}");
         }
     }
 }

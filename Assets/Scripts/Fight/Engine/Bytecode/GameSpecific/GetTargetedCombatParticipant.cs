@@ -1,22 +1,41 @@
+using System.Collections.Generic;
+using System.Text;
+
 namespace Fight.Engine.Bytecode
 {
     /// <summary>
     /// Gets the <see cref="ICombatParticipant"/> that the player is targeting.
     /// </summary>
-    public struct GetTargetedCombatParticipant : IReduceTo<ICombatParticipant>, IMockable
+    public struct GetTargetedCombatParticipant : IInstruction
     {
-        private ICombatParticipant combatParticipant;
-
-        public ICombatParticipant Reduce()
+        public void Execute(Context context)
         {
-            // TODO: api to grab targeted unit
+            var combatParticipant = context.Fight.GetTargetedCombatant();
+            context.Memory.Push(combatParticipant);
 
-            return default;
+            context.Logger.Log(LogLevel.Info, $"Pushed {combatParticipant.Name}");
         }
+    }
 
-        public string Log()
+    public struct GetAllCombatParticipants : IInstruction
+    {
+        public void Execute(Context context)
         {
-            return $"Targeted {combatParticipant.Log()}";
+            var combatParticipants = context.Fight.GetAllCombatants();
+            foreach (var combatParticipant in combatParticipants)
+            {
+                context.Memory.Push(combatParticipant);
+            }
+
+            var stringBuilder = new StringBuilder();
+            for (int i = 0; i < combatParticipants.Count; i++)
+            {
+                // Print the name and a comma, unless we're at the last element then print no comma
+                stringBuilder.Append($"{combatParticipants[i].Name}{(i == combatParticipants.Count - 1 ? string.Empty : ", ")}");
+            }
+
+            var combatParticipantNames = stringBuilder.ToString();
+            context.Logger.Log(LogLevel.Info, $"Pushed {combatParticipantNames}");
         }
     }
 }

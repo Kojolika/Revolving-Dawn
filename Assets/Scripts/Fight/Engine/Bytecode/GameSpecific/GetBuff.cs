@@ -2,25 +2,25 @@ using Tooling.StaticData;
 
 namespace Fight.Engine.Bytecode
 {
-    public struct GetBuff : IPop<ICombatParticipant, Buff>, IReduceTo<Literal>
+    public struct GetBuff : IInstruction
     {
-        private Literal buffValue;
-        private ICombatParticipant target;
-        private Buff buff;
-
-        public void OnBytesPopped(ICombatParticipant target, Buff buff)
+        public void Execute(Context context)
         {
-            if (target.Buffs.TryGetValue(buff, out var statCount))
+            if (context.Memory.TryPop<ICombatParticipant, Buff>(out var combatParticipant, out var buff))
             {
-                buffValue = new Literal(statCount);
+                if (combatParticipant.Buffs.TryGetValue(buff, out var buffCount))
+                {
+                    context.Memory.Push(new Literal(buffCount));
+
+                    context.Logger.Log(LogLevel.Info,
+                        $"Pushed {buffCount}, found {buff.Name} with stack size {buffCount} on {combatParticipant.Name}"
+                    );
+                }
             }
-        }
-
-        public Literal Reduce() => buffValue;
-
-        public string Log()
-        {
-            return $"{buffValue}: stacks of {buff} on {target?.Name}";
+            else
+            {
+                context.Logger.Log(LogLevel.Error, "Failed to find buff on top of the stack!");
+            }
         }
     }
 }

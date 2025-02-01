@@ -65,7 +65,7 @@ namespace Tooling.StaticData
             new List<IValidator>
             {
                 new AssetReferenceValidator(),
-                new ByteValidator()
+                new InstructionValidator()
             }
         );
 

@@ -1,9 +1,6 @@
 namespace Fight.Engine.Bytecode
 {
-    /// <summary>
-    /// If the Boolean evaluates to true, execute the next combat byte instruction.
-    /// </summary>
-    public struct If : IInstruction
+    public struct While : IInstruction
     {
         public void Execute(Context context)
         {
@@ -16,9 +13,11 @@ namespace Fight.Engine.Bytecode
                     return;
                 }
 
-                if (result.Value)
+                while (result.Value)
                 {
                     statement.Execute(context);
+                    expression.Execute(context);
+                    expression.TryEvaluate(out result);
                 }
             }
             else

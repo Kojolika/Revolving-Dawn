@@ -6,26 +6,26 @@ using Utils.Extensions;
 
 namespace Tooling.StaticData.Validation
 {
-    public class ByteValidator : TypeValidator<List<ICombatByte>>
+    public class InstructionValidator : TypeValidator<List<IInstruction>>
     {
         public override List<string> errorMessages { get; } = new();
 
 
         private readonly Interpreter interpreter = new();
 
-        public ByteValidator()
+        public InstructionValidator()
         {
-            interpreter.RegisterMockable<GetTargetedCombatParticipant, MockGetTargetedCombatParticipant>();
+            //interpreter.RegisterMockable<GetTargetedCombatParticipant, MockGetTargetedCombatParticipant>();
         }
 
-        protected override bool Validate(List<ICombatByte> value, List<StaticData> allObjects)
+        protected override bool Validate(List<IInstruction> value, List<StaticData> allObjects)
         {
             if (value.IsNullOrEmpty())
             {
                 return true;
             }
 
-            var byteStack = new Stack<ICombatByte>();
+            var byteStack = new Stack<IInstruction>();
             foreach (var combatByte in value)
             {
                 byteStack.Push(combatByte);

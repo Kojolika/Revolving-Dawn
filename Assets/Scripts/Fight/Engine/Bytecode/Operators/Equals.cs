@@ -1,20 +1,21 @@
+using UnityEngine;
+
 namespace Fight.Engine.Bytecode
 {
-    public struct Divide : IInstruction
+    public struct Equals : IInstruction
     {
+        public void Execute(IWorkingMemory workingMemory, IFightContext context, ILogger logger)
+        {
+
+        }
+
         public void Execute(Context context)
         {
             if (context.Memory.TryPop<Literal>(out var literal1)
                 && context.Memory.TryPop<Literal>(out var literal2))
             {
-                if (literal2.Value == 0)
-                {
-                    context.Logger.Log(LogLevel.Error, "Tried to divide by zero!");
-                    return;
-                }
-
-                context.Memory.Push(new Literal(literal1.Value / literal2.Value));
-                context.Logger.Log(LogLevel.Info, $"{literal1.Value} / {literal2.Value}");
+                context.Memory.Push(new Boolean(Mathf.Approximately(literal1.Value, literal2.Value)));
+                context.Logger.Log(LogLevel.Info, $"{literal1.Value} == {literal2.Value}");
             }
             else
             {

@@ -1,6 +1,7 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using Tooling.StaticData;
+using Tooling.StaticData.Attributes;
 
 namespace Fight.Engine.Bytecode
 {
@@ -22,16 +23,18 @@ namespace Fight.Engine.Bytecode
             return mockedParticipant;
         }
 
-        public string Log()
-        {
-            return $"Targeted {combatParticipant?.Log()}";
-        }
 
+        [GeneralFieldIgnore]
         private class MockCombatParticipant : ICombatParticipant
         {
             public string Name { get; set; }
             public Dictionary<Stat, float> Stats { get; set; }
             public Dictionary<Buff, int> Buffs { get; set; }
+
+            public void Execute(IWorkingMemory workingMemory, IFightContext context, ILogger logger)
+            {
+                workingMemory.Push(this);
+            }
         }
 
         private static string CreateRandomName(Random rng)
@@ -44,7 +47,7 @@ namespace Fight.Engine.Bytecode
                 stringChars[i] = chars[rng.Next(chars.Length)];
             }
 
-            return new String(stringChars);
+            return new string(stringChars);
         }
 
         private static Dictionary<Stat, float> CreateRandomStats(Random rng)
@@ -73,4 +76,4 @@ namespace Fight.Engine.Bytecode
             return buffs;
         }
     }
-}
+}*/

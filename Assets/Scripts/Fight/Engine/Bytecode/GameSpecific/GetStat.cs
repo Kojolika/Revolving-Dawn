@@ -1,27 +1,26 @@
 using Tooling.StaticData;
+using UnityEngine;
 
 namespace Fight.Engine.Bytecode
 {
     /// <summary>
     /// Gets the stat value for a combat participant.
     /// </summary>
-    public struct GetStat : IPop<ICombatParticipant, Stat>, IReduceTo<Literal>
+    public struct GetStat : IInstruction
     {
-        private Literal statValue;
-
-        public void OnBytesPopped(ICombatParticipant input1, Stat input2)
+        public void Execute(Context context)
         {
-            if (input1.Stats.TryGetValue(input2, out var statCount))
+            if (context.Memory.TryPop<ICombatParticipant, Stat>(out var combatParticipant, out var stat))
             {
-                statValue = new Literal(statCount);
+                if (combatParticipant.Stats.TryGetValue(stat, out var statCount))
+                {
+                    context.Memory.Push(new Literal(statCount));
+                }
             }
-        }
-
-        public Literal Reduce() => statValue;
-
-        public string Log()
-        {
-            return statValue.Log();
+            else
+            {
+                context.Logger.Log(LogLevel.Error, "Failed to find stat on top of the stack!");
+            }
         }
     }
 }

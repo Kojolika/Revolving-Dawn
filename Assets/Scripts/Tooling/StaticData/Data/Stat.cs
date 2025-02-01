@@ -2,14 +2,9 @@ using Fight.Engine.Bytecode;
 
 namespace Tooling.StaticData
 {
-    public class Stat : StaticData, ICombatByte
+    public class Stat : StaticData, IStoreable
     {
         public LocKey LocName;
         public LocKey Description;
-
-        public string Log()
-        {
-            return Name;
-        }
     }
 }

@@ -1,17 +1,20 @@
 namespace Fight.Engine.Bytecode
 {
-    public struct And : IPop<Boolean, Boolean>, IReduceTo<Boolean>
+    public struct And : IInstruction
     {
-        private Boolean result;
-
-        public void OnBytesPopped(Boolean input1, Boolean input2)
-            => result = new Boolean(input1.Value && input2.Value);
-
-        public Boolean Reduce() => result;
-
-        public string Log()
+        public void Execute(Context context)
         {
-            return result.Log();
+            if (context.Memory.TryPop<Boolean, Boolean>(out var bool1, out var bool2))
+            {
+                var andResult = bool1.Value && bool2.Value;
+                context.Memory.Push(new Boolean(andResult));
+
+                context.Logger.Log(LogLevel.Info, $"Pushed: {andResult}");
+            }
+            else
+            {
+                context.Logger.Log(LogLevel.Error, $"Required 2 {typeof(Boolean)} to be on the stack for this instruction to succeed!");
+            }
         }
     }
 }
