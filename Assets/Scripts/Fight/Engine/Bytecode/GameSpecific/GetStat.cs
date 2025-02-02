@@ -6,6 +6,7 @@ namespace Fight.Engine.Bytecode
     /// <summary>
     /// Gets the stat value for a combat participant.
     /// </summary>
+    [System.Serializable]
     public struct GetStat : IInstruction
     {
         public void Execute(Context context)

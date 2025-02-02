@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Fight.Engine.Bytecode
 {
+    [System.Serializable]
     public class Expression : IInstruction
     {
-        public List<IInstruction> Instructions;
+        [SerializeField] private List<IInstruction> instructions;
 
         private IStoreable result;
         private bool hasBeenEvaluated;
@@ -26,7 +28,7 @@ namespace Fight.Engine.Bytecode
 
         public void Execute(Context context)
         {
-            foreach (var instruction in Instructions)
+            foreach (var instruction in instructions)
             {
                 instruction.Execute(context);
             }

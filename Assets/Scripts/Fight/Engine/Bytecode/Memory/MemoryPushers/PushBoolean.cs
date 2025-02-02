@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Fight.Engine.Bytecode
 {
+    [System.Serializable]
     public struct PushBoolean : IInstruction
     {
         [SerializeField] private bool value;

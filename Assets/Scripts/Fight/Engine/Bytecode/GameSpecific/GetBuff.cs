@@ -2,6 +2,7 @@ using Tooling.StaticData;
 
 namespace Fight.Engine.Bytecode
 {
+    [System.Serializable]
     public struct GetBuff : IInstruction
     {
         public void Execute(Context context)

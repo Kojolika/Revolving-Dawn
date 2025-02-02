@@ -1,5 +1,6 @@
 namespace Fight.Engine.Bytecode
 {
+    [System.Serializable]
     public struct Add : IInstruction
     {
         public void Execute(Context context)

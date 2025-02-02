@@ -271,18 +271,22 @@ namespace Tooling.StaticData
             }
         }
 
-        // TODO: implement it, and List support
         /// <summary>
-        /// Similar to how the inspector draws serializable types. Draws all fields of the given type.
+        /// Similar to how the inspector draws serializable types. Draws all serializable fields of the given type.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         private VisualElement RecursiveDrawElements(Type type)
         {
             var root = new VisualElement();
             foreach (var field in Utils.GetFields(type))
             {
-                //root.Add(new GeneralField(field, objectFieldBelongsTo, callback));
+                root.Add(
+                    new GeneralField(
+                        field.FieldType,
+                        GetValue() ?? Activator.CreateInstance(type),
+                        new FieldValueProvider(field),
+                        callback
+                    )
+                );
             }
 
             return root;
@@ -300,7 +304,9 @@ namespace Tooling.StaticData
                                 .All(tInterface => tInterface.GetCustomAttribute<GeneralFieldIgnoreAttribute>() == null))
                 .ToList();
 
-            var concreteTypesAsStrings = concreteTypes.Select(t => t.ToString()).ToList();
+            var concreteTypesAsStrings = concreteTypes
+                .Select(t => t.ToString())
+                .ToList();
 
             if (concreteTypes.Count < 1)
             {

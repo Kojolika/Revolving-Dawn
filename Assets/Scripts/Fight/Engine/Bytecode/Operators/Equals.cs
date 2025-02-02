@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Fight.Engine.Bytecode
 {
+    [System.Serializable]
     public struct Equals : IInstruction
     {
         public void Execute(IWorkingMemory workingMemory, IFightContext context, ILogger logger)

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Fight.Engine.Bytecode
 {
+    [System.Serializable]
     public struct PushLiteral : IInstruction
     {
         [SerializeField] private float value;

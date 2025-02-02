@@ -3,6 +3,7 @@ namespace Fight.Engine.Bytecode
     /// <summary>
     /// The <see cref="ICombatParticipant"/> that plays this will return itself.
     /// </summary>
+    [System.Serializable]
     public struct GetSelf : IInstruction
     {
         public void Execute(Context context)
