@@ -54,7 +54,7 @@ namespace Tooling.StaticData
             },
             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
             TypeNameHandling = TypeNameHandling.Auto,
-            //TraceWriter = new MyLogger(),
+            TraceWriter = new MyLogger(),
         };
 
         private static readonly JsonSerializer JsonSerializer = JsonSerializer.Create(JsonSerializerSettings);
@@ -85,6 +85,7 @@ namespace Tooling.StaticData
             {
                 var instanceDictionary = new Dictionary<string, StaticData>();
                 var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
+                MyLogger.Log($"Deserializing type: {type}");
 
                 if (Directory.Exists(typeDirectory))
                 {
@@ -92,7 +93,7 @@ namespace Tooling.StaticData
                     {
                         using var streamReader = File.OpenText(file);
 
-                        StaticData staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
+                        var staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
                         if (staticDataFromJson == null)
                         {
                             MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
@@ -101,6 +102,8 @@ namespace Tooling.StaticData
 
                         var fileNameWithExtension = new FileInfo(file).Name;
                         staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
+                        
+                        MyLogger.Log($"Deserializing instance: {fileNameWithExtension[..^".json".Length]}");
 
                         instanceDictionary.Add(staticDataFromJson.Name, staticDataFromJson);
                     }

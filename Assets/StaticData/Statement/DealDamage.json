@@ -1,0 +1,22 @@
+{
+  "statement": {
+    "Instructions": [
+      {
+        "$type": "Fight.Engine.Bytecode.PushStat, Assembly-CSharp",
+        "Value": {
+          "$type": "Tooling.StaticData.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "Reference": {
+            "Type": "Tooling.StaticData.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "InstanceName": "Health"
+          }
+        }
+      },
+      {
+        "$type": "Fight.Engine.Bytecode.GetStat, Assembly-CSharp"
+      },
+      {
+        "$type": "Fight.Engine.Bytecode.GetSelf, Assembly-CSharp"
+      }
+    ]
+  }
+}

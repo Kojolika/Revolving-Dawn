@@ -55,7 +55,7 @@ namespace Tooling.StaticData
             this.callback = callback;
             this.isArrayElementField = isArrayElementField;
 
-            RefreshView(type);
+            RefreshView();
         }
 
         /// <summary>
@@ -276,13 +276,20 @@ namespace Tooling.StaticData
         /// </summary>
         private VisualElement RecursiveDrawElements(Type type)
         {
+            var currentObj = GetValue();
+            if (currentObj == null)
+            {
+                currentObj = Activator.CreateInstance(type);
+                SetValue(currentObj);
+            }
+
             var root = new VisualElement();
             foreach (var field in Utils.GetFields(type))
             {
                 root.Add(
                     new GeneralField(
                         field.FieldType,
-                        GetValue() ?? Activator.CreateInstance(type),
+                        currentObj,
                         new FieldValueProvider(field),
                         callback
                     )
@@ -442,10 +449,10 @@ namespace Tooling.StaticData
             ((ArrayValueProvider)valueProvider).ArrayIndex = index;
             arrayIndexLabel.text = index.ToString();
 
-            RefreshView(type);
+            RefreshView();
         }
 
-        private void RefreshView(Type type)
+        private void RefreshView()
         {
             Clear();
 

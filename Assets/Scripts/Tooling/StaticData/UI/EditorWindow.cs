@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Tooling.Logging;
 using UnityEditor;
@@ -259,7 +260,17 @@ namespace Tooling.StaticData
                     style = { minWidth = 200 }
                 });
 
-                foreach (var field in Utils.GetFields(selectedType))
+                var fields = Utils.GetFields(selectedType);
+
+                // Move name to the top of our editor
+                if (fields.Count > 1)
+                {
+                    var nameField = fields.First(field => field.Name == nameof(StaticData.Name));
+                    var nameIndex = fields.IndexOf(nameField);
+                    (fields[0], fields[nameIndex]) = (fields[nameIndex], fields[0]);
+                }
+
+                foreach (var field in fields)
                 {
                     var row = new VisualElement
                     {

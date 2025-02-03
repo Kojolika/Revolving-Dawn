@@ -2,16 +2,14 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Tooling.Logging;
 using Tooling.StaticData;
 using Zenject;
 
 namespace Serialization
 {
     /// <summary>
-    /// This class is used to inject dependencies into classes which are deserialized form JSON.
+    /// This class is used to inject dependencies into classes which are deserialized from JSON.
     /// </summary>
     public class CustomContractResolver : DefaultContractResolver
     {
@@ -52,7 +50,7 @@ namespace Serialization
             RecursivelyResolveStaticDataReferences(obj);
         }
 
-        public static void RecursivelyResolveStaticDataReferences(object obj, int arrayIndex = -1)
+        private static void RecursivelyResolveStaticDataReferences(object obj, int arrayIndex = -1)
         {
             var objType = obj.GetType();
             foreach (var field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))

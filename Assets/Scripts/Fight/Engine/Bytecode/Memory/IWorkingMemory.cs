@@ -3,7 +3,8 @@ using System.Collections.Generic;
 namespace Fight.Engine.Bytecode
 {
     /// <summary>
-    /// Holds the memory that each bytecode instruction has access to. For our implementation, the only memory we have avaiable is stack
+    /// Holds the memory that each bytecode instruction has access to.
+    /// For our implementation, the only memory we have available is a stack.
     /// </summary>
     public interface IWorkingMemory
     {
