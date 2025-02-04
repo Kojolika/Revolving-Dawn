@@ -85,7 +85,6 @@ namespace Tooling.StaticData
             {
                 var instanceDictionary = new Dictionary<string, StaticData>();
                 var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
-                MyLogger.Log($"Deserializing type: {type}");
 
                 if (Directory.Exists(typeDirectory))
                 {
@@ -102,8 +101,6 @@ namespace Tooling.StaticData
 
                         var fileNameWithExtension = new FileInfo(file).Name;
                         staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
-                        
-                        MyLogger.Log($"Deserializing instance: {fileNameWithExtension[..^".json".Length]}");
 
                         instanceDictionary.Add(staticDataFromJson.Name, staticDataFromJson);
                     }
