@@ -54,7 +54,7 @@ namespace Tooling.StaticData
             },
             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
             TypeNameHandling = TypeNameHandling.Auto,
-            TraceWriter = new MyLogger(),
+            //TraceWriter = new MyLogger(),
         };
 
         private static readonly JsonSerializer JsonSerializer = JsonSerializer.Create(JsonSerializerSettings);

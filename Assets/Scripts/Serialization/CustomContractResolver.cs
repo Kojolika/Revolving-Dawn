@@ -3,6 +3,7 @@ using System.Collections;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Newtonsoft.Json.Serialization;
+using Tooling.Logging;
 using Tooling.StaticData;
 using Zenject;
 
@@ -63,7 +64,7 @@ namespace Serialization
                         staticDataReference.InstanceName,
                         obj,
                         field.Name,
-                        arrayIndex
+                        -1
                     );
                 }
                 else if (typeof(IList).IsAssignableFrom(field.FieldType))
@@ -103,14 +104,18 @@ namespace Serialization
                 var staticData = isListField
                     ? (field.GetValue(objToCheck) as IList)?[index] as StaticData
                     : field.GetValue(objToCheck) as StaticData;
+                
+                MyLogger.Log($"For field: {field.Name}, index: {index}");
 
                 if (staticData?.Reference == null)
                 {
                     staticDataReference = null;
+                    MyLogger.Log("false");
                     return false;
                 }
 
                 staticDataReference = staticData.Reference;
+                MyLogger.Log("true");
                 return true;
             }
         }

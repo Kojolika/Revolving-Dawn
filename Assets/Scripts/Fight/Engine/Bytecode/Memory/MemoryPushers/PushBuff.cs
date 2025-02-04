@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using Tooling.StaticData;
 using UnityEngine;
 
@@ -6,7 +7,8 @@ namespace Fight.Engine.Bytecode
     [System.Serializable]
     public struct PushBuff : IInstruction
     {
-        [SerializeField] private Buff value;
+        [SerializeField, JsonProperty]
+        private Buff value;
 
         public PushBuff(Buff value)
         {

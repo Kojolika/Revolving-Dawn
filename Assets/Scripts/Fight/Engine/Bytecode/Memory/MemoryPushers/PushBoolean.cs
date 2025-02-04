@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Fight.Engine.Bytecode
@@ -5,9 +6,8 @@ namespace Fight.Engine.Bytecode
     [System.Serializable]
     public struct PushBoolean : IInstruction
     {
-        [SerializeField] private bool value;
-
-        public bool Value => value;
+        [SerializeField, JsonProperty]
+        private bool value;
 
         public PushBoolean(bool value)
         {

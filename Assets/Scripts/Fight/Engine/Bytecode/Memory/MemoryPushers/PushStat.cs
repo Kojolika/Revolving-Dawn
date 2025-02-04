@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using Tooling.StaticData;
 using UnityEngine;
 
@@ -6,7 +7,8 @@ namespace Fight.Engine.Bytecode
     [System.Serializable]
     public struct PushStat : IInstruction
     {
-        [SerializeField] private Stat value;
+        [SerializeField, JsonProperty]
+        private Stat value;
 
         public PushStat(Stat value)
         {

@@ -1,4 +1,5 @@
 using System.Globalization;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Fight.Engine.Bytecode
@@ -6,9 +7,8 @@ namespace Fight.Engine.Bytecode
     [System.Serializable]
     public struct PushLiteral : IInstruction
     {
-        [SerializeField] private float value;
-
-        public float Value => value;
+        [SerializeField, JsonProperty]
+        private float value;
 
         public PushLiteral(float value)
         {
