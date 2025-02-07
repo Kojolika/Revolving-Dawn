@@ -9,5 +9,25 @@ namespace Tooling.StaticData.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Interface)]
     public class GeneralFieldIgnoreAttribute : Attribute
     {
+        public readonly IgnoreType IgnoreType;
+
+        public GeneralFieldIgnoreAttribute(IgnoreType ignoreType)
+        {
+            IgnoreType = ignoreType;
+        }
+    }
+
+    [Flags]
+    public enum IgnoreType
+    {
+        /// <summary>
+        /// Ignores this type from being selected by the interface field.
+        /// </summary>
+        Interface = 1,
+
+        /// <summary>
+        /// Ignores the field from being drawn entirely.
+        /// </summary>
+        Field = 2,
     }
 }

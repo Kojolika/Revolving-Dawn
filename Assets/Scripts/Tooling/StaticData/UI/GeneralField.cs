@@ -6,6 +6,7 @@ using Fight.Engine.Bytecode;
 using ModestTree;
 using Tooling.Logging;
 using Tooling.StaticData.Attributes;
+using Tooling.StaticData.Attributes.Custom;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -61,15 +62,30 @@ namespace Tooling.StaticData
         /// <summary>
         /// Draws an editor field for the given type.
         /// </summary>
-        private VisualElement DrawEditorForType(Type type)
+        private void DrawEditorForType(Type type)
         {
             if (type == null)
             {
-                return new Label($"Passed null type to {nameof(DrawEditorForType)}");
+                Add(new Label($"Passed null type to {nameof(DrawEditorForType)}"));
+                return;
+            }
+
+            if (type.GetCustomAttribute<GeneralFieldIgnoreAttribute>()?.IgnoreType == IgnoreType.Field)
+            {
+                return;
+            }
+
+            // IInstruction specific, may want to generalize later
+            var instructionDisplayAttribute = type.GetCustomAttributes<InstructionDisplayAttribute>().ToList();
+            var displayInputAttribute = instructionDisplayAttribute.FirstOrDefault(atr => atr.Display == DisplayType.Input);
+            var displayOutputAttribute = instructionDisplayAttribute.FirstOrDefault(atr => atr.Display == DisplayType.Output);
+
+            if (displayInputAttribute != null)
+            {
+                Add(new Label($"Inputs: {displayInputAttribute.Types.Select(t => t.Name).Aggregate((a, b) => $"{a}, {b}")}"));
             }
 
             VisualElement editorForFieldType;
-
             if (typeof(int).IsAssignableFrom(type))
             {
                 editorForFieldType = CreateFieldForType<int, IntegerField>();
@@ -128,7 +144,12 @@ namespace Tooling.StaticData
                 editorForFieldType = GetErrorElement(type);
             }
 
-            return editorForFieldType;
+            Add(editorForFieldType);
+
+            if (displayOutputAttribute != null)
+            {
+                Add(new Label($"Outputs: {displayOutputAttribute.Types.Select(type => type.Name).Aggregate((a, b) => $"{a}, {b}")}"));
+            }
         }
 
         /// <summary>
@@ -306,7 +327,8 @@ namespace Tooling.StaticData
                 .Where(t => type.IsAssignableFrom(t)
                             && !t.IsAbstract
                             && !t.IsInterface
-                            && t.GetCustomAttribute<GeneralFieldIgnoreAttribute>() == null
+                            && (!(t.GetCustomAttribute<GeneralFieldIgnoreAttribute>() is var ignoreAttribute) ||
+                                ignoreAttribute?.IgnoreType != IgnoreType.Interface)
                             && t.GetInterfaces()
                                 .All(tInterface => tInterface.GetCustomAttribute<GeneralFieldIgnoreAttribute>() == null))
                 .ToList();
@@ -473,7 +495,7 @@ namespace Tooling.StaticData
                 Add(arrayIndexLabel);
             }
 
-            Add(DrawEditorForType(type));
+            DrawEditorForType(type);
         }
 
         /// <summary>

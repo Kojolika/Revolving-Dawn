@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Text;
+using Tooling.StaticData.Attributes.Custom;
 
 namespace Fight.Engine.Bytecode
 {
@@ -6,6 +8,7 @@ namespace Fight.Engine.Bytecode
     /// Gets the <see cref="ICombatParticipant"/> that the player is targeting.
     /// </summary>
     [System.Serializable]
+    [InstructionDisplay(DisplayType.Output, typeof(ICombatParticipant))]
     public struct GetTargetedCombatParticipant : IInstruction
     {
         public void Execute(Context context)
@@ -18,6 +21,7 @@ namespace Fight.Engine.Bytecode
     }
 
     [System.Serializable]
+    [InstructionDisplay(DisplayType.Output, typeof(List<ICombatParticipant>))]
     public struct GetAllCombatParticipants : IInstruction
     {
         public void Execute(Context context)

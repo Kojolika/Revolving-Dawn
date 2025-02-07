@@ -1,9 +1,12 @@
+using Tooling.StaticData.Attributes.Custom;
+
 namespace Fight.Engine.Bytecode
 {
     /// <summary>
     /// The <see cref="ICombatParticipant"/> that plays this will return itself.
     /// </summary>
     [System.Serializable]
+    [InstructionDisplay(DisplayType.Output, typeof(ICombatParticipant))]
     public struct GetSelf : IInstruction
     {
         public void Execute(Context context)

@@ -1,17 +1,20 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Tooling.StaticData;
 using Tooling.StaticData.Attributes;
+using UnityEngine;
 
 namespace Fight.Engine.Bytecode
 {
     [System.Serializable]
-    [GeneralFieldIgnore]
+    [GeneralFieldIgnore(IgnoreType.Interface)]
     public class Statement : IInstruction
     {
-        public List<IInstruction> Instructions;
+        [SerializeField, JsonProperty] private List<IInstruction> instructions;
 
         public void Execute(Context context)
         {
-            foreach (var instruction in Instructions)
+            foreach (var instruction in instructions)
             {
                 instruction.Execute(context);
             }

@@ -17,7 +17,7 @@ namespace Fight.Engine.Bytecode
                     return;
                 }
 
-                if (result.Value)
+                if (result.value)
                 {
                     statement.Execute(context);
                 }

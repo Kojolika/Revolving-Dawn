@@ -1,12 +1,17 @@
+using System;
+using Newtonsoft.Json;
+using UnityEngine;
+
 namespace Fight.Engine.Bytecode
 {
+    [Serializable]
     public struct Boolean : IStoreable
     {
-        public readonly bool Value;
+        [SerializeField, JsonProperty] public bool value;
 
         public Boolean(bool value)
         {
-            Value = value;
+            this.value = value;
         }
     }
 }

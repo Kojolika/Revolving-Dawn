@@ -14,7 +14,7 @@ namespace Fight.Engine.Bytecode
                     return;
                 }
 
-                while (result.Value)
+                while (result.value)
                 {
                     statement.Execute(context);
                     expression.Execute(context);

@@ -1,13 +1,18 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Tooling.StaticData.Attributes;
+using Tooling.StaticData.Attributes.Custom;
 using UnityEngine;
 
 namespace Fight.Engine.Bytecode
 {
-    [System.Serializable, GeneralFieldIgnore]
+    [System.Serializable]
+    [GeneralFieldIgnore(IgnoreType.Interface)]
+    [InstructionDisplay(DisplayType.Input, typeof(Boolean), typeof(Boolean))]
+    [InstructionDisplay(DisplayType.Output, typeof(Boolean))]
     public class Expression : IInstruction
     {
-        [SerializeField] private List<IInstruction> instructions;
+        [SerializeField, JsonProperty] private List<IInstruction> instructions;
 
         private IStoreable result;
         private bool hasBeenEvaluated;
