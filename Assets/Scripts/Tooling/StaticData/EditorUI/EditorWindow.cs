@@ -8,7 +8,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// Designed to be a CMS system where we manage our static data.
@@ -51,8 +51,6 @@ namespace Tooling.StaticData
 
         public void CreateGUI()
         {
-            StaticDatabase.Instance.BuildDictionaryFromJson();
-
             var root = rootVisualElement;
             root.Clear();
 

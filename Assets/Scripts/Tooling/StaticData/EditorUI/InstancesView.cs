@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Tooling.Logging;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     public class InstancesView : VisualElement
     {

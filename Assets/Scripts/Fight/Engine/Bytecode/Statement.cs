@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Tooling.StaticData;
-using Tooling.StaticData.Attributes;
+using Tooling.StaticData.EditorUI;
 using UnityEngine;
 
 namespace Fight.Engine.Bytecode

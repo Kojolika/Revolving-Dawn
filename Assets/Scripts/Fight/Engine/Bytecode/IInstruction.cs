@@ -12,4 +12,25 @@ namespace Fight.Engine.Bytecode
         /// <param name="context">The current execution context</param>
         void Execute(Context context);
     }
+
+    /// <summary>
+    /// Helper interface to display the type popped into memory in the <see cref="Tooling.StaticData.EditorUI.EditorWindow"/>
+    /// </summary>
+    public interface IPop<T> : IInstruction
+    {
+    }
+
+    /// <summary>
+    /// Helper interface to display the types popped into memory in the <see cref="Tooling.StaticData.EditorUI.EditorWindow"/>
+    /// </summary>
+    public interface IPop<T1, T2> : IInstruction
+    {
+    }
+
+    /// <summary>
+    /// Helper interface to display the types pushed into memory in the <see cref="Tooling.StaticData.EditorUI.EditorWindow"/>
+    /// </summary>
+    public interface IPush<T> : IInstruction
+    {
+    }
 }

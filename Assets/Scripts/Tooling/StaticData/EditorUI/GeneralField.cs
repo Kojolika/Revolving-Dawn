@@ -1,26 +1,27 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fight.Engine.Bytecode;
-using ModestTree;
 using Tooling.Logging;
-using Tooling.StaticData.Attributes;
-using Tooling.StaticData.Attributes.Custom;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
+using Utils.Extensions;
 using Object = UnityEngine.Object;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// A property field that supports multiple types.
     /// </summary>
     public class GeneralField : VisualElement
     {
+        /// <summary>
+        /// The type this field is drawing.
+        /// </summary>
         private readonly Type type;
 
         /// <summary>
@@ -42,7 +43,20 @@ namespace Tooling.StaticData
 
         private readonly bool isArrayElementField;
 
+        /// <summary>
+        /// The custom decorator for this visual element. See <see cref="DecoratorManager"/> for usage.
+        /// </summary>
+        private readonly IDecorator decorator;
+
+        /// <summary>
+        /// The label to show when a <see cref="StaticData"/> reference is null.
+        /// </summary>
         private const string StaticDataNullLabel = "null";
+
+        /// <summary>
+        /// The name of the <see cref="VisualElement"/> that is actually drawing the <see cref="type"/>
+        /// </summary>
+        private const string FieldDrawerName = "FieldDrawer";
 
         public GeneralField(Type type,
             object underlyingObject,
@@ -55,34 +69,65 @@ namespace Tooling.StaticData
             this.valueProvider = valueProvider;
             this.callback = callback;
             this.isArrayElementField = isArrayElementField;
+            this.decorator = DecoratorManager.Instance.Decorators.GetValueOrDefault(type);
 
             RefreshView();
+        }
+
+
+        private void RefreshView()
+        {
+            Clear();
+
+            style.flexDirection = FlexDirection.Column;
+
+            if (isArrayElementField)
+            {
+                var rowElement = new VisualElement
+                {
+                    style =
+                    {
+                        flexDirection = FlexDirection.Row
+                    }
+                };
+
+                arrayIndexLabel = new Label(((ArrayValueProvider)valueProvider).ArrayIndex.ToString())
+                {
+                    style =
+                    {
+                        minWidth = 16,
+                        alignSelf = Align.FlexStart,
+                        alignItems = Align.Center,
+                        alignContent = Align.Center,
+                        unityTextAlign = TextAnchor.MiddleCenter,
+                        marginTop = 1
+                    }
+                };
+                rowElement.Add(arrayIndexLabel);
+                rowElement.Add(DrawEditorForType(type));
+                Add(rowElement);
+            }
+            else
+            {
+                Add(DrawEditorForType(type));
+            }
+
+            decorator?.DecorateElement(this, GetValue());
         }
 
         /// <summary>
         /// Draws an editor field for the given type.
         /// </summary>
-        private void DrawEditorForType(Type type)
+        private VisualElement DrawEditorForType(Type type)
         {
             if (type == null)
             {
-                Add(new Label($"Passed null type to {nameof(DrawEditorForType)}"));
-                return;
+                return new Label($"Passed null type to {nameof(DrawEditorForType)}");
             }
 
             if (type.GetCustomAttribute<GeneralFieldIgnoreAttribute>()?.IgnoreType == IgnoreType.Field)
             {
-                return;
-            }
-
-            // IInstruction specific, may want to generalize later
-            var instructionDisplayAttribute = type.GetCustomAttributes<InstructionDisplayAttribute>().ToList();
-            var displayInputAttribute = instructionDisplayAttribute.FirstOrDefault(atr => atr.Display == DisplayType.Input);
-            var displayOutputAttribute = instructionDisplayAttribute.FirstOrDefault(atr => atr.Display == DisplayType.Output);
-
-            if (displayInputAttribute != null)
-            {
-                Add(new Label($"Inputs: {displayInputAttribute.Types.Select(t => t.Name).Aggregate((a, b) => $"{a}, {b}")}"));
+                return new VisualElement();
             }
 
             VisualElement editorForFieldType;
@@ -144,12 +189,9 @@ namespace Tooling.StaticData
                 editorForFieldType = GetErrorElement(type);
             }
 
-            Add(editorForFieldType);
+            editorForFieldType.name = FieldDrawerName;
 
-            if (displayOutputAttribute != null)
-            {
-                Add(new Label($"Outputs: {displayOutputAttribute.Types.Select(type => type.Name).Aggregate((a, b) => $"{a}, {b}")}"));
-            }
+            return editorForFieldType;
         }
 
         /// <summary>
@@ -327,8 +369,7 @@ namespace Tooling.StaticData
                 .Where(t => type.IsAssignableFrom(t)
                             && !t.IsAbstract
                             && !t.IsInterface
-                            && (!(t.GetCustomAttribute<GeneralFieldIgnoreAttribute>() is var ignoreAttribute) ||
-                                ignoreAttribute?.IgnoreType != IgnoreType.Interface)
+                            && t.GetCustomAttribute<GeneralFieldIgnoreAttribute>() is not { IgnoreType: IgnoreType.Interface }
                             && t.GetInterfaces()
                                 .All(tInterface => tInterface.GetCustomAttribute<GeneralFieldIgnoreAttribute>() == null))
                 .ToList();
@@ -474,30 +515,6 @@ namespace Tooling.StaticData
             RefreshView();
         }
 
-        private void RefreshView()
-        {
-            Clear();
-
-            if (isArrayElementField)
-            {
-                style.flexDirection = FlexDirection.Row;
-                arrayIndexLabel = new Label(((ArrayValueProvider)valueProvider).ArrayIndex.ToString())
-                {
-                    style =
-                    {
-                        minWidth = 16,
-                        alignSelf = Align.Center,
-                        alignItems = Align.Center,
-                        alignContent = Align.Center,
-                        unityTextAlign = TextAnchor.MiddleCenter,
-                    }
-                };
-                Add(arrayIndexLabel);
-            }
-
-            DrawEditorForType(type);
-        }
-
         /// <summary>
         /// Sets the value on the underlying instance this field is bound to.
         /// The <see cref="underlyingObject"/>.
@@ -528,6 +545,14 @@ namespace Tooling.StaticData
         private VisualElement GetErrorElement(Type type)
         {
             return new Label($"No editor created for type {type}");
+        }
+
+        /// <summary>
+        /// Returns  the <see cref="VisualElement"/> that is actually drawing the <see cref="type"/>
+        /// </summary>
+        public VisualElement GetFieldDrawer()
+        {
+            return this.Query<VisualElement>(FieldDrawerName).First();
         }
     }
 }

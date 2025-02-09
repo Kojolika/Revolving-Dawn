@@ -1,11 +1,9 @@
-using Tooling.StaticData.Attributes.Custom;
-
 namespace Fight.Engine.Bytecode
 {
     [System.Serializable]
-    [InstructionDisplay(DisplayType.Input, typeof(Boolean), typeof(Boolean))]
-    [InstructionDisplay(DisplayType.Output, typeof(Boolean))]
-    public struct Or : IInstruction
+    public struct Or :
+        IPop<Boolean, Boolean>,
+        IPush<Boolean>
     {
         public void Execute(Context context)
         {

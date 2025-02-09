@@ -1,7 +1,9 @@
 namespace Fight.Engine.Bytecode
 {
     [System.Serializable]
-    public struct Add : IInstruction
+    public struct Add :
+        IPop<Literal, Literal>,
+        IPush<Literal>
     {
         public void Execute(Context context)
         {

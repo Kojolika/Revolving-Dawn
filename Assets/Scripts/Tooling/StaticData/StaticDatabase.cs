@@ -14,8 +14,14 @@ using Utils.Extensions;
 
 namespace Tooling.StaticData
 {
+    [InitializeOnLoad]
     public class StaticDatabase
     {
+        static StaticDatabase()
+        {
+            Instance.BuildDictionaryFromJson();
+        }
+
         private static StaticDatabase instance;
 
         public static StaticDatabase Instance

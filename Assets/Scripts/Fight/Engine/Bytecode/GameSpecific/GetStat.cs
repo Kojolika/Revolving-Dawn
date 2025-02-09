@@ -1,6 +1,4 @@
 using Tooling.StaticData;
-using Tooling.StaticData.Attributes.Custom;
-using UnityEngine;
 
 namespace Fight.Engine.Bytecode
 {
@@ -8,8 +6,9 @@ namespace Fight.Engine.Bytecode
     /// Gets the stat value for a combat participant.
     /// </summary>
     [System.Serializable]
-    [InstructionDisplay(DisplayType.Output, typeof(Literal))]
-    public struct GetStat : IInstruction
+    public struct GetStat :
+        IPop<ICombatParticipant, Stat>,
+        IPush<Literal>
     {
         public void Execute(Context context)
         {

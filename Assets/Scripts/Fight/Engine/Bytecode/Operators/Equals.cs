@@ -3,13 +3,10 @@ using UnityEngine;
 namespace Fight.Engine.Bytecode
 {
     [System.Serializable]
-    public struct Equals : IInstruction
+    public struct Equals : 
+        IPop<Literal, Literal>,
+        IPush<Boolean>
     {
-        public void Execute(IWorkingMemory workingMemory, IFightContext context, ILogger logger)
-        {
-
-        }
-
         public void Execute(Context context)
         {
             if (context.Memory.TryPop<Literal>(out var literal1)

@@ -1,11 +1,11 @@
 using Tooling.StaticData;
-using Tooling.StaticData.Attributes.Custom;
 
 namespace Fight.Engine.Bytecode
 {
     [System.Serializable]
-    [InstructionDisplay(DisplayType.Output, typeof(Literal))]
-    public struct GetBuff : IInstruction
+    public struct GetBuff :
+        IPop<ICombatParticipant, Buff>,
+        IPush<Literal>
     {
         public void Execute(Context context)
         {
