@@ -9,7 +9,7 @@ namespace Fight.Engine.Bytecode
     [GeneralFieldIgnore(IgnoreType.Interface)]
     public class Expression : IInstruction
     {
-        [SerializeField, JsonProperty] private List<IInstruction> instructions;
+        public List<IInstruction> Instructions;
 
         private IStoreable result;
         private bool hasBeenEvaluated;
@@ -31,7 +31,7 @@ namespace Fight.Engine.Bytecode
 
         public void Execute(Context context)
         {
-            foreach (var instruction in instructions)
+            foreach (var instruction in Instructions)
             {
                 instruction.Execute(context);
             }

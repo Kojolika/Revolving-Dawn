@@ -70,10 +70,14 @@ namespace Tooling.StaticData.EditorUI
             this.callback = callback;
             this.isArrayElementField = isArrayElementField;
             this.decorator = DecoratorManager.Instance.Decorators.GetValueOrDefault(type);
+            this.callback += _ =>
+            {
+                decorator?.Dispose(this);
+                decorator?.DecorateElement(this, GetValue());
+            };
 
             RefreshView();
         }
-
 
         private void RefreshView()
         {
@@ -83,14 +87,6 @@ namespace Tooling.StaticData.EditorUI
 
             if (isArrayElementField)
             {
-                var rowElement = new VisualElement
-                {
-                    style =
-                    {
-                        flexDirection = FlexDirection.Row
-                    }
-                };
-
                 arrayIndexLabel = new Label(((ArrayValueProvider)valueProvider).ArrayIndex.ToString())
                 {
                     style =
@@ -103,6 +99,7 @@ namespace Tooling.StaticData.EditorUI
                         marginTop = 1
                     }
                 };
+                var rowElement = new VisualElement { style = { flexDirection = FlexDirection.Row } };
                 rowElement.Add(arrayIndexLabel);
                 rowElement.Add(DrawEditorForType(type));
                 Add(rowElement);
@@ -222,14 +219,7 @@ namespace Tooling.StaticData.EditorUI
         /// <exception cref="ArgumentException">Fired if the fieldInfo is not a type of <see cref="IList"/></exception>
         private VisualElement CreateListField(Type type)
         {
-            var root = new VisualElement
-            {
-                style =
-                {
-                    flexDirection = FlexDirection.Row,
-                    minWidth = 200
-                }
-            };
+            var root = new VisualElement { style = { flexDirection = FlexDirection.Row, minWidth = 200 } };
             // If the type is an array
             var elementType = type.IsArray
                 ? type.GetElementType()
@@ -244,7 +234,11 @@ namespace Tooling.StaticData.EditorUI
             var listView = new ListView
             {
                 itemsSource = itemsSource,
-                makeItem = () => new GeneralField(elementType, itemsSource, new ArrayValueProvider(itemsSource.Count - 1), null, true),
+                makeItem = () => new GeneralField(elementType,
+                    itemsSource,
+                    new ArrayValueProvider(itemsSource.Count - 1),
+                    callback: _ => callback.Invoke(ChangeEvent<object>.GetPooled()),
+                    true),
                 bindItem = (item, index) => ((GeneralField)item).BindArrayIndex(index),
                 unbindItem = (item, _) => ((GeneralField)item).BindArrayIndex(-1),
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
@@ -257,12 +251,14 @@ namespace Tooling.StaticData.EditorUI
                 showFoldoutHeader = true
             };
 
+            listView.itemsAdded += _ => callback?.Invoke(ChangeEvent<object>.GetPooled());
+            listView.itemsRemoved += _ => callback?.Invoke(ChangeEvent<object>.GetPooled());
+            listView.itemsSourceChanged += () => callback?.Invoke(ChangeEvent<object>.GetPooled());
+            listView.itemIndexChanged += (_, _) => callback?.Invoke(ChangeEvent<object>.GetPooled());
+
             root.Add(listView);
 
-            var buttonContainer = new VisualElement
-            {
-                style = { flexDirection = FlexDirection.Column }
-            };
+            var buttonContainer = new VisualElement { style = { flexDirection = FlexDirection.Column } };
             root.Add(buttonContainer);
             buttonContainer.Add(new Button(() =>
             {
@@ -299,21 +295,11 @@ namespace Tooling.StaticData.EditorUI
 
         private VisualElement CreateStaticDataField(Type type)
         {
-            var root = new VisualElement
-            {
-                style =
-                {
-                    flexDirection = FlexDirection.Row,
-                    alignItems = Align.FlexStart
-                }
-            };
+            var root = new VisualElement { style = { flexDirection = FlexDirection.Row, alignItems = Align.FlexStart } };
 
             var nameLabel = new Label((GetValue() as StaticData)?.Name ?? StaticDataNullLabel)
             {
-                style =
-                {
-                    alignSelf = Align.Center, minWidth = 40
-                }
+                style = { alignSelf = Align.Center, minWidth = 40 }
             };
 
             root.Add(new ButtonIcon(
@@ -323,6 +309,11 @@ namespace Tooling.StaticData.EditorUI
             root.Add(nameLabel);
 
             callback += evt => { OnStaticDataReferenceChanged(evt.newValue as StaticData, false); };
+
+            if (!type.IsInstanceOfType(GetValue()))
+            {
+                SetValue(null);
+            }
 
             return root;
 
@@ -390,11 +381,7 @@ namespace Tooling.StaticData.EditorUI
 
             var dropDown = new DropdownField(concreteTypesAsStrings, typeToDisplay?.ToString())
             {
-                style =
-                {
-                    flexDirection = FlexDirection.Column,
-                    marginLeft = 0
-                }
+                style = { flexDirection = FlexDirection.Column, marginLeft = 0 }
             };
 
             root.Add(dropDown);
@@ -416,6 +403,8 @@ namespace Tooling.StaticData.EditorUI
                 root.Remove(interfaceField);
                 interfaceField = CreateGeneralFieldForInterfaceType(typeToDisplay);
                 root.Add(interfaceField);
+
+                callback?.Invoke(ChangeEvent<object>.GetPooled());
             });
 
             OnTypeSelected(typeToDisplay, currentValueType);
@@ -542,13 +531,14 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Returns what to draw when the specified type cannot be drawn.
         /// </summary>
-        private VisualElement GetErrorElement(Type type)
+        private static VisualElement GetErrorElement(Type type)
         {
             return new Label($"No editor created for type {type}");
         }
 
         /// <summary>
-        /// Returns  the <see cref="VisualElement"/> that is actually drawing the <see cref="type"/>
+        /// Returns the <see cref="VisualElement"/> that is actually drawing the <see cref="type"/>
+        /// If this is drawing an array, you may want to just use the generalfield itself instead of this.
         /// </summary>
         public VisualElement GetFieldDrawer()
         {

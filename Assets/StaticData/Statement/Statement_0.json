@@ -1,6 +1,6 @@
 {
-  "statement": {
-    "instructions": [
+  "ByteStatement": {
+    "Instructions": [
       {
         "$type": "Fight.Engine.Bytecode.GetStat, Assembly-CSharp"
       },

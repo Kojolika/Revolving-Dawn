@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Tooling.StaticData.EditorUI;
 using UnityEngine;
@@ -9,11 +10,11 @@ namespace Fight.Engine.Bytecode
     [GeneralFieldIgnore(IgnoreType.Interface)]
     public class Statement : IInstruction
     {
-        [SerializeField, JsonProperty] private List<IInstruction> instructions;
+        public List<IInstruction> Instructions;
 
         public void Execute(Context context)
         {
-            foreach (var instruction in instructions)
+            foreach (var instruction in Instructions)
             {
                 instruction.Execute(context);
             }

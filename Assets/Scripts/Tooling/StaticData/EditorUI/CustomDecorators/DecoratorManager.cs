@@ -46,13 +46,7 @@ namespace Tooling.StaticData.EditorUI
                 }
 
                 var typeReceivingCallback = decorator.DecorateElementType;
-
-                if (!dictionary.ContainsKey(typeReceivingCallback))
-                {
-                    MyLogger.Log($"adding {typeReceivingCallback} to dictionary");
-                    dictionary.Add(typeReceivingCallback, decorator);
-                }
-                else
+                if (!dictionary.TryAdd(typeReceivingCallback, decorator))
                 {
                     MyLogger.LogWarning($"There's already a decorator type {typeReceivingCallback} defined in out decorator dictionary." +
                                         $"Ignoring this decorator from type {type}");

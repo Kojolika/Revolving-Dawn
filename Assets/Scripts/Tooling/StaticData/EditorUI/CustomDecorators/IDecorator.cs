@@ -32,5 +32,10 @@ namespace Tooling.StaticData.EditorUI
         /// Allows custom control of how the <see cref="GeneralField"/> draws the <see cref="DecorateElementType"/> type.
         /// </summary>
         void DecorateElement(GeneralField generalField, object element);
+
+        /// <summary>
+        /// You must call this to remove any elements you add in <see cref="DecorateElement"/>
+        /// </summary>
+        void Dispose(GeneralField generalField);
     }
 }

@@ -1,3 +1,6 @@
+using UnityEngine.Serialization;
+using Utils.Extensions;
+
 namespace Fight.Engine.Bytecode
 {
     /// <summary>
@@ -6,26 +9,38 @@ namespace Fight.Engine.Bytecode
     [System.Serializable]
     public struct If : IInstruction
     {
+        public Expression Condition;
+        public Statement IfStatement;
+        public Statement ElseStatement;
+
         public void Execute(Context context)
         {
-            if (context.InputStream.TryReadNextTwo(out Expression expression, out Statement statement))
+            if (Condition?.Instructions.IsNullOrEmpty() ?? true)
             {
-                expression.Execute(context);
-                if (!expression.TryEvaluate(out Boolean result))
-                {
-                    context.Logger.Log(LogLevel.Error, $"Expected {typeof(Expression)} to evaluate to a {typeof(Boolean)}!");
-                    return;
-                }
+                context.Logger.Log(LogLevel.Error, $"{nameof(Condition)} is null or empty!");
+                return;
+            }
 
-                if (result.value)
-                {
-                    statement.Execute(context);
-                }
+            if (IfStatement?.Instructions.IsNullOrEmpty() ?? true)
+            {
+                context.Logger.Log(LogLevel.Error, $"{nameof(IfStatement)} is null or empty!");
+                return;
+            }
+
+            Condition.Execute(context);
+            if (!Condition.TryEvaluate(out Boolean result))
+            {
+                context.Logger.Log(LogLevel.Error, $"Expected {typeof(Expression)} to evaluate to a {typeof(Boolean)}!");
+                return;
+            }
+
+            if (result.value)
+            {
+                IfStatement.Execute(context);
             }
             else
             {
-                context.Logger.Log(LogLevel.Error,
-                    $"Expected {typeof(Expression)} and {typeof(Statement)} to be next in the input stream!");
+                ElseStatement?.Execute(context);
             }
         }
     }

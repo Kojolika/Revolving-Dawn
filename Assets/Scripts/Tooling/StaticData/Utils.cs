@@ -9,7 +9,7 @@ namespace Tooling.StaticData
     public static class Utils
     {
         /// <summary>
-        /// Grabs the fields that are displayable in the <see cref="EditorWindow"/>
+        /// Grabs the fields that are displayable in the <see cref="EditorUI.EditorWindow"/>
         /// </summary>
         public static List<FieldInfo> GetFields(Type type)
         {
@@ -28,7 +28,7 @@ namespace Tooling.StaticData
         }
 
         /// <summary>
-        /// Grabs the field with the specified name that is displayable in the <see cref="EditorWindow"/>
+        /// Grabs the field with the specified name that is displayable in the <see cref="EditorUI.EditorWindow"/>
         /// </summary>
         public static FieldInfo GetField(Type type, string fieldName)
         {

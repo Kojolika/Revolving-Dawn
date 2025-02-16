@@ -1,18 +1,18 @@
 using Fight.Engine.Bytecode;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Tooling.StaticData
 {
     [System.Serializable]
     public class Statement : StaticData, ITriggerPoint
     {
-        [SerializeField, JsonProperty]
-        private Fight.Engine.Bytecode.Statement statement;
+        public Fight.Engine.Bytecode.Statement ByteStatement;
 
         public void Execute(Context context)
         {
-            statement?.Execute(context);
+            ByteStatement?.Execute(context);
         }
     }
 }

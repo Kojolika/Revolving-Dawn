@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tooling.Logging;
 using Utils.Extensions;
 
@@ -17,5 +18,94 @@ namespace Fight.Engine.Bytecode
         {
             return default;
         }
+
+        public static InstructionInfo GetInputAndOutputTypes(IInstruction instruction)
+        {
+            var inputAndOutputTypes = new InstructionInfo
+            {
+                InputTypes = new(),
+                OutputTypes = new()
+            };
+
+            if (instruction == null)
+            {
+                return inputAndOutputTypes;
+            }
+
+            var instructionType = instruction.GetType();
+            var elementInterfaces = instructionType.GetInterfaces();
+
+            InstructionInfo instructionInfo;
+            switch (instruction)
+            {
+                case While whileInstruction:
+                    instructionInfo = GetInputAndOutputTypes(whileInstruction.Condition?.Instructions);
+                    inputAndOutputTypes.InputTypes.AddRange(instructionInfo.InputTypes);
+                    inputAndOutputTypes.OutputTypes.AddRange(instructionInfo.OutputTypes);
+                    break;
+                case If ifInstruction:
+                    instructionInfo = GetInputAndOutputTypes(ifInstruction.Condition?.Instructions);
+                    inputAndOutputTypes.InputTypes.AddRange(instructionInfo.InputTypes);
+                    inputAndOutputTypes.OutputTypes.AddRange(instructionInfo.OutputTypes);
+                    break;
+                case Expression expressionInstruction:
+                    instructionInfo = GetInputAndOutputTypes(expressionInstruction.Instructions);
+                    inputAndOutputTypes.InputTypes.AddRange(instructionInfo.InputTypes);
+                    inputAndOutputTypes.OutputTypes.AddRange(instructionInfo.OutputTypes);
+                    break;
+            }
+
+            var pushInterface = elementInterfaces
+                .FirstOrDefault(iType => iType.IsGenericType && iType.GetGenericTypeDefinition() == typeof(IPush<>));
+            if (pushInterface != null)
+            {
+                inputAndOutputTypes.OutputTypes.Add(pushInterface.GetGenericArguments()[0]);
+            }
+
+            var popInterface = elementInterfaces
+                .FirstOrDefault(iType => iType.IsGenericType && iType.GetGenericTypeDefinition() == typeof(IPop<>));
+            if (popInterface != null)
+            {
+                inputAndOutputTypes.InputTypes.Add(popInterface.GetGenericArguments()[0]);
+            }
+
+            popInterface = elementInterfaces
+                .FirstOrDefault(iType => iType.IsGenericType && iType.GetGenericTypeDefinition() == typeof(IPop<,>));
+            if (popInterface != null)
+            {
+                inputAndOutputTypes.InputTypes.AddRange(popInterface.GetGenericArguments());
+            }
+
+            return inputAndOutputTypes;
+        }
+
+        public static InstructionInfo GetInputAndOutputTypes(List<IInstruction> instructions)
+        {
+            var inputAndOutputTypes = new InstructionInfo
+            {
+                InputTypes = new(),
+                OutputTypes = new()
+            };
+
+            if (instructions.IsNullOrEmpty())
+            {
+                return inputAndOutputTypes;
+            }
+
+            foreach (var instruction in instructions)
+            {
+                var instructionInputAndOutputTypes = GetInputAndOutputTypes(instruction);
+                inputAndOutputTypes.InputTypes.AddRange(instructionInputAndOutputTypes.InputTypes);
+                inputAndOutputTypes.OutputTypes.AddRange(instructionInputAndOutputTypes.OutputTypes);
+            }
+
+            return inputAndOutputTypes;
+        }
+    }
+
+    public struct InstructionInfo
+    {
+        public List<Type> InputTypes;
+        public List<Type> OutputTypes;
     }
 }
