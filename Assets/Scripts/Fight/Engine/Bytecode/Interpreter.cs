@@ -62,6 +62,11 @@ namespace Fight.Engine.Bytecode
                 inputAndOutputTypes.OutputTypes.Add(pushInterface.GetGenericArguments()[0]);
             }
 
+            if (instruction is IPush push && push.Type != null)
+            {
+                inputAndOutputTypes.OutputTypes.Add(push.Type);
+            }
+
             var popInterface = elementInterfaces
                 .FirstOrDefault(iType => iType.IsGenericType && iType.GetGenericTypeDefinition() == typeof(IPop<>));
             if (popInterface != null)
@@ -92,19 +97,53 @@ namespace Fight.Engine.Bytecode
                 return inputAndOutputTypes;
             }
 
-            foreach (var instruction in instructions)
+            var outputs = new List<Type>();
+
+            foreach (var instructionInfo in instructions.Select(GetInputAndOutputTypes))
             {
-                var instructionInputAndOutputTypes = GetInputAndOutputTypes(instruction);
-                inputAndOutputTypes.InputTypes.AddRange(instructionInputAndOutputTypes.InputTypes);
-                inputAndOutputTypes.OutputTypes.AddRange(instructionInputAndOutputTypes.OutputTypes);
+                foreach (var type in instructionInfo.InputTypes)
+                {
+                    if (outputs.IndexOf(type) is var typeIndex and >= 0)
+                    {
+                        outputs.RemoveAt(typeIndex);
+                    }
+                    else
+                    {
+                        inputAndOutputTypes.InputTypes.Add(type);
+                    }
+                }
+
+                foreach (var type in instructionInfo.OutputTypes)
+                {
+                    outputs.Add(type);
+                }
             }
 
             return inputAndOutputTypes;
         }
     }
 
+    // Deal Damage Example:
+    // Inputs: Literal, ICombatParticipant
+    // Outputs:
+    // Store: Stat
+    //    Input: 
+    //    Output: Health
+    // SetStat:
+    //    Input: Literal, ICombatParticipant, Stat
+
+    // Initial Stack:
+    // ICombatParticipant
+    // Literal
+
+    // After Store:
+    // Health
+    // ICombatParticipant
+    // Literal
+
     public struct InstructionInfo
     {
+        public bool IsValid;
         public List<Type> InputTypes;
         public List<Type> OutputTypes;
     }

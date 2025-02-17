@@ -25,4 +25,28 @@ namespace Fight.Engine.Bytecode
             }
         }
     }
+
+    /// <summary>
+    /// Sets the stat value for a combat participant.
+    /// </summary>
+    [System.Serializable]
+    public struct SetStat :
+        IPop<ICombatParticipant, Stat>,
+        IPop<Literal>
+    {
+        public void Execute(Context context)
+        {
+            if (context.Memory.TryPop<ICombatParticipant, Stat>(out var combatParticipant, out var stat))
+            {
+                if (context.Memory.TryPop<Literal>(out var literal))
+                {
+                    combatParticipant.Stats[stat] = literal.Value;
+                }
+            }
+            else
+            {
+                context.Logger.Log(LogLevel.Error, "Failed to find stat on top of the stack!");
+            }
+        }
+    }
 }

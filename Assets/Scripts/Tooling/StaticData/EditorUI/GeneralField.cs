@@ -244,11 +244,12 @@ namespace Tooling.StaticData.EditorUI
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 reorderable = true,
                 showBorder = true,
-                style = { minWidth = 150 },
+                style = { minWidth = 150, display = DisplayStyle.Flex },
                 showBoundCollectionSize = true,
                 virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
                 reorderMode = ListViewReorderMode.Animated,
-                showFoldoutHeader = true
+                showFoldoutHeader = true,
+                horizontalScrollingEnabled = true
             };
 
             listView.itemsAdded += _ => callback?.Invoke(ChangeEvent<object>.GetPooled());
@@ -340,7 +341,11 @@ namespace Tooling.StaticData.EditorUI
             var root = new VisualElement();
             foreach (var field in Utils.GetFields(type))
             {
-                root.Add(
+                var foldout = new Foldout
+                {
+                    text = $"{field.Name}:"
+                };
+                foldout.Add(
                     new GeneralField(
                         field.FieldType,
                         currentObj,
@@ -348,6 +353,8 @@ namespace Tooling.StaticData.EditorUI
                         callback
                     )
                 );
+
+                root.Add(foldout);
             }
 
             return root;

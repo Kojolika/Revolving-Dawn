@@ -13,6 +13,12 @@ namespace Fight.Engine.Bytecode
         void Execute(Context context);
     }
 
+    public interface IPop : IInstruction
+    {
+        System.Type Type { get; }
+    }
+
+
     /// <summary>
     /// Helper interface to display the type popped into memory in the <see cref="Tooling.StaticData.EditorUI.EditorWindow"/>
     /// </summary>
@@ -25,6 +31,11 @@ namespace Fight.Engine.Bytecode
     /// </summary>
     public interface IPop<T1, T2> : IInstruction
     {
+    }
+
+    public interface IPush : IInstruction
+    {
+        System.Type Type { get; }
     }
 
     /// <summary>

@@ -10,6 +10,7 @@ namespace Fight.Engine.Bytecode
     {
         void Push(IStoreable value);
         IStoreable Pop();
+        IStoreable Peek();
 
         /// <summary>
         /// Tries to pop a specific type off of the stack.
@@ -27,11 +28,16 @@ namespace Fight.Engine.Bytecode
         /// <returns>true if succeeded</returns>
         bool TryPop<T1, T2>(out T1 value, out T2 value2)
             where T1 : IStoreable where T2 : IStoreable;
+
+        int GetStackSize();
+        IStoreable ReadVariable(string name);
+        void StoreVariable(string name, IStoreable value);
     }
 
     public class WorkingMemory : IWorkingMemory
     {
         private readonly Stack<IStoreable> stack = new();
+        private readonly Dictionary<string, IStoreable> variables = new();
 
         public void Push(IStoreable value)
         {
@@ -41,6 +47,11 @@ namespace Fight.Engine.Bytecode
         public IStoreable Pop()
         {
             return stack.Pop();
+        }
+
+        public IStoreable Peek()
+        {
+            return stack.Peek();
         }
 
         public bool TryPop<T>(out T value)
@@ -102,9 +113,24 @@ namespace Fight.Engine.Bytecode
 
             return foundFirstValue && foundSecondValue;
         }
+
+        public int GetStackSize()
+        {
+            return stack.Count;
+        }
+
+        public IStoreable ReadVariable(string name)
+        {
+            return variables.GetValueOrDefault(name);
+        }
+
+        public void StoreVariable(string name, IStoreable value)
+        {
+            variables[name] = value;
+        }
     }
 
-    public class MockWorkingMemory : IWorkingMemory
+    /*public class MockWorkingMemory : IWorkingMemory
     {
         private readonly Stack<IStoreable> stack = new();
 
@@ -177,5 +203,10 @@ namespace Fight.Engine.Bytecode
 
             return foundFirstValue && foundSecondValue;
         }
-    }
+
+        public int GetStackSize()
+        {
+            return stack.Count;
+        }
+    }*/
 }

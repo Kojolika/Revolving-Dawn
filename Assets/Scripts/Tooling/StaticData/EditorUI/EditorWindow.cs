@@ -54,6 +54,8 @@ namespace Tooling.StaticData.EditorUI
             var root = rootVisualElement;
             root.Clear();
 
+            StaticDatabase.Instance.BuildDictionaryFromJson();
+
             var topToolBar = CreateTopToolBar();
             root.Add(topToolBar);
 

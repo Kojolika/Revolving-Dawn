@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Tooling.Logging;
 
-
 namespace Tooling.StaticData.EditorUI
 {
     /// <summary>

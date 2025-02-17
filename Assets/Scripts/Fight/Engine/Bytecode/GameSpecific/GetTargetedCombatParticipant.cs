@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text;
 
 namespace Fight.Engine.Bytecode
@@ -19,15 +18,12 @@ namespace Fight.Engine.Bytecode
     }
 
     [System.Serializable]
-    public struct GetAllCombatParticipants : IPush<List<ICombatParticipant>>
+    public struct GetAllCombatParticipants : IPush<StoreableList<ICombatParticipant>>
     {
         public void Execute(Context context)
         {
-            var combatParticipants = context.Fight.GetAllCombatants();
-            foreach (var combatParticipant in combatParticipants)
-            {
-                context.Memory.Push(combatParticipant);
-            }
+            var combatParticipants = context.Fight.GetAllCombatants().ToStoreableList();
+            context.Memory.Push(combatParticipants);
 
             var stringBuilder = new StringBuilder();
             for (int i = 0; i < combatParticipants.Count; i++)

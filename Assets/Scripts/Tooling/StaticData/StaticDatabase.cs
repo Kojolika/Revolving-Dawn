@@ -338,6 +338,8 @@ namespace Tooling.StaticData
             {
                 EditorUtility.ClearProgressBar();
             }
+            
+            BuildDictionaryFromJson();
 
             return;
 
