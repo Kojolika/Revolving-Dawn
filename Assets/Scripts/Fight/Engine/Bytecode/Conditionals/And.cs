@@ -1,8 +1,7 @@
 namespace Fight.Engine.Bytecode
 {
     [System.Serializable]
-    public struct And :
-        IPop<Boolean, Boolean>,
+    public struct And : IPop<Boolean, Boolean>,
         IPush<Boolean>
     {
         public void Execute(Context context)

@@ -3,8 +3,7 @@ using UnityEngine;
 namespace Fight.Engine.Bytecode
 {
     [System.Serializable]
-    public struct Equals :
-        IPop<Literal, Literal>,
+    public struct Equals : IPop<Literal, Literal>,
         IPush<Boolean>
     {
         public void Execute(Context context)
@@ -23,8 +22,7 @@ namespace Fight.Engine.Bytecode
     }
 
     [System.Serializable]
-    public struct GreaterThan :
-        IPop<Literal, Literal>,
+    public struct GreaterThan : IPop<Literal, Literal>,
         IPush<Boolean>
     {
         public void Execute(Context context)
@@ -43,8 +41,7 @@ namespace Fight.Engine.Bytecode
     }
 
     [System.Serializable]
-    public struct GreaterThanOrEqual :
-        IPop<Literal, Literal>,
+    public struct GreaterThanOrEqual : IPop<Literal, Literal>,
         IPush<Boolean>
     {
         public void Execute(Context context)
@@ -63,8 +60,7 @@ namespace Fight.Engine.Bytecode
     }
 
     [System.Serializable]
-    public struct LessThan :
-        IPop<Literal, Literal>,
+    public struct LessThan : IPop<Literal, Literal>,
         IPush<Boolean>
     {
         public void Execute(Context context)
@@ -83,8 +79,7 @@ namespace Fight.Engine.Bytecode
     }
 
     [System.Serializable]
-    public struct LessThanOrEqual :
-        IPop<Literal, Literal>,
+    public struct LessThanOrEqual : IPop<Literal, Literal>,
         IPush<Boolean>
     {
         public void Execute(Context context)

@@ -287,7 +287,7 @@ namespace Tooling.StaticData.EditorUI
                             field.FieldType,
                             editingObj,
                             new FieldValueProvider(field),
-                            _ => hasUnsavedChanges = true
+                            callback: _ => hasUnsavedChanges = true
                         )
                     );
                     root.Add(row);

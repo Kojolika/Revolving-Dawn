@@ -9,7 +9,7 @@ using Utils.Extensions;
 namespace Tooling.StaticData.EditorUI
 {
     [UsedImplicitly]
-    public class InstructionListDecorator : IDecorator<List<IInstruction>>
+    public class InstructionListDecorator //: IDecorator<List<IInstruction>>
     {
         public void DecorateElement(GeneralField generalField, List<IInstruction> instructions)
         {
@@ -51,7 +51,7 @@ namespace Tooling.StaticData.EditorUI
     }
 
     [UsedImplicitly]
-    public class InstructionDecorator : IDecorator<IInstruction>
+    public class InstructionDecorator //: IDecorator<IInstruction>
     {
         public static string InputLabelElementName => $"{nameof(InstructionDecorator)}.Input";
         public static string OutputLabelElementName => $"{nameof(InstructionDecorator)}.Output";

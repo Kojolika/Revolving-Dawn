@@ -9,7 +9,6 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
-using Utils.Extensions;
 using Object = UnityEngine.Object;
 
 namespace Tooling.StaticData.EditorUI
@@ -49,6 +48,11 @@ namespace Tooling.StaticData.EditorUI
         private readonly IDecorator decorator;
 
         /// <summary>
+        /// The custom drawer for this visual element. See <see cref="DrawerManager"/> for usage.
+        /// </summary>
+        private readonly IDrawer drawer;
+
+        /// <summary>
         /// The label to show when a <see cref="StaticData"/> reference is null.
         /// </summary>
         private const string StaticDataNullLabel = "null";
@@ -70,6 +74,7 @@ namespace Tooling.StaticData.EditorUI
             this.callback = callback;
             this.isArrayElementField = isArrayElementField;
             this.decorator = DecoratorManager.Instance.Decorators.GetValueOrDefault(type);
+            this.drawer = DrawerManager.Instance.Drawers.GetValueOrDefault(type);
             this.callback += _ =>
             {
                 decorator?.Dispose(this);
@@ -128,7 +133,11 @@ namespace Tooling.StaticData.EditorUI
             }
 
             VisualElement editorForFieldType;
-            if (typeof(int).IsAssignableFrom(type))
+            if (drawer != null)
+            {
+                editorForFieldType = drawer.Draw(GetValue, obj => SetValue(obj));
+            }
+            else if (typeof(int).IsAssignableFrom(type))
             {
                 editorForFieldType = CreateFieldForType<int, IntegerField>();
             }
@@ -140,13 +149,17 @@ namespace Tooling.StaticData.EditorUI
             {
                 editorForFieldType = CreateFieldForType<float, FloatField>();
             }
+            else if (typeof(double).IsAssignableFrom(type))
+            {
+                editorForFieldType = CreateFieldForType<double, DoubleField>();
+            }
             else if (typeof(bool).IsAssignableFrom(type))
             {
                 editorForFieldType = CreateFieldForType<bool, Toggle>();
             }
             else if (typeof(Enum).IsAssignableFrom(type))
             {
-                editorForFieldType = CreateFieldForType<Enum, EnumField>();
+                editorForFieldType = CreateEnumField(type);
             }
             else if (typeof(string).IsAssignableFrom(type))
             {
@@ -199,17 +212,37 @@ namespace Tooling.StaticData.EditorUI
         {
             var editorForFieldType = new TField
             {
-                value = (TType)GetValue(),
-                style =
-                {
-                    marginLeft = 0,
-                    minWidth = 150
-                }
+                label = valueProvider?.ValueName ?? string.Empty,
+                value = (TType)GetValue()
             };
 
             editorForFieldType.RegisterValueChangedCallback(evt => SetValue(evt.newValue));
 
             return editorForFieldType;
+        }
+
+        private PopupField<Enum> CreateEnumField(Type type)
+        {
+            var enumValues = Enum.GetValues(type).Cast<Enum>().ToList();
+            var popupField = new PopupField<Enum>(enumValues, enumValues.FirstOrDefault(), GetEnumName, GetEnumName)
+            {
+                style = { alignSelf = Align.FlexStart }
+            };
+
+            popupField.RegisterValueChangedCallback(evt => { SetValue(evt.newValue); });
+            return popupField;
+
+            // Returns the name of an Enum value or the overriden name
+            string GetEnumName(Enum value)
+            {
+                var valueName = Enum.GetName(type, value) ?? string.Empty;
+                return type.GetMember(valueName)
+                           .First()
+                           .GetCustomAttribute<OverrideNameAttribute>() is var prettifyNameAttribute
+                       && !string.IsNullOrEmpty(prettifyNameAttribute?.Name)
+                    ? prettifyNameAttribute.Name
+                    : valueName;
+            }
         }
 
         /// <summary>
@@ -238,7 +271,7 @@ namespace Tooling.StaticData.EditorUI
                     itemsSource,
                     new ArrayValueProvider(itemsSource.Count - 1),
                     callback: _ => callback.Invoke(ChangeEvent<object>.GetPooled()),
-                    true),
+                    isArrayElementField: true),
                 bindItem = (item, index) => ((GeneralField)item).BindArrayIndex(index),
                 unbindItem = (item, _) => ((GeneralField)item).BindArrayIndex(-1),
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
@@ -350,7 +383,7 @@ namespace Tooling.StaticData.EditorUI
                         field.FieldType,
                         currentObj,
                         new FieldValueProvider(field),
-                        callback
+                        callback: callback
                     )
                 );
 
@@ -370,10 +403,7 @@ namespace Tooling.StaticData.EditorUI
                             && t.GetCustomAttribute<GeneralFieldIgnoreAttribute>() is not { IgnoreType: IgnoreType.Interface }
                             && t.GetInterfaces()
                                 .All(tInterface => tInterface.GetCustomAttribute<GeneralFieldIgnoreAttribute>() == null))
-                .ToList();
-
-            var concreteTypesAsStrings = concreteTypes
-                .Select(t => t.ToString())
+                .Select(tInfo => tInfo.AsType())
                 .ToList();
 
             if (concreteTypes.Count < 1)
@@ -386,26 +416,34 @@ namespace Tooling.StaticData.EditorUI
                 ? currentValueType
                 : concreteTypes.First();
 
-            var dropDown = new DropdownField(concreteTypesAsStrings, typeToDisplay?.ToString())
+            var popupField = new PopupField<Type>(
+                concreteTypes,
+                typeToDisplay,
+                t => t.GetCustomAttribute<OverrideNameAttribute>() is { Name: not null } prettifyNameAttribute
+                    ? prettifyNameAttribute.Name
+                    : t.FullName,
+                t => t.GetCustomAttribute<OverrideNameAttribute>() is { Name: not null } prettifyNameAttribute
+                    ? prettifyNameAttribute.Name
+                    : t.FullName)
             {
-                style = { flexDirection = FlexDirection.Column, marginLeft = 0 }
+                style = { alignSelf = Align.FlexStart }
             };
 
-            root.Add(dropDown);
+            root.Add(popupField);
 
             var interfaceField = CreateGeneralFieldForInterfaceType(typeToDisplay);
             root.Add(interfaceField);
 
-            dropDown.RegisterValueChangedCallback(evt =>
+            popupField.RegisterValueChangedCallback(evt =>
             {
-                typeToDisplay = Type.GetType(evt.newValue);
+                typeToDisplay = evt.newValue;
                 if (typeToDisplay == null)
                 {
                     MyLogger.LogError($"Selected type {evt.newValue} but cannot find type in assembly!");
                     return;
                 }
 
-                OnTypeSelected(typeToDisplay, Type.GetType(evt.previousValue));
+                OnTypeSelected(typeToDisplay, evt.previousValue);
 
                 root.Remove(interfaceField);
                 interfaceField = CreateGeneralFieldForInterfaceType(typeToDisplay);

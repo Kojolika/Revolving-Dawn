@@ -1,8 +1,7 @@
 namespace Fight.Engine.Bytecode
 {
     [System.Serializable]
-    public struct Modulo :
-        IPop<Literal, Literal>,
+    public struct Modulo : IPop<Literal, Literal>,
         IPush<Literal>
     {
         public void Execute(Context context)

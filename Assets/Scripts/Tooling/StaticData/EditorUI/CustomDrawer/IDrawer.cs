@@ -1,23 +1,24 @@
 using System;
+using Tooling.Logging;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.EditorUI.CustomDrawer
+namespace Tooling.StaticData.EditorUI
 {
     public interface IDrawer
     {
         Type DrawType { get; }
-        IValueProvider ValueProvider { get; set; }
-        VisualElement Draw(object data);
+        VisualElement Draw(Func<object> getValueFunc, Action<object> setValueFunc);
     }
 
-    public interface IDrawer<in T> : IDrawer
+    public interface IDrawer<T> : IDrawer
     {
         Type IDrawer.DrawType => typeof(T);
-        VisualElement Draw(T data);
 
-        VisualElement IDrawer.Draw(object data)
+        VisualElement IDrawer.Draw(Func<object> getValueFunc, Action<object> setValueFunc)
         {
-            return Draw((T)data);
+            return Draw(() => (T)(getValueFunc?.Invoke() ?? default(T)), obj => setValueFunc.Invoke(obj));
         }
+
+        VisualElement Draw(Func<T> getValueFunc, Action<T> setValueFunc);
     }
 }
