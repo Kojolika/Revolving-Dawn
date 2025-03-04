@@ -1,8 +1,6 @@
-using Fight.Engine.Bytecode;
-
 namespace Tooling.StaticData
 {
-    public class Stat : StaticData, IStoreable
+    public class Stat : StaticData
     {
         public LocKey LocName;
         public LocKey Description;

@@ -1,18 +1,19 @@
-using Fight.Engine.Bytecode;
-using Newtonsoft.Json;
-using UnityEngine;
-using UnityEngine.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace Tooling.StaticData
 {
-    [System.Serializable]
+    [Serializable]
     public class Statement : StaticData, ITriggerPoint
     {
-        public Fight.Engine.Bytecode.Statement ByteStatement;
+        public List<Variable> Inputs;
+        public List<IInstruction> Instructions;
+    }
 
-        public void Execute(Context context)
-        {
-            ByteStatement?.Execute(context);
-        }
+    [Serializable]
+    public struct Variable
+    {
+        public string Name;
+        public LiteralExpression.Type Type;
     }
 }

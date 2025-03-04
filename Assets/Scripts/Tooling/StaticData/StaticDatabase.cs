@@ -70,8 +70,7 @@ namespace Tooling.StaticData
         private readonly MainValidator validator = new(
             new List<IValidator>
             {
-                new AssetReferenceValidator(),
-                new InstructionValidator()
+                new AssetReferenceValidator()
             }
         );
 

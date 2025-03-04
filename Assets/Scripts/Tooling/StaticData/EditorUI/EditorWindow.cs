@@ -262,35 +262,29 @@ namespace Tooling.StaticData.EditorUI
 
                 var fields = Utils.GetFields(selectedType);
 
-                // Move name to the top of our editor
+                // Move name to the top of our editor while keeping the order of the rest of the fields
                 if (fields.Count > 1)
                 {
                     var nameField = fields.First(field => field.Name == nameof(StaticData.Name));
                     var nameIndex = fields.IndexOf(nameField);
-                    (fields[0], fields[nameIndex]) = (fields[nameIndex], fields[0]);
+                    for (int i = fields.Count - 1; i > 0; i--)
+                    {
+                        if (i > nameIndex)
+                        {
+                            continue;
+                        }
+
+                        fields[i] = fields[i - 1];
+                    }
+
+                    fields[0] = nameField;
                 }
 
                 foreach (var field in fields)
                 {
-                    var row = new VisualElement
-                    {
-                        style = { flexDirection = FlexDirection.Row }
-                    };
-
-                    row.Add(new Label($"{field.Name}")
-                    {
-                        style = { minWidth = 100 }
-                    });
-
-                    row.Add(
-                        new GeneralField(
-                            field.FieldType,
-                            editingObj,
-                            new FieldValueProvider(field),
-                            callback: _ => hasUnsavedChanges = true
-                        )
-                    );
-                    root.Add(row);
+                    var generalField = new GeneralField(field.FieldType, new FieldValueProvider(field, editingObj));
+                    generalField.OnValueChanged += _ => hasUnsavedChanges = true;
+                    root.Add(generalField);
                 }
             }
 

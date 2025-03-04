@@ -1,7 +1,6 @@
 using System;
-using Fight.Engine.Bytecode;
+using System.Reflection;
 using JetBrains.Annotations;
-using Tooling.Logging;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
@@ -12,28 +11,36 @@ namespace Tooling.StaticData.EditorUI
     {
         private GeneralField typeSelectionField;
         private GeneralField literalDrawer;
-        private Source sourceType;
+        private LiteralExpression editingObject;
 
-        public VisualElement Draw(Func<LiteralExpression> getValueFunc, Action<LiteralExpression> setValueFunc)
+        public VisualElement Draw(Func<LiteralExpression> getValueFunc, Action<LiteralExpression> setValueFunc, string label)
         {
+            editingObject = getValueFunc.Invoke();
+
             var root = new VisualElement();
+            var foldout = new Foldout
+            {
+                text = "Options",
+                value = false // default to have the foldout closed
+            };
+            root.Add(foldout);
 
             var sourceTypeSelector = new GeneralField(
-                typeof(Source),
-                this,
-                new FieldValueProvider(typeof(Source).GetField(nameof(sourceType))),
-                callback: _ => RefreshView(root, getValueFunc, setValueFunc, getValueFunc.Invoke().ValueType));
-            root.Add(sourceTypeSelector);
+                typeof(LiteralExpression.Source),
+                new FieldValueProvider(typeof(LiteralDrawer).GetField(nameof(LiteralExpression.SourceType)), this)
+            );
+            sourceTypeSelector.OnValueChanged += _ => RefreshView(root, getValueFunc, setValueFunc, editingObject.ValueType);
+            foldout.Add(sourceTypeSelector);
 
             typeSelectionField = new GeneralField(
                 typeof(LiteralExpression.Type),
-                getValueFunc.Invoke(),
-                new FieldValueProvider(typeof(LiteralExpression).GetField(nameof(LiteralExpression.ValueType))),
-                callback: evt => RefreshView(root, getValueFunc, setValueFunc, (LiteralExpression.Type)evt.newValue)
+                new FieldValueProvider(typeof(LiteralExpression).GetField(nameof(LiteralExpression.ValueType)), getValueFunc.Invoke())
             );
-            root.Add(typeSelectionField);
+            typeSelectionField.OnValueChanged +=
+                newValue => RefreshView(root, getValueFunc, setValueFunc, (LiteralExpression.Type)newValue);
+            foldout.Add(typeSelectionField);
 
-            RefreshView(root, getValueFunc, setValueFunc, getValueFunc.Invoke().ValueType);
+            RefreshView(root, getValueFunc, setValueFunc, getValueFunc.Invoke()?.ValueType ?? LiteralExpression.Type.Null);
 
             return root;
         }
@@ -44,8 +51,11 @@ namespace Tooling.StaticData.EditorUI
             Action<LiteralExpression> setValueFunc,
             LiteralExpression.Type type)
         {
-            var literalExpression = getValueFunc.Invoke();
-            literalExpression.ValueType = type;
+            editingObject = getValueFunc.Invoke();
+            if (editingObject != null)
+            {
+                editingObject.ValueType = type;
+            }
 
             root.RemoveIfChild(literalDrawer);
 
@@ -55,71 +65,57 @@ namespace Tooling.StaticData.EditorUI
                     break;
                 case LiteralExpression.Type.Int:
                     var intField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.IntValue));
-                    literalDrawer = new GeneralField(
-                        typeof(int),
-                        literalExpression,
-                        new FieldValueProvider(intField),
-                        callback: evt =>
-                        {
-                            literalExpression.IntValue = (int)evt.newValue;
-                            setValueFunc.Invoke(literalExpression);
-                        }
-                    );
+                    literalDrawer = new GeneralField(typeof(int), new FieldValueProvider(intField, editingObject));
+
+                    literalDrawer.OnValueChanged += newValue =>
+                    {
+                        editingObject.IntValue = (int)newValue;
+                        setValueFunc.Invoke(editingObject);
+                    };
 
                     break;
                 case LiteralExpression.Type.Long:
                     var longField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.LongValue));
-                    literalDrawer = new GeneralField(
-                        typeof(long),
-                        literalExpression,
-                        new FieldValueProvider(longField),
-                        callback: evt =>
-                        {
-                            literalExpression.LongValue = (long)evt.newValue;
-                            setValueFunc.Invoke(literalExpression);
-                        }
-                    );
+                    literalDrawer = new GeneralField(typeof(long), new FieldValueProvider(longField, editingObject));
+
+                    literalDrawer.OnValueChanged += newValue =>
+                    {
+                        editingObject.LongValue = (long)newValue;
+                        setValueFunc.Invoke(editingObject);
+                    };
 
                     break;
                 case LiteralExpression.Type.Float:
                     var floatField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.FloatValue));
-                    literalDrawer = new GeneralField(
-                        typeof(float),
-                        literalExpression,
-                        new FieldValueProvider(floatField),
-                        callback: evt =>
-                        {
-                            literalExpression.FloatValue = (float)evt.newValue;
-                            setValueFunc.Invoke(literalExpression);
-                        }
-                    );
+                    literalDrawer = new GeneralField(typeof(float), new FieldValueProvider(floatField, editingObject));
+
+                    literalDrawer.OnValueChanged += newValue =>
+                    {
+                        editingObject.FloatValue = (float)newValue;
+                        setValueFunc.Invoke(editingObject);
+                    };
 
                     break;
                 case LiteralExpression.Type.Double:
                     var doubleField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.DoubleValue));
-                    literalDrawer = new GeneralField(
-                        typeof(double),
-                        literalExpression,
-                        new FieldValueProvider(doubleField),
-                        callback: evt =>
-                        {
-                            literalExpression.DoubleValue = (double)evt.newValue;
-                            setValueFunc.Invoke(literalExpression);
-                        }
-                    );
+                    literalDrawer = new GeneralField(typeof(double), new FieldValueProvider(doubleField, editingObject));
+
+                    literalDrawer.OnValueChanged += newValue =>
+                    {
+                        editingObject.DoubleValue = (double)newValue;
+                        setValueFunc.Invoke(editingObject);
+                    };
 
                     break;
                 case LiteralExpression.Type.Bool:
                     var boolField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.BoolValue));
-                    literalDrawer = new GeneralField(
-                        typeof(bool), literalExpression,
-                        new FieldValueProvider(boolField),
-                        callback: evt =>
-                        {
-                            literalExpression.BoolValue = (bool)evt.newValue;
-                            setValueFunc.Invoke(literalExpression);
-                        }
-                    );
+                    literalDrawer = new GeneralField(typeof(bool), new FieldValueProvider(boolField, editingObject));
+
+                    literalDrawer.OnValueChanged += newValue =>
+                    {
+                        editingObject.BoolValue = (bool)newValue;
+                        setValueFunc.Invoke(editingObject);
+                    };
 
                     break;
                 default:
@@ -129,17 +125,10 @@ namespace Tooling.StaticData.EditorUI
             if (literalDrawer != null)
             {
                 root.Add(literalDrawer);
-                literalDrawer.SetEnabled(sourceType == Source.Manual);
+                literalDrawer.SetEnabled((editingObject?.SourceType ?? LiteralExpression.Source.Manual) == LiteralExpression.Source.Manual);
             }
 
-            typeSelectionField?.SetEnabled(sourceType == Source.Manual);
-        }
-
-        private enum Source
-        {
-            Manual,
-            Saved,
-            Variable
+            typeSelectionField?.SetEnabled((editingObject?.SourceType ?? LiteralExpression.Source.Manual)  == LiteralExpression.Source.Manual);
         }
     }
 }

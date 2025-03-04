@@ -1,5 +1,4 @@
 using System;
-using Fight.Engine.Bytecode;
 using JetBrains.Annotations;
 using UnityEngine.UIElements;
 
@@ -8,22 +7,22 @@ namespace Tooling.StaticData.EditorUI
     [UsedImplicitly]
     public class ParenthesesDrawer : IDrawer<ParenthesesExpression>
     {
-        public VisualElement Draw(Func<ParenthesesExpression> getValueFunc, Action<ParenthesesExpression> setValueFunc)
+        public VisualElement Draw(Func<ParenthesesExpression> getValueFunc, Action<ParenthesesExpression> setValueFunc, string label)
         {
             var root = new VisualElement
             {
                 style = { flexDirection = FlexDirection.Row }
             };
 
-            root.Add(new Label("("));
+            root.Add(new Label("(") { style = { alignSelf = Align.FlexEnd } });
+
             var field = typeof(ParenthesesExpression).GetField(nameof(ParenthesesExpression.Middle));
-            root.Add(new GeneralField(
-                typeof(IExpression),
-                getValueFunc.Invoke(),
-                new FieldValueProvider(field),
-                callback: evt => setValueFunc.Invoke(new ParenthesesExpression { Middle = (IExpression)evt.newValue }))
-            );
-            root.Add(new Label(")"));
+            var parenthesesDrawer = new GeneralField(typeof(ExpressionBase), new FieldValueProvider(field, getValueFunc.Invoke()));
+            parenthesesDrawer.OnValueChanged +=
+                newValue => setValueFunc.Invoke(new ParenthesesExpression { Middle = (ExpressionBase)newValue });
+
+            root.Add(parenthesesDrawer);
+            root.Add(new Label(")") { style = { alignSelf = Align.FlexEnd } });
 
             return root;
         }

@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Fight.Engine.Bytecode;
-using Tooling.StaticData.Validation;
 using UnityEngine.AddressableAssets;
 
 namespace Tooling.StaticData

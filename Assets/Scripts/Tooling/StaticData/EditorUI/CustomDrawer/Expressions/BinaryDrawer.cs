@@ -1,7 +1,5 @@
 using System;
-using Fight.Engine.Bytecode;
 using JetBrains.Annotations;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Tooling.StaticData.EditorUI
@@ -9,82 +7,82 @@ namespace Tooling.StaticData.EditorUI
     [UsedImplicitly]
     public class BinaryDrawer : IDrawer<BinaryExpression>
     {
-        private IExpression leftExpression;
-        private IExpression rightExpression;
+        private ExpressionBase leftExpression;
+        private ExpressionBase rightExpression;
         private BinaryExpression.Type operatorType;
 
-        public VisualElement Draw(Func<BinaryExpression> getValueFunc, Action<BinaryExpression> setValueFunc)
+        private GeneralField leftExpressionField;
+        private GeneralField rightExpressionField;
+        private GeneralField operatorField;
+
+        private Func<BinaryExpression> getValueFunc;
+        private Action<BinaryExpression> setValueFunc;
+
+        public VisualElement Draw(Func<BinaryExpression> getValueFunc, Action<BinaryExpression> setValueFunc, string label)
         {
-            var root = new VisualElement
-            {
-                style =
-                {
-                    flexDirection = FlexDirection.Row,
-                    borderBottomWidth = EditorWindow.BorderWidth,
-                    borderTopWidth = EditorWindow.BorderWidth,
-                    borderLeftWidth = EditorWindow.BorderWidth,
-                    borderRightWidth = EditorWindow.BorderWidth,
-                    borderBottomColor = EditorWindow.BorderColor,
-                    borderTopColor = EditorWindow.BorderColor,
-                    borderLeftColor = EditorWindow.BorderColor,
-                    borderRightColor = EditorWindow.BorderColor,
-                }
-            };
+            this.getValueFunc = getValueFunc;
+            this.setValueFunc = setValueFunc;
+
+            var root = new VisualElement { style = { flexDirection = FlexDirection.Row } };
 
             var binaryExpression = getValueFunc.Invoke();
-
             var leftField = typeof(BinaryExpression).GetField(nameof(BinaryExpression.Left));
-            root.Add(new GeneralField(
-                    typeof(IExpression),
-                    binaryExpression,
-                    new FieldValueProvider(leftField),
-                    evt =>
-                    {
-                        leftExpression = (IExpression)evt.newValue;
-                        setValueFunc.Invoke(
-                            new BinaryExpression { Left = leftExpression, Right = rightExpression, OperatorType = operatorType }
-                        );
-                    })
-                {
-                    style = { alignSelf = Align.FlexEnd }
-                }
-            );
+            leftExpressionField = new GeneralField(typeof(ExpressionBase), new FieldValueProvider(leftField, binaryExpression))
+            {
+                style = { alignSelf = Align.FlexEnd }
+            };
+            leftExpressionField.OnValueChanged += OnLeftExpressionValueChanged;
 
-            var operatorField = typeof(BinaryExpression).GetField(nameof(BinaryExpression.OperatorType));
-            root.Add(new GeneralField(
-                    typeof(BinaryExpression.Type),
-                    binaryExpression,
-                    new FieldValueProvider(operatorField),
-                    evt =>
-                    {
-                        operatorType = (BinaryExpression.Type)evt.newValue;
-                        setValueFunc.Invoke(
-                            new BinaryExpression { Left = leftExpression, Right = rightExpression, OperatorType = operatorType }
-                        );
-                    })
-                {
-                    style = { alignSelf = Align.FlexEnd }
-                }
-            );
+            root.Add(leftExpressionField);
+
+            var operatorValueField = typeof(BinaryExpression).GetField(nameof(BinaryExpression.OperatorType));
+            operatorField = new GeneralField(typeof(BinaryExpression.Type), new FieldValueProvider(operatorValueField, binaryExpression))
+            {
+                style = { alignSelf = Align.FlexEnd }
+            };
+            operatorField.OnValueChanged += OnOperatorValueChanged;
+            root.Add(operatorField);
 
             var rightField = typeof(BinaryExpression).GetField(nameof(BinaryExpression.Right));
-            root.Add(new GeneralField(
-                    typeof(IExpression),
-                    binaryExpression,
-                    new FieldValueProvider(rightField),
-                    evt =>
-                    {
-                        rightExpression = (IExpression)evt.newValue;
-                        setValueFunc.Invoke(
-                            new BinaryExpression { Left = leftExpression, Right = rightExpression, OperatorType = operatorType }
-                        );
-                    })
-                {
-                    style = { alignSelf = Align.FlexEnd }
-                }
-            );
+            rightExpressionField = new GeneralField(typeof(ExpressionBase), new FieldValueProvider(rightField, binaryExpression))
+            {
+                style = { alignSelf = Align.FlexEnd }
+            };
+            rightExpressionField.OnValueChanged += OnRightExpressionValueChanged;
+            root.Add(rightExpressionField);
 
             return root;
+        }
+
+        private void OnLeftExpressionValueChanged(object value)
+        {
+            leftExpression = (ExpressionBase)value;
+            setValueFunc.Invoke(
+                new BinaryExpression { Left = leftExpression, OperatorType = operatorType, Right = rightExpression }
+            );
+        }
+
+        private void OnRightExpressionValueChanged(object value)
+        {
+            rightExpression = (ExpressionBase)value;
+            setValueFunc.Invoke(
+                new BinaryExpression { Left = leftExpression, OperatorType = operatorType, Right = rightExpression }
+            );
+        }
+
+        private void OnOperatorValueChanged(object value)
+        {
+            operatorType = (BinaryExpression.Type)value;
+            setValueFunc.Invoke(
+                new BinaryExpression { Left = leftExpression, OperatorType = operatorType, Right = rightExpression }
+            );
+        }
+
+        ~BinaryDrawer()
+        {
+            leftExpressionField.OnValueChanged -= OnLeftExpressionValueChanged;
+            rightExpressionField.OnValueChanged -= OnRightExpressionValueChanged;
+            operatorField.OnValueChanged -= OnOperatorValueChanged;
         }
     }
 }

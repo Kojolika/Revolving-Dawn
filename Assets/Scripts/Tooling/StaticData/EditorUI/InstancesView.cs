@@ -159,20 +159,21 @@ namespace Tooling.StaticData.EditorUI
         {
             private bool isInitialized;
             private Type staticDataType;
-            private Action<StaticData> onSelectionChanged;
+            public event Action<StaticData> onSelectionChanged;
 
-            public static void Open(Type staticDataType, Action<StaticData> onSelectionChanged)
+            public static Selector Open(Type staticDataType)
             {
                 var instanceSelector = GetWindow<Selector>();
-                instanceSelector.Initialize(staticDataType, onSelectionChanged);
+                instanceSelector.Initialize(staticDataType);
                 instanceSelector.Show(true);
                 instanceSelector.Focus();
+
+                return instanceSelector;
             }
 
-            private void Initialize(Type staticDataType, Action<StaticData> onSelectionChanged)
+            private void Initialize(Type staticDataType)
             {
                 this.staticDataType = staticDataType;
-                this.onSelectionChanged = onSelectionChanged;
                 isInitialized = true;
 
                 CreateGUI();
