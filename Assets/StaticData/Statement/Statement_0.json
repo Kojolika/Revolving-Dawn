@@ -1,0 +1,20 @@
+{
+  "Inputs": [
+    {
+      "Name": null,
+      "Type": 0
+    }
+  ],
+  "Instructions": [
+    {
+      "$type": "Tooling.StaticData.Bytecode.AssignVariable, Assembly-CSharp",
+      "Value": null,
+      "Index": 0
+    },
+    {
+      "$type": "Tooling.StaticData.Bytecode.AssignVariable, Assembly-CSharp",
+      "Value": null,
+      "Index": 0
+    }
+  ]
+}

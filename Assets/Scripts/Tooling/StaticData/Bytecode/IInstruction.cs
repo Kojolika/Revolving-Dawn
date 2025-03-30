@@ -5,5 +5,9 @@ namespace Tooling.StaticData
     /// </summary>
     public interface IInstruction
     {
+        /// <summary>
+        /// Think of this like a line number in a program
+        /// </summary>
+        int Index { get; set; }
     }
 }

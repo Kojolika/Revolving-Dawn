@@ -1,4 +1,4 @@
-namespace Tooling.StaticData
+namespace Tooling.StaticData.Bytecode
 {
     /// <summary>
     /// If the Boolean evaluates to true, execute the next combat byte instruction.
@@ -9,5 +9,6 @@ namespace Tooling.StaticData
         public ExpressionInstruction Condition;
         public Statement IfTrueStatement;
         public Statement ElseStatement;
+        public int Index { get; set; }
     }
 }

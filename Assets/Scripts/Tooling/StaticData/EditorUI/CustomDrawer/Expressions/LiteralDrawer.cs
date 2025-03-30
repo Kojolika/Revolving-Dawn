@@ -1,8 +1,9 @@
-using System;
-using System.Reflection;
+/*using System;
 using JetBrains.Annotations;
 using UnityEngine.UIElements;
 using Utils.Extensions;
+using Tooling.StaticData.Bytecode;
+using Type = Tooling.StaticData.Bytecode.Type;
 
 namespace Tooling.StaticData.EditorUI
 {
@@ -18,40 +19,31 @@ namespace Tooling.StaticData.EditorUI
             editingObject = getValueFunc.Invoke();
 
             var root = new VisualElement();
-            var foldout = new Foldout
-            {
-                text = "Options",
-                value = false // default to have the foldout closed
-            };
-            root.Add(foldout);
 
-            var sourceTypeSelector = new GeneralField(
-                typeof(LiteralExpression.Source),
+            var sourceTypeSelector = new GeneralField<LiteralExpression.Source>(
                 new FieldValueProvider(typeof(LiteralDrawer).GetField(nameof(LiteralExpression.SourceType)), this)
             );
-            sourceTypeSelector.OnValueChanged += _ => RefreshView(root, getValueFunc, setValueFunc, editingObject.ValueType);
-            foldout.Add(sourceTypeSelector);
+            sourceTypeSelector.OnValueChanged += _ =>
+                RefreshView(root, setValueFunc, getValueFunc.Invoke()?.ValueType ?? Type.Null);
+            root.Add(sourceTypeSelector);
 
-            typeSelectionField = new GeneralField(
-                typeof(LiteralExpression.Type),
+            typeSelectionField = new GeneralField<Type>(
                 new FieldValueProvider(typeof(LiteralExpression).GetField(nameof(LiteralExpression.ValueType)), getValueFunc.Invoke())
             );
-            typeSelectionField.OnValueChanged +=
-                newValue => RefreshView(root, getValueFunc, setValueFunc, (LiteralExpression.Type)newValue);
-            foldout.Add(typeSelectionField);
+            typeSelectionField.OnValueChanged += newValue =>
+            {
+                editingObject = getValueFunc.Invoke();
+                RefreshView(root, setValueFunc, (Type)newValue);
+            };
+            root.Add(typeSelectionField);
 
-            RefreshView(root, getValueFunc, setValueFunc, getValueFunc.Invoke()?.ValueType ?? LiteralExpression.Type.Null);
+            RefreshView(root, setValueFunc, getValueFunc.Invoke()?.ValueType ?? Type.Null);
 
             return root;
         }
 
-        private void RefreshView(
-            VisualElement root,
-            Func<LiteralExpression> getValueFunc,
-            Action<LiteralExpression> setValueFunc,
-            LiteralExpression.Type type)
+        private void RefreshView(VisualElement root, Action<LiteralExpression> setValueFunc, Type type)
         {
-            editingObject = getValueFunc.Invoke();
             if (editingObject != null)
             {
                 editingObject.ValueType = type;
@@ -61,9 +53,9 @@ namespace Tooling.StaticData.EditorUI
 
             switch (type)
             {
-                case LiteralExpression.Type.Null:
+                case Type.Null:
                     break;
-                case LiteralExpression.Type.Int:
+                case Type.Int:
                     var intField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.IntValue));
                     literalDrawer = new GeneralField(typeof(int), new FieldValueProvider(intField, editingObject));
 
@@ -74,7 +66,7 @@ namespace Tooling.StaticData.EditorUI
                     };
 
                     break;
-                case LiteralExpression.Type.Long:
+                case Type.Long:
                     var longField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.LongValue));
                     literalDrawer = new GeneralField(typeof(long), new FieldValueProvider(longField, editingObject));
 
@@ -85,7 +77,7 @@ namespace Tooling.StaticData.EditorUI
                     };
 
                     break;
-                case LiteralExpression.Type.Float:
+                case Type.Float:
                     var floatField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.FloatValue));
                     literalDrawer = new GeneralField(typeof(float), new FieldValueProvider(floatField, editingObject));
 
@@ -96,7 +88,7 @@ namespace Tooling.StaticData.EditorUI
                     };
 
                     break;
-                case LiteralExpression.Type.Double:
+                case Type.Double:
                     var doubleField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.DoubleValue));
                     literalDrawer = new GeneralField(typeof(double), new FieldValueProvider(doubleField, editingObject));
 
@@ -107,7 +99,7 @@ namespace Tooling.StaticData.EditorUI
                     };
 
                     break;
-                case LiteralExpression.Type.Bool:
+                case Type.Bool:
                     var boolField = typeof(LiteralExpression).GetField(nameof(LiteralExpression.BoolValue));
                     literalDrawer = new GeneralField(typeof(bool), new FieldValueProvider(boolField, editingObject));
 
@@ -128,7 +120,8 @@ namespace Tooling.StaticData.EditorUI
                 literalDrawer.SetEnabled((editingObject?.SourceType ?? LiteralExpression.Source.Manual) == LiteralExpression.Source.Manual);
             }
 
-            typeSelectionField?.SetEnabled((editingObject?.SourceType ?? LiteralExpression.Source.Manual)  == LiteralExpression.Source.Manual);
+            typeSelectionField?.SetEnabled(
+                (editingObject?.SourceType ?? LiteralExpression.Source.Manual) == LiteralExpression.Source.Manual);
         }
     }
-}
+}*/

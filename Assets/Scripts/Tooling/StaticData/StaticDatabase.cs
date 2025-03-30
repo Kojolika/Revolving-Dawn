@@ -35,12 +35,12 @@ namespace Tooling.StaticData
 
         private static readonly string StaticDataDirectory = Path.Join(Application.dataPath, "StaticData");
 
-        private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
+        private readonly Dictionary<System.Type, Dictionary<string, StaticData>> staticDataDictionary = new();
 
         public event Action OnStaticDataInstancesBuilt;
         public bool HaveStaticDataInstancesBeenBuilt { get; private set; } = false;
 
-        public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
+        public Dictionary<System.Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
 
         /// <summary>
         /// Notifies when validation has just been completed. The <see cref="validationErrors"/> will be populated after
@@ -122,7 +122,7 @@ namespace Tooling.StaticData
         /// after every <see cref="StaticData"/> is deserialized.
         /// </summary>
         public void QueueReferenceForInject(
-            Type staticDataType,
+            System.Type staticDataType,
             string instanceName,
             object obj,
             string propertyName,
@@ -174,7 +174,7 @@ namespace Tooling.StaticData
             /// <summary>
             /// The type of static data being referenced.
             /// </summary>
-            public readonly Type Type;
+            public readonly System.Type Type;
 
             /// <summary>
             /// The instance name of the <see cref="Type"/> being referenced.
@@ -196,7 +196,7 @@ namespace Tooling.StaticData
             /// </summary>
             public readonly int ArrayIndex;
 
-            public StaticDataReferenceHandle(Type type,
+            public StaticDataReferenceHandle(System.Type type,
                 string instanceName,
                 object objectWithReference,
                 string propertyName,
@@ -216,7 +216,7 @@ namespace Tooling.StaticData
             OnValidationCompleted?.Invoke();
         }
 
-        public void UpdateInstancesForType(Type type, List<StaticData> instances)
+        public void UpdateInstancesForType(System.Type type, List<StaticData> instances)
         {
             if (!staticDataDictionary.TryGetValue(type, out var instanceDict))
             {
@@ -237,7 +237,7 @@ namespace Tooling.StaticData
             staticDataDictionary[type] = instanceDict;
         }
 
-        public StaticData GetStaticDataInstance(Type type, string instanceName)
+        public StaticData GetStaticDataInstance(System.Type type, string instanceName)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary)
                 && instanceDictionary.TryGetValue(instanceName, out var dataInstance))
@@ -253,7 +253,7 @@ namespace Tooling.StaticData
             return staticDataDictionary.SelectMany(kvp => kvp.Value.Values).ToList();
         }
 
-        public List<StaticData> GetInstancesForType(Type type)
+        public List<StaticData> GetInstancesForType(System.Type type)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary))
             {
@@ -273,12 +273,12 @@ namespace Tooling.StaticData
             return new List<T>();
         }
 
-        public List<Type> GetAllStaticDataTypes()
+        public List<System.Type> GetAllStaticDataTypes()
         {
             return staticDataDictionary.Select(kvp => kvp.Key).ToList();
         }
 
-        public void Remove(Type type, string instanceName)
+        public void Remove(System.Type type, string instanceName)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary))
             {

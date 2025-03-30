@@ -20,7 +20,7 @@ namespace Tooling.StaticData.EditorUI
         [MenuItem("KoJy/Open Static Data Editor")]
         private static void OpenStaticDataEditor()
         {
-            GetWindow<EditorWindow>(EditorWindowName);
+            GetWindow<EditorWindow>(EditorWindowName).Open();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Stores the type of the static data instance that the user was looking at before hot reloading.
         /// </summary>
-        private Type selectedType;
+        private System.Type selectedType;
 
         /// <summary>
         /// <see cref="ListView"/> wrapper of all our of different static data types.
@@ -45,12 +45,35 @@ namespace Tooling.StaticData.EditorUI
 
         public static readonly StyleColor BorderColor = new(Color.gray);
         public static readonly StyleFloat BorderWidth = new(0.5f);
-        private const float ToolbarButtonWidth = 180;
+
+        private ThemeStyleSheet defaultTheme;
 
         private static readonly string StaticDataDirectory = Path.Join(Application.dataPath, "StaticData");
 
+        private bool isInitialized;
+
+        private void Open()
+        {
+            defaultTheme = AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>("Assets/UIToolkit/EditorTheme.tss");
+            if (defaultTheme == null)
+            {
+                MyLogger.LogError("Could not load theme style sheet!");
+            }
+
+            rootVisualElement.styleSheets.Add(defaultTheme);
+
+            isInitialized = true;
+            CreateGUI();
+        }
+
         public void CreateGUI()
         {
+            if (!isInitialized)
+            {
+                Open();
+                return;
+            }
+
             var root = rootVisualElement;
             root.Clear();
 
@@ -94,36 +117,14 @@ namespace Tooling.StaticData.EditorUI
 
         private VisualElement CreateTopToolBar()
         {
-            var root = new VisualElement
-            {
-                style =
-                {
-                    borderBottomColor = BorderColor,
-                    borderBottomWidth = BorderWidth,
-                    paddingBottom = 8f,
-                    flexDirection = FlexDirection.Row
-                }
-            };
-
-            root.Add(CreateSaveAndExportJsonButton());
-            root.Add(CreateSaveAndExportDatabaseButton());
-            root.Add(CreateValidateButton());
-            root.Add(WipeJsonButton());
-
-            return root;
-        }
-
-        private VisualElement CreateSaveAndExportJsonButton()
-        {
             var root = new VisualElement();
+            root.AddToClassList(VisualElementClasses.ToolbarName);
+            root.AddToClassList(VisualElementClasses.BorderBottom);
 
-            var button = new ToolbarButton(() => { _ = SaveAllStaticDataToJson(true); })
-            {
-                text = "Validate then Save to Json",
-                style = { width = ToolbarButtonWidth }
-            };
-
-            root.Add(button);
+            root.Add(CreateToolbarButton("Validate then Save to Json", () => _ = SaveAllStaticDataToJson(true)));
+            root.Add(CreateToolbarButton("Save and Export to Database", () => MyLogger.Log("Saving and exporting to database...")));
+            root.Add(CreateToolbarButton("Validate Data", StaticDatabase.Instance.ValidateStaticData));
+            root.Add(CreateToolbarButton("Remove All Json", RemoveAllJson));
 
             return root;
         }
@@ -138,49 +139,15 @@ namespace Tooling.StaticData.EditorUI
             await StaticDatabase.Instance.SaveAllStaticDataToJson();
         }
 
-        private VisualElement CreateSaveAndExportDatabaseButton()
+        private ToolbarButton CreateToolbarButton(string text, Action onClick = null)
         {
-            var root = new VisualElement();
-
-            var button = new ToolbarButton(() => { MyLogger.Log("Saving and exporting to database..."); })
+            var button = new ToolbarButton(() => onClick?.Invoke())
             {
-                text = "Save and Export to Database",
-                style = { width = ToolbarButtonWidth }
+                text = text,
             };
-
-            root.Add(button);
-
-            return root;
-        }
-
-        private VisualElement CreateValidateButton()
-        {
-            var root = new VisualElement();
-
-            var button = new ToolbarButton(StaticDatabase.Instance.ValidateStaticData)
-            {
-                text = "Validate Data",
-                style = { width = ToolbarButtonWidth }
-            };
-
-            root.Add(button);
-
-            return root;
-        }
-
-        private VisualElement WipeJsonButton()
-        {
-            var root = new VisualElement();
-
-            var button = new ToolbarButton(RemoveAllJson)
-            {
-                text = "Remove All Json",
-                style = { width = ToolbarButtonWidth }
-            };
-
-            root.Add(button);
-
-            return root;
+            button.AddToClassList(VisualElementClasses.ToolBarButtonName);
+            button.AddToClassList(VisualElementClasses.NoBorder);
+            return button;
         }
 
         private void RemoveAllJson()
@@ -218,18 +185,30 @@ namespace Tooling.StaticData.EditorUI
 
         public class InstanceEditorWindow : UnityEditor.EditorWindow
         {
-            private Type selectedType;
+            private System.Type selectedType;
             private StaticData editingObj;
             private EditorWindow openedEditorWindow;
             private bool isInitialized;
             private string nameOnOpening;
 
-            public void Initialize(StaticData editingObj, Type selectedType)
+            public Context staticDataContext { get; private set; }
+
+            public static void Open(StaticData editingObj, System.Type selectedType)
+            {
+                GetWindow<InstanceEditorWindow>().Initialize(editingObj, selectedType);
+            }
+
+            private void Initialize(StaticData editingObj, System.Type selectedType)
             {
                 rootVisualElement.Clear();
                 this.selectedType = selectedType;
                 this.editingObj = editingObj;
+
+                staticDataContext = new Context(editingObj);
+
                 openedEditorWindow = GetWindow<EditorWindow>();
+                rootVisualElement.styleSheets.Add(openedEditorWindow.defaultTheme);
+                rootVisualElement.AddToClassList(VisualElementClasses.PaddingLarge);
                 nameOnOpening = editingObj.Name;
 
                 isInitialized = true;
@@ -248,44 +227,26 @@ namespace Tooling.StaticData.EditorUI
 
                 var root = rootVisualElement;
                 saveChangesMessage = "You have unsaved changes. Do you want to save these changes?";
-
                 titleContent = new GUIContent($"Edit {editingObj?.Name}");
-                root.Add(new Button(() =>
+
+                var generalField = new GeneralField(
+                    selectedType,
+                    new ValueProvider<StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name),
+                    new Options { EnumerateStaticDataProperties = true });
+                generalField.OnValueChanged += _ => hasUnsavedChanges = true;
+                root.Add(generalField);
+
+                var saveButton = new Button(() =>
                 {
                     SaveChanges();
                     Close();
                 })
                 {
                     text = "Save and close",
-                    style = { minWidth = 200 }
-                });
+                };
+                saveButton.AddToClassList(VisualElementClasses.InstanceSaveButton);
 
-                var fields = Utils.GetFields(selectedType);
-
-                // Move name to the top of our editor while keeping the order of the rest of the fields
-                if (fields.Count > 1)
-                {
-                    var nameField = fields.First(field => field.Name == nameof(StaticData.Name));
-                    var nameIndex = fields.IndexOf(nameField);
-                    for (int i = fields.Count - 1; i > 0; i--)
-                    {
-                        if (i > nameIndex)
-                        {
-                            continue;
-                        }
-
-                        fields[i] = fields[i - 1];
-                    }
-
-                    fields[0] = nameField;
-                }
-
-                foreach (var field in fields)
-                {
-                    var generalField = new GeneralField(field.FieldType, new FieldValueProvider(field, editingObj));
-                    generalField.OnValueChanged += _ => hasUnsavedChanges = true;
-                    root.Add(generalField);
-                }
+                root.Add(saveButton);
             }
 
             public override void SaveChanges()
@@ -298,6 +259,11 @@ namespace Tooling.StaticData.EditorUI
                 StaticDatabase.Instance.Add(editingObj);
                 openedEditorWindow.instancesView.Refresh();
                 base.SaveChanges();
+            }
+
+            public override void DiscardChanges()
+            {
+                base.DiscardChanges();
             }
         }
     }

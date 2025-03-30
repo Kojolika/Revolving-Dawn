@@ -17,7 +17,7 @@ namespace Tooling.StaticData.Validation
             this.validators = validators;
         }
 
-        public Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects)
+        public Dictionary<System.Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects)
         {
             return ValidateObjects(objects, validators);
         }
@@ -28,11 +28,11 @@ namespace Tooling.StaticData.Validation
         /// <param name="objects">List of objects to validate</param>
         /// <param name="validators">List of custom validators</param>
         /// <returns>A dictionary mapping the type to the list of errors for that type.</returns>
-        private static Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(
+        private static Dictionary<System.Type, Dictionary<StaticData, List<string>>> ValidateObjects(
             List<StaticData> objects,
             List<IValidator> validators)
         {
-            var errorDict = new Dictionary<Type, Dictionary<StaticData, List<string>>>();
+            var errorDict = new Dictionary<System.Type, Dictionary<StaticData, List<string>>>();
             var objectCount = objects.Count;
             for (int i = 0; i < objectCount; i++)
             {
@@ -62,7 +62,7 @@ namespace Tooling.StaticData.Validation
             return errorDict;
         }
 
-        private static bool IsValid(Type type,
+        private static bool IsValid(System.Type type,
             StaticData obj,
             List<StaticData> objects,
             out List<string> errorMessages,

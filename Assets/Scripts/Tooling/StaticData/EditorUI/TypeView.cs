@@ -32,7 +32,7 @@ namespace Tooling.StaticData
 
         /// <param name="staticDataType">The type of static data</param>
         /// <param name="numValidationErrors">Number of instances of the <see cref="staticDataType"/> that have validation errors</param>
-        public void BindItem(Type staticDataType, int numValidationErrors)
+        public void BindItem(System.Type staticDataType, int numValidationErrors)
         {
             typeLabel.text = staticDataType.Name;
             validationErrorLabel.text = numValidationErrors > 0

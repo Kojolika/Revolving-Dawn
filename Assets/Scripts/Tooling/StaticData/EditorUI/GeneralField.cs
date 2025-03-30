@@ -6,9 +6,9 @@ using System.Reflection;
 using Tooling.Logging;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
+using Utils.Extensions;
 using Object = UnityEngine.Object;
 
 namespace Tooling.StaticData.EditorUI
@@ -21,14 +21,14 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// The type this field is drawing.
         /// </summary>
-        private readonly Type type;
+        private readonly System.Type type;
 
         /// <summary>
         /// How the value is retrieved from the underlying object.
         /// </summary>
         private readonly IValueProvider valueProvider;
 
-        private readonly bool drawArrayLabel;
+        private readonly Options options;
 
         /// <summary>
         /// Invoked when the value that this field is drawing has changed.
@@ -41,11 +41,6 @@ namespace Tooling.StaticData.EditorUI
         private Label arrayIndexLabel;
 
         /// <summary>
-        /// The custom decorator for this visual element. See <see cref="DecoratorManager"/> for usage.
-        /// </summary>
-        private readonly IDecorator decorator;
-
-        /// <summary>
         /// The custom drawer for this visual element. See <see cref="DrawerManager"/> for usage.
         /// </summary>
         private readonly IDrawer drawer;
@@ -55,24 +50,15 @@ namespace Tooling.StaticData.EditorUI
         /// </summary>
         private const string StaticDataNullLabel = "null";
 
-        /// <summary>
-        /// The name of the <see cref="VisualElement"/> that is actually drawing the <see cref="type"/>
-        /// </summary>
-        private const string FieldDrawerName = "FieldDrawer";
-
-        public GeneralField(Type type, IValueProvider valueProvider, bool drawArrayLabel = false)
+        public GeneralField(Type type, IValueProvider valueProvider, Options options = default)
         {
             this.type = type;
             this.valueProvider = valueProvider;
-            this.drawArrayLabel = drawArrayLabel;
+            this.options = options;
 
-            decorator = DecoratorManager.Instance.Decorators.GetValueOrDefault(type);
+            AddToClassList(VisualElementClasses.RecursiveFieldContainer);
+
             drawer = DrawerManager.Instance.Drawers.GetValueOrDefault(type);
-            OnValueChanged += _ =>
-            {
-                decorator?.Dispose(this);
-                decorator?.DecorateElement(this, GetValue());
-            };
 
             RefreshView();
         }
@@ -81,39 +67,26 @@ namespace Tooling.StaticData.EditorUI
         {
             Clear();
 
-            style.flexDirection = FlexDirection.Column;
-
-            if (drawArrayLabel && valueProvider is ListValueProvider listValueProvider)
+            if (options.IsArrayElement && valueProvider is ListValueProvider listValueProvider)
             {
-                arrayIndexLabel = new Label(listValueProvider.ArrayIndex.ToString())
-                {
-                    style =
-                    {
-                        minWidth = 16,
-                        alignSelf = Align.FlexStart,
-                        alignItems = Align.Center,
-                        alignContent = Align.Center,
-                        unityTextAlign = TextAnchor.MiddleCenter,
-                        marginTop = 1
-                    }
-                };
-                var rowElement = new VisualElement { style = { flexDirection = FlexDirection.Row } };
+                arrayIndexLabel = new Label($"[{listValueProvider.ArrayIndex}]");
+                var rowElement = new VisualElement();
                 rowElement.Add(arrayIndexLabel);
                 rowElement.Add(DrawEditorForType(type));
+
+                rowElement.AddToClassList(VisualElementClasses.ListViewContainer);
                 Add(rowElement);
             }
             else
             {
                 Add(DrawEditorForType(type));
             }
-
-            decorator?.DecorateElement(this, GetValue());
         }
 
         /// <summary>
         /// Draws an editor field for the given type.
         /// </summary>
-        private VisualElement DrawEditorForType(Type type)
+        private VisualElement DrawEditorForType(System.Type type)
         {
             if (type == null)
             {
@@ -128,13 +101,13 @@ namespace Tooling.StaticData.EditorUI
             VisualElement editorForFieldType;
             if (drawer != null)
             {
-                editorForFieldType = drawer.Draw(GetValue, obj => SetValue(obj), valueProvider.ValueName);
+                editorForFieldType = drawer.Draw(GetValue, SetValue, valueProvider.ValueName);
             }
             else if (typeof(IList).IsAssignableFrom(type))
             {
                 editorForFieldType = CreateListField(type);
             }
-            else if (typeof(StaticData).IsAssignableFrom(type))
+            else if (!options.EnumerateStaticDataProperties && typeof(StaticData).IsAssignableFrom(type))
             {
                 editorForFieldType = CreateStaticDataField(type);
             }
@@ -150,17 +123,10 @@ namespace Tooling.StaticData.EditorUI
             {
                 editorForFieldType = CreateAssetReferenceObjectPicker(type);
             }
-            else if (type.GetCustomAttribute<SerializableAttribute>() is not null)
+            else
             {
                 editorForFieldType = RecursiveDrawElements(type);
             }
-            else
-            {
-                editorForFieldType = GetErrorElement(type);
-            }
-
-            editorForFieldType.name = FieldDrawerName;
-
 
             return editorForFieldType;
         }
@@ -173,10 +139,7 @@ namespace Tooling.StaticData.EditorUI
                 enumValues,
                 enumValues.FirstOrDefault(),
                 GetEnumName,
-                GetEnumName)
-            {
-                style = { alignSelf = Align.FlexStart }
-            };
+                GetEnumName);
 
             popupField.RegisterValueChangedCallback(evt => SetValue(evt.newValue));
 
@@ -200,9 +163,11 @@ namespace Tooling.StaticData.EditorUI
         /// </summary>
         /// <returns>A visual element containing the list view.</returns>
         /// <exception cref="ArgumentException">Fired if the fieldInfo is not a type of <see cref="IList"/></exception>
-        private VisualElement CreateListField(Type type)
+        private VisualElement CreateListField(System.Type type)
         {
-            var root = new VisualElement { style = { flexDirection = FlexDirection.Row, minWidth = 200 } };
+            var root = new VisualElement();
+            root.AddToClassList(VisualElementClasses.ListView);
+
             // If the type is an array
             var elementType = type.IsArray
                 ? type.GetElementType()
@@ -217,21 +182,23 @@ namespace Tooling.StaticData.EditorUI
             var listView = new ListView
             {
                 itemsSource = itemsSource,
-                makeItem = () => new GeneralField(elementType, new ListValueProvider(itemsSource.Count - 1, itemsSource), true),
+                makeItem = () => new GeneralField(
+                    elementType,
+                    new ListValueProvider(itemsSource.Count - 1, itemsSource),
+                    new Options { IsArrayElement = true }),
                 bindItem = (item, index) => ((GeneralField)item).BindArrayIndex(index),
                 unbindItem = (item, _) => ((GeneralField)item).BindArrayIndex(-1),
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 reorderable = true,
                 showBorder = true,
-                style = { minWidth = 150, display = DisplayStyle.Flex },
                 virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
                 reorderMode = ListViewReorderMode.Animated,
                 showFoldoutHeader = true,
-                horizontalScrollingEnabled = true,
-                headerTitle = valueProvider?.ValueName ?? string.Empty
+                headerTitle = valueProvider?.ValueName ?? string.Empty,
+                showAddRemoveFooter = false,
+                showBoundCollectionSize = false,
+                horizontalScrollingEnabled = true
             };
-
-            listView.Query(className: "unity-foldout__input").First().style.backgroundColor = new Color(0, 0, 0, 0.33f);
 
             listView.itemsAdded += _ => OnValueChanged?.Invoke(itemsSource);
             listView.itemsRemoved += _ => OnValueChanged?.Invoke(itemsSource);
@@ -240,11 +207,17 @@ namespace Tooling.StaticData.EditorUI
 
             root.Add(listView);
 
-            var buttonContainer = new VisualElement { style = { flexDirection = FlexDirection.Column } };
-            root.Add(buttonContainer);
+            var buttonContainer = new VisualElement();
+
+            var listViewFoldOut = listView.Q<Foldout>(name: "unity-list-view__foldout-header");
+            listViewFoldOut.RegisterValueChangedCallback(evt => ShowAddRemoveButtons(evt.newValue));
+            ShowAddRemoveButtons(listViewFoldOut.value);
+
+            buttonContainer.AddToClassList(VisualElementClasses.ListViewButtonContainer);
+
             buttonContainer.Add(new Button(() =>
             {
-                itemsSource.Add(GetDefault(elementType));
+                itemsSource.Add(GetDefaultValue(elementType));
                 SetValue(itemsSource);
                 listView.RefreshItems();
             })
@@ -273,6 +246,18 @@ namespace Tooling.StaticData.EditorUI
             });
 
             return root;
+
+            void ShowAddRemoveButtons(bool show)
+            {
+                if (show)
+                {
+                    root.Add(buttonContainer);
+                }
+                else
+                {
+                    root.RemoveIfChild(buttonContainer);
+                }
+            }
         }
 
         /// <summary>
@@ -288,20 +273,21 @@ namespace Tooling.StaticData.EditorUI
             }
 
             ((ListValueProvider)valueProvider).ArrayIndex = index;
-            arrayIndexLabel.text = index.ToString();
 
             RefreshView();
         }
 
-        private VisualElement CreateStaticDataField(Type type)
+        private VisualElement CreateStaticDataField(System.Type type)
         {
-            var root = new VisualElement { style = { flexDirection = FlexDirection.Row, alignItems = Align.FlexStart } };
-            root.Add(GetDefaultNameLabel(valueProvider.ValueName));
+            var root = new VisualElement();
 
-            var nameLabel = new Label((GetValue() as StaticData)?.Name ?? StaticDataNullLabel)
-            {
-                style = { alignSelf = Align.Center, minWidth = 40 }
-            };
+            root.AddToClassList(VisualElementClasses.StaticDataSelectorContainer);
+
+            var label = new Label(valueProvider.ValueName);
+            label.AddToClassList("unity-base-field__label");
+            root.Add(label);
+
+            var nameLabel = new Label((GetValue() as StaticData)?.Name ?? StaticDataNullLabel);
 
             root.Add(
                 new ButtonIcon(
@@ -336,15 +322,36 @@ namespace Tooling.StaticData.EditorUI
             }
 
             var root = new VisualElement();
-            foreach (var field in Utils.GetFields(type))
+            root.AddToClassList(VisualElementClasses.RecursiveFieldContainer);
+            var fields = Utils.GetFields(type);
+
+            // Move name to the top of our editor for static data types
+            // while keeping the order of the rest of the fields
+            if (typeof(StaticData).IsAssignableFrom(type) && fields.Count > 1)
+            {
+                var nameField = fields.First(field => field.Name == nameof(StaticData.Name));
+                var nameIndex = fields.IndexOf(nameField);
+                for (int i = fields.Count - 1; i > 0; i--)
+                {
+                    if (i > nameIndex)
+                    {
+                        continue;
+                    }
+
+                    fields[i] = fields[i - 1];
+                }
+
+                fields[0] = nameField;
+            }
+
+            foreach (var field in fields)
             {
                 var generalField = new GeneralField(field.FieldType, new FieldValueProvider(field, currentObj));
                 generalField.OnValueChanged += obj => OnValueChanged?.Invoke(obj);
 
-                if (!type.IsValueType)
+                if (Utils.GetFields(field.FieldType).Count > 1 && !typeof(StaticData).IsAssignableFrom(field.FieldType))
                 {
                     var foldout = new Foldout();
-                    foldout.Query(className: "unity-foldout__input").First().style.backgroundColor = new Color(0, 0, 0, 0.33f);
                     foldout.Add(generalField);
                     root.Add(foldout);
                 }
@@ -389,10 +396,7 @@ namespace Tooling.StaticData.EditorUI
                     : t.FullName,
                 t => t.GetCustomAttribute<DisplayNameAttribute>() is { Name: not null } prettifyNameAttribute
                     ? prettifyNameAttribute.Name
-                    : t.FullName)
-            {
-                style = { alignSelf = Align.FlexStart }
-            };
+                    : t.FullName);
 
             root.Add(popupField);
 
@@ -433,10 +437,10 @@ namespace Tooling.StaticData.EditorUI
                                               !typeof(StaticData).IsAssignableFrom(typeToDisplay) &&
                                               !typeof(Object).IsAssignableFrom(typeToDisplay);
 
-                if (shouldCreateNewInstance)
-                {
-                    SetValue(Activator.CreateInstance(selectedType));
-                }
+                SetValue(shouldCreateNewInstance
+                    ? Activator.CreateInstance(selectedType)
+                    : GetDefaultValue(selectedType)
+                );
             }
         }
 
@@ -449,8 +453,8 @@ namespace Tooling.StaticData.EditorUI
         /// </summary>
         private VisualElement CreateAssetReferenceObjectPicker(Type type)
         {
-            var root = new VisualElement { style = { flexDirection = FlexDirection.Row } };
-            root.Add(GetDefaultNameLabel(valueProvider.ValueName));
+            var root = new VisualElement();
+            root.Add(new Label(valueProvider.ValueName));
 
             var isGenericAssetReference = false;
             var assetReferenceType = type;
@@ -478,7 +482,6 @@ namespace Tooling.StaticData.EditorUI
             var objectPicker = new ObjectField
             {
                 objectType = objectType,
-                style = { marginLeft = 0 },
                 value = (GetValue() as AssetReference)?.editorAsset
             };
 
@@ -493,22 +496,6 @@ namespace Tooling.StaticData.EditorUI
             root.Add(objectPicker);
 
             return root;
-        }
-
-        /// <summary>
-        /// Creates a label field with the same default values as built in labels
-        /// </summary>
-        private Label GetDefaultNameLabel(string name)
-        {
-            var label = new Label(name);
-
-            label.AddToClassList("unity-text-element");
-            label.AddToClassList("unity-label");
-            label.AddToClassList("unity-base-field__label");
-            label.AddToClassList("unity-base-text-field__label");
-            label.AddToClassList("unity-text-field__label");
-
-            return label;
         }
 
         /// <summary>
@@ -528,31 +515,9 @@ namespace Tooling.StaticData.EditorUI
             return valueProvider.GetValue();
         }
 
-        /// <summary>
-        /// Returns what to draw when the specified type cannot be drawn.
-        /// </summary>
-        private static VisualElement GetErrorElement(Type type)
+        private static object GetDefaultValue(Type type)
         {
-            return new Label($"No editor created for type {type}");
-        }
-
-        /// <summary>
-        /// Returns the <see cref="VisualElement"/> that is actually drawing the <see cref="type"/>
-        /// If this is drawing an array, you may want to just use the generalfield itself instead of this.
-        /// </summary>
-        public VisualElement GetFieldDrawer()
-        {
-            return this.Query<VisualElement>(FieldDrawerName).First();
-        }
-
-        private static object GetDefault(Type type)
-        {
-            if (type.IsValueType)
-            {
-                return Activator.CreateInstance(type);
-            }
-
-            return null;
+            return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
 
         /// <summary>
@@ -561,7 +526,25 @@ namespace Tooling.StaticData.EditorUI
         private class ListValueProvider : IValueProvider
         {
             private readonly IList list;
-            public int ArrayIndex { get; set; }
+
+            private int arrayIndex;
+
+            public int ArrayIndex
+            {
+                get => arrayIndex;
+                set
+                {
+                    arrayIndex = value;
+                    
+                    // Not sure if I love this approach is it tightly couples GeneralField and IInstructions,
+                    // but it gets the job done
+                    if (arrayIndex > 0 && arrayIndex < list.Count && list[arrayIndex] is IInstruction instruction)
+                    {
+                        instruction.Index = arrayIndex;
+                    }
+                }
+            }
+
             public string ValueName => string.Empty;
 
             public ListValueProvider(int arrayIndex, IList list)
@@ -581,6 +564,27 @@ namespace Tooling.StaticData.EditorUI
                     ? null
                     : list[ArrayIndex];
             }
+        }
+    }
+
+    public struct Options
+    {
+        /// <summary>
+        /// If true, we'll draw the array index label.
+        /// </summary>
+        public bool IsArrayElement;
+
+        /// <summary>
+        /// If true, we'll draw static data like every other element instead of using the object picker.
+        /// </summary>
+        public bool EnumerateStaticDataProperties;
+    }
+
+
+    public class GeneralField<T> : GeneralField
+    {
+        public GeneralField(IValueProvider valueProvider, Options options = default) : base(typeof(T), valueProvider, options)
+        {
         }
     }
 }

@@ -6,6 +6,7 @@ using Newtonsoft.Json.Serialization;
 using Tooling.Logging;
 using Tooling.StaticData;
 using Zenject;
+using Type = System.Type;
 
 namespace Serialization
 {

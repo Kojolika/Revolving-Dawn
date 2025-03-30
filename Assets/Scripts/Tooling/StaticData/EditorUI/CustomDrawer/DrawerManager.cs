@@ -19,21 +19,21 @@ namespace Tooling.StaticData.EditorUI
             Drawers = BuildDrawerDictionary()
         };
 
-        public Dictionary<Type, IDrawer> Drawers { get; private set; } = new();
+        public Dictionary<System.Type, IDrawer> Drawers { get; private set; } = new();
 
         private DrawerManager()
         {
         }
 
-        private static Dictionary<Type, IDrawer> BuildDrawerDictionary()
+        private static Dictionary<System.Type, IDrawer> BuildDrawerDictionary()
         {
-            var dictionary = new Dictionary<Type, IDrawer>();
+            var dictionary = new Dictionary<System.Type, IDrawer>();
 
-            var decoratorTypes = typeof(DecoratorManager).Assembly.DefinedTypes
+            var decoratorTypes = typeof(DrawerManager).Assembly.DefinedTypes
                 .Where(type => typeof(IDrawer).IsAssignableFrom(type)
                                && !type.IsAbstract
                                && !type.IsInterface
-                               && type.GetConstructor(Type.EmptyTypes) != null);
+                               && type.GetConstructor(System.Type.EmptyTypes) != null);
 
             foreach (var type in decoratorTypes)
             {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Tooling.StaticData.EditorUI;
 using UnityEngine;
 
 namespace Tooling.StaticData
@@ -21,7 +22,7 @@ namespace Tooling.StaticData
             }
 
             fields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)
-                .Where(field => field.IsPublic || field.GetCustomAttribute<SerializeField>() != null)
+                .Where(IsDrawable)
                 .ToList();
 
             return fields;
@@ -33,8 +34,18 @@ namespace Tooling.StaticData
         public static FieldInfo GetField(Type type, string fieldName)
         {
             return type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)
-                .Where(field => field.IsPublic || field.GetCustomAttribute<SerializeField>() != null)
+                .Where(IsDrawable)
                 .FirstOrDefault(field => field.Name == fieldName);
+        }
+
+
+        /// <summary>
+        /// The filter to use to determine if we should draw a field.
+        /// </summary>
+        private static bool IsDrawable(FieldInfo field)
+        {
+            return (field.IsPublic || field.GetCustomAttribute<SerializeField>() != null)
+                   && field.GetCustomAttribute<GeneralFieldIgnoreAttribute>()?.IgnoreType != IgnoreType.Field;
         }
     }
 }

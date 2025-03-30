@@ -9,12 +9,12 @@ namespace Tooling.StaticData.EditorUI
     public class InstanceView : VisualElement
     {
         private readonly VisualElement row;
-        private readonly Type staticDataType;
+        private readonly System.Type staticDataType;
         private readonly bool allowEditing;
 
         public const float EditButtonWidth = 32;
 
-        public InstanceView(Type staticDataType, bool allowEditing)
+        public InstanceView(System.Type staticDataType, bool allowEditing)
         {
             this.staticDataType = staticDataType;
             this.allowEditing = allowEditing;
@@ -56,7 +56,7 @@ namespace Tooling.StaticData.EditorUI
         /// </summary>
         /// <param name="staticDataType"></param>
         /// <returns></returns>
-        public static IEnumerable<FieldInfo> GetOrderedFields(Type staticDataType)
+        public static IEnumerable<FieldInfo> GetOrderedFields(System.Type staticDataType)
         {
             var fields = Utils.GetFields(staticDataType);
             int nameIndex = 0;
@@ -88,20 +88,9 @@ namespace Tooling.StaticData.EditorUI
                 : $"{fieldInfo.GetValue(instance)}";
         }
 
-        private ButtonIcon CreateEditButton(StaticData instance, Type staticDataType)
+        private ButtonIcon CreateEditButton(StaticData instance, System.Type staticDataType)
         {
-            return new ButtonIcon(() =>
-            {
-                var instanceEditor = UnityEditor.EditorWindow.GetWindow<EditorWindow.InstanceEditorWindow>();
-                instanceEditor.Initialize(instance, staticDataType);
-            }, IconPaths.Edit)
-            {
-                style =
-                {
-                    minWidth = EditButtonWidth,
-                    alignItems = Align.Center
-                }
-            };
+            return new ButtonIcon(() => EditorWindow.InstanceEditorWindow.Open(instance, staticDataType), IconPaths.Edit);
         }
 
         public void UnBindItem()

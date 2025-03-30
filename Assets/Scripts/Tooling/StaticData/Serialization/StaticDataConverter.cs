@@ -84,7 +84,7 @@ namespace Tooling.StaticData
         public override bool CanRead => false;
 
         public override StaticData ReadJson(JsonReader reader,
-            Type objectType,
+            System.Type objectType,
             StaticData existingValue,
             bool hasExistingValue,
             JsonSerializer serializer)

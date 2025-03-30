@@ -6,10 +6,10 @@ namespace Tooling.StaticData
 {
     public class ValidatorErrorView : VisualElement
     {
-        private readonly Type selectedType;
+        private readonly System.Type selectedType;
         private StaticData instance;
 
-        public ValidatorErrorView(Type selectedType)
+        public ValidatorErrorView(System.Type selectedType)
         {
             this.selectedType = selectedType;
 

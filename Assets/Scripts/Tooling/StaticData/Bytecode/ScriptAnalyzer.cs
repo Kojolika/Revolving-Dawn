@@ -1,37 +1,20 @@
 using System.Collections.Generic;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.Bytecode
 {
     /// <summary>
     /// This class has helpful functions to determine information about a script that's been created
     /// in the <see cref="Tooling.StaticData.EditorUI.EditorWindow"/>.
     /// </summary>
-    public class ScriptAnalyzer
+    public static class ScriptAnalyzer
     {
-        public List<VariableMetaData> GetVariableNames(List<IInstruction> instructions)
+        public static List<VariableMetaData> GetVariableNames(List<IInstruction> instructions)
         {
-            var returnValue = new List<VariableMetaData>();
-            for (int i = 0; i < instructions.Count; i++)
-            {
-                var instruction = instructions[i];
-                if (instruction is AssignVariable assignVariable)
-                {
-                    var name = assignVariable.Name;
-                    var lineNumber = i;
-                }
-            }
-
-            return returnValue;
+            return default;
         }
 
-        public LiteralComputeInfo TryResolveLiteral(List<IInstruction> instructions)
+        public static LiteralComputeInfo TryResolveLiteral(List<IInstruction> instructions)
         {
-            for (int i = 0; i < instructions.Count; i++)
-            {
-                var instruction = instructions[i];
-
-            }
-
             return default;
         }
 
@@ -41,7 +24,7 @@ namespace Tooling.StaticData
             public readonly bool IsComputedAtRuntime;
 
             /// <inheritdoc cref="VariableMetaData.VariableType"/>
-            public readonly LiteralExpression.Type VariableType;
+            public readonly Type VariableType;
 
             /// <inheritdoc cref="VariableMetaData.Variable"/>
             public readonly LiteralExpression Value;
@@ -54,7 +37,7 @@ namespace Tooling.StaticData
 
             public LiteralComputeInfo(
                 bool isComputedAtRuntime,
-                LiteralExpression.Type variableType,
+                Type variableType,
                 LiteralExpression value,
                 bool isValid)
             {
@@ -80,14 +63,14 @@ namespace Tooling.StaticData
             /// <summary>
             /// If the variable uses a function at runtime, this is marked as true.
             /// The real value of the variable can't be determined until the program runs.
-            /// <remarks> This may be because of function calls like <see cref="GetTargetedRuntimeCombatParticipant"/></remarks>
+            /// <remarks> This may be because of function calls like <see cref="GetTargetedCombatParticipant"/></remarks>
             /// </summary>
             public readonly bool IsComputedAtRuntime;
 
             /// <summary>
             /// The type of variable
             /// </summary>
-            public readonly LiteralExpression.Type VariableType;
+            public readonly Type VariableType;
 
             /// <summary>
             /// The actual variable value defined, only valid if <see cref="IsComputedAtRuntime"/> is false.
@@ -99,7 +82,7 @@ namespace Tooling.StaticData
                 string name,
                 int lineNumber,
                 bool isComputedAtRuntime,
-                LiteralExpression.Type variableType,
+                Type variableType,
                 LiteralExpression variable)
             {
                 Name = name;

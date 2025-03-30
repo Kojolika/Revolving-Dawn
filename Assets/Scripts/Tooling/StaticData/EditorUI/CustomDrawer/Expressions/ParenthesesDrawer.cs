@@ -1,6 +1,7 @@
 using System;
 using JetBrains.Annotations;
 using UnityEngine.UIElements;
+using Tooling.StaticData.Bytecode;
 
 namespace Tooling.StaticData.EditorUI
 {

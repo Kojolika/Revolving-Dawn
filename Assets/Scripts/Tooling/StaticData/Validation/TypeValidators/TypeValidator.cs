@@ -9,7 +9,7 @@ namespace Tooling.StaticData.Validation
     {
         public abstract List<string> errorMessages { get; }
 
-        public bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(System.Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
 
         {
             var fieldValue = fieldInfo.GetValue(obj) as T;
@@ -18,7 +18,7 @@ namespace Tooling.StaticData.Validation
 
         protected abstract bool Validate(T value, List<StaticData> allObjects);
 
-        public bool CanValidate(Type type)
+        public bool CanValidate(System.Type type)
         {
             return typeof(T).IsAssignableFrom(type);
         }

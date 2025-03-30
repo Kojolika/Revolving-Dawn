@@ -10,9 +10,9 @@ namespace Tooling.StaticData.Validation
     {
         public List<string> errorMessages { get; private set; }
 
-        public bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(System.Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
         {
-            var fieldDict = new Dictionary<Type, HashSet<object>>();
+            var fieldDict = new Dictionary<System.Type, HashSet<object>>();
             var thisFieldValue = fieldInfo.GetValue(obj);
 
             errorMessages = new List<string>();
@@ -43,6 +43,6 @@ namespace Tooling.StaticData.Validation
             return errorMessages.Count == 0;
         }
 
-        public bool CanValidate(Type type) => true;
+        public bool CanValidate(System.Type type) => true;
     }
 }

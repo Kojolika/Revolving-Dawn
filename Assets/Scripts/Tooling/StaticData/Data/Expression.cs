@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using UnityEngine;
+using Tooling.StaticData.Bytecode;
 
 namespace Tooling.StaticData
 {
@@ -8,5 +9,7 @@ namespace Tooling.StaticData
     {
         [SerializeField, JsonProperty]
         private ExpressionInstruction expressionInstruction;
+
+        public int Index { get; set; }
     }
 }

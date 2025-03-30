@@ -2,48 +2,28 @@
 
 using System.Collections.Generic;
 using Tooling.StaticData.EditorUI;
-using UnityEngine.Serialization;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.Bytecode
 {
     public abstract class ExpressionBase
     {
-        protected List<Variable> variables { get; private set; } = new();
-
-        public void UpdateVariableList(List<Variable> variables)
+        protected List<Variable> ListAvailableVariables()
         {
-            this.variables = variables;
+            return default;
         }
-    }
-
-    /// <summary>
-    /// A value that can only be determined at run time.
-    /// </summary>
-    public interface IRuntimeValue
-    {
-        LiteralExpression.Type RuntimeType { get; }
     }
 
     [System.Serializable]
     public class ExpressionInstruction : IInstruction
     {
         public ExpressionBase Expression;
+        public int Index { get; set; }
     }
 
     [System.Serializable]
     [DisplayName("Literal")]
     public class LiteralExpression : ExpressionBase
     {
-        public enum Type
-        {
-            Null,
-            Int,
-            Long,
-            Float,
-            Double,
-            Bool
-        }
-
         /// <summary>
         /// How this literal's value is determined
         /// </summary>
@@ -55,7 +35,7 @@ namespace Tooling.StaticData
             Manual,
 
             /// <summary>
-            /// Grabbed from an already defined literal variables, <seealso cref="variables"/>
+            /// Grabbed from an already defined literal variables
             /// </summary>
             Variable,
 
@@ -65,20 +45,17 @@ namespace Tooling.StaticData
             GameSpecific,
         }
 
-        public Type ValueType;
+        public IVariable Variable;
+
+        /*public Type ValueType;
         public Source SourceType;
         public int IntValue;
         public long LongValue;
         public float FloatValue;
         public double DoubleValue;
-        public bool BoolValue;
-        public IRuntimeValue RuntimeValue;
-
-        public List<Variable> ListAvailableVariables()
-        {
-            return variables;
-        }
+        public bool BoolValue;*/
     }
+
 
     [System.Serializable]
     [DisplayName("Binary")]

@@ -9,14 +9,14 @@ namespace Tooling.StaticData.EditorUI
     public class InstancesView : VisualElement
     {
         private readonly ListView listView;
-        private readonly Type selectedType;
+        private readonly System.Type selectedType;
         private readonly bool allowEditing;
 
         private const float RowPadding = 4f;
 
-        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors;
+        private Dictionary<System.Type, Dictionary<StaticData, List<string>>> validationErrors;
 
-        public InstancesView(Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
+        public InstancesView(System.Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
         {
             this.selectedType = selectedType;
             this.allowEditing = allowEditing;
@@ -99,7 +99,7 @@ namespace Tooling.StaticData.EditorUI
             }
         };
 
-        private VisualElement CreateInstanceHeader(Type staticDataType)
+        private VisualElement CreateInstanceHeader(System.Type staticDataType)
         {
             var header = new VisualElement
             {
@@ -158,10 +158,10 @@ namespace Tooling.StaticData.EditorUI
         public class Selector : UnityEditor.EditorWindow
         {
             private bool isInitialized;
-            private Type staticDataType;
+            private System.Type staticDataType;
             public event Action<StaticData> onSelectionChanged;
 
-            public static Selector Open(Type staticDataType)
+            public static Selector Open(System.Type staticDataType)
             {
                 var instanceSelector = GetWindow<Selector>();
                 instanceSelector.Initialize(staticDataType);
@@ -171,7 +171,7 @@ namespace Tooling.StaticData.EditorUI
                 return instanceSelector;
             }
 
-            private void Initialize(Type staticDataType)
+            private void Initialize(System.Type staticDataType)
             {
                 this.staticDataType = staticDataType;
                 isInitialized = true;

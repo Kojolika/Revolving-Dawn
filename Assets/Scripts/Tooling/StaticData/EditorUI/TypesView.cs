@@ -7,8 +7,8 @@ namespace Tooling.StaticData
     public class TypesView : VisualElement
     {
         public readonly ListView ListView;
-        private List<Type> staticDataTypes => StaticDatabase.Instance.GetAllStaticDataTypes();
-        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors;
+        private List<System.Type> staticDataTypes => StaticDatabase.Instance.GetAllStaticDataTypes();
+        private Dictionary<System.Type, Dictionary<StaticData, List<string>>> validationErrors;
 
         public TypesView()
         {

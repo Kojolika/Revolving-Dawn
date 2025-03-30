@@ -21,7 +21,7 @@ namespace Tooling.StaticData.Validation
             this.allowDefaultValues = allowDefaultValues;
         }
 
-        public bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(System.Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
         {
             if (fieldInfo.FieldType.IsClass && fieldInfo.GetValue(obj) == null)
             {
@@ -47,6 +47,6 @@ namespace Tooling.StaticData.Validation
             return true;
         }
 
-        public bool CanValidate(Type type) => true;
+        public bool CanValidate(System.Type type) => true;
     }
 }

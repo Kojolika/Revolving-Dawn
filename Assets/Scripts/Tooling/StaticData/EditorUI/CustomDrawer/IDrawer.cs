@@ -6,18 +6,17 @@ namespace Tooling.StaticData.EditorUI
     /// <summary>
     /// Types inheriting this will be instantiated by the <see cref="DrawerManager"/> during the editor when the <see cref="GeneralField"/>
     /// draws the type defined in <see cref="DrawType"/>.
-    /// <seealso cref="DrawerManager"/>, <seealso cref="GeneralField"/>
     /// </summary>
     public interface IDrawer
     {
-        Type DrawType { get; }
+        System.Type DrawType { get; }
         VisualElement Draw(Func<object> getValueFunc, Action<object> setValueFunc, string label);
     }
 
     /// <inheritdoc cref="IDrawer"/>
     public interface IDrawer<T> : IDrawer
     {
-        Type IDrawer.DrawType => typeof(T);
+        System.Type IDrawer.DrawType => typeof(T);
 
         VisualElement IDrawer.Draw(Func<object> getValueFunc, Action<object> setValueFunc, string label)
         {

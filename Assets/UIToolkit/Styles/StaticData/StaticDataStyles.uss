@@ -1,0 +1,108 @@
+:root {
+    --text-border-color: #4d4f4e;
+    --text-color: #C4C4C4;
+
+    --std-border-width: 1px;
+    --std-border-raidus: 4px;
+    --std-padding: 4px;
+    --std-padding-large: 20px;
+    --std-margin-large: 20px;
+    --std-margin: 2px;
+
+    --button-border-color: #8d8f8e;
+    --button-bg-color: #595959;
+}
+
+.sd_toolbar {
+    flex-direction: row;
+}
+
+.sd_toolbar-button {
+    margin-left: 1px;
+    margin-right: 1px;
+    padding: 100px;
+
+    min-width: 100px;
+}
+
+.sd_border {
+    --text-border-color: var(--text-border-color);
+    --std-border-width: var(--std-border-width);
+}
+
+.no-border {
+    border-width: 0;
+}
+
+.sd_border-bottom {
+    border-bottom-color: var(--text-border-color);
+    border-bottom-width: var(--std-border-width);
+}
+
+.sd_border-top {
+    border-bottom-color: var(--text-border-color);
+    border-bottom-width: var(--std-border-width);
+}
+
+.sd_border-left {
+    border-bottom-color: var(--text-border-color);
+    border-bottom-width: var(--std-border-width);
+}
+
+.sd_border-right {
+    border-bottom-color: var(--text-border-color);
+    border-bottom-width: var(--std-border-width);
+}
+
+.sd_padding-large {
+    padding: var(--std-padding-large);
+}
+
+.gf_list {
+    flex-direction: row;
+}
+
+.gf_recursive-container {
+    margin-bottom: var(--std-margin);
+}
+
+.gf_list-button-container {
+    flex-direction: column;
+}
+
+.gf_list-button-container > Button {
+    width: 24px;
+    height: 24px;
+}
+
+.gf_list-container {
+    flex-direction: row;
+}
+
+.gf_sd_selector-container {
+    flex-direction: row;
+}
+
+.unity-text-element--inner-input-field-component {
+    border-color: var(--text-border-color);
+    border-width: var(--std-border-width);
+    padding: var(--std-padding);
+    width: 200px;
+}
+
+.unity-button {
+    padding: var(--std-padding);
+    border-color: var(--button-border-color);
+    border-width: var(--std-border-width);
+    border-radius: var(--std-border-raidus);
+    background-color: var(--button-bg-color);
+    margin: var(--std-margin);
+}
+
+.unity-text-element {
+    color: var(--text-color);
+}
+
+.sd_save_button {
+    margin-top: var(--std-margin-large);
+}

@@ -11,7 +11,7 @@ namespace Tooling.StaticData.Validation
     {
         public List<string> errorMessages { get; } = new();
 
-        public bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(System.Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
         {
             var fieldValue = fieldInfo.GetValue(obj);
             switch (fieldValue)
@@ -40,6 +40,6 @@ namespace Tooling.StaticData.Validation
             return errorMessages.Count == 0;
         }
 
-        public bool CanValidate(Type type) => type == typeof(string);
+        public bool CanValidate(System.Type type) => type == typeof(string);
     }
 }
