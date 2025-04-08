@@ -6,7 +6,7 @@ using Tooling.StaticData.Bytecode;
 namespace Tooling.StaticData.EditorUI
 {
     [UsedImplicitly]
-    public class BinaryDrawer : IDrawer<BinaryExpression>
+    public class BinaryDrawer //: GeneralFieldDrawer<BinaryExpression>
     {
         private ExpressionBase leftExpression;
         private ExpressionBase rightExpression;

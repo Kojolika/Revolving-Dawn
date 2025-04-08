@@ -8,65 +8,65 @@ using Object = UnityEngine.Object;
 
 namespace Tooling.StaticData.EditorUI
 {
-    public abstract class BaseType<TType, TField> : VisualElement, IDrawer<TType>
+    public abstract class BaseTypeDrawer<TType, TField> : GeneralFieldDrawer<TType>
         where TField : BaseField<TType>, new()
     {
-        public virtual VisualElement Draw(Func<TType> getValueFunc, Action<TType> setValueFunc, string label)
+        protected override VisualElement Draw(ValueProvider<TType> valueProvider)
         {
             var root = new TField
             {
-                label = label,
-                value = getValueFunc.Invoke()
+                label = valueProvider.ValueName,
+                value = (TType)valueProvider.GetValue()
             };
 
-            root.RegisterValueChangedCallback(evt => setValueFunc.Invoke(evt.newValue));
+            root.RegisterValueChangedCallback(evt => valueProvider.SetValue(evt.newValue));
 
             return root;
         }
     }
 
     [UsedImplicitly]
-    public class IntDrawer : BaseType<int, IntegerField>
+    public class IntDrawer : BaseTypeDrawer<int, IntegerField>
     {
     }
 
     [UsedImplicitly]
-    public class LongDrawer : BaseType<long, LongField>
+    public class LongDrawer : BaseTypeDrawer<long, LongField>
     {
     }
 
     [UsedImplicitly]
-    public class FloatDrawer : BaseType<float, FloatField>
+    public class FloatDrawer : BaseTypeDrawer<float, FloatField>
     {
     }
 
     [UsedImplicitly]
-    public class DoubleDrawer : BaseType<double, DoubleField>
+    public class DoubleDrawer : BaseTypeDrawer<double, DoubleField>
     {
     }
 
     [UsedImplicitly]
-    public class BoolDrawer : BaseType<bool, Toggle>
+    public class BoolDrawer : BaseTypeDrawer<bool, Toggle>
     {
     }
 
     [UsedImplicitly]
-    public class TextDrawer : BaseType<string, TextField>
+    public class TextDrawer : BaseTypeDrawer<string, TextField>
     {
     }
 
     [UsedImplicitly]
-    public class ColorDrawer : BaseType<UnityEngine.Color, ColorField>
+    public class ColorDrawer : BaseTypeDrawer<UnityEngine.Color, ColorField>
     {
     }
 
     [UsedImplicitly]
-    public class UnityObjectDrawer : BaseType<Object, ObjectField>
+    public class UnityObjectDrawer : BaseTypeDrawer<Object, ObjectField>
     {
-        public override VisualElement Draw(Func<Object> getValueFunc, Action<Object> setValueFunc, string label)
+        protected override VisualElement Draw(ValueProvider<Object> valueProvider)
         {
-            var root = base.Draw(getValueFunc, setValueFunc, label);
-            var value = getValueFunc.Invoke();
+            var root = base.Draw(valueProvider);
+            var value = valueProvider.GetValue();
             var valueType = value?.GetType();
             if (valueType != null)
             {
@@ -78,11 +78,11 @@ namespace Tooling.StaticData.EditorUI
     }
 
     [UsedImplicitly]
-    public class EnumDrawer : IDrawer<Enum>
+    public class EnumDrawer : GeneralFieldDrawer<Enum>
     {
-        public VisualElement Draw(Func<Enum> getValueFunc, Action<Enum> setValueFunc, string label)
+        protected override VisualElement Draw(ValueProvider<Enum> valueProvider)
         {
-            var type = getValueFunc?.Invoke()?.GetType();
+            var type = valueProvider.GetValue()?.GetType();
             if (type == null)
             {
                 return new Label("Null enum! Cannot draw enum field.");
@@ -90,7 +90,7 @@ namespace Tooling.StaticData.EditorUI
 
             var enumValues = Enum.GetValues(type).Cast<Enum>().ToList();
             var popupField = new PopupField<Enum>(
-                label,
+                valueProvider.ValueName,
                 enumValues,
                 enumValues.FirstOrDefault(),
                 GetEnumName,
@@ -99,7 +99,7 @@ namespace Tooling.StaticData.EditorUI
                 style = { alignSelf = Align.FlexStart }
             };
 
-            popupField.RegisterValueChangedCallback(evt => setValueFunc.Invoke(evt.newValue));
+            popupField.RegisterValueChangedCallback(evt => valueProvider.SetValue(evt.newValue));
             return popupField;
 
             // Returns the name of an Enum value or the overriden name

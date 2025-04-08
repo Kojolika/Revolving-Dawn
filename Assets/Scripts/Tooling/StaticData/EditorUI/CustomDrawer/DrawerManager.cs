@@ -16,26 +16,59 @@ namespace Tooling.StaticData.EditorUI
 
         public static DrawerManager Instance => instance ??= new DrawerManager
         {
-            Drawers = BuildDrawerDictionary()
+            Drawers = BuildDrawerDictionary(),
+            StaticDataDrawers = BuildStaticDataDrawerDictionary()
         };
 
-        public Dictionary<System.Type, IDrawer> Drawers { get; private set; } = new();
+        public Dictionary<Type, IDrawer> Drawers { get; private set; } = new();
+        public Dictionary<Type, ICustomStaticDataDrawer> StaticDataDrawers { get; private set; } = new();
 
         private DrawerManager()
         {
         }
 
-        private static Dictionary<System.Type, IDrawer> BuildDrawerDictionary()
+        private static Dictionary<Type, ICustomStaticDataDrawer> BuildStaticDataDrawerDictionary()
         {
-            var dictionary = new Dictionary<System.Type, IDrawer>();
+            var dictionary = new Dictionary<Type, ICustomStaticDataDrawer>();
 
-            var decoratorTypes = typeof(DrawerManager).Assembly.DefinedTypes
+            var drawerTypes = typeof(DrawerManager).Assembly.DefinedTypes
+                .Where(type => typeof(ICustomStaticDataDrawer).IsAssignableFrom(type)
+                               && !type.IsAbstract
+                               && !type.IsInterface
+                               && type.GetConstructor(Type.EmptyTypes) != null);
+
+            foreach (var type in drawerTypes)
+            {
+                if (Activator.CreateInstance(type) is not ICustomStaticDataDrawer customStaticDataDrawer)
+                {
+                    MyLogger.LogWarning($"Invalid callback type for {type}");
+                    continue;
+                }
+
+                var typeReceivingCallback = customStaticDataDrawer.DrawType;
+                if (!dictionary.TryAdd(typeReceivingCallback, customStaticDataDrawer))
+                {
+                    MyLogger.LogWarning(
+                        $"There's already a {nameof(ICustomStaticDataDrawer)} type {typeReceivingCallback} " +
+                        $"defined in our {nameof(ICustomStaticDataDrawer)} dictionary." +
+                        $"Ignoring this {nameof(ICustomStaticDataDrawer)} from type {type}");
+                }
+            }
+
+            return dictionary;
+        }
+
+        private static Dictionary<Type, IDrawer> BuildDrawerDictionary()
+        {
+            var dictionary = new Dictionary<Type, IDrawer>();
+
+            var drawerTypes = typeof(DrawerManager).Assembly.DefinedTypes
                 .Where(type => typeof(IDrawer).IsAssignableFrom(type)
                                && !type.IsAbstract
                                && !type.IsInterface
-                               && type.GetConstructor(System.Type.EmptyTypes) != null);
+                               && type.GetConstructor(Type.EmptyTypes) != null);
 
-            foreach (var type in decoratorTypes)
+            foreach (var type in drawerTypes)
             {
                 var decorator = Activator.CreateInstance(type) as IDrawer;
                 if (decorator == null)
@@ -47,8 +80,9 @@ namespace Tooling.StaticData.EditorUI
                 var typeReceivingCallback = decorator.DrawType;
                 if (!dictionary.TryAdd(typeReceivingCallback, decorator))
                 {
-                    MyLogger.LogWarning($"There's already a {nameof(IDrawer)} type {typeReceivingCallback} defined in our {nameof(IDrawer)} dictionary." +
-                                        $"Ignoring this {nameof(IDrawer)} from type {type}");
+                    MyLogger.LogWarning(
+                        $"There's already a {nameof(IDrawer)} type {typeReceivingCallback} defined in our {nameof(IDrawer)} dictionary." +
+                        $"Ignoring this {nameof(IDrawer)} from type {type}");
                 }
             }
 

@@ -21,7 +21,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// The type this field is drawing.
         /// </summary>
-        private readonly System.Type type;
+        private readonly Type type;
 
         /// <summary>
         /// How the value is retrieved from the underlying object.
@@ -86,7 +86,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Draws an editor field for the given type.
         /// </summary>
-        private VisualElement DrawEditorForType(System.Type type)
+        private VisualElement DrawEditorForType(Type type)
         {
             if (type == null)
             {
@@ -101,7 +101,7 @@ namespace Tooling.StaticData.EditorUI
             VisualElement editorForFieldType;
             if (drawer != null)
             {
-                editorForFieldType = drawer.Draw(GetValue, SetValue, valueProvider.ValueName);
+                editorForFieldType = drawer.Draw(valueProvider);
             }
             else if (typeof(IList).IsAssignableFrom(type))
             {
@@ -195,6 +195,7 @@ namespace Tooling.StaticData.EditorUI
                 reorderMode = ListViewReorderMode.Animated,
                 showFoldoutHeader = true,
                 headerTitle = valueProvider?.ValueName ?? string.Empty,
+                // TODO: use stanadard add remove
                 showAddRemoveFooter = false,
                 showBoundCollectionSize = false,
                 horizontalScrollingEnabled = true
@@ -277,7 +278,7 @@ namespace Tooling.StaticData.EditorUI
             RefreshView();
         }
 
-        private VisualElement CreateStaticDataField(System.Type type)
+        private VisualElement CreateStaticDataField(Type type)
         {
             var root = new VisualElement();
 
@@ -432,15 +433,16 @@ namespace Tooling.StaticData.EditorUI
             {
                 // Allow creating a default instance for objects
                 // We don't need this for unity engine objects or static data since we can select instances with the general field
-                var shouldCreateNewInstance = (GetValue() == null || selectedType != previousSelectedType) &&
-                                              (selectedType.IsValueType || selectedType.GetConstructor(Type.EmptyTypes) != null) &&
-                                              !typeof(StaticData).IsAssignableFrom(typeToDisplay) &&
-                                              !typeof(Object).IsAssignableFrom(typeToDisplay);
+                var shouldCreateNewInstance = (GetValue() == null || selectedType != previousSelectedType)
+                                              && (selectedType.IsValueType || selectedType.GetConstructor(Type.EmptyTypes) != null)
+                                              && (!typeof(StaticData).IsAssignableFrom(typeToDisplay)
+                                                  || options.EnumerateStaticDataProperties)
+                                              && !typeof(Object).IsAssignableFrom(typeToDisplay);
 
-                SetValue(shouldCreateNewInstance
-                    ? Activator.CreateInstance(selectedType)
-                    : GetDefaultValue(selectedType)
-                );
+                if (shouldCreateNewInstance)
+                {
+                    SetValue(Activator.CreateInstance(selectedType));
+                }
             }
         }
 
@@ -535,7 +537,7 @@ namespace Tooling.StaticData.EditorUI
                 set
                 {
                     arrayIndex = value;
-                    
+
                     // Not sure if I love this approach is it tightly couples GeneralField and IInstructions,
                     // but it gets the job done
                     if (arrayIndex > 0 && arrayIndex < list.Count && list[arrayIndex] is IInstruction instruction)
@@ -565,21 +567,28 @@ namespace Tooling.StaticData.EditorUI
                     : list[ArrayIndex];
             }
         }
-    }
 
-    public struct Options
-    {
+        public struct Options
+        {
+            /// <summary>
+            /// If true, we'll draw the array index label.
+            /// </summary>
+            public bool IsArrayElement;
+
+            /// <summary>
+            /// If true, we'll draw static data like every other element instead of using the object picker.
+            /// </summary>
+            public bool EnumerateStaticDataProperties;
+        }
+
         /// <summary>
-        /// If true, we'll draw the array index label.
+        /// If the object that inherits this is being drawn as an array element, this callback will be called.
         /// </summary>
-        public bool IsArrayElement;
-
-        /// <summary>
-        /// If true, we'll draw static data like every other element instead of using the object picker.
-        /// </summary>
-        public bool EnumerateStaticDataProperties;
+        public interface IBindArrayIndex
+        {
+            void BindIndex(int index);
+        }
     }
-
 
     public class GeneralField<T> : GeneralField
     {

@@ -1,16 +1,11 @@
 // ReSharper disable InconsistentNaming
 
-using System.Collections.Generic;
 using Tooling.StaticData.EditorUI;
 
 namespace Tooling.StaticData.Bytecode
 {
     public abstract class ExpressionBase
     {
-        protected List<Variable> ListAvailableVariables()
-        {
-            return default;
-        }
     }
 
     [System.Serializable]
@@ -24,38 +19,8 @@ namespace Tooling.StaticData.Bytecode
     [DisplayName("Literal")]
     public class LiteralExpression : ExpressionBase
     {
-        /// <summary>
-        /// How this literal's value is determined
-        /// </summary>
-        public enum Source
-        {
-            /// <summary>
-            /// User input
-            /// </summary>
-            Manual,
-
-            /// <summary>
-            /// Grabbed from an already defined literal variables
-            /// </summary>
-            Variable,
-
-            /// <summary>
-            /// Game specific functions
-            /// </summary>
-            GameSpecific,
-        }
-
         public IVariable Variable;
-
-        /*public Type ValueType;
-        public Source SourceType;
-        public int IntValue;
-        public long LongValue;
-        public float FloatValue;
-        public double DoubleValue;
-        public bool BoolValue;*/
     }
-
 
     [System.Serializable]
     [DisplayName("Binary")]

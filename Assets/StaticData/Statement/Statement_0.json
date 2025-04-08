@@ -8,12 +8,16 @@
   "Instructions": [
     {
       "$type": "Tooling.StaticData.Bytecode.AssignVariable, Assembly-CSharp",
-      "Value": null,
-      "Index": 0
-    },
-    {
-      "$type": "Tooling.StaticData.Bytecode.AssignVariable, Assembly-CSharp",
-      "Value": null,
+      "Value": {
+        "$type": "Tooling.StaticData.Bytecode.LiteralExpression, Assembly-CSharp",
+        "Variable": {
+          "$type": "Tooling.StaticData.Bytecode.Float, Assembly-CSharp",
+          "Name": "test",
+          "Type": 3,
+          "IsComputedAtRuntime": false,
+          "Value": 23.0
+        }
+      },
       "Index": 0
     }
   ]

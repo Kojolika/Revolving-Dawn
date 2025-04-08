@@ -185,7 +185,7 @@ namespace Tooling.StaticData.EditorUI
 
         public class InstanceEditorWindow : UnityEditor.EditorWindow
         {
-            private System.Type selectedType;
+            private Type selectedType;
             private StaticData editingObj;
             private EditorWindow openedEditorWindow;
             private bool isInitialized;
@@ -193,12 +193,12 @@ namespace Tooling.StaticData.EditorUI
 
             public Context staticDataContext { get; private set; }
 
-            public static void Open(StaticData editingObj, System.Type selectedType)
+            public static void Open(StaticData editingObj, Type selectedType)
             {
                 GetWindow<InstanceEditorWindow>().Initialize(editingObj, selectedType);
             }
 
-            private void Initialize(StaticData editingObj, System.Type selectedType)
+            private void Initialize(StaticData editingObj, Type selectedType)
             {
                 rootVisualElement.Clear();
                 this.selectedType = selectedType;
@@ -229,12 +229,20 @@ namespace Tooling.StaticData.EditorUI
                 saveChangesMessage = "You have unsaved changes. Do you want to save these changes?";
                 titleContent = new GUIContent($"Edit {editingObj?.Name}");
 
-                var generalField = new GeneralField(
-                    selectedType,
-                    new ValueProvider<StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name),
-                    new Options { EnumerateStaticDataProperties = true });
-                generalField.OnValueChanged += _ => hasUnsavedChanges = true;
-                root.Add(generalField);
+                if (DrawerManager.Instance.StaticDataDrawers.TryGetValue(selectedType, out var customDrawer))
+                {
+                    customDrawer.OnValueChanged += () => hasUnsavedChanges = true;
+                    root.Add(customDrawer.Draw(editingObj));
+                }
+                else
+                {
+                    var generalField = new GeneralField(
+                        selectedType,
+                        new ValueProvider<StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name),
+                        new GeneralField.Options { EnumerateStaticDataProperties = true });
+                    generalField.OnValueChanged += _ => hasUnsavedChanges = true;
+                    root.Add(generalField);
+                }
 
                 var saveButton = new Button(() =>
                 {

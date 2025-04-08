@@ -6,7 +6,7 @@ using Tooling.StaticData.Bytecode;
 namespace Tooling.StaticData.EditorUI
 {
     [UsedImplicitly]
-    public class ParenthesesDrawer : IDrawer<ParenthesesExpression>
+    public class ParenthesesDrawer //: GeneralFieldDrawer<ParenthesesExpression>
     {
         public VisualElement Draw(Func<ParenthesesExpression> getValueFunc, Action<ParenthesesExpression> setValueFunc, string label)
         {
