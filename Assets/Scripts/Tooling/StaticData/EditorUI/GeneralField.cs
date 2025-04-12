@@ -101,7 +101,7 @@ namespace Tooling.StaticData.EditorUI
             VisualElement editorForFieldType;
             if (drawer != null)
             {
-                editorForFieldType = drawer.Draw(valueProvider);
+                editorForFieldType = drawer.Draw(valueProvider, this);
             }
             else if (typeof(IList).IsAssignableFrom(type))
             {
@@ -525,7 +525,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Used internally by the <see cref="GeneralField"/> to draw list elements.
         /// </summary>
-        private class ListValueProvider : IValueProvider
+        public class ListValueProvider : IValueProvider
         {
             private readonly IList list;
 

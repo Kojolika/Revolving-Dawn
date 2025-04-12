@@ -11,30 +11,13 @@ namespace Tooling.StaticData.EditorUI
     public interface IDrawer
     {
         Type DrawType { get; }
-        VisualElement Draw(IValueProvider valueProvider);
+        VisualElement Draw(IValueProvider valueProvider, GeneralField field);
     }
 
     /// <inheritdoc cref="IDrawer"/>
     public abstract class GeneralFieldDrawer<T> : IDrawer
     {
         Type IDrawer.DrawType => typeof(T);
-        private ValueProvider<T> valueProvider;
-
-        public VisualElement Draw(IValueProvider valueProvider)
-        {
-            Assert.IsTrue(valueProvider != null);
-
-            if (this.valueProvider != valueProvider)
-            {
-                this.valueProvider = new ValueProvider<T>(
-                    () => (T)valueProvider.GetValue(),
-                    value => valueProvider.SetValue(value),
-                    valueProvider.ValueName);
-            }
-
-            return Draw(this.valueProvider);
-        }
-
-        protected abstract VisualElement Draw(ValueProvider<T> valueProvider);
+        public abstract VisualElement Draw(IValueProvider valueProvider, GeneralField field);
     }
 }

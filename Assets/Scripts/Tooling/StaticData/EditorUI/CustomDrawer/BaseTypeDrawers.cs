@@ -11,7 +11,7 @@ namespace Tooling.StaticData.EditorUI
     public abstract class BaseTypeDrawer<TType, TField> : GeneralFieldDrawer<TType>
         where TField : BaseField<TType>, new()
     {
-        protected override VisualElement Draw(ValueProvider<TType> valueProvider)
+        public override VisualElement Draw(IValueProvider valueProvider, GeneralField field)
         {
             var root = new TField
             {
@@ -63,9 +63,9 @@ namespace Tooling.StaticData.EditorUI
     [UsedImplicitly]
     public class UnityObjectDrawer : BaseTypeDrawer<Object, ObjectField>
     {
-        protected override VisualElement Draw(ValueProvider<Object> valueProvider)
+        public override VisualElement Draw(IValueProvider valueProvider, GeneralField field)
         {
-            var root = base.Draw(valueProvider);
+            var root = base.Draw(valueProvider, field);
             var value = valueProvider.GetValue();
             var valueType = value?.GetType();
             if (valueType != null)
@@ -80,7 +80,7 @@ namespace Tooling.StaticData.EditorUI
     [UsedImplicitly]
     public class EnumDrawer : GeneralFieldDrawer<Enum>
     {
-        protected override VisualElement Draw(ValueProvider<Enum> valueProvider)
+        public override VisualElement Draw(IValueProvider valueProvider, GeneralField field)
         {
             var type = valueProvider.GetValue()?.GetType();
             if (type == null)
