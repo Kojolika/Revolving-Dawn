@@ -208,7 +208,6 @@ namespace Fight.Engine
                         break;
 
                     case InstructionType.LiteralArray:
-                        // TODO: array support?
                         var stackValueType = GetStackValueTypeFromInstruction((InstructionType)instructions[++index]);
                         var valueByteSize = GetNumberOfBytesForValue(stackValueType);
                         var arrayLength = BitConverter.ToInt32(new[] { instructions[++index], instructions[++index] });
@@ -243,46 +242,19 @@ namespace Fight.Engine
                         break;
 
                     case InstructionType.OperatorAdd:
-                        val1 = Pop();
-                        Assert.IsTrue(val1.Type is StackValue.ValueType.Int
-                            or StackValue.ValueType.Long
-                            or StackValue.ValueType.Float
-                            or StackValue.ValueType.Double);
-
-                        val2 = Pop();
-                        Assert.IsTrue(val2.Type is StackValue.ValueType.Int
-                            or StackValue.ValueType.Long
-                            or StackValue.ValueType.Float
-                            or StackValue.ValueType.Double);
-
-                        var addedResult = (val1.Type is StackValue.ValueType.Int or StackValue.ValueType.Long
-                                              ? val1.LongValue
-                                              : val1.DoubleValue)
-                                          + (val2.Type is StackValue.ValueType.Int or StackValue.ValueType.Long
-                                              ? val2.LongValue
-                                              : val2.DoubleValue);
-                        var type = GetTypeForMathOperation(val1.Type, val2.Type);
-                        var stackValue = type switch
-                        {
-                            StackValue.ValueType.Int => StackValue.CreateInt((int)addedResult),
-                            StackValue.ValueType.Long => StackValue.CreateLong((long)addedResult),
-                            StackValue.ValueType.Float => StackValue.CreateFloat((float)addedResult),
-                            StackValue.ValueType.Double => StackValue.CreateDouble(addedResult),
-                            _ => default
-                        };
-
-                        Assert.IsTrue(stackValue.Type != StackValue.ValueType.Null);
-
-                        Push(stackValue);
+                        Push(GetResultOfMathOperation(Pop(), Pop(), InstructionType.OperatorAdd));
                         break;
-
                     case InstructionType.OperatorSubtract:
+                        Push(GetResultOfMathOperation(Pop(), Pop(), InstructionType.OperatorSubtract));
                         break;
                     case InstructionType.OperatorMultiply:
+                        Push(GetResultOfMathOperation(Pop(), Pop(), InstructionType.OperatorMultiply));
                         break;
                     case InstructionType.OperatorDivide:
+                        Push(GetResultOfMathOperation(Pop(), Pop(), InstructionType.OperatorDivide));
                         break;
                     case InstructionType.OperatorModulo:
+                        Push(GetResultOfMathOperation(Pop(), Pop(), InstructionType.OperatorModulo));
                         break;
                     case InstructionType.GetPlayer:
                         break;
@@ -324,6 +296,7 @@ namespace Fight.Engine
             }
         }
 
+        // TODO: array support? 
         private static StackValue.ValueType GetStackValueTypeFromInstruction(InstructionType instructionType)
         {
             return instructionType switch
@@ -349,6 +322,57 @@ namespace Fight.Engine
                 StackValue.ValueType.Double => sizeof(double),
                 _ => 0
             };
+        }
+
+        private static StackValue GetResultOfMathOperation(StackValue operand1, StackValue operand2, InstructionType operatorType)
+        {
+            Assert.IsTrue(operand1.Type is StackValue.ValueType.Int
+                or StackValue.ValueType.Long
+                or StackValue.ValueType.Float
+                or StackValue.ValueType.Double);
+
+            Assert.IsTrue(operand2.Type is StackValue.ValueType.Int
+                or StackValue.ValueType.Long
+                or StackValue.ValueType.Float
+                or StackValue.ValueType.Double);
+
+            Assert.IsTrue(operatorType is InstructionType.OperatorAdd
+                or InstructionType.OperatorSubtract
+                or InstructionType.OperatorMultiply
+                or InstructionType.OperatorDivide
+                or InstructionType.OperatorModulo);
+
+            var value1 = operand1.Type is StackValue.ValueType.Int or StackValue.ValueType.Long
+                ? operand1.LongValue
+                : operand1.DoubleValue;
+
+            var value2 = operand2.Type is StackValue.ValueType.Int or StackValue.ValueType.Long
+                ? operand2.LongValue
+                : operand2.DoubleValue;
+
+            var result = operatorType switch
+            {
+                InstructionType.OperatorAdd => value1 + value2,
+                InstructionType.OperatorSubtract => value1 - value2,
+                InstructionType.OperatorMultiply => value1 * value2,
+                InstructionType.OperatorDivide => value1 / value2,
+                InstructionType.OperatorModulo => value1 % value2,
+                _ => 0
+            };
+
+            var type = GetTypeForMathOperation(operand1.Type, operand2.Type);
+            var stackValue = type switch
+            {
+                StackValue.ValueType.Int => StackValue.CreateInt((int)result),
+                StackValue.ValueType.Long => StackValue.CreateLong((long)result),
+                StackValue.ValueType.Float => StackValue.CreateFloat((float)result),
+                StackValue.ValueType.Double => StackValue.CreateDouble(result),
+                _ => default
+            };
+
+            Assert.IsTrue(stackValue.Type != StackValue.ValueType.Null);
+
+            return stackValue;
         }
 
         private static StackValue.ValueType GetTypeForMathOperation(StackValue.ValueType operandType1, StackValue.ValueType operandType2)
