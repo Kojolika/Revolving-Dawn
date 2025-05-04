@@ -17,18 +17,21 @@ namespace Tooling.StaticData.EditorUI
         }
     }*/
 
-    public class ReadVariableDrawer : GeneralFieldDrawer<ReadVariable>
+    public class ReadVariableDrawer : GeneralFieldDrawer<ReadVariableModel>
     {
         public override VisualElement Draw(IValueProvider valueProvider, GeneralField field)
         {
-            var currentVariable = (ReadVariable)valueProvider.GetValue();
+            var currentVariable = (ReadVariableModel)valueProvider.GetValue();
             var availableVariables = GetVariableNamesForField(field);
 
+            /*
             // TODO: add checks for same var name in different scopes
             if (!GetVariableNamesForField(field).Contains(currentVariable.Name))
             {
-                MyLogger.LogError("Invalid variable name, this may be caused be moving the instruction. TODO: Validate with red bg");
+                // TODO: Validate with red bg
+                MyLogger.LogError("Invalid variable name, this may be caused be moving the instruction.");
             }
+            */
 
             var textField = new TextField(currentVariable.Name)
             {
@@ -42,11 +45,36 @@ namespace Tooling.StaticData.EditorUI
             return root;
         }
 
-        private List<string> GetVariableNamesForField(GeneralField field)
+        private List<Variable> GetVariableNamesForField(GeneralField field)
         {
-            var variableNames = new List<string>();
+            var variableNames = new List<Variable>();
+            int depth = 0;
+
+            if (field.Type == typeof(AssignVariableModel))
+            {
+                variableNames.Add(new Variable { Name = field.GetValue().ToString(), Depth = depth });
+            }
+
+            var parent = field.GetFirstAncestorOfType<GeneralField>();
+            if (parent?.Type == typeof(List<IInstructionModel>))
+            {
+            }
+
 
             return variableNames;
+        }
+
+        private struct Variable
+        {
+            /// <summary>
+            /// Name of the variable
+            /// </summary>
+            public string Name;
+
+            /// <summary>
+            /// Depth or scope of the variable, this is because we assign variables in the UI which is a tree.
+            /// </summary>
+            public int Depth;
         }
     }
 }

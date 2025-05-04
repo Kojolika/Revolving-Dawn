@@ -97,7 +97,17 @@ namespace Tooling.StaticData
                     {
                         using var streamReader = File.OpenText(file);
 
-                        var staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
+                        StaticData staticDataFromJson = null;
+
+                        try
+                        {
+                            staticDataFromJson = (StaticData)JsonSerializer.Deserialize(streamReader, type);
+                        }
+                        catch (Exception e)
+                        {
+                            MyLogger.LogError($"Exception while deserializing: {e}");
+                        }
+
                         if (staticDataFromJson == null)
                         {
                             MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
@@ -337,7 +347,7 @@ namespace Tooling.StaticData
             {
                 EditorUtility.ClearProgressBar();
             }
-            
+
             BuildDictionaryFromJson();
 
             return;

@@ -14,9 +14,9 @@ namespace Tooling.StaticData.EditorUI
 
         private const float RowPadding = 4f;
 
-        private Dictionary<System.Type, Dictionary<StaticData, List<string>>> validationErrors;
+        private Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors;
 
-        public InstancesView(System.Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
+        public InstancesView(Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
         {
             this.selectedType = selectedType;
             this.allowEditing = allowEditing;

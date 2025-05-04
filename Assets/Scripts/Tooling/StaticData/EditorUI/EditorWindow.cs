@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Tooling.Logging;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -113,6 +113,18 @@ namespace Tooling.StaticData.EditorUI
             twoPanelSplit.Add(typesListView);
             twoPanelSplit.Add(rightPanel);
             root.Add(twoPanelSplit);
+        }
+
+        /// <summary>
+        /// After code compilation this reapplies the stylesheets.
+        /// </summary>
+        [DidReloadScripts]
+        private static void OnReloadScripts()
+        {
+            if (HasOpenInstances<EditorWindow>())
+            {
+                GetWindow<EditorWindow>().Open();
+            }
         }
 
         private VisualElement CreateTopToolBar()
@@ -255,6 +267,29 @@ namespace Tooling.StaticData.EditorUI
                 saveButton.AddToClassList(VisualElementClasses.InstanceSaveButton);
 
                 root.Add(saveButton);
+            }
+
+            /// <summary>
+            /// After code compilation this redraws the window.
+            /// </summary>
+            [DidReloadScripts]
+            private static void OnReloadScripts()
+            {
+                if (!HasOpenInstances<InstanceEditorWindow>())
+                {
+                    return;
+                }
+
+                var instanceEditorWindow = GetWindow<InstanceEditorWindow>();
+                if (instanceEditorWindow.editingObj == null)
+                {
+                    instanceEditorWindow.Close();
+                }
+                else
+                {
+                    instanceEditorWindow.Initialize(instanceEditorWindow.editingObj, instanceEditorWindow.selectedType);
+                }
+                
             }
 
             public override void SaveChanges()

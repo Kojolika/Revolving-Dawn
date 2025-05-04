@@ -9,12 +9,12 @@ namespace Tooling.StaticData.EditorUI
     public class InstanceView : VisualElement
     {
         private readonly VisualElement row;
-        private readonly System.Type staticDataType;
+        private readonly Type staticDataType;
         private readonly bool allowEditing;
 
         public const float EditButtonWidth = 32;
 
-        public InstanceView(System.Type staticDataType, bool allowEditing)
+        public InstanceView(Type staticDataType, bool allowEditing)
         {
             this.staticDataType = staticDataType;
             this.allowEditing = allowEditing;
@@ -88,7 +88,7 @@ namespace Tooling.StaticData.EditorUI
                 : $"{fieldInfo.GetValue(instance)}";
         }
 
-        private ButtonIcon CreateEditButton(StaticData instance, System.Type staticDataType)
+        private ButtonIcon CreateEditButton(StaticData instance, Type staticDataType)
         {
             return new ButtonIcon(() => EditorWindow.InstanceEditorWindow.Open(instance, staticDataType), IconPaths.Edit);
         }

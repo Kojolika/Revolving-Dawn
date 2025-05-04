@@ -9,17 +9,16 @@ namespace Tooling.StaticData.Bytecode
     }
 
     [System.Serializable]
-    public class ExpressionInstruction : IInstruction
+    public class ExpressionInstruction : IInstructionModel
     {
         public ExpressionBase Expression;
-        public int Index { get; set; }
     }
 
     [System.Serializable]
     [DisplayName("Literal")]
     public class LiteralExpression : ExpressionBase
     {
-        public IVariable Variable;
+
     }
 
     [System.Serializable]

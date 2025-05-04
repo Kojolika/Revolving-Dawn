@@ -21,7 +21,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// The type this field is drawing.
         /// </summary>
-        private readonly Type type;
+        public readonly Type Type;
 
         /// <summary>
         /// How the value is retrieved from the underlying object.
@@ -52,7 +52,7 @@ namespace Tooling.StaticData.EditorUI
 
         public GeneralField(Type type, IValueProvider valueProvider, Options options = default)
         {
-            this.type = type;
+            this.Type = type;
             this.valueProvider = valueProvider;
             this.options = options;
 
@@ -72,14 +72,14 @@ namespace Tooling.StaticData.EditorUI
                 arrayIndexLabel = new Label($"[{listValueProvider.ArrayIndex}]");
                 var rowElement = new VisualElement();
                 rowElement.Add(arrayIndexLabel);
-                rowElement.Add(DrawEditorForType(type));
+                rowElement.Add(DrawEditorForType(Type));
 
                 rowElement.AddToClassList(VisualElementClasses.ListViewContainer);
                 Add(rowElement);
             }
             else
             {
-                Add(DrawEditorForType(type));
+                Add(DrawEditorForType(Type));
             }
         }
 
@@ -127,6 +127,8 @@ namespace Tooling.StaticData.EditorUI
             {
                 editorForFieldType = RecursiveDrawElements(type);
             }
+
+            editorForFieldType.RegisterCallback<ChangeEvent<object>>(evt => MyLogger.Log($"Value changed: {evt.newValue}"));
 
             return editorForFieldType;
         }
@@ -503,7 +505,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Sets the value on the underlying instance this field is bound to.
         /// </summary>
-        private void SetValue(object value)
+        public void SetValue(object value)
         {
             valueProvider.SetValue(value);
             OnValueChanged?.Invoke(value);
@@ -512,7 +514,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Gets the value on the underlying instance this field is bound to.
         /// </summary>
-        private object GetValue()
+        public object GetValue()
         {
             return valueProvider.GetValue();
         }
@@ -529,23 +531,7 @@ namespace Tooling.StaticData.EditorUI
         {
             private readonly IList list;
 
-            private int arrayIndex;
-
-            public int ArrayIndex
-            {
-                get => arrayIndex;
-                set
-                {
-                    arrayIndex = value;
-
-                    // Not sure if I love this approach is it tightly couples GeneralField and IInstructions,
-                    // but it gets the job done
-                    if (arrayIndex > 0 && arrayIndex < list.Count && list[arrayIndex] is IInstruction instruction)
-                    {
-                        instruction.Index = arrayIndex;
-                    }
-                }
-            }
+            public int ArrayIndex { get; set; }
 
             public string ValueName => string.Empty;
 
@@ -579,14 +565,6 @@ namespace Tooling.StaticData.EditorUI
             /// If true, we'll draw static data like every other element instead of using the object picker.
             /// </summary>
             public bool EnumerateStaticDataProperties;
-        }
-
-        /// <summary>
-        /// If the object that inherits this is being drawn as an array element, this callback will be called.
-        /// </summary>
-        public interface IBindArrayIndex
-        {
-            void BindIndex(int index);
         }
     }
 

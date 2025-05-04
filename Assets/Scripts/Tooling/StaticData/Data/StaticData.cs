@@ -21,7 +21,7 @@ namespace Tooling.StaticData
         /// <summary>
         /// The type of <see cref="StaticData"/> that we're referencing.
         /// </summary>
-        public readonly System.Type Type;
+        public readonly Type Type;
 
         /// <summary>
         /// The instance name of <see cref="StaticData"/> we're referencing, at runtime the instance can be found in
@@ -29,7 +29,7 @@ namespace Tooling.StaticData
         /// </summary>
         public readonly string InstanceName;
 
-        public StaticDataReference(System.Type type, string instanceName)
+        public StaticDataReference(Type type, string instanceName)
         {
             Type = type;
             InstanceName = instanceName;
