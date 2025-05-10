@@ -155,7 +155,7 @@ namespace Tooling.StaticData.EditorUI
             }
 
             private static void SetViewStateBasedOnSource(
-                PopupField<Type> varTypeField,
+                ValueTypeField varTypeField,
                 EnumField gameFunctionField,
                 ManualValueField manualValueField,
                 Source source)
@@ -202,38 +202,30 @@ namespace Tooling.StaticData.EditorUI
 
             private class ValueField : VisualElement
             {
-                private readonly ValueModel value;
+                public ValueModel Value { get; private set; }
                 public event Action OnValueChanged;
 
                 public ValueField(ValueModel value)
                 {
-                    this.value = value;
-                    RefreshView();
+                    RefreshView(value);
                 }
 
-                private void RefreshView()
+                public void RefreshView(ValueModel value)
                 {
+                    Value = value;
                     Clear();
+
+                    if (value == null)
+                    {
+                        Add(new Label("Null value!"));
+                        return;
+                    }
 
                     var manualValueField = new ManualValueField(value, value.Type);
                     manualValueField.OnValueChanged += OnValueChanged;
-                    var types = Assembly.GetExecutingAssembly()
-                        .GetTypes()
-                        .Where(t => typeof(IValueType).IsAssignableFrom(t)
-                                    && t.IsValueType
-                                    && !t.IsAbstract
-                                    && !t.IsInterface)
-                        .ToList();
-                    var varTypeField = new PopupField<Type>(
-                        "Variable Type",
-                        types, typeof(Null),
-                        t => t.IsGenericType // Only ValueList is generic, we want to display that name without the `
-                            ? t.Name.Split('`')[0]
-                            : t.Name,
-                        t => t.IsGenericType
-                            ? t.Name.Split('`')[0]
-                            : t.Name);
-                    varTypeField.RegisterValueChangedCallback(evt =>
+
+                    var valueTypeField = new ValueTypeField(value);
+                    valueTypeField.RegisterCallback<ChangeEvent<Type>>(evt =>
                     {
                         var newType = evt.newValue;
                         value.Type = newType;
@@ -260,12 +252,12 @@ namespace Tooling.StaticData.EditorUI
                     varSourceField.RegisterValueChangedCallback(evt =>
                     {
                         value.Source = (Source)evt.newValue;
-                        SetViewStateBasedOnSource(varTypeField, gameFunctionField, manualValueField, value.Source);
+                        SetViewStateBasedOnSource(valueTypeField, gameFunctionField, manualValueField, value.Source);
                         OnValueChanged?.Invoke();
                     });
 
-                    SetViewStateBasedOnSource(varTypeField, gameFunctionField, manualValueField, value.Source);
-                    Add(varTypeField);
+                    SetViewStateBasedOnSource(valueTypeField, gameFunctionField, manualValueField, value.Source);
+                    Add(valueTypeField);
                     Add(manualValueField);
                     Add(varSourceField);
                     Add(gameFunctionField);
@@ -275,7 +267,6 @@ namespace Tooling.StaticData.EditorUI
             private class ManualValueField : VisualElement
             {
                 private readonly ValueModel value;
-
                 public event Action OnValueChanged;
 
                 public ManualValueField(ValueModel value, Type type)
@@ -287,10 +278,7 @@ namespace Tooling.StaticData.EditorUI
                 private static readonly Dictionary<Type, Action<ManualValueField>> RefreshViewAction = new()
                 {
                     {
-                        typeof(Null), field =>
-                        {
-                            field.Add(new Label("Null Value"));
-                        }
+                        typeof(Null), field => { field.Add(new Label("Null Value")); }
                     },
                     {
                         typeof(Bool), field =>
@@ -367,7 +355,53 @@ namespace Tooling.StaticData.EditorUI
                     {
                         typeof(ValueList<>), field =>
                         {
-                            var listField = new ListView();
+                            field.value.List ??= new ListValueModel
+                            {
+                                Type = typeof(Null)
+                            };
+
+                            var valueTypeField = new ValueTypeField(field.value);
+                            var listField = new ListView(field.value.List)
+                            {
+                                makeItem = () => new ValueField(null),
+                                bindItem = (item, index) =>
+                                {
+                                    var valueField = (ValueField)item;
+                                    valueField.RefreshView((ValueModel)field.value.List[index]);
+                                    valueField.OnValueChanged += field.OnValueChanged;
+                                },
+                                unbindItem = (item, _) =>
+                                {
+                                    var valueField = (ValueField)item;
+                                    valueField.RefreshView(null);
+                                    valueField.OnValueChanged -= field.OnValueChanged;
+                                },
+                                showAddRemoveFooter = true,
+                                showFoldoutHeader = true,
+                                showBoundCollectionSize = true,
+                                showAlternatingRowBackgrounds = AlternatingRowBackground.ContentOnly,
+                                headerTitle = "List"
+                            };
+                            listField.itemsAdded += _ => field.OnValueChanged?.Invoke();
+                            listField.itemsRemoved += _ => field.OnValueChanged?.Invoke();
+                            listField.itemsSourceChanged += () => field.OnValueChanged?.Invoke();
+                            listField.itemIndexChanged += (_, _) => field.OnValueChanged?.Invoke();
+
+                            valueTypeField.RegisterValueChangedCallback(evt =>
+                            {
+                                var newType = evt.newValue;
+                                field.value.List.Type = newType;
+                                foreach (ValueModel value in field.value.List)
+                                {
+                                    value.Type = newType;
+                                }
+
+                                listField.Rebuild();
+                                field.OnValueChanged?.Invoke();
+                            });
+
+                            field.Add(valueTypeField);
+                            field.Add(listField);
                         }
                     }
                 };
@@ -389,8 +423,49 @@ namespace Tooling.StaticData.EditorUI
                     }
                     else
                     {
-                        MyLogger.LogError($"Invalid type pased in, expected a class that inherits {typeof(IValueType)}, but got {type}!");
+                        MyLogger.LogError($"Invalid type passed in, expected a class that inherits {typeof(IValueType)}, but got {type}!");
                     }
+                }
+            }
+
+            private class ValueTypeField : VisualElement, INotifyValueChanged<Type>
+            {
+                public Type value { get; set; }
+
+                public ValueTypeField(ValueModel value)
+                {
+                    RefreshView(value);
+                }
+
+                public void RefreshView(ValueModel value)
+                {
+                    this.value = value.Type;
+                    Clear();
+
+                    var types = Assembly.GetExecutingAssembly()
+                        .GetTypes()
+                        .Where(t => typeof(IValueType).IsAssignableFrom(t)
+                                    && t.IsValueType
+                                    && !t.IsAbstract
+                                    && !t.IsInterface)
+                        .ToList();
+                    var popupTypeField = new PopupField<Type>(
+                        "Type",
+                        types,
+                        value.Type,
+                        t => t.IsGenericType // Only ValueList is generic, we want to display that name without the `
+                            ? t.Name.Split('`')[0]
+                            : t.Name,
+                        t => t.IsGenericType
+                            ? t.Name.Split('`')[0]
+                            : t.Name);
+                    popupTypeField.RegisterValueChangedCallback(SendEvent);
+                    Add(popupTypeField);
+                }
+
+                public void SetValueWithoutNotify(Type newValue)
+                {
+                    value = newValue;
                 }
             }
         }
