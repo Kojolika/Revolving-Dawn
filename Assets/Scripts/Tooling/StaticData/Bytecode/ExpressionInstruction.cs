@@ -9,7 +9,7 @@ namespace Tooling.StaticData.Bytecode
     }
 
     [System.Serializable]
-    public class ExpressionInstruction : IInstructionModel
+    public class ExpressionInstruction
     {
         public ExpressionBase Expression;
     }

@@ -25,6 +25,6 @@ namespace Tooling.StaticData.EditorUI
             return Draw((T)data);
         }
 
-        protected abstract VisualElement Draw(T data);
+        protected abstract VisualElement Draw(T statement);
     }
 }

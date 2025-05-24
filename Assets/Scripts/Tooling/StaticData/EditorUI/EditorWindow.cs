@@ -303,11 +303,6 @@ namespace Tooling.StaticData.EditorUI
                 openedEditorWindow.instancesView.Refresh();
                 base.SaveChanges();
             }
-
-            public override void DiscardChanges()
-            {
-                base.DiscardChanges();
-            }
         }
     }
 }

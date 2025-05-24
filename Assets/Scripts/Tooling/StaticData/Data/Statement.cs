@@ -7,11 +7,10 @@ namespace Tooling.StaticData
     public class Statement : StaticData, ITriggerPoint
     {
         public List<Variable> Inputs;
-        public List<IInstructionModel> Instructions;
+        public List<InstructionModel> Instructions;
     }
 
-    [System.Serializable]
-    public struct Variable
+    public class Variable
     {
         public string Name;
         public Type Type;

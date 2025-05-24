@@ -2,10 +2,9 @@ using System.Collections.Generic;
 
 namespace Tooling.StaticData.Bytecode
 {
-    [System.Serializable]
-    public struct While : IInstructionModel
+    public struct While
     {
         public ExpressionInstruction Condition;
-        public List<IInstructionModel> Instructions;
+        public List<InstructionModel> Instructions;
     }
 }

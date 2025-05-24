@@ -1,46 +1,71 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using JetBrains.Annotations;
 using Tooling.Logging;
 using Tooling.StaticData.Bytecode;
 using UnityEngine.UIElements;
 using Utils.Extensions;
-using Double = Tooling.StaticData.Bytecode.Double;
 using Type = System.Type;
 using LiteralType = Tooling.StaticData.Bytecode.Type;
-using String = Tooling.StaticData.Bytecode.String;
 
 namespace Tooling.StaticData.EditorUI
 {
     [UsedImplicitly]
     public class StatementStaticDataDrawer : CustomStaticDataDrawer<Statement>
     {
-        protected override VisualElement Draw(Statement data)
+        protected override VisualElement Draw(Statement statement)
         {
             var root = new VisualElement();
 
-            var nameField = new GeneralField<string>(new FieldValueProvider(typeof(Statement).GetField(nameof(Statement.Name)), data));
+            var nameField = new GeneralField<string>(new FieldValueProvider(typeof(Statement).GetField(nameof(Statement.Name)), statement));
             nameField.OnValueChanged += _ => InvokeValueChanged();
             root.Add(nameField);
 
-            var inputsField = new GeneralField<List<Variable>>(
-                new FieldValueProvider(typeof(Statement).GetField(nameof(Statement.Inputs)), data)
-            );
-            inputsField.OnValueChanged += _ => InvokeValueChanged();
+            var inputsField = new ListView
+            {
+                itemsSource = statement.Inputs,
+                makeItem = () => new InputView(),
+                bindItem = (item, index) =>
+                {
+                    var inputView = (InputView)item;
+                    if (index >= 0 && index < statement.Inputs?.Count)
+                    {
+                        inputView.SetValueWithoutNotify(statement.Inputs[index]);
+                    }
+                    else
+                    {
+                        MyLogger.LogError(
+                            $"View data mismatch, statement input count is: {statement.Inputs?.Count} but index is: {index}!");
+                    }
+                },
+                showAlternatingRowBackgrounds = AlternatingRowBackground.All,
+                reorderable = true,
+                showBorder = true,
+                virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
+                reorderMode = ListViewReorderMode.Animated,
+                showFoldoutHeader = true,
+                headerTitle = nameof(Statement.Inputs),
+                showAddRemoveFooter = true,
+                showBoundCollectionSize = false,
+                horizontalScrollingEnabled = true
+            };
+            inputsField.itemsAdded += _ => InvokeValueChanged();
+            inputsField.itemsRemoved += _ => InvokeValueChanged();
+            inputsField.itemsSourceChanged += InvokeValueChanged;
+            inputsField.itemIndexChanged += (_, _) => InvokeValueChanged();
             root.Add(inputsField);
 
-            data.Instructions ??= new List<IInstructionModel>();
+            statement.Instructions ??= new List<InstructionModel>();
             var listView = new ListView
             {
-                itemsSource = data.Instructions,
-                makeItem = () => new InstructionView(data),
+                itemsSource = statement.Instructions,
+                makeItem = () => new InstructionView(statement),
                 bindItem = (item, index) =>
                 {
                     var instructionView = (InstructionView)item;
                     instructionView.RefreshView(index,
-                        InstructionView.GetInstructionTypeOf(data.Instructions[index]?.GetType() ?? typeof(IInstructionModel)));
+                        InstructionView.GetInstructionTypeOf(statement.Instructions[index]?.GetType() ?? typeof(InstructionModel)));
                     instructionView.OnValueChanged += InvokeValueChanged;
                 },
                 unbindItem = (item, _) =>
@@ -71,6 +96,34 @@ namespace Tooling.StaticData.EditorUI
             return root;
         }
 
+        private class InputView : VisualElement, INotifyValueChanged<Variable>
+        {
+            public Variable value { get; set; }
+
+            public void SetValueWithoutNotify(Variable value)
+            {
+                this.value = value;
+                RefreshView();
+            }
+
+            private void RefreshView()
+            {
+                Clear();
+                value ??= new Variable();
+
+                var nameField = new TextField("Name")
+                {
+                    value = value.Name
+                };
+                nameField.RegisterValueChangedCallback(evt => value.Name = evt.newValue);
+                Add(nameField);
+
+                var instructionSelection = new EnumField("Instruction Type", value.Type);
+                instructionSelection.RegisterValueChangedCallback(evt => { value.Type = (Tooling.StaticData.Bytecode.Type)evt.newValue; });
+                Add(instructionSelection);
+            }
+        }
+
         public class InstructionView : VisualElement
         {
             public event Action OnValueChanged;
@@ -87,7 +140,7 @@ namespace Tooling.StaticData.EditorUI
             {
                 this.statement = statement;
                 int index = this.statement.Instructions.Count - 1;
-                RefreshView(index, GetInstructionTypeOf(statement.Instructions[index]?.GetType() ?? typeof(IInstructionModel)));
+                RefreshView(index, GetInstructionTypeOf(statement.Instructions[index]?.GetType() ?? typeof(InstructionModel)));
             }
 
             public void RefreshView(int index, InstructionType instructionType)
@@ -103,7 +156,7 @@ namespace Tooling.StaticData.EditorUI
                 instructionSelection.RegisterValueChangedCallback(evt =>
                 {
                     var newInstruction = (InstructionType)evt.newValue;
-                    statement.Instructions[index] = Activator.CreateInstance(GetTypeOf(newInstruction)) as IInstructionModel;
+                    statement.Instructions[index] = Activator.CreateInstance(GetTypeOf(newInstruction)) as InstructionModel;
                     RefreshView(index, newInstruction);
                     OnValueChanged?.Invoke();
                 });
@@ -113,16 +166,37 @@ namespace Tooling.StaticData.EditorUI
                 {
                     case InstructionType.Unknown:
                     {
-                        Add(new Label("Unknown Instruction"));
+                        Add(new Label("Select an instruction"));
                         break;
                     }
 
                     case InstructionType.ReadVariable:
                     {
                         var definedVariables = new List<Variable>();
+                        foreach (var input in statement.Inputs)
+                        {
+                            definedVariables.Add(input);
+                        }
+
                         for (int i = 0; i < index; i++)
                         {
+                            if (statement.Instructions[i] is AssignVariableModel assignVariableModel &&
+                                string.IsNullOrEmpty(assignVariableModel.Name))
+                            {
+                                definedVariables.Add(new Variable
+                                {
+                                    Name = assignVariableModel.Name,
+                                    Type = assignVariableModel.Value.Type
+                                });
+                            }
                         }
+
+                        var variableSelection = new PopupField<Variable>("Select Variable",
+                            definedVariables,
+                            definedVariables.FirstOrDefault(),
+                            variable => $"{variable.Name} ({variable.Type})",
+                            variable => $"{variable.Name} ({variable.Type})");
+                        Add(variableSelection);
 
                         break;
                     }
@@ -143,7 +217,7 @@ namespace Tooling.StaticData.EditorUI
                             OnValueChanged?.Invoke();
                         });
                         Add(nameField);
-                        var valueField = new ValueField(assignVariable.Value);
+                        var valueField = new ValueField(assignVariable.Value, true);
                         valueField.OnValueChanged += OnValueChanged;
                         Add(valueField);
                         break;
@@ -154,18 +228,6 @@ namespace Tooling.StaticData.EditorUI
                 }
             }
 
-            private static void SetViewStateBasedOnSource(
-                ValueTypeField varTypeField,
-                EnumField gameFunctionField,
-                ManualValueField manualValueField,
-                Source source)
-            {
-                varTypeField.SetEnabled(source == Source.Manual);
-                manualValueField.SetEnabled(source == Source.Manual);
-                manualValueField.visible = source == Source.Manual;
-                gameFunctionField.SetEnabled(source == Source.GameFunction);
-                gameFunctionField.visible = source == Source.GameFunction;
-            }
 
             private static readonly Dictionary<Type, InstructionType> ValidInstructionTypeMap = new()
             {
@@ -183,7 +245,7 @@ namespace Tooling.StaticData.EditorUI
             {
                 return ValidInstructionTypeMap
                     .ToDictionary(x => x.Value, y => y.Key)
-                    .GetValueOrDefault(instructionType, typeof(IInstructionModel));
+                    .GetValueOrDefault(instructionType, typeof(InstructionModel));
             }
 
             private static LiteralType GetTypeOf(GameFunction gameFunction)
@@ -205,8 +267,15 @@ namespace Tooling.StaticData.EditorUI
                 public ValueModel Value { get; private set; }
                 public event Action OnValueChanged;
 
-                public ValueField(ValueModel value)
+                /// <summary>
+                /// If true this allows the <see cref="Value"/> to have its type changed.
+                /// This is false for lists, as all values in a list have the same type.
+                /// </summary>
+                private readonly bool allowTypeChange;
+
+                public ValueField(ValueModel value, bool allowTypeChange)
                 {
+                    this.allowTypeChange = allowTypeChange;
                     RefreshView(value);
                 }
 
@@ -215,33 +284,88 @@ namespace Tooling.StaticData.EditorUI
                     Value = value;
                     Clear();
 
-                    if (value == null)
+                    var row = new VisualElement { style = { flexDirection = FlexDirection.Row } };
+                    Add(row);
+                    var valueTextField = new TextField("Value")
                     {
-                        Add(new Label("Null value!"));
+                        value = Value?.ToString() ?? "<null>",
+                        isReadOnly = true
+                    };
+                    row.Add(valueTextField);
+                    var editButton = new ButtonIcon(() => ManualValueFieldEditor.Open(Value, allowTypeChange, newValue =>
+                    {
+                        Value = newValue;
+                        OnValueChanged?.Invoke();
+                        valueTextField.value = Value.ToString();
+                    }), IconPaths.Edit);
+                    row.Add(editButton);
+                }
+            }
+
+            private class ManualValueFieldEditor : UnityEditor.EditorWindow
+            {
+                private bool isInitialized;
+
+                /// <summary>
+                /// The original value before any edits have occured
+                /// </summary>
+                private ValueModel originalValue;
+
+                /// <summary>
+                /// The value that edits are being applied to
+                /// </summary>
+                private ValueModel value;
+
+                private Action<ValueModel> onValueChanged;
+
+                private bool allowTypeChange;
+
+                public static void Open(ValueModel value, bool allowTypeChange, Action<ValueModel> onValueChanged)
+                {
+                    var window = GetWindow<ManualValueFieldEditor>();
+                    window.value = value;
+                    window.allowTypeChange = allowTypeChange;
+                    window.onValueChanged = onValueChanged;
+                    window.isInitialized = true;
+
+                    window.CreateGUI();
+                    window.ShowModalUtility();
+                    window.Focus();
+                }
+
+                public void CreateGUI()
+                {
+                    if (!isInitialized)
+                    {
                         return;
                     }
 
-                    var manualValueField = new ManualValueField(value, value.Type);
-                    manualValueField.OnValueChanged += OnValueChanged;
+                    rootVisualElement.Clear();
 
-                    var valueTypeField = new ValueTypeField(value);
-                    valueTypeField.RegisterCallback<ChangeEvent<Type>>(evt =>
+                    value ??= new ValueModel { Type = LiteralType.Null };
+                    originalValue = value.Clone();
+
+                    var manualValueField = new ManualValueField(value);
+                    manualValueField.OnValueChanged += () => { hasUnsavedChanges = true; };
+
+                    var valueTypeField = new EnumField(value.Type);
+                    valueTypeField.RegisterValueChangedCallback(evt =>
                     {
-                        var newType = evt.newValue;
+                        var newType = (LiteralType)evt.newValue;
                         value.Type = newType;
                         if (value.Source == Source.Manual)
                         {
                             manualValueField.RefreshView(newType);
                         }
 
-                        OnValueChanged?.Invoke();
+                        hasUnsavedChanges = true;
                     });
 
                     var gameFunctionField = new EnumField("Game Function", value.GameFunction);
                     gameFunctionField.RegisterValueChangedCallback(evt =>
                     {
                         value.GameFunction = (GameFunction)evt.newValue;
-                        OnValueChanged?.Invoke();
+                        hasUnsavedChanges = true;
                     });
 
                     var varSourceField = new EnumField("Source", value.Source)
@@ -252,15 +376,45 @@ namespace Tooling.StaticData.EditorUI
                     varSourceField.RegisterValueChangedCallback(evt =>
                     {
                         value.Source = (Source)evt.newValue;
-                        SetViewStateBasedOnSource(valueTypeField, gameFunctionField, manualValueField, value.Source);
-                        OnValueChanged?.Invoke();
+                        SetViewStateBasedOnSource(valueTypeField, allowTypeChange, gameFunctionField, manualValueField, value.Source);
+                        hasUnsavedChanges = true;
                     });
 
-                    SetViewStateBasedOnSource(valueTypeField, gameFunctionField, manualValueField, value.Source);
-                    Add(valueTypeField);
-                    Add(manualValueField);
-                    Add(varSourceField);
-                    Add(gameFunctionField);
+                    SetViewStateBasedOnSource(valueTypeField, allowTypeChange, gameFunctionField, manualValueField, value.Source);
+                    rootVisualElement.Add(valueTypeField);
+                    rootVisualElement.Add(manualValueField);
+                    rootVisualElement.Add(varSourceField);
+                    rootVisualElement.Add(gameFunctionField);
+                    rootVisualElement.Add(new Button(() =>
+                    {
+                        SaveChanges();
+                        Close();
+                    })
+                    {
+                        text = "Save"
+                    });
+                }
+
+                private static void SetViewStateBasedOnSource(
+                    EnumField varTypeField,
+                    bool allowTypeChange,
+                    EnumField gameFunctionField,
+                    ManualValueField manualValueField,
+                    Source source)
+                {
+                    varTypeField.SetEnabled(source == Source.Manual && allowTypeChange);
+                    manualValueField.SetEnabled(source == Source.Manual);
+                    manualValueField.visible = source == Source.Manual;
+                    gameFunctionField.SetEnabled(source == Source.GameFunction);
+                    gameFunctionField.visible = source == Source.GameFunction;
+                }
+
+                public override void SaveChanges()
+                {
+                    // apply the edits to the original
+                    originalValue = value;
+                    onValueChanged?.Invoke(originalValue);
+                    base.SaveChanges();
                 }
             }
 
@@ -269,112 +423,116 @@ namespace Tooling.StaticData.EditorUI
                 private readonly ValueModel value;
                 public event Action OnValueChanged;
 
-                public ManualValueField(ValueModel value, Type type)
+                public ManualValueField(ValueModel value)
                 {
                     this.value = value;
-                    RefreshView(type);
+                    RefreshView(this.value.Type);
                 }
 
-                private static readonly Dictionary<Type, Action<ManualValueField>> RefreshViewAction = new()
+                // TODO: On save, set all other values to their default values
+                public void RefreshView(LiteralType type)
                 {
+                    Clear();
+
+                    switch (type)
                     {
-                        typeof(Null), field => { field.Add(new Label("Null Value")); }
-                    },
-                    {
-                        typeof(Bool), field =>
+                        case LiteralType.Null:
                         {
-                            var boolField = new Toggle("Value") { value = field.value.Bool };
+                            Add(new Label("Null Value"));
+                            break;
+                        }
+
+                        case LiteralType.Bool:
+                        {
+                            var boolField = new Toggle("Value") { value = value.Bool };
                             boolField.RegisterValueChangedCallback(evt =>
                             {
-                                field.value.Bool = evt.newValue;
-                                field.OnValueChanged?.Invoke();
+                                value.Bool = evt.newValue;
+                                OnValueChanged?.Invoke();
                             });
-                            field.Add(boolField);
+                            Add(boolField);
+                            break;
                         }
-                    },
-                    {
-                        typeof(String), field =>
+
+                        case LiteralType.String:
                         {
-                            var textField = new TextField("Value") { value = field.value.String };
+                            var textField = new TextField("Value") { value = value.String };
                             textField.RegisterValueChangedCallback(evt =>
                             {
-                                field.value.String = evt.newValue;
-                                field.OnValueChanged?.Invoke();
+                                value.String = evt.newValue;
+                                OnValueChanged?.Invoke();
                             });
-                            field.Add(textField);
+                            Add(textField);
+                            break;
                         }
-                    },
-                    {
-                        typeof(Int), field =>
+
+                        case LiteralType.Int:
                         {
-                            var intField = new IntegerField("Value") { value = (int)field.value.Long };
+                            var intField = new IntegerField("Value") { value = (int)value.Long };
                             intField.RegisterValueChangedCallback(evt =>
                             {
-                                field.value.Long = evt.newValue;
-                                field.OnValueChanged?.Invoke();
+                                value.Long = evt.newValue;
+                                OnValueChanged?.Invoke();
                             });
-                            field.Add(intField);
+                            Add(intField);
+                            break;
                         }
-                    },
-                    {
-                        typeof(Long), field =>
+
+                        case LiteralType.Long:
                         {
-                            var longField = new LongField("Value") { value = field.value.Long };
+                            var longField = new LongField("Value") { value = value.Long };
                             longField.RegisterValueChangedCallback(evt =>
                             {
-                                field.value.Long = evt.newValue;
-                                field.OnValueChanged?.Invoke();
+                                value.Long = evt.newValue;
+                                OnValueChanged?.Invoke();
                             });
-                            field.Add(longField);
+                            Add(longField);
+                            break;
                         }
-                    },
-                    {
-                        typeof(Float), field =>
+
+                        case LiteralType.Float:
                         {
-                            var floatField = new FloatField("Value") { value = (float)field.value.Double };
+                            var floatField = new FloatField("Value") { value = (float)value.Double };
                             floatField.RegisterValueChangedCallback(evt =>
                             {
-                                field.value.Double = evt.newValue;
-                                field.OnValueChanged?.Invoke();
+                                value.Double = evt.newValue;
+                                OnValueChanged?.Invoke();
                             });
-                            field.Add(floatField);
+                            Add(floatField);
+                            break;
                         }
-                    },
-                    {
-                        typeof(Double), field =>
+
+                        case LiteralType.Double:
                         {
-                            var doubleField = new DoubleField("Value") { value = field.value.Double };
+                            var doubleField = new DoubleField("Value") { value = value.Double };
                             doubleField.RegisterValueChangedCallback(evt =>
                             {
-                                field.value.Double = evt.newValue;
-                                field.OnValueChanged?.Invoke();
+                                value.Double = evt.newValue;
+                                OnValueChanged?.Invoke();
                             });
-                            field.Add(doubleField);
+                            Add(doubleField);
+                            break;
                         }
-                    },
-                    {
-                        typeof(ValueList<>), field =>
-                        {
-                            field.value.List ??= new ListValueModel
-                            {
-                                Type = typeof(Null)
-                            };
 
-                            var valueTypeField = new ValueTypeField(field.value);
-                            var listField = new ListView(field.value.List)
+                        case LiteralType.List:
+                        {
+                            value.List ??= new ListValueModel();
+
+                            var valueTypeField = new EnumField(value.Type);
+                            var listField = new ListView(value.List)
                             {
-                                makeItem = () => new ValueField(null),
+                                makeItem = () => new ValueField((ValueModel)value.List[^1], false),
                                 bindItem = (item, index) =>
                                 {
                                     var valueField = (ValueField)item;
-                                    valueField.RefreshView((ValueModel)field.value.List[index]);
-                                    valueField.OnValueChanged += field.OnValueChanged;
+                                    var newValue = (ValueModel)value.List[index];
+                                    newValue.Type = value.List.Type;
+                                    valueField.RefreshView(newValue);
                                 },
                                 unbindItem = (item, _) =>
                                 {
                                     var valueField = (ValueField)item;
                                     valueField.RefreshView(null);
-                                    valueField.OnValueChanged -= field.OnValueChanged;
                                 },
                                 showAddRemoveFooter = true,
                                 showFoldoutHeader = true,
@@ -382,90 +540,43 @@ namespace Tooling.StaticData.EditorUI
                                 showAlternatingRowBackgrounds = AlternatingRowBackground.ContentOnly,
                                 headerTitle = "List"
                             };
-                            listField.itemsAdded += _ => field.OnValueChanged?.Invoke();
-                            listField.itemsRemoved += _ => field.OnValueChanged?.Invoke();
-                            listField.itemsSourceChanged += () => field.OnValueChanged?.Invoke();
-                            listField.itemIndexChanged += (_, _) => field.OnValueChanged?.Invoke();
+                            listField.itemsAdded += indices =>
+                            {
+                                foreach (var index in indices)
+                                {
+                                    value.List[index] = new ValueModel { Type = value.List.Type };
+                                }
+
+                                OnValueChanged?.Invoke();
+                            };
+                            listField.itemsRemoved += _ => OnValueChanged?.Invoke();
+                            listField.itemsSourceChanged += () => OnValueChanged?.Invoke();
+                            listField.itemIndexChanged += (_, _) => OnValueChanged?.Invoke();
 
                             valueTypeField.RegisterValueChangedCallback(evt =>
                             {
-                                var newType = evt.newValue;
-                                field.value.List.Type = newType;
-                                foreach (ValueModel value in field.value.List)
-                                {
-                                    value.Type = newType;
-                                }
-
+                                value.List.Type = (LiteralType)evt.newValue;
                                 listField.Rebuild();
-                                field.OnValueChanged?.Invoke();
+                                OnValueChanged?.Invoke();
                             });
 
-                            field.Add(valueTypeField);
-                            field.Add(listField);
+                            Add(valueTypeField);
+                            Add(listField);
+                            break;
+                        }
+
+                        case LiteralType.CombatParticipant:
+                        {
+                            Add(new Label("TODO: What do we want to display for a CombatParticipant"));
+                            break;
+                        }
+
+                        default:
+                        {
+                            Add(new Label("Invalid type"));
+                            break;
                         }
                     }
-                };
-
-                // TODO: On save, set all other values to their default values
-                public void RefreshView(Type type)
-                {
-                    Clear();
-
-                    if (type == null)
-                    {
-                        type = typeof(Null);
-                        value.Type = type;
-                    }
-
-                    if (RefreshViewAction.TryGetValue(type, out var refreshViewAction))
-                    {
-                        refreshViewAction.Invoke(this);
-                    }
-                    else
-                    {
-                        MyLogger.LogError($"Invalid type passed in, expected a class that inherits {typeof(IValueType)}, but got {type}!");
-                    }
-                }
-            }
-
-            private class ValueTypeField : VisualElement, INotifyValueChanged<Type>
-            {
-                public Type value { get; set; }
-
-                public ValueTypeField(ValueModel value)
-                {
-                    RefreshView(value);
-                }
-
-                public void RefreshView(ValueModel value)
-                {
-                    this.value = value.Type;
-                    Clear();
-
-                    var types = Assembly.GetExecutingAssembly()
-                        .GetTypes()
-                        .Where(t => typeof(IValueType).IsAssignableFrom(t)
-                                    && t.IsValueType
-                                    && !t.IsAbstract
-                                    && !t.IsInterface)
-                        .ToList();
-                    var popupTypeField = new PopupField<Type>(
-                        "Type",
-                        types,
-                        value.Type,
-                        t => t.IsGenericType // Only ValueList is generic, we want to display that name without the `
-                            ? t.Name.Split('`')[0]
-                            : t.Name,
-                        t => t.IsGenericType
-                            ? t.Name.Split('`')[0]
-                            : t.Name);
-                    popupTypeField.RegisterValueChangedCallback(SendEvent);
-                    Add(popupTypeField);
-                }
-
-                public void SetValueWithoutNotify(Type newValue)
-                {
-                    value = newValue;
                 }
             }
         }

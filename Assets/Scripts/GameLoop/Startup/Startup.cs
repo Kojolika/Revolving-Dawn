@@ -31,7 +31,7 @@ namespace GameLoop.Startup
             MyLogger.Log("Waiting for the dependency injection object graph is constructed...");
             await UniTask.WaitWhile(() => sceneManager == null && menuManager == null);
             
-            dbInterface.OpenConnection();
+            //dbInterface.OpenConnection();
 
             MyLogger.Log("Loading Main Menu...");
             await sceneManager.LoadScene(MySceneManager.SceneIndex.MainMenu);

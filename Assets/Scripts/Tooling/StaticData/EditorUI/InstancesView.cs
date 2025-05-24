@@ -55,7 +55,8 @@ namespace Tooling.StaticData.EditorUI
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 showBorder = true,
                 selectionType = SelectionType.Multiple,
-                showAddRemoveFooter = allowEditing
+                showAddRemoveFooter = allowEditing,
+                virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight
             };
 
             listView.itemsAdded += ints =>

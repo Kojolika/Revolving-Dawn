@@ -56,7 +56,7 @@ namespace Tooling.StaticData.EditorUI
             }
 
             var parent = field.GetFirstAncestorOfType<GeneralField>();
-            if (parent?.Type == typeof(List<IInstructionModel>))
+            if (parent?.Type == typeof(List<InstructionModel>))
             {
             }
 

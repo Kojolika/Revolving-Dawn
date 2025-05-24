@@ -10,6 +10,6 @@ namespace Tooling.StaticData
         public Card Upgrade;
         public Card Downgrade;
         public bool IsLostOnPlay;
-        public List<IInstructionModel> PlayEffect;
+        public List<InstructionModel> PlayEffect;
     }
 }

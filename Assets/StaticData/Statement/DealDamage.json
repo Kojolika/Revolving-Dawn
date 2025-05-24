@@ -1,0 +1,23 @@
+{
+  "Inputs": [
+    {
+      "Name": "Target",
+      "Type": 8
+    },
+    {
+      "Name": "Amount",
+      "Type": 5
+    }
+  ],
+  "Instructions": [
+    {
+      "$type": "Tooling.StaticData.Bytecode.AssignVariableModel, Assembly-CSharp",
+      "Name": "Test",
+      "Value": null
+    },
+    {
+      "$type": "Tooling.StaticData.Bytecode.ReadVariableModel, Assembly-CSharp",
+      "Name": null
+    }
+  ]
+}

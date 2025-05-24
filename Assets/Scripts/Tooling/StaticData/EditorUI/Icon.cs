@@ -57,6 +57,11 @@ namespace Tooling.StaticData
             };
             button.Add(icon);
             Add(button);
+
+            style.marginBottom = 4;
+            style.marginTop = 4;
+            style.marginLeft = 4;
+            style.marginRight = 4;
         }
     }
 }
