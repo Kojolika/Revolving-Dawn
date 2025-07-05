@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -10,7 +11,7 @@ using Tooling.StaticData.Bytecode;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 using Type = System.Type;
-using LiteralType = Tooling.StaticData.Bytecode.Type;
+using ByteValueType = Tooling.StaticData.Bytecode.Type;
 
 namespace Tooling.StaticData.EditorUI
 {
@@ -69,16 +70,10 @@ namespace Tooling.StaticData.EditorUI
                 bindItem = (item, index) =>
                 {
                     var instructionView = (InstructionView)item;
-                    instructionView.RefreshView(index,
-                        InstructionView.GetInstructionTypeOf(statement.Instructions[index]?.GetType() ?? typeof(InstructionModel)));
+                    instructionView.RefreshView(index, statement.Instructions[index]);
                     instructionView.OnValueChanged += InvokeValueChanged;
                 },
-                unbindItem = (item, _) =>
-                {
-                    var instructionView = (InstructionView)item;
-                    instructionView.RefreshView(-1, InstructionView.InstructionType.Unknown);
-                    instructionView.OnValueChanged -= InvokeValueChanged;
-                },
+                unbindItem = (item, _) => ((InstructionView)item).OnValueChanged -= InvokeValueChanged,
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 reorderable = true,
                 showBorder = true,
@@ -101,6 +96,9 @@ namespace Tooling.StaticData.EditorUI
             return root;
         }
 
+        /// <summary>
+        /// The view for a variable input for a statement.
+        /// </summary>
         private class InputView : VisualElement, INotifyValueChanged<Variable>
         {
             public Variable value { get; set; }
@@ -123,9 +121,97 @@ namespace Tooling.StaticData.EditorUI
                 nameField.RegisterValueChangedCallback(evt => value.Name = evt.newValue);
                 Add(nameField);
 
-                var instructionSelection = new EnumField("Instruction Type", value.Type);
-                instructionSelection.RegisterValueChangedCallback(evt => { value.Type = (Tooling.StaticData.Bytecode.Type)evt.newValue; });
-                Add(instructionSelection);
+                var availableTypes = new List<string>();
+                var enumTypes = Enum.GetValues(typeof(ByteValueType))
+                    .Cast<ByteValueType>()
+                    .Select(type => type.ToString())
+                    .ToList();
+                availableTypes.AddRange(enumTypes);
+
+                var objectTypes = Assembly.GetCallingAssembly()
+                    .GetTypes()
+                    .Where(type => type.GetCustomAttribute<Bytecode.Object>() != null)
+                    .Select(type => type.FullName)
+                    .ToList();
+                availableTypes.AddRange(objectTypes);
+
+                Func<string, string> popupFieldFormatting = typeString =>
+                {
+                    if (enumTypes.Contains(typeString))
+                    {
+                        return typeString;
+                    }
+
+                    if (objectTypes.Contains(typeString))
+                    {
+                        string typeWithoutNameSpace = typeString.Split('.').Last();
+                        return $"Object/{typeWithoutNameSpace}";
+                    }
+
+                    return typeString;
+                };
+
+                var typeSelection = new PopupField<string>(
+                    "Variable Type",
+                    availableTypes,
+                    value.Type.ToString(),
+                    popupFieldFormatting,
+                    popupFieldFormatting)
+                {
+                    value = value.Type != ByteValueType.Object || value.ObjectType == null
+                        ? value.Type.ToString()
+                        : popupFieldFormatting(value.ObjectType.FullName)
+                };
+
+                var objectTypeContainer = new VisualElement();
+                RefreshVariableTypeView(
+                    value,
+                    objectTypeContainer,
+                    value.Type != ByteValueType.Object || value.ObjectType == null
+                        ? value.Type.ToString()
+                        : value.ObjectType.FullName,
+                    enumTypes,
+                    objectTypes);
+
+                typeSelection.RegisterValueChangedCallback(evt => RefreshVariableTypeView(value, objectTypeContainer, evt.newValue, enumTypes, objectTypes));
+
+                Add(typeSelection);
+                Add(objectTypeContainer);
+            }
+
+            private static void RefreshVariableTypeView(
+                Variable variable,
+                VisualElement objectTypeContainer,
+                string selectedType,
+                List<string> enumTypes,
+                List<string> objectTypes)
+            {
+                objectTypeContainer.Clear();
+
+                if (enumTypes.Contains(selectedType))
+                {
+                    variable.Type = (ByteValueType)Enum.Parse(typeof(ByteValueType), selectedType);
+                }
+                else if (objectTypes.Contains(selectedType))
+                {
+                    var newType = Type.GetType(selectedType);
+                    if (newType == null)
+                    {
+                        variable.Type = default;
+                        MyLogger.LogError("Error: Variable object type could not be found!");
+
+                        return;
+                    }
+
+                    variable.Type = ByteValueType.Object;
+                    variable.ObjectType = newType;
+                    var objectTypeTextField = new TextField("Object Type")
+                    {
+                        value = selectedType
+                    };
+                    objectTypeTextField.SetEnabled(false);
+                    objectTypeContainer.Add(objectTypeTextField);
+                }
             }
         }
 
@@ -134,21 +220,14 @@ namespace Tooling.StaticData.EditorUI
             public event Action OnValueChanged;
             private readonly Statement statement;
 
-            public enum InstructionType
-            {
-                Unknown,
-                ReadVariable,
-                AssignVariable,
-            }
-
             public InstructionView(Statement statement)
             {
                 this.statement = statement;
                 int index = this.statement.Instructions.Count - 1;
-                RefreshView(index, GetInstructionTypeOf(statement.Instructions[index]?.GetType() ?? typeof(InstructionModel)));
+                RefreshView(index, statement.Instructions[index]);
             }
 
-            public void RefreshView(int index, InstructionType instructionType)
+            public void RefreshView(int index, InstructionModel instruction)
             {
                 Clear();
 
@@ -157,32 +236,36 @@ namespace Tooling.StaticData.EditorUI
                     return;
                 }
 
-                var instructionSelection = new EnumField("Instruction Type", instructionType);
+                var instructionSelection = new TypeSelect<InstructionModel>("Instruction Type", statement.Instructions[index]);
                 instructionSelection.RegisterValueChangedCallback(evt =>
                 {
-                    var newInstruction = (InstructionType)evt.newValue;
-                    statement.Instructions[index] = Activator.CreateInstance(GetTypeOf(newInstruction)) as InstructionModel;
-                    RefreshView(index, newInstruction);
+                    statement.Instructions[index] = evt.newValue;
+                    RefreshView(index, evt.newValue);
                     OnValueChanged?.Invoke();
                 });
                 Add(instructionSelection);
 
-                switch (instructionType)
+                switch (instruction)
                 {
-                    case InstructionType.Unknown:
+                    case null:
+                    case Unknown:
                     {
                         Add(new Label("Select an instruction"));
                         break;
                     }
 
-                    case InstructionType.ReadVariable:
+                    case ReadVariableModel readVariableModel:
                     {
                         // Provides a default selection that we won't save if no variable is selected
-                        var nullVariable = new Variable { Name = "(none)", Type = LiteralType.Null };
+                        var nullVariable = new Variable { Name = "(none)", Type = ByteValueType.Null };
                         var definedVariables = new List<Variable> { nullVariable };
-                        foreach (var input in statement.Inputs)
+
+                        if (!statement.Inputs.IsNullOrEmpty())
                         {
-                            definedVariables.Add(input);
+                            foreach (var input in statement.Inputs)
+                            {
+                                definedVariables.Add(input);
+                            }
                         }
 
                         for (int i = 0; i < index; i++)
@@ -197,7 +280,7 @@ namespace Tooling.StaticData.EditorUI
                             }
                         }
 
-                        /*// TODO: Refactor if we have more cases like this?
+                        // TODO: Refactor if we have more cases like this?
                         // we want to be able to reference the stats/buffs of combat participants in the UI
                         // This seems like more a quick way to do it for the UI but this relationship between
                         // the LiteralType.CombatParticipant and stats/buffs isn't defined anywhere in the code
@@ -207,24 +290,24 @@ namespace Tooling.StaticData.EditorUI
                             {
                                 var variable = definedVariables[i];
                                 string variableNamePrefix = $"{variable.Name} ({variable.Type})";
-                                if (variable.Type == LiteralType.CombatParticipant)
+                                if (variable.Type == ByteValueType.Object)
                                 {
                                     foreach (var stat in StaticDatabase.Instance.GetInstancesForType<Stat>())
                                     {
                                         // TODO: do we want to use double for stats?
                                         // We're assuming here that stats are only floats
-                                        definedVariables.Add(new Variable { Name = $"{variableNamePrefix}/Stats/{stat.Name}", Type = LiteralType.Float });
+                                        definedVariables.Add(new Variable { Name = $"{variableNamePrefix}/Stats/{stat.Name}", Type = ByteValueType.Float });
                                     }
 
                                     foreach (var buff in StaticDatabase.Instance.GetInstancesForType<Buff>())
                                     {
                                         // TODO: do we want to use long for buffs?
                                         // We're assuming buffs are only ints and that getting a buff returns the number of buffs on the combat participant
-                                        definedVariables.Add(new Variable { Name = $"{variableNamePrefix}/Buffs/{buff.Name}", Type = LiteralType.Int });
+                                        definedVariables.Add(new Variable { Name = $"{variableNamePrefix}/Buffs/{buff.Name}", Type = ByteValueType.Int });
                                     }
                                 }
                             }
-                        }*/
+                        }
 
                         definedVariables = definedVariables.OrderBy(x => x.Name).ToList();
 
@@ -235,32 +318,18 @@ namespace Tooling.StaticData.EditorUI
                             variable => $"{variable.Name} ({variable.Type})");
                         variableSelection.RegisterValueChangedCallback(evt =>
                         {
-                            if (statement.Instructions[index] is ReadVariableModel readVariableModel)
-                            {
-                                // Set the selected variable, if it's our designated null variable, we set the value to null
-                                readVariableModel.Name = evt.newValue == nullVariable
-                                    ? null
-                                    : evt.newValue.Name;
-                            }
-                            else
-                            {
-                                MyLogger.LogError($"Expected instruction {index} to be {typeof(ReadVariableModel)}!");
-                            }
+                            // Set the selected variable, if it's our designated null variable, we set the value to null
+                            readVariableModel.Name = evt.newValue == nullVariable
+                                ? null
+                                : evt.newValue.Name;
                         });
                         Add(variableSelection);
 
                         break;
                     }
 
-                    case InstructionType.AssignVariable:
+                    case AssignVariableModel assignVariable:
                     {
-                        if (statement.Instructions[index] is not AssignVariableModel assignVariable)
-                        {
-                            MyLogger.LogError($"Error: statement instruction at index {index}. " +
-                                              $"Instruction is not a {typeof(AssignVariableModel)}!");
-                            return;
-                        }
-
                         var nameField = new TextField("Variable Name") { value = assignVariable.Name };
                         nameField.RegisterValueChangedCallback(evt =>
                         {
@@ -279,29 +348,9 @@ namespace Tooling.StaticData.EditorUI
                         break;
                     }
                     default:
-                        MyLogger.LogError("Unknown instruction type!");
+                        Add(new Label($"Instruction has no UI. type={instruction.GetType()}"));
                         break;
                 }
-            }
-
-
-            private static readonly Dictionary<Type, InstructionType> ValidInstructionTypeMap = new()
-            {
-                { typeof(Unknown), InstructionType.Unknown },
-                { typeof(AssignVariableModel), InstructionType.AssignVariable },
-                { typeof(ReadVariableModel), InstructionType.ReadVariable }
-            };
-
-            public static InstructionType GetInstructionTypeOf(Type type)
-            {
-                return ValidInstructionTypeMap.GetValueOrDefault(type, InstructionType.Unknown);
-            }
-
-            private static Type GetTypeOf(InstructionType instructionType)
-            {
-                return ValidInstructionTypeMap
-                    .ToDictionary(x => x.Value, y => y.Key)
-                    .GetValueOrDefault(instructionType, typeof(InstructionModel));
             }
 
             private class ValueField : VisualElement, INotifyValueChanged<ValueModel>
@@ -416,7 +465,7 @@ namespace Tooling.StaticData.EditorUI
                     };
                     valueTypeField.RegisterValueChangedCallback(evt =>
                     {
-                        var newType = (LiteralType)evt.newValue;
+                        var newType = (ByteValueType)evt.newValue;
                         value.Type = newType;
                         if (value.Source == Source.Manual)
                         {
@@ -496,13 +545,13 @@ namespace Tooling.StaticData.EditorUI
                 }
 
                 // TODO: On save, set all other values to their default values
-                public void RefreshView(LiteralType type)
+                public void RefreshView(ByteValueType type)
                 {
                     Clear();
 
                     switch (type)
                     {
-                        case LiteralType.Null:
+                        case ByteValueType.Null:
                         {
                             var nullValueField = new TextField("Value") { value = "null" };
                             nullValueField.SetEnabled(false);
@@ -510,7 +559,7 @@ namespace Tooling.StaticData.EditorUI
                             break;
                         }
 
-                        case LiteralType.Bool:
+                        case ByteValueType.Bool:
                         {
                             var boolField = new Toggle("Value")
                             {
@@ -637,7 +686,7 @@ namespace Tooling.StaticData.EditorUI
                             }
                         }
 
-                        case LiteralType.String:
+                        case ByteValueType.String:
                         {
                             var textField = new TextField("Value") { value = value.String };
                             textField.RegisterValueChangedCallback(evt =>
@@ -650,7 +699,7 @@ namespace Tooling.StaticData.EditorUI
                             break;
                         }
 
-                        case LiteralType.Int:
+                        case ByteValueType.Int:
                         {
                             var intField = new IntegerField("Value") { value = (int)value.Long };
                             intField.RegisterValueChangedCallback(evt =>
@@ -663,7 +712,7 @@ namespace Tooling.StaticData.EditorUI
                             break;
                         }
 
-                        case LiteralType.Long:
+                        case ByteValueType.Long:
                         {
                             var longField = new LongField("Value") { value = value.Long };
                             longField.RegisterValueChangedCallback(evt =>
@@ -676,7 +725,7 @@ namespace Tooling.StaticData.EditorUI
                             break;
                         }
 
-                        case LiteralType.Float:
+                        case ByteValueType.Float:
                         {
                             var floatField = new FloatField("Value") { value = (float)value.Double };
                             floatField.RegisterValueChangedCallback(evt =>
@@ -689,7 +738,7 @@ namespace Tooling.StaticData.EditorUI
                             break;
                         }
 
-                        case LiteralType.Double:
+                        case ByteValueType.Double:
                         {
                             var doubleField = new DoubleField("Value") { value = value.Double };
                             doubleField.RegisterValueChangedCallback(evt =>
@@ -702,7 +751,7 @@ namespace Tooling.StaticData.EditorUI
                             break;
                         }
 
-                        case LiteralType.List:
+                        case ByteValueType.List:
                         {
                             value.List ??= new ListValueModel();
 
@@ -746,7 +795,7 @@ namespace Tooling.StaticData.EditorUI
                             valueTypeField.RegisterValueChangedCallback(evt =>
                             {
                                 var oldValue = value.Clone();
-                                value.List.Type = (LiteralType)evt.newValue;
+                                value.List.Type = (ByteValueType)evt.newValue;
                                 listField.Rebuild();
                                 SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
@@ -756,7 +805,7 @@ namespace Tooling.StaticData.EditorUI
                             break;
                         }
 
-                        case LiteralType.Object:
+                        case ByteValueType.Object:
                         {
                             Add(new Label("TODO: What do we want to display for an Object"));
                             break;

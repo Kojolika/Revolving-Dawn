@@ -165,7 +165,7 @@ namespace Tooling.StaticData.EditorUI
         /// </summary>
         /// <returns>A visual element containing the list view.</returns>
         /// <exception cref="ArgumentException">Fired if the fieldInfo is not a type of <see cref="IList"/></exception>
-        private VisualElement CreateListField(System.Type type)
+        private VisualElement CreateListField(Type type)
         {
             var root = new VisualElement();
             root.AddToClassList(VisualElementClasses.ListView);
@@ -176,10 +176,9 @@ namespace Tooling.StaticData.EditorUI
                 // otherwise if it's a generic list
                 : type.IsGenericType
                     ? type.GetGenericArguments()[0]
-                    : throw new ArgumentException($"Cannot find element type on {type}");
+                    : typeof(object);
 
-            var itemsSource = GetValue() as IList
-                              ?? (IList)Activator.CreateInstance(type);
+            var itemsSource = GetValue() as IList ?? (IList)Activator.CreateInstance(type);
 
             var listView = new ListView
             {

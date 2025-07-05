@@ -10,7 +10,6 @@ namespace Tooling.StaticData.Bytecode
         Float,
         Double,
         List,
-        CombatParticipant,
         Object
     }
 }

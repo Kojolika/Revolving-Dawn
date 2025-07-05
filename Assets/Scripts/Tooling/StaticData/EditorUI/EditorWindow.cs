@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using Tooling.Logging;
@@ -202,6 +203,7 @@ namespace Tooling.StaticData.EditorUI
             private EditorWindow openedEditorWindow;
             private bool isInitialized;
             private string nameOnOpening;
+            private readonly List<Action> disposeActions = new();
 
             public Context staticDataContext { get; private set; }
 
@@ -243,7 +245,9 @@ namespace Tooling.StaticData.EditorUI
 
                 if (DrawerManager.Instance.StaticDataDrawers.TryGetValue(selectedType, out var customDrawer))
                 {
-                    customDrawer.OnValueChanged += () => hasUnsavedChanges = true;
+                    Action onValueChanged = () => hasUnsavedChanges = true;
+                    customDrawer.OnValueChanged += onValueChanged;
+                    AddDisposeAction(() => customDrawer.OnValueChanged -= onValueChanged);
                     root.Add(customDrawer.Draw(editingObj));
                 }
                 else
@@ -252,7 +256,9 @@ namespace Tooling.StaticData.EditorUI
                         selectedType,
                         new ValueProvider<StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name),
                         new GeneralField.Options { EnumerateStaticDataProperties = true });
+                    Action<object> onValueChanged = _ => hasUnsavedChanges = true;
                     generalField.OnValueChanged += _ => hasUnsavedChanges = true;
+                    AddDisposeAction(() => generalField.OnValueChanged -= onValueChanged);
                     root.Add(generalField);
                 }
 
@@ -267,6 +273,19 @@ namespace Tooling.StaticData.EditorUI
                 saveButton.AddToClassList(VisualElementClasses.InstanceSaveButton);
 
                 root.Add(saveButton);
+            }
+
+            private void AddDisposeAction(Action action)
+            {
+                disposeActions.Add(action);
+            }
+
+            public void OnDisable()
+            {
+                foreach (var action in disposeActions)
+                {
+                    action.Invoke();
+                }
             }
 
             /// <summary>

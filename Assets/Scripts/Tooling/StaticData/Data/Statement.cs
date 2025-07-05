@@ -14,5 +14,10 @@ namespace Tooling.StaticData
     {
         public string Name;
         public Type Type;
+
+        /// <summary>
+        /// When <see cref="Type"/> is <see cref="Type.Object"/> this is populated with the type of the object.
+        /// </summary>
+        public System.Type ObjectType;
     }
 }

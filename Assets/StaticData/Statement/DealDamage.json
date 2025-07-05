@@ -2,11 +2,13 @@
   "Inputs": [
     {
       "Name": "Target",
-      "Type": 8
+      "Type": 8,
+      "ObjectType": "Fight.Engine.ICombatParticipant, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
     },
     {
       "Name": "Amount",
-      "Type": 5
+      "Type": 5,
+      "ObjectType": "Fight.Engine.ICombatParticipant, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
     }
   ],
   "Instructions": [
@@ -31,7 +33,7 @@
     },
     {
       "$type": "Tooling.StaticData.Bytecode.ReadVariableModel, Assembly-CSharp",
-      "Name": "Target"
+      "Name": "Amount"
     }
   ]
 }
