@@ -13,11 +13,25 @@
     {
       "$type": "Tooling.StaticData.Bytecode.AssignVariableModel, Assembly-CSharp",
       "Name": "Test",
-      "Value": null
+      "Value": {
+        "Type": 2,
+        "Source": 0,
+        "GameFunction": 0,
+        "String": "Hello",
+        "BooleanModel": {
+          "Value": false,
+          "UseExpression": false,
+          "Expression": null,
+          "ExpressionValues": null
+        },
+        "Long": 0,
+        "Double": 0.0,
+        "List": null
+      }
     },
     {
       "$type": "Tooling.StaticData.Bytecode.ReadVariableModel, Assembly-CSharp",
-      "Name": null
+      "Name": "Target"
     }
   ]
 }

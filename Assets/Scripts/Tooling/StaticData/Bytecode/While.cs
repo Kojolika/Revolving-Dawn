@@ -2,9 +2,8 @@ using System.Collections.Generic;
 
 namespace Tooling.StaticData.Bytecode
 {
-    public struct While
+    public class While : InstructionModel
     {
-        public ExpressionInstruction Condition;
         public List<InstructionModel> Instructions;
     }
 }

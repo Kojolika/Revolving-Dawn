@@ -20,5 +20,7 @@ namespace Tooling.StaticData.EditorUI
         public const string StaticDataSelectorContainer = "gf_sd_selector-container";
 
         public const string InstanceSaveButton = "sd_save_button";
+
+        public const string Column = "column";
     }
 }

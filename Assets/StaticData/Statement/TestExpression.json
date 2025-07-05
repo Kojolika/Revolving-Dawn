@@ -1,0 +1,40 @@
+{
+  "Inputs": null,
+  "Instructions": [
+    {
+      "$type": "Tooling.StaticData.Bytecode.AssignVariableModel, Assembly-CSharp",
+      "Name": null,
+      "Value": {
+        "Type": 1,
+        "Source": 0,
+        "GameFunction": 0,
+        "String": null,
+        "BooleanModel": {
+          "Value": false,
+          "UseExpression": true,
+          "Expression": "{0} > 1",
+          "ExpressionValues": [
+            {
+              "Type": 0,
+              "Source": 0,
+              "GameFunction": 0,
+              "String": null,
+              "BooleanModel": {
+                "Value": false,
+                "UseExpression": false,
+                "Expression": null,
+                "ExpressionValues": null
+              },
+              "Long": 0,
+              "Double": 0.0,
+              "List": null
+            }
+          ]
+        },
+        "Long": 0,
+        "Double": 0.0,
+        "List": null
+      }
+    }
+  ]
+}

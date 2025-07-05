@@ -3,6 +3,7 @@ using Tooling.StaticData.Bytecode;
 
 namespace Tooling.StaticData
 {
+    [Object]
     public class Buff : StaticData
     {
         public bool IsStackable;

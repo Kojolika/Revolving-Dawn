@@ -106,3 +106,7 @@
 .sd_save_button {
     margin-top: var(--std-margin-large);
 }
+
+.column {
+    flex-direction: column;
+}

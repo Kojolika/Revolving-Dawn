@@ -7,7 +7,5 @@ namespace Tooling.StaticData
     [System.Serializable]
     public class Expression : StaticData
     {
-        [SerializeField, JsonProperty]
-        private ExpressionInstruction expressionInstruction;
     }
 }

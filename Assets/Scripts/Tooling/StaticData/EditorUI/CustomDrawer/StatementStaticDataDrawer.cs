@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using Tooling.Logging;
 using Tooling.StaticData.Bytecode;
@@ -35,8 +38,7 @@ namespace Tooling.StaticData.EditorUI
                     }
                     else
                     {
-                        MyLogger.LogError(
-                            $"View data mismatch, statement input count is: {statement.Inputs?.Count} but index is: {index}!");
+                        MyLogger.LogError($"Error: statement input count is: {statement.Inputs?.Count} but index is: {index}!");
                     }
                 },
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
@@ -48,7 +50,10 @@ namespace Tooling.StaticData.EditorUI
                 headerTitle = nameof(Statement.Inputs),
                 showAddRemoveFooter = true,
                 showBoundCollectionSize = false,
-                horizontalScrollingEnabled = true
+                horizontalScrollingEnabled = true,
+                tooltip = "Options inputs for this statement. This is only used when you reference this statement in another statement. " +
+                          "For example, if we created a statement that was for a DealDamage effect, we would want the inputs of the amount " +
+                          "of damage, and the target of the affect. Then we could reuse the DealDamage effect in multiple other statements."
             };
             inputsField.itemsAdded += _ => InvokeValueChanged();
             inputsField.itemsRemoved += _ => InvokeValueChanged();
@@ -172,7 +177,9 @@ namespace Tooling.StaticData.EditorUI
 
                     case InstructionType.ReadVariable:
                     {
-                        var definedVariables = new List<Variable>();
+                        // Provides a default selection that we won't save if no variable is selected
+                        var nullVariable = new Variable { Name = "(none)", Type = LiteralType.Null };
+                        var definedVariables = new List<Variable> { nullVariable };
                         foreach (var input in statement.Inputs)
                         {
                             definedVariables.Add(input);
@@ -180,8 +187,7 @@ namespace Tooling.StaticData.EditorUI
 
                         for (int i = 0; i < index; i++)
                         {
-                            if (statement.Instructions[i] is AssignVariableModel assignVariableModel &&
-                                string.IsNullOrEmpty(assignVariableModel.Name))
+                            if (statement.Instructions[i] is AssignVariableModel assignVariableModel && string.IsNullOrEmpty(assignVariableModel.Name))
                             {
                                 definedVariables.Add(new Variable
                                 {
@@ -191,11 +197,56 @@ namespace Tooling.StaticData.EditorUI
                             }
                         }
 
+                        /*// TODO: Refactor if we have more cases like this?
+                        // we want to be able to reference the stats/buffs of combat participants in the UI
+                        // This seems like more a quick way to do it for the UI but this relationship between
+                        // the LiteralType.CombatParticipant and stats/buffs isn't defined anywhere in the code
+                        if (definedVariables.Count > 0)
+                        {
+                            for (int i = 0; i < definedVariables.Count; i++)
+                            {
+                                var variable = definedVariables[i];
+                                string variableNamePrefix = $"{variable.Name} ({variable.Type})";
+                                if (variable.Type == LiteralType.CombatParticipant)
+                                {
+                                    foreach (var stat in StaticDatabase.Instance.GetInstancesForType<Stat>())
+                                    {
+                                        // TODO: do we want to use double for stats?
+                                        // We're assuming here that stats are only floats
+                                        definedVariables.Add(new Variable { Name = $"{variableNamePrefix}/Stats/{stat.Name}", Type = LiteralType.Float });
+                                    }
+
+                                    foreach (var buff in StaticDatabase.Instance.GetInstancesForType<Buff>())
+                                    {
+                                        // TODO: do we want to use long for buffs?
+                                        // We're assuming buffs are only ints and that getting a buff returns the number of buffs on the combat participant
+                                        definedVariables.Add(new Variable { Name = $"{variableNamePrefix}/Buffs/{buff.Name}", Type = LiteralType.Int });
+                                    }
+                                }
+                            }
+                        }*/
+
+                        definedVariables = definedVariables.OrderBy(x => x.Name).ToList();
+
                         var variableSelection = new PopupField<Variable>("Select Variable",
                             definedVariables,
                             definedVariables.FirstOrDefault(),
                             variable => $"{variable.Name} ({variable.Type})",
                             variable => $"{variable.Name} ({variable.Type})");
+                        variableSelection.RegisterValueChangedCallback(evt =>
+                        {
+                            if (statement.Instructions[index] is ReadVariableModel readVariableModel)
+                            {
+                                // Set the selected variable, if it's our designated null variable, we set the value to null
+                                readVariableModel.Name = evt.newValue == nullVariable
+                                    ? null
+                                    : evt.newValue.Name;
+                            }
+                            else
+                            {
+                                MyLogger.LogError($"Expected instruction {index} to be {typeof(ReadVariableModel)}!");
+                            }
+                        });
                         Add(variableSelection);
 
                         break;
@@ -205,7 +256,7 @@ namespace Tooling.StaticData.EditorUI
                     {
                         if (statement.Instructions[index] is not AssignVariableModel assignVariable)
                         {
-                            MyLogger.LogError($"Index mismatch, statement instruction at index {index}. " +
+                            MyLogger.LogError($"Error: statement instruction at index {index}. " +
                                               $"Instruction is not a {typeof(AssignVariableModel)}!");
                             return;
                         }
@@ -217,8 +268,13 @@ namespace Tooling.StaticData.EditorUI
                             OnValueChanged?.Invoke();
                         });
                         Add(nameField);
+
                         var valueField = new ValueField(assignVariable.Value, true);
-                        valueField.OnValueChanged += OnValueChanged;
+                        valueField.RegisterValueChangedCallback(evt =>
+                        {
+                            assignVariable.Value = evt.newValue;
+                            OnValueChanged?.Invoke();
+                        });
                         Add(valueField);
                         break;
                     }
@@ -248,27 +304,12 @@ namespace Tooling.StaticData.EditorUI
                     .GetValueOrDefault(instructionType, typeof(InstructionModel));
             }
 
-            private static LiteralType GetTypeOf(GameFunction gameFunction)
+            private class ValueField : VisualElement, INotifyValueChanged<ValueModel>
             {
-                return gameFunction switch
-                {
-                    GameFunction.GetTargetedCombatParticipant => LiteralType.CombatParticipant,
-                    GameFunction.GetSelf => LiteralType.CombatParticipant,
-                    GameFunction.GetRandom => LiteralType.CombatParticipant,
-                    GameFunction.GetAllCombatParticipants => LiteralType.List,
-                    GameFunction.GetStat => LiteralType.Long,
-                    GameFunction.GetBuff => LiteralType.Long,
-                    _ => LiteralType.Null
-                };
-            }
-
-            private class ValueField : VisualElement
-            {
-                public ValueModel Value { get; private set; }
-                public event Action OnValueChanged;
+                public ValueModel value { get; set; }
 
                 /// <summary>
-                /// If true this allows the <see cref="Value"/> to have its type changed.
+                /// If true this allows the <see cref="value"/> to have its type changed.
                 /// This is false for lists, as all values in a list have the same type.
                 /// </summary>
                 private readonly bool allowTypeChange;
@@ -281,24 +322,41 @@ namespace Tooling.StaticData.EditorUI
 
                 public void RefreshView(ValueModel value)
                 {
-                    Value = value;
+                    this.value = value;
                     Clear();
 
                     var row = new VisualElement { style = { flexDirection = FlexDirection.Row } };
                     Add(row);
                     var valueTextField = new TextField("Value")
                     {
-                        value = Value?.ToString() ?? "<null>",
+                        value = this.value?.ToString() ?? "<null>",
                         isReadOnly = true
                     };
+
                     row.Add(valueTextField);
-                    var editButton = new ButtonIcon(() => ManualValueFieldEditor.Open(Value, allowTypeChange, newValue =>
-                    {
-                        Value = newValue;
-                        OnValueChanged?.Invoke();
-                        valueTextField.value = Value.ToString();
-                    }), IconPaths.Edit);
+                    var editButton = new ButtonIcon(() =>
+                        ManualValueFieldEditor.Open(
+                            this.value,
+                            allowTypeChange,
+                            newValue =>
+                            {
+                                var oldValue = this.value;
+                                this.value = newValue;
+                                valueTextField.value = this.value.ToString();
+
+                                var changeEvent = ChangeEvent<ValueModel>.GetPooled(oldValue, this.value);
+                                // Without setting the target as this element, the target is null and
+                                // the InstructionView that registered to this value changed callback does not receive events
+                                changeEvent.target = this;
+
+                                SendEvent(changeEvent);
+                            }), IconPaths.Edit);
                     row.Add(editButton);
+                }
+
+                public void SetValueWithoutNotify(ValueModel newValue)
+                {
+                    value = newValue;
                 }
             }
 
@@ -316,7 +374,7 @@ namespace Tooling.StaticData.EditorUI
                 /// </summary>
                 private ValueModel value;
 
-                private Action<ValueModel> onValueChanged;
+                private event Action<ValueModel> onValueChanged;
 
                 private bool allowTypeChange;
 
@@ -329,7 +387,7 @@ namespace Tooling.StaticData.EditorUI
                     window.isInitialized = true;
 
                     window.CreateGUI();
-                    window.ShowModalUtility();
+                    window.Show();
                     window.Focus();
                 }
 
@@ -342,13 +400,20 @@ namespace Tooling.StaticData.EditorUI
 
                     rootVisualElement.Clear();
 
-                    value ??= new ValueModel { Type = LiteralType.Null };
+                    value ??= new ValueModel();
                     originalValue = value.Clone();
 
                     var manualValueField = new ManualValueField(value);
-                    manualValueField.OnValueChanged += () => { hasUnsavedChanges = true; };
+                    manualValueField.RegisterValueChangedCallback(evt =>
+                    {
+                        value = evt.newValue;
+                        hasUnsavedChanges = true;
+                    });
 
-                    var valueTypeField = new EnumField(value.Type);
+                    var valueTypeField = new EnumField(value.Type)
+                    {
+                        label = "Type"
+                    };
                     valueTypeField.RegisterValueChangedCallback(evt =>
                     {
                         var newType = (LiteralType)evt.newValue;
@@ -418,10 +483,11 @@ namespace Tooling.StaticData.EditorUI
                 }
             }
 
-            private class ManualValueField : VisualElement
+            private class ManualValueField : VisualElement, INotifyValueChanged<ValueModel>
             {
-                private readonly ValueModel value;
-                public event Action OnValueChanged;
+                public ValueModel value { get; set; }
+
+                private CancellationTokenSource cts;
 
                 public ManualValueField(ValueModel value)
                 {
@@ -438,20 +504,137 @@ namespace Tooling.StaticData.EditorUI
                     {
                         case LiteralType.Null:
                         {
-                            Add(new Label("Null Value"));
+                            var nullValueField = new TextField("Value") { value = "null" };
+                            nullValueField.SetEnabled(false);
+                            Add(nullValueField);
                             break;
                         }
 
                         case LiteralType.Bool:
                         {
-                            var boolField = new Toggle("Value") { value = value.Bool };
+                            var boolField = new Toggle("Value")
+                            {
+                                value = value.BooleanModel.Value
+                            };
                             boolField.RegisterValueChangedCallback(evt =>
                             {
-                                value.Bool = evt.newValue;
-                                OnValueChanged?.Invoke();
+                                var oldValue = value.Clone();
+                                value.BooleanModel.Value = evt.newValue;
+                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
+
+                            var expressionContainer = new VisualElement();
+                            var useExpressionToggle = new Toggle("Use Expression")
+                            {
+                                value = value.BooleanModel.UseExpression
+                            };
+                            useExpressionToggle.RegisterValueChangedCallback(evt => RefreshExpressionView(evt.newValue));
+                            RefreshExpressionView(value.BooleanModel.UseExpression);
+
                             Add(boolField);
+                            Add(useExpressionToggle);
+                            Add(expressionContainer);
+
                             break;
+
+                            void RefreshExpressionView(bool useExpression)
+                            {
+                                value.BooleanModel.UseExpression = useExpression;
+                                boolField.SetEnabled(!value.BooleanModel.UseExpression);
+                                expressionContainer.Clear();
+                                if (!useExpression)
+                                {
+                                    return;
+                                }
+
+                                var validationLabel = new Label();
+                                var expressionField = new TextField("Expression")
+                                {
+                                    value = value.BooleanModel.Expression
+                                };
+
+                                var errorMessageContainer = new VisualElement();
+                                errorMessageContainer.AddToClassList(VisualElementClasses.Column);
+                                var errorReport = new ExpressionErrorReport(validationLabel, expressionField, errorMessageContainer);
+                                var variablesContainer = new VisualElement();
+
+                                expressionContainer.Add(validationLabel);
+                                expressionContainer.Add(expressionField);
+                                expressionContainer.Add(errorMessageContainer);
+                                expressionContainer.Add(variablesContainer);
+                                ProcessExpression();
+
+                                expressionField.RegisterValueChangedCallback(evt =>
+                                {
+                                    value.BooleanModel.Expression = evt.newValue;
+
+                                    cts?.Cancel();
+                                    cts?.Dispose();
+                                    cts = new CancellationTokenSource();
+                                    _ = UniTask.Delay(TimeSpan.FromSeconds(1), true, cancellationToken: cts.Token).ContinueWith(() =>
+                                    {
+                                        if (cts.IsCancellationRequested)
+                                        {
+                                            return;
+                                        }
+
+                                        ProcessExpression();
+                                    });
+                                });
+
+                                return;
+
+                                void ProcessExpression()
+                                {
+                                    errorReport.Reset();
+                                    variablesContainer.Clear();
+
+                                    Scanner.Scan(value.BooleanModel.Expression, out var tokens, errorReport);
+
+                                    int highestVar = 0;
+                                    var expressionVariables = value.BooleanModel.ExpressionValues?
+                                        .Select(var => var.Clone())
+                                        .ToList() ?? new List<ValueModel>();
+
+                                    foreach (var token in tokens)
+                                    {
+                                        if (token.TokenType != Token.Type.ByteVar)
+                                        {
+                                            continue;
+                                        }
+
+                                        if (!int.TryParse(token.Lexeme[1..^1], out var varNumber))
+                                        {
+                                            MyLogger.LogError($"Cannot parse a variable number from the expression. Lexeme: {token.Lexeme}");
+                                            continue;
+                                        }
+
+                                        if (varNumber < 0)
+                                        {
+                                            errorReport.Report("Variable numbers cannot be negative.", token.Start, token.Length);
+                                            continue;
+                                        }
+
+                                        if (varNumber > highestVar)
+                                        {
+                                            errorReport.Report("Variable numbers must be sequential, i.e start with {0} then {1}", token.Start,
+                                                token.Length);
+                                            continue;
+                                        }
+
+                                        if (expressionVariables.Count - 1 < varNumber)
+                                        {
+                                            var newVariable = new ValueModel();
+                                            expressionVariables.Add(newVariable);
+                                        }
+
+                                        variablesContainer.Add(new ManualValueField(expressionVariables[varNumber]));
+                                        highestVar++;
+                                    }
+
+                                    value.BooleanModel.ExpressionValues = expressionVariables;
+                                }
+                            }
                         }
 
                         case LiteralType.String:
@@ -459,8 +642,9 @@ namespace Tooling.StaticData.EditorUI
                             var textField = new TextField("Value") { value = value.String };
                             textField.RegisterValueChangedCallback(evt =>
                             {
+                                var oldValue = value.Clone();
                                 value.String = evt.newValue;
-                                OnValueChanged?.Invoke();
+                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
                             Add(textField);
                             break;
@@ -471,8 +655,9 @@ namespace Tooling.StaticData.EditorUI
                             var intField = new IntegerField("Value") { value = (int)value.Long };
                             intField.RegisterValueChangedCallback(evt =>
                             {
+                                var oldValue = value.Clone();
                                 value.Long = evt.newValue;
-                                OnValueChanged?.Invoke();
+                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
                             Add(intField);
                             break;
@@ -483,8 +668,9 @@ namespace Tooling.StaticData.EditorUI
                             var longField = new LongField("Value") { value = value.Long };
                             longField.RegisterValueChangedCallback(evt =>
                             {
+                                var oldValue = value.Clone();
                                 value.Long = evt.newValue;
-                                OnValueChanged?.Invoke();
+                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
                             Add(longField);
                             break;
@@ -495,8 +681,9 @@ namespace Tooling.StaticData.EditorUI
                             var floatField = new FloatField("Value") { value = (float)value.Double };
                             floatField.RegisterValueChangedCallback(evt =>
                             {
+                                var oldValue = value.Clone();
                                 value.Double = evt.newValue;
-                                OnValueChanged?.Invoke();
+                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
                             Add(floatField);
                             break;
@@ -507,8 +694,9 @@ namespace Tooling.StaticData.EditorUI
                             var doubleField = new DoubleField("Value") { value = value.Double };
                             doubleField.RegisterValueChangedCallback(evt =>
                             {
+                                var oldValue = value.Clone();
                                 value.Double = evt.newValue;
-                                OnValueChanged?.Invoke();
+                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
                             Add(doubleField);
                             break;
@@ -542,22 +730,25 @@ namespace Tooling.StaticData.EditorUI
                             };
                             listField.itemsAdded += indices =>
                             {
+                                var oldValue = value.Clone();
                                 foreach (var index in indices)
                                 {
                                     value.List[index] = new ValueModel { Type = value.List.Type };
                                 }
 
-                                OnValueChanged?.Invoke();
+
+                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             };
-                            listField.itemsRemoved += _ => OnValueChanged?.Invoke();
-                            listField.itemsSourceChanged += () => OnValueChanged?.Invoke();
-                            listField.itemIndexChanged += (_, _) => OnValueChanged?.Invoke();
+                            listField.itemsRemoved += _ => SendEvent(ChangeEvent<ValueModel>.GetPooled());
+                            listField.itemsSourceChanged += () => SendEvent(ChangeEvent<ValueModel>.GetPooled());
+                            listField.itemIndexChanged += (_, _) => SendEvent(ChangeEvent<ValueModel>.GetPooled());
 
                             valueTypeField.RegisterValueChangedCallback(evt =>
                             {
+                                var oldValue = value.Clone();
                                 value.List.Type = (LiteralType)evt.newValue;
                                 listField.Rebuild();
-                                OnValueChanged?.Invoke();
+                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
 
                             Add(valueTypeField);
@@ -565,9 +756,9 @@ namespace Tooling.StaticData.EditorUI
                             break;
                         }
 
-                        case LiteralType.CombatParticipant:
+                        case LiteralType.Object:
                         {
-                            Add(new Label("TODO: What do we want to display for a CombatParticipant"));
+                            Add(new Label("TODO: What do we want to display for an Object"));
                             break;
                         }
 
@@ -576,6 +767,82 @@ namespace Tooling.StaticData.EditorUI
                             Add(new Label("Invalid type"));
                             break;
                         }
+                    }
+                }
+
+                public void SetValueWithoutNotify(ValueModel newValue)
+                {
+                    value = newValue;
+                }
+
+                private class ExpressionErrorReport : IErrorReport
+                {
+                    private readonly Label label;
+                    private readonly TextField rawExpressionField;
+                    private readonly VisualElement errorMessageContainer;
+
+                    private const string ColorStart = "<color=red>";
+                    private const string ColorEnd = "</color>";
+                    private int lengthOfColorStart => ColorStart.Length;
+                    private int lengthOfColorEnd => ColorEnd.Length;
+
+                    /// <summary>
+                    /// Stores of the offsets of where the source string's characters are located in the current validation label.
+                    /// This is so we can accurately insert values in the right places of the source string while editing the validation label.
+                    /// </summary>
+                    private int[] offsetsFromSourceString;
+
+                    public ExpressionErrorReport(Label label, TextField rawExpressionField, VisualElement errorMessageContainer)
+                    {
+                        this.label = label;
+                        this.rawExpressionField = rawExpressionField;
+                        this.errorMessageContainer = errorMessageContainer;
+                    }
+
+                    public void Report(string message, int columnNumber, int length)
+                    {
+                        // Shouldn't be possible with how the tokens are created but will guard against just in case
+                        if (columnNumber == 0 && length == 0)
+                        {
+                            return;
+                        }
+
+                        // If this is the first error reported for the expression, initialize the state
+                        if (offsetsFromSourceString == null)
+                        {
+                            offsetsFromSourceString = new int[rawExpressionField.text.Length];
+                            label.text = rawExpressionField.text;
+                        }
+
+                        string validationString = label.text;
+                        int startIndex = columnNumber + offsetsFromSourceString[columnNumber];
+                        validationString = validationString.Insert(startIndex, ColorStart);
+                        for (int i = columnNumber; i < offsetsFromSourceString.Length; i++)
+                        {
+                            offsetsFromSourceString[i] += lengthOfColorStart;
+                        }
+
+                        int lexemeEndIndex = columnNumber + length - 1;
+                        int endIndex = lexemeEndIndex + offsetsFromSourceString[lexemeEndIndex] + 1;
+                        validationString = validationString.Insert(endIndex, ColorEnd);
+                        for (int i = lexemeEndIndex; i < offsetsFromSourceString.Length; i++)
+                        {
+                            offsetsFromSourceString[i] += lengthOfColorEnd;
+                        }
+
+                        label.text = validationString;
+
+                        errorMessageContainer.Add(new Label($"<color=red>{message}</color>"));
+                    }
+
+                    /// <summary>
+                    /// Resets the state of the current validation string
+                    /// </summary>
+                    public void Reset()
+                    {
+                        label.text = string.Empty;
+                        offsetsFromSourceString = null;
+                        errorMessageContainer.Clear();
                     }
                 }
             }
