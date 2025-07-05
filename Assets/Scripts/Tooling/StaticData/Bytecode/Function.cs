@@ -14,6 +14,16 @@ namespace Tooling.StaticData.Bytecode
         }
     }
 
+    public class Property : Attribute
+    {
+        public readonly Type Type;
+
+        public Property(Type type)
+        {
+            Type = type;
+        }
+    }
+
     public class Object : Attribute
     {
     }

@@ -6,9 +6,10 @@ namespace Tooling.StaticData
     [Object]
     public class Buff : StaticData
     {
+        [Property(Type.Bool)]
         public bool IsStackable;
+
+        [Property(Type.Long)]
         public long MaxStackSize;
-        public List<ITriggerPoint> BeforeTriggers;
-        public List<ITriggerPoint> AfterTriggers;
     }
 }
