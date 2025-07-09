@@ -1,13 +1,17 @@
 :root {
-    --text-border-color: #4d4f4e;
+    --text-border-color: #6a937d;
     --text-color: #C4C4C4;
+    --text-border-color-invalid: #934949;
 
     --std-border-width: 1px;
     --std-border-raidus: 4px;
+
     --std-padding: 4px;
     --std-padding-large: 20px;
-    --std-margin-large: 20px;
-    --std-margin: 2px;
+
+    --std-margin-small: 4px;
+    --std-margin: 8px;
+    --std-margin-large: 24px;
 
     --button-border-color: #8d8f8e;
     --button-bg-color: #595959;
@@ -26,8 +30,15 @@
 }
 
 .sd_border {
-    --text-border-color: var(--text-border-color);
-    --std-border-width: var(--std-border-width);
+    border-color: var(--text-border-color);
+    border-width: var(--std-border-width);
+    border-radius: var(--std-border-raidus);
+}
+
+.sd_border--invalid {
+    border-color: var(--text-border-color-invalid);
+    border-width: var(--std-border-width);
+    border-radius: var(--std-border-raidus);
 }
 
 .no-border {
@@ -63,7 +74,7 @@
 }
 
 .gf_recursive-container {
-    margin-bottom: var(--std-margin);
+    margin-bottom: var(--std-margin-small);
 }
 
 .gf_list-button-container {
@@ -90,13 +101,18 @@
     width: 200px;
 }
 
+.unity-base-field {
+    margin-bottom: var(--std-margin-small);
+}
+
 .unity-button {
     padding: var(--std-padding);
     border-color: var(--button-border-color);
     border-width: var(--std-border-width);
     border-radius: var(--std-border-raidus);
     background-color: var(--button-bg-color);
-    margin: var(--std-margin);
+    margin: var(--std-margin-small);
+    width: 200px;
 }
 
 .unity-text-element {
@@ -109,4 +125,14 @@
 
 .column {
     flex-direction: column;
+}
+
+.margin-bottom-small {
+    margin-bottom: var(--std-margin-small);
+}
+
+.container {
+    background-color: #5b6561;
+    padding: var(--std-padding);
+    margin: var(--std-margin-small);
 }

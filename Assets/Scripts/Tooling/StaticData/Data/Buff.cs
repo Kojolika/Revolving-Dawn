@@ -3,13 +3,13 @@ using Tooling.StaticData.Bytecode;
 
 namespace Tooling.StaticData
 {
-    [Object]
+    [ByteObject]
     public class Buff : StaticData
     {
-        [Property(Type.Bool)]
+        [ByteProperty(Type.Bool)]
         public bool IsStackable;
 
-        [Property(Type.Long)]
+        [ByteProperty(Type.Long)]
         public long MaxStackSize;
     }
 }

@@ -32,7 +32,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Stores the type of the static data instance that the user was looking at before hot reloading.
         /// </summary>
-        private System.Type selectedType;
+        private Type selectedType;
 
         /// <summary>
         /// <see cref="ListView"/> wrapper of all our of different static data types.
@@ -131,8 +131,8 @@ namespace Tooling.StaticData.EditorUI
         private VisualElement CreateTopToolBar()
         {
             var root = new VisualElement();
-            root.AddToClassList(VisualElementClasses.ToolbarName);
-            root.AddToClassList(VisualElementClasses.BorderBottom);
+            root.AddToClassList(Styles.ToolbarName);
+            root.AddToClassList(Styles.BorderBottom);
 
             root.Add(CreateToolbarButton("Validate then Save to Json", () => _ = SaveAllStaticDataToJson(true)));
             root.Add(CreateToolbarButton("Save and Export to Database", () => MyLogger.Log("Saving and exporting to database...")));
@@ -158,8 +158,8 @@ namespace Tooling.StaticData.EditorUI
             {
                 text = text,
             };
-            button.AddToClassList(VisualElementClasses.ToolBarButtonName);
-            button.AddToClassList(VisualElementClasses.NoBorder);
+            button.AddToClassList(Styles.ToolBarButtonName);
+            button.AddToClassList(Styles.NoBorder);
             return button;
         }
 
@@ -222,7 +222,7 @@ namespace Tooling.StaticData.EditorUI
 
                 openedEditorWindow = GetWindow<EditorWindow>();
                 rootVisualElement.styleSheets.Add(openedEditorWindow.defaultTheme);
-                rootVisualElement.AddToClassList(VisualElementClasses.PaddingLarge);
+                rootVisualElement.AddToClassList(Styles.PaddingLarge);
                 nameOnOpening = editingObj.Name;
 
                 isInitialized = true;
@@ -270,7 +270,7 @@ namespace Tooling.StaticData.EditorUI
                 {
                     text = "Save and close",
                 };
-                saveButton.AddToClassList(VisualElementClasses.InstanceSaveButton);
+                saveButton.AddToClassList(Styles.InstanceSaveButton);
 
                 root.Add(saveButton);
             }

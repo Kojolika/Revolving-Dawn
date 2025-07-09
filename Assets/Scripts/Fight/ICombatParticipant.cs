@@ -4,16 +4,16 @@ using Tooling.StaticData.Bytecode;
 
 namespace Fight.Engine
 {
-    [Object]
+    [ByteObject]
     public interface ICombatParticipant
     {
-        [Function(Type.String)]
+        [ByteProperty(Type.String)]
         string Name { get; }
 
-        [Function(Type.Float, inputs: Type.Object)]
-        Dictionary<Stat, float> Stats { get; }
+        [ByteFunction(Type.Float, inputs: Type.Object)]
+        float GetStat(Stat stat);
 
-        [Function(Type.Int, inputs: Type.Object)]
-        Dictionary<Buff, int> Buffs { get; }
+        [ByteFunction(Type.Int, inputs: Type.Object)]
+        int GetBuff(Buff buff);
     }
 }

@@ -2,7 +2,7 @@ using Tooling.StaticData.Bytecode;
 
 namespace Tooling.StaticData
 {
-    [Object]
+    [ByteObject]
     public class Stat : StaticData
     {
         public LocKey LocName;

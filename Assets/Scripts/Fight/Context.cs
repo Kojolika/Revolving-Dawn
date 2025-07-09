@@ -4,9 +4,10 @@ using Tooling.StaticData.Bytecode;
 
 namespace Fight
 {
+    [ByteCodeContainer]
     public class Context
     {
-        [Function(Type.Object)]
+        [ByteFunction(Type.Object)]
         public List<ICombatParticipant> GetAllCombatParticipants()
         {
             List<ICombatParticipant> list = new List<ICombatParticipant>();

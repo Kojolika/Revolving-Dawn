@@ -130,7 +130,7 @@ namespace Tooling.StaticData.EditorUI
 
                 var objectTypes = Assembly.GetCallingAssembly()
                     .GetTypes()
-                    .Where(type => type.GetCustomAttribute<Bytecode.Object>() != null)
+                    .Where(type => type.GetCustomAttribute<ByteObject>() != null)
                     .Select(type => type.FullName)
                     .ToList();
                 availableTypes.AddRange(objectTypes);
@@ -215,7 +215,7 @@ namespace Tooling.StaticData.EditorUI
             }
         }
 
-        public class InstructionView : VisualElement
+        private class InstructionView : VisualElement
         {
             public event Action OnValueChanged;
             private readonly Statement statement;
@@ -280,36 +280,48 @@ namespace Tooling.StaticData.EditorUI
                             }
                         }
 
-                        // TODO: Refactor if we have more cases like this?
-                        // we want to be able to reference the stats/buffs of combat participants in the UI
-                        // This seems like more a quick way to do it for the UI but this relationship between
-                        // the LiteralType.CombatParticipant and stats/buffs isn't defined anywhere in the code
                         if (definedVariables.Count > 0)
                         {
                             for (int i = 0; i < definedVariables.Count; i++)
                             {
                                 var variable = definedVariables[i];
-                                string variableNamePrefix = $"{variable.Name} ({variable.Type})";
-                                if (variable.Type == ByteValueType.Object)
+                                string variableNamePrefix =
+                                    $"{variable.Name} ({(variable.Type == ByteValueType.Object && variable.ObjectType != null ? variable.ObjectType.Name : variable.Name)}) ";
+                                if (variable.Type == ByteValueType.Object && variable.ObjectType != null)
                                 {
-                                    foreach (var stat in StaticDatabase.Instance.GetInstancesForType<Stat>())
-                                    {
-                                        // TODO: do we want to use double for stats?
-                                        // We're assuming here that stats are only floats
-                                        definedVariables.Add(new Variable { Name = $"{variableNamePrefix}/Stats/{stat.Name}", Type = ByteValueType.Float });
-                                    }
+                                    var fieldVariables = variable.ObjectType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                        .Where(p => p.GetCustomAttribute<ByteProperty>() != null)
+                                        .Select(p => new Variable
+                                        {
+                                            Name = $"{variableNamePrefix}/ {p.Name}",
+                                            Type = p.GetCustomAttribute<ByteProperty>().Type
+                                        });
 
-                                    foreach (var buff in StaticDatabase.Instance.GetInstancesForType<Buff>())
-                                    {
-                                        // TODO: do we want to use long for buffs?
-                                        // We're assuming buffs are only ints and that getting a buff returns the number of buffs on the combat participant
-                                        definedVariables.Add(new Variable { Name = $"{variableNamePrefix}/Buffs/{buff.Name}", Type = ByteValueType.Int });
-                                    }
+                                    var propertyVariables = variable.ObjectType
+                                        .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                        .Where(p => p.GetCustomAttribute<ByteProperty>() != null)
+                                        .Select(p => new Variable
+                                        {
+                                            Name = $"{variableNamePrefix}/ {p.Name}",
+                                            Type = p.GetCustomAttribute<ByteProperty>().Type
+                                        });
+
+                                    var methodVariables = variable.ObjectType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                        .Where(m => m.GetCustomAttribute<ByteFunction>() != null)
+                                        .Select(m => new Variable
+                                        {
+                                            Name = $"{variableNamePrefix}/ {m.Name}",
+                                            Type = m.GetCustomAttribute<ByteFunction>().Output
+                                        });
+
+                                    definedVariables.AddRange(propertyVariables);
+                                    definedVariables.AddRange(fieldVariables);
+                                    definedVariables.AddRange(methodVariables);
                                 }
                             }
-                        }
 
-                        definedVariables = definedVariables.OrderBy(x => x.Name).ToList();
+                            definedVariables = definedVariables.OrderBy(x => x.Name).ToList();
+                        }
 
                         var variableSelection = new PopupField<Variable>("Select Variable",
                             definedVariables,
@@ -355,6 +367,11 @@ namespace Tooling.StaticData.EditorUI
 
             private class ValueField : VisualElement, INotifyValueChanged<ValueModel>
             {
+                /// <summary>
+                /// The original value before any edits have occured
+                /// </summary>
+                private ValueModel originalValue;
+
                 public ValueModel value { get; set; }
 
                 /// <summary>
@@ -363,10 +380,25 @@ namespace Tooling.StaticData.EditorUI
                 /// </summary>
                 private readonly bool allowTypeChange;
 
-                public ValueField(ValueModel value, bool allowTypeChange)
+                private readonly bool allowEditing;
+
+                public ValueField(ValueModel value, bool allowTypeChange = true, bool allowEditing = true)
                 {
                     this.allowTypeChange = allowTypeChange;
+                    this.allowEditing = allowEditing;
+
+                    originalValue = value ??= new ValueModel();
+                    this.value = originalValue.Clone();
+
+                    AddToClassList(Styles.Container);
+                    AddToClassList(Styles.Border);
+
                     RefreshView(value);
+                }
+
+                public void SetValueWithoutNotify(ValueModel newValue)
+                {
+                    originalValue = newValue;
                 }
 
                 public void RefreshView(ValueModel value)
@@ -374,89 +406,17 @@ namespace Tooling.StaticData.EditorUI
                     this.value = value;
                     Clear();
 
-                    var row = new VisualElement { style = { flexDirection = FlexDirection.Row } };
-                    Add(row);
-                    var valueTextField = new TextField("Value")
+                    var foldout = new Foldout
                     {
-                        value = this.value?.ToString() ?? "<null>",
-                        isReadOnly = true
+                        value = false,
+                        text = GetFoldoutText(this.value)
                     };
-
-                    row.Add(valueTextField);
-                    var editButton = new ButtonIcon(() =>
-                        ManualValueFieldEditor.Open(
-                            this.value,
-                            allowTypeChange,
-                            newValue =>
-                            {
-                                var oldValue = this.value;
-                                this.value = newValue;
-                                valueTextField.value = this.value.ToString();
-
-                                var changeEvent = ChangeEvent<ValueModel>.GetPooled(oldValue, this.value);
-                                // Without setting the target as this element, the target is null and
-                                // the InstructionView that registered to this value changed callback does not receive events
-                                changeEvent.target = this;
-
-                                SendEvent(changeEvent);
-                            }), IconPaths.Edit);
-                    row.Add(editButton);
-                }
-
-                public void SetValueWithoutNotify(ValueModel newValue)
-                {
-                    value = newValue;
-                }
-            }
-
-            private class ManualValueFieldEditor : UnityEditor.EditorWindow
-            {
-                private bool isInitialized;
-
-                /// <summary>
-                /// The original value before any edits have occured
-                /// </summary>
-                private ValueModel originalValue;
-
-                /// <summary>
-                /// The value that edits are being applied to
-                /// </summary>
-                private ValueModel value;
-
-                private event Action<ValueModel> onValueChanged;
-
-                private bool allowTypeChange;
-
-                public static void Open(ValueModel value, bool allowTypeChange, Action<ValueModel> onValueChanged)
-                {
-                    var window = GetWindow<ManualValueFieldEditor>();
-                    window.value = value;
-                    window.allowTypeChange = allowTypeChange;
-                    window.onValueChanged = onValueChanged;
-                    window.isInitialized = true;
-
-                    window.CreateGUI();
-                    window.Show();
-                    window.Focus();
-                }
-
-                public void CreateGUI()
-                {
-                    if (!isInitialized)
-                    {
-                        return;
-                    }
-
-                    rootVisualElement.Clear();
-
-                    value ??= new ValueModel();
-                    originalValue = value.Clone();
 
                     var manualValueField = new ManualValueField(value);
                     manualValueField.RegisterValueChangedCallback(evt =>
                     {
                         value = evt.newValue;
-                        hasUnsavedChanges = true;
+                        foldout.text = GetFoldoutText(this.value);
                     });
 
                     var valueTypeField = new EnumField(value.Type)
@@ -472,14 +432,14 @@ namespace Tooling.StaticData.EditorUI
                             manualValueField.RefreshView(newType);
                         }
 
-                        hasUnsavedChanges = true;
+                        foldout.text = GetFoldoutText(this.value);
                     });
 
                     var gameFunctionField = new EnumField("Game Function", value.GameFunction);
                     gameFunctionField.RegisterValueChangedCallback(evt =>
                     {
                         value.GameFunction = (GameFunction)evt.newValue;
-                        hasUnsavedChanges = true;
+                        foldout.text = GetFoldoutText(this.value);
                     });
 
                     var varSourceField = new EnumField("Source", value.Source)
@@ -491,22 +451,35 @@ namespace Tooling.StaticData.EditorUI
                     {
                         value.Source = (Source)evt.newValue;
                         SetViewStateBasedOnSource(valueTypeField, allowTypeChange, gameFunctionField, manualValueField, value.Source);
-                        hasUnsavedChanges = true;
+                        foldout.text = GetFoldoutText(this.value);
                     });
 
                     SetViewStateBasedOnSource(valueTypeField, allowTypeChange, gameFunctionField, manualValueField, value.Source);
-                    rootVisualElement.Add(valueTypeField);
-                    rootVisualElement.Add(manualValueField);
-                    rootVisualElement.Add(varSourceField);
-                    rootVisualElement.Add(gameFunctionField);
-                    rootVisualElement.Add(new Button(() =>
+
+                    Add(foldout);
+                    foldout.Add(valueTypeField);
+                    foldout.Add(manualValueField);
+                    foldout.Add(varSourceField);
+                    foldout.Add(gameFunctionField);
+                    foldout.Add(new Button(() =>
                     {
-                        SaveChanges();
-                        Close();
+                        // apply the edits to the original
+                        var changeEvent = ChangeEvent<ValueModel>.GetPooled(originalValue, value);
+                        changeEvent.target = this;
+                        originalValue = value;
+                        SendEvent(changeEvent);
                     })
                     {
                         text = "Save"
                     });
+                }
+
+                /// <summary>
+                /// Formats as 'value : type' or 'Null' if the value is null
+                /// </summary>
+                private static string GetFoldoutText(ValueModel value)
+                {
+                    return $"{value?.ToString() ?? "Null"}{(value != null ? $" : {value.Type.ToString()}" : string.Empty)}";
                 }
 
                 private static void SetViewStateBasedOnSource(
@@ -521,14 +494,6 @@ namespace Tooling.StaticData.EditorUI
                     manualValueField.visible = source == Source.Manual;
                     gameFunctionField.SetEnabled(source == Source.GameFunction);
                     gameFunctionField.visible = source == Source.GameFunction;
-                }
-
-                public override void SaveChanges()
-                {
-                    // apply the edits to the original
-                    originalValue = value;
-                    onValueChanged?.Invoke(originalValue);
-                    base.SaveChanges();
                 }
             }
 
@@ -548,6 +513,24 @@ namespace Tooling.StaticData.EditorUI
                 public void RefreshView(ByteValueType type)
                 {
                     Clear();
+
+                    var valueTextField = new TextField("Value");
+                    valueTextField.RegisterValueChangedCallback(evt =>
+                    {
+                        value.String = evt.newValue;
+
+                        cts?.Cancel();
+                        cts?.Dispose();
+                        cts = new CancellationTokenSource();
+                        _ = UniTask.Delay(TimeSpan.FromSeconds(1), true, cancellationToken: cts.Token).ContinueWith(() =>
+                        {
+                            if (cts.IsCancellationRequested)
+                            {
+                                return;
+                            }
+                        });
+                    });
+
 
                     switch (type)
                     {
@@ -603,9 +586,31 @@ namespace Tooling.StaticData.EditorUI
                                 };
 
                                 var errorMessageContainer = new VisualElement();
-                                errorMessageContainer.AddToClassList(VisualElementClasses.Column);
+                                errorMessageContainer.AddToClassList(Styles.Column);
                                 var errorReport = new ExpressionErrorReport(validationLabel, expressionField, errorMessageContainer);
-                                var variablesContainer = new VisualElement();
+                                var variablesContainer = new ListView
+                                {
+                                    itemsSource = value.BooleanModel.ExpressionValues,
+                                    showFoldoutHeader = false,
+                                    showAddRemoveFooter = false,
+                                    showAlternatingRowBackgrounds = AlternatingRowBackground.ContentOnly,
+                                    reorderable = true,
+                                    makeItem = () => new ValueField(null),
+                                    bindItem = (item, index) =>
+                                    {
+                                        var valueField = (ValueField)item;
+                                        valueField.RefreshView(value.BooleanModel.ExpressionValues[index]);
+                                        valueField.userData =
+                                            new EventCallback<ChangeEvent<ValueModel>>(evt => value.BooleanModel.ExpressionValues[index] = evt.newValue);
+                                        valueField.RegisterValueChangedCallback(evt => value.BooleanModel.ExpressionValues[index] = evt.newValue);
+                                    },
+                                    unbindItem = (item, _) =>
+                                    {
+                                        var valueField = (ValueField)item;
+                                        valueField.UnregisterValueChangedCallback(valueField.userData as EventCallback<ChangeEvent<ValueModel>>);
+                                    },
+                                    virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight
+                                };
 
                                 expressionContainer.Add(validationLabel);
                                 expressionContainer.Add(expressionField);
@@ -638,13 +643,10 @@ namespace Tooling.StaticData.EditorUI
                                     errorReport.Reset();
                                     variablesContainer.Clear();
 
+                                    MyLogger.Log("Scanning...");
                                     Scanner.Scan(value.BooleanModel.Expression, out var tokens, errorReport);
 
                                     int highestVar = 0;
-                                    var expressionVariables = value.BooleanModel.ExpressionValues?
-                                        .Select(var => var.Clone())
-                                        .ToList() ?? new List<ValueModel>();
-
                                     foreach (var token in tokens)
                                     {
                                         if (token.TokenType != Token.Type.ByteVar)
@@ -666,22 +668,24 @@ namespace Tooling.StaticData.EditorUI
 
                                         if (varNumber > highestVar)
                                         {
-                                            errorReport.Report("Variable numbers must be sequential, i.e start with {0} then {1}", token.Start,
-                                                token.Length);
+                                            errorReport.Report("Variable numbers must be sequential, i.e start with {0} then {1}", token.Start, token.Length);
                                             continue;
                                         }
 
-                                        if (expressionVariables.Count - 1 < varNumber)
+                                        MyLogger.Log($"# expr values: {value.BooleanModel.ExpressionValues?.Count}, varNumber: {varNumber}");
+
+                                        /*
+                                        if ((value.BooleanModel.ExpressionValues?.Count ?? 0) - 1 < varNumber)
                                         {
                                             var newVariable = new ValueModel();
-                                            expressionVariables.Add(newVariable);
+                                            value.BooleanModel.ExpressionValues ??= new List<ValueModel>();
+                                            value.BooleanModel.ExpressionValues.Add(newVariable);
+                                            variablesContainer.Rebuild();
                                         }
+                                        */
 
-                                        variablesContainer.Add(new ManualValueField(expressionVariables[varNumber]));
                                         highestVar++;
                                     }
-
-                                    value.BooleanModel.ExpressionValues = expressionVariables;
                                 }
                             }
                         }

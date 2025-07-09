@@ -1,15 +1,19 @@
 namespace Tooling.StaticData.EditorUI
 {
-    public static class VisualElementClasses
+    public static class Styles
     {
         public const string ToolbarName = "sd_toolbar";
         public const string ToolBarButtonName = "sd_toolbar-button";
+
         public const string Border = "sd_border";
+        public const string BorderInvalid = "sd_border--invalid";
         public const string NoBorder = "no-border";
         public const string BorderBottom = "sd_border-bottom";
         public const string BorderTop = "sd_border-top";
         public const string BorderLeft = "sd_border-left";
         public const string BorderRight = "sd_border-right";
+
+        public const string MarginBottomSmall = "margin-bottom-small";
         public const string PaddingLarge = "sd_padding-large";
 
         public const string ListView = "gf_list";
@@ -22,5 +26,6 @@ namespace Tooling.StaticData.EditorUI
         public const string InstanceSaveButton = "sd_save_button";
 
         public const string Column = "column";
+        public const string Container = "container";
     }
 }

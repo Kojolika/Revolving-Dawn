@@ -56,7 +56,7 @@ namespace Tooling.StaticData.EditorUI
             this.valueProvider = valueProvider;
             this.options = options;
 
-            AddToClassList(VisualElementClasses.RecursiveFieldContainer);
+            AddToClassList(Styles.RecursiveFieldContainer);
 
             drawer = DrawerManager.Instance.Drawers.GetValueOrDefault(type);
 
@@ -74,7 +74,7 @@ namespace Tooling.StaticData.EditorUI
                 rowElement.Add(arrayIndexLabel);
                 rowElement.Add(DrawEditorForType(Type));
 
-                rowElement.AddToClassList(VisualElementClasses.ListViewContainer);
+                rowElement.AddToClassList(Styles.ListViewContainer);
                 Add(rowElement);
             }
             else
@@ -168,7 +168,7 @@ namespace Tooling.StaticData.EditorUI
         private VisualElement CreateListField(Type type)
         {
             var root = new VisualElement();
-            root.AddToClassList(VisualElementClasses.ListView);
+            root.AddToClassList(Styles.ListView);
 
             // If the type is an array
             var elementType = type.IsArray
@@ -215,7 +215,7 @@ namespace Tooling.StaticData.EditorUI
             listViewFoldOut.RegisterValueChangedCallback(evt => ShowAddRemoveButtons(evt.newValue));
             ShowAddRemoveButtons(listViewFoldOut.value);
 
-            buttonContainer.AddToClassList(VisualElementClasses.ListViewButtonContainer);
+            buttonContainer.AddToClassList(Styles.ListViewButtonContainer);
 
             buttonContainer.Add(new Button(() =>
             {
@@ -283,7 +283,7 @@ namespace Tooling.StaticData.EditorUI
         {
             var root = new VisualElement();
 
-            root.AddToClassList(VisualElementClasses.StaticDataSelectorContainer);
+            root.AddToClassList(Styles.StaticDataSelectorContainer);
 
             var label = new Label(valueProvider.ValueName);
             label.AddToClassList("unity-base-field__label");
@@ -324,7 +324,7 @@ namespace Tooling.StaticData.EditorUI
             }
 
             var root = new VisualElement();
-            root.AddToClassList(VisualElementClasses.RecursiveFieldContainer);
+            root.AddToClassList(Styles.RecursiveFieldContainer);
             var fields = Utils.GetFields(type);
 
             // Move name to the top of our editor for static data types
