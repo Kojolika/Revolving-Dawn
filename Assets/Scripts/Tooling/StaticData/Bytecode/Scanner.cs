@@ -404,6 +404,9 @@ namespace Tooling.StaticData.Bytecode
         }
     }
 
+    /// <summary>
+    /// Compiles tokens parsed from the <see cref="Scanner"/> into <see cref="ByteCode"/> operations
+    /// </summary>
     public static class Interpreter
     {
         public static bool Interpret(List<Token> tokens, out List<byte> bytecode, IErrorReport errorReport = null)
@@ -478,6 +481,49 @@ namespace Tooling.StaticData.Bytecode
             public bool HadError;
             public bool PanicMode;
         }
+    }
+
+
+    /// <summary>
+    /// Executes a list of <see cref="ByteCode"/> operations
+    /// </summary>
+    public class VirtualMachine
+    {
+        private int instructionPointer = 0;
+
+        public ExecuteResult Execute(List<byte> bytes, IErrorReport errorReport = null)
+        {
+            instructionPointer = 0;
+            while (true)
+            {
+                ByteCode instruction = ReadByte(bytes);
+                switch (instruction)
+                {
+                    case ByteCode.Return:
+                        return ExecuteResult.Ok;
+                }
+            }
+
+            return ExecuteResult.Ok;
+        }
+
+        private ByteCode ReadByte(List<byte> bytes)
+        {
+            if (instructionPointer >= bytes.Count)
+            {
+                MyLogger.LogError("Error, instruction pointer is out of range.");
+                return default;
+            }
+            
+            return (ByteCode)bytes[instructionPointer];
+        }
+    }
+
+    public enum ExecuteResult
+    {
+        Ok,
+        CompilerError,
+        RuntimeError,
     }
 
     public enum ByteCode

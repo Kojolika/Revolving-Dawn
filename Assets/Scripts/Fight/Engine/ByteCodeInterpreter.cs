@@ -36,17 +36,6 @@ namespace Fight.Engine
         OperatorMultiply,
         OperatorDivide,
         OperatorModulo,
-
-        // GAME SPECIFIC
-        GetPlayer,
-        GetSelf,
-        GetAllCombatParticipants,
-
-        GetStat,
-        SetStat,
-
-        GetBuff,
-        SetBuff,
     }
 
     public readonly struct StackValue
@@ -256,16 +245,6 @@ namespace Fight.Engine
                     case InstructionType.OperatorModulo:
                         Push(GetResultOfMathOperation(Pop(), Pop(), InstructionType.OperatorModulo));
                         break;
-                    case InstructionType.GetPlayer:
-                        break;
-                    case InstructionType.GetSelf:
-                        break;
-                    case InstructionType.GetAllCombatParticipants:
-                        break;
-                    case InstructionType.GetStat:
-                    case InstructionType.SetStat:
-                    case InstructionType.GetBuff:
-                    case InstructionType.SetBuff:
                     default:
                         MyLogger.LogError($"Invalid instruction at index: {index}! Passed instruction: {instructions[index]}!");
                         break;
