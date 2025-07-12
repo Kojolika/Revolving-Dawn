@@ -1,0 +1,10 @@
+{
+  "Inputs": null,
+  "Instructions": [
+    {
+      "$type": "Tooling.StaticData.Bytecode.AssignVariableModel, Assembly-CSharp",
+      "Name": null,
+      "Value": null
+    }
+  ]
+}

@@ -132,7 +132,7 @@ namespace Tooling.StaticData.Bytecode
 
                     case '{':
                     {
-                        if (!TryPeek(out var next) || !char.IsDigit(next))
+                        if (!TryPeek(out var next) || !IsAlpha(next))
                         {
                             tokens.Add(new Token(Token.Type.LeftBrace, currentIndex, 1, currentChar.ToString()));
                         }
@@ -140,7 +140,7 @@ namespace Tooling.StaticData.Bytecode
                         {
                             int lexemeLength = 1;
                             int startIndex = currentIndex;
-                            while (TryPeek(out next) && char.IsDigit(next))
+                            while (TryPeek(out next) && IsAlphaNumeric(next))
                             {
                                 lexemeLength++;
                                 currentIndex++;
@@ -152,6 +152,7 @@ namespace Tooling.StaticData.Bytecode
                             if (IsAtEnd() || source[currentIndex] != '}')
                             {
                                 errorReport?.Report("Invalid variable, missing end brace '}'" + currentIndex, startIndex, lexemeLength);
+                                tokens.Add(new Token(Token.Type.Error, startIndex, lexemeLength, source.Substring(startIndex, lexemeLength)));
                             }
                             else
                             {
@@ -238,6 +239,7 @@ namespace Tooling.StaticData.Bytecode
                         {
                             hasError = true;
                             errorReport?.Report("Unterminated string.", startIndex, lexemeLength);
+                            tokens.Add(new Token(Token.Type.Error, startIndex, lexemeLength, source.Substring(startIndex, lexemeLength)));
                         }
                         else
                         {
@@ -263,6 +265,7 @@ namespace Tooling.StaticData.Bytecode
                         if (!IsAtEnd() && source[currentIndex] == '.')
                         {
                             errorReport?.Report("Invalid number, cannot end a number with a '.'", startIndex, lexemeLength);
+                            tokens.Add(new Token(Token.Type.Error, startIndex, lexemeLength, source.Substring(startIndex, lexemeLength)));
                         }
                         else
                         {
@@ -282,6 +285,7 @@ namespace Tooling.StaticData.Bytecode
                     default:
                         hasError = true;
                         errorReport?.Report($"Unrecognized character {source[currentIndex]}", currentIndex, 1);
+                        tokens.Add(new Token(Token.Type.Error, currentIndex, 1, source.Substring(currentIndex, 1)));
                         break;
                 }
 
@@ -345,7 +349,6 @@ namespace Tooling.StaticData.Bytecode
             Lexeme = lexeme;
         }
 
-
         public enum Type
         {
             // Single-character tokens.
@@ -375,7 +378,7 @@ namespace Tooling.StaticData.Bytecode
             Identifier,
             String,
             Number,
-            
+
             // Custom bytecode variable
             ByteVar,
 
@@ -396,7 +399,89 @@ namespace Tooling.StaticData.Bytecode
             This,
             Var,
             Class,
-            Eof
+            Eof,
+            Error
         }
+    }
+
+    public static class Interpreter
+    {
+        public static bool Interpret(List<Token> tokens, out List<byte> bytecode, IErrorReport errorReport = null)
+        {
+            bytecode = new List<byte>();
+            if (tokens.IsNullOrEmpty())
+            {
+                return true;
+            }
+
+            var parser = new Parser();
+            Advance(parser, tokens, errorReport);
+
+            EmitReturn(bytecode);
+            return !parser.HadError;
+        }
+
+        private static void Advance(Parser parser, List<Token> tokens, IErrorReport errorReport = null)
+        {
+            parser.Previous = parser.Current;
+
+            int i = 0;
+            while (true)
+            {
+                parser.Current = tokens[i];
+                if (parser.Current.TokenType != Token.Type.Error)
+                {
+                    break;
+                }
+
+                ErrorAtCurrent(parser, $"Error at: {parser.Current.Start}:{parser.Current.Length}", errorReport);
+            }
+        }
+
+        private static void Consume(Token.Type tokenType, Parser parser, List<Token> tokens, string message, IErrorReport errorReport = null)
+        {
+            if (parser.Current.TokenType == tokenType)
+            {
+                Advance(parser, tokens, errorReport);
+                return;
+            }
+
+            ErrorAtCurrent(parser, message, errorReport);
+        }
+
+        private static void EmitByte(byte value, List<byte> bytes)
+        {
+            bytes.Add(value);
+        }
+
+        private static void EmitReturn(List<byte> bytes)
+        {
+            bytes.Add((byte)ByteCode.Return);
+        }
+
+        private static void ErrorAtCurrent(Parser parser, string message, IErrorReport errorReport = null)
+        {
+            if (parser.PanicMode)
+            {
+                return;
+            }
+
+            parser.HadError = true;
+            parser.PanicMode = true;
+            errorReport?.Report(message, parser.Current.Start, parser.Current.Length);
+        }
+
+        private class Parser
+        {
+            public Token Previous;
+            public Token Current;
+            public bool HadError;
+            public bool PanicMode;
+        }
+    }
+
+    public enum ByteCode
+    {
+        Return,
     }
 }

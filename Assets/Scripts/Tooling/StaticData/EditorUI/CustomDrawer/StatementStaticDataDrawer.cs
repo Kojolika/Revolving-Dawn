@@ -457,7 +457,7 @@ namespace Tooling.StaticData.EditorUI
                     SetViewStateBasedOnSource(valueTypeField, allowTypeChange, gameFunctionField, manualValueField, value.Source);
 
                     Add(foldout);
-                    foldout.Add(valueTypeField);
+                    //foldout.Add(valueTypeField);
                     foldout.Add(manualValueField);
                     foldout.Add(varSourceField);
                     foldout.Add(gameFunctionField);
@@ -513,245 +513,63 @@ namespace Tooling.StaticData.EditorUI
                 public void RefreshView(ByteValueType type)
                 {
                     Clear();
-
-                    var valueTextField = new TextField("Value");
-                    valueTextField.RegisterValueChangedCallback(evt =>
-                    {
-                        value.String = evt.newValue;
-
-                        cts?.Cancel();
-                        cts?.Dispose();
-                        cts = new CancellationTokenSource();
-                        _ = UniTask.Delay(TimeSpan.FromSeconds(1), true, cancellationToken: cts.Token).ContinueWith(() =>
-                        {
-                            if (cts.IsCancellationRequested)
-                            {
-                                return;
-                            }
-                        });
-                    });
-
-
                     switch (type)
                     {
                         case ByteValueType.Null:
-                        {
-                            var nullValueField = new TextField("Value") { value = "null" };
-                            nullValueField.SetEnabled(false);
-                            Add(nullValueField);
-                            break;
-                        }
-
                         case ByteValueType.Bool:
-                        {
-                            var boolField = new Toggle("Value")
-                            {
-                                value = value.BooleanModel.Value
-                            };
-                            boolField.RegisterValueChangedCallback(evt =>
-                            {
-                                var oldValue = value.Clone();
-                                value.BooleanModel.Value = evt.newValue;
-                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
-                            });
-
-                            var expressionContainer = new VisualElement();
-                            var useExpressionToggle = new Toggle("Use Expression")
-                            {
-                                value = value.BooleanModel.UseExpression
-                            };
-                            useExpressionToggle.RegisterValueChangedCallback(evt => RefreshExpressionView(evt.newValue));
-                            RefreshExpressionView(value.BooleanModel.UseExpression);
-
-                            Add(boolField);
-                            Add(useExpressionToggle);
-                            Add(expressionContainer);
-
-                            break;
-
-                            void RefreshExpressionView(bool useExpression)
-                            {
-                                value.BooleanModel.UseExpression = useExpression;
-                                boolField.SetEnabled(!value.BooleanModel.UseExpression);
-                                expressionContainer.Clear();
-                                if (!useExpression)
-                                {
-                                    return;
-                                }
-
-                                var validationLabel = new Label();
-                                var expressionField = new TextField("Expression")
-                                {
-                                    value = value.BooleanModel.Expression
-                                };
-
-                                var errorMessageContainer = new VisualElement();
-                                errorMessageContainer.AddToClassList(Styles.Column);
-                                var errorReport = new ExpressionErrorReport(validationLabel, expressionField, errorMessageContainer);
-                                var variablesContainer = new ListView
-                                {
-                                    itemsSource = value.BooleanModel.ExpressionValues,
-                                    showFoldoutHeader = false,
-                                    showAddRemoveFooter = false,
-                                    showAlternatingRowBackgrounds = AlternatingRowBackground.ContentOnly,
-                                    reorderable = true,
-                                    makeItem = () => new ValueField(null),
-                                    bindItem = (item, index) =>
-                                    {
-                                        var valueField = (ValueField)item;
-                                        valueField.RefreshView(value.BooleanModel.ExpressionValues[index]);
-                                        valueField.userData =
-                                            new EventCallback<ChangeEvent<ValueModel>>(evt => value.BooleanModel.ExpressionValues[index] = evt.newValue);
-                                        valueField.RegisterValueChangedCallback(evt => value.BooleanModel.ExpressionValues[index] = evt.newValue);
-                                    },
-                                    unbindItem = (item, _) =>
-                                    {
-                                        var valueField = (ValueField)item;
-                                        valueField.UnregisterValueChangedCallback(valueField.userData as EventCallback<ChangeEvent<ValueModel>>);
-                                    },
-                                    virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight
-                                };
-
-                                expressionContainer.Add(validationLabel);
-                                expressionContainer.Add(expressionField);
-                                expressionContainer.Add(errorMessageContainer);
-                                expressionContainer.Add(variablesContainer);
-                                ProcessExpression();
-
-                                expressionField.RegisterValueChangedCallback(evt =>
-                                {
-                                    value.BooleanModel.Expression = evt.newValue;
-
-                                    cts?.Cancel();
-                                    cts?.Dispose();
-                                    cts = new CancellationTokenSource();
-                                    _ = UniTask.Delay(TimeSpan.FromSeconds(1), true, cancellationToken: cts.Token).ContinueWith(() =>
-                                    {
-                                        if (cts.IsCancellationRequested)
-                                        {
-                                            return;
-                                        }
-
-                                        ProcessExpression();
-                                    });
-                                });
-
-                                return;
-
-                                void ProcessExpression()
-                                {
-                                    errorReport.Reset();
-                                    variablesContainer.Clear();
-
-                                    MyLogger.Log("Scanning...");
-                                    Scanner.Scan(value.BooleanModel.Expression, out var tokens, errorReport);
-
-                                    int highestVar = 0;
-                                    foreach (var token in tokens)
-                                    {
-                                        if (token.TokenType != Token.Type.ByteVar)
-                                        {
-                                            continue;
-                                        }
-
-                                        if (!int.TryParse(token.Lexeme[1..^1], out var varNumber))
-                                        {
-                                            MyLogger.LogError($"Cannot parse a variable number from the expression. Lexeme: {token.Lexeme}");
-                                            continue;
-                                        }
-
-                                        if (varNumber < 0)
-                                        {
-                                            errorReport.Report("Variable numbers cannot be negative.", token.Start, token.Length);
-                                            continue;
-                                        }
-
-                                        if (varNumber > highestVar)
-                                        {
-                                            errorReport.Report("Variable numbers must be sequential, i.e start with {0} then {1}", token.Start, token.Length);
-                                            continue;
-                                        }
-
-                                        MyLogger.Log($"# expr values: {value.BooleanModel.ExpressionValues?.Count}, varNumber: {varNumber}");
-
-                                        /*
-                                        if ((value.BooleanModel.ExpressionValues?.Count ?? 0) - 1 < varNumber)
-                                        {
-                                            var newVariable = new ValueModel();
-                                            value.BooleanModel.ExpressionValues ??= new List<ValueModel>();
-                                            value.BooleanModel.ExpressionValues.Add(newVariable);
-                                            variablesContainer.Rebuild();
-                                        }
-                                        */
-
-                                        highestVar++;
-                                    }
-                                }
-                            }
-                        }
-
                         case ByteValueType.String:
-                        {
-                            var textField = new TextField("Value") { value = value.String };
-                            textField.RegisterValueChangedCallback(evt =>
-                            {
-                                var oldValue = value.Clone();
-                                value.String = evt.newValue;
-                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
-                            });
-                            Add(textField);
-                            break;
-                        }
-
                         case ByteValueType.Int:
-                        {
-                            var intField = new IntegerField("Value") { value = (int)value.Long };
-                            intField.RegisterValueChangedCallback(evt =>
-                            {
-                                var oldValue = value.Clone();
-                                value.Long = evt.newValue;
-                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
-                            });
-                            Add(intField);
-                            break;
-                        }
-
                         case ByteValueType.Long:
-                        {
-                            var longField = new LongField("Value") { value = value.Long };
-                            longField.RegisterValueChangedCallback(evt =>
-                            {
-                                var oldValue = value.Clone();
-                                value.Long = evt.newValue;
-                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
-                            });
-                            Add(longField);
-                            break;
-                        }
-
                         case ByteValueType.Float:
-                        {
-                            var floatField = new FloatField("Value") { value = (float)value.Double };
-                            floatField.RegisterValueChangedCallback(evt =>
-                            {
-                                var oldValue = value.Clone();
-                                value.Double = evt.newValue;
-                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
-                            });
-                            Add(floatField);
-                            break;
-                        }
-
                         case ByteValueType.Double:
                         {
-                            var doubleField = new DoubleField("Value") { value = value.Double };
-                            doubleField.RegisterValueChangedCallback(evt =>
+                            var validationLabel = new Label();
+                            var valueTextField = new TextField("Value");
+                            var variablesList = new ListView
                             {
-                                var oldValue = value.Clone();
-                                value.Double = evt.newValue;
-                                SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
+                                itemsSource = value.BooleanModel.ExpressionValues,
+                                showFoldoutHeader = false,
+                                showAddRemoveFooter = false,
+                                showAlternatingRowBackgrounds = AlternatingRowBackground.ContentOnly,
+                                reorderable = true,
+                                makeItem = () => new ValueField(null),
+                                bindItem = (item, index) =>
+                                {
+                                    var valueField = (ValueField)item;
+                                    valueField.RefreshView(value.BooleanModel.ExpressionValues[index]);
+                                    valueField.userData =
+                                        new EventCallback<ChangeEvent<ValueModel>>(evt => value.BooleanModel.ExpressionValues[index] = evt.newValue);
+                                    valueField.RegisterValueChangedCallback(evt => value.BooleanModel.ExpressionValues[index] = evt.newValue);
+                                },
+                                unbindItem = (item, _) =>
+                                {
+                                    var valueField = (ValueField)item;
+                                    valueField.UnregisterValueChangedCallback(valueField.userData as EventCallback<ChangeEvent<ValueModel>>);
+                                },
+                                virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight
+                            };
+
+                            var errorReport = new ValueErrorReport(validationLabel, valueTextField, variablesList);
+                            valueTextField.RegisterValueChangedCallback(evt =>
+                            {
+                                value.String = evt.newValue;
+
+                                cts?.Cancel();
+                                cts?.Dispose();
+                                cts = new CancellationTokenSource();
+                                _ = UniTask.Delay(TimeSpan.FromSeconds(1), true, cancellationToken: cts.Token).ContinueWith(() =>
+                                {
+                                    if (cts.IsCancellationRequested)
+                                    {
+                                        return;
+                                    }
+
+                                    Scanner.Scan(value.String, out var tokens, errorReport);
+                                });
                             });
-                            Add(doubleField);
+                            
+                            Add(valueTextField);
+
                             break;
                         }
 
@@ -823,12 +641,16 @@ namespace Tooling.StaticData.EditorUI
                     }
                 }
 
+                private static void ParseString()
+                {
+                }
+
                 public void SetValueWithoutNotify(ValueModel newValue)
                 {
                     value = newValue;
                 }
 
-                private class ExpressionErrorReport : IErrorReport
+                private class ValueErrorReport : IErrorReport
                 {
                     private readonly Label label;
                     private readonly TextField rawExpressionField;
@@ -845,7 +667,7 @@ namespace Tooling.StaticData.EditorUI
                     /// </summary>
                     private int[] offsetsFromSourceString;
 
-                    public ExpressionErrorReport(Label label, TextField rawExpressionField, VisualElement errorMessageContainer)
+                    public ValueErrorReport(Label label, TextField rawExpressionField, VisualElement errorMessageContainer)
                     {
                         this.label = label;
                         this.rawExpressionField = rawExpressionField;
