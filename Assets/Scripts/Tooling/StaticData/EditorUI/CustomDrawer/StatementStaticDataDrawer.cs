@@ -564,7 +564,7 @@ namespace Tooling.StaticData.EditorUI
                                         return;
                                     }
 
-                                    Scanner.Scan(value.String, out var tokens, errorReport);
+                                    Scanner.Scan(value.String, out var tokens, errorReport: errorReport);
                                 });
                             });
                             

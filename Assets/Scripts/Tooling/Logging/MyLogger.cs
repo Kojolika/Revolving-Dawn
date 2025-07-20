@@ -8,11 +8,28 @@ using Debug = UnityEngine.Debug;
 
 namespace Tooling.Logging
 {
-    public class MyLogger : ITraceWriter
+    public class MyLogger : ILogger, ITraceWriter
     {
         private static readonly StackTrace stackTrace = new StackTrace(true);
 
-#if UNITY_EDITOR
+        public void Log(LogLevel level, string message, [CallerFilePath] string filePath = "", params object[] args)
+        {
+            switch (level)
+            {
+                case LogLevel.Info:
+                    Log(message, filePath);
+                    break;
+                case LogLevel.Warning:
+                    LogWarning(message, filePath);
+                    break;
+                case LogLevel.Error:
+                    LogError(message, filePath);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
+            }
+        }
+
         public static void Log(string message, [CallerFilePath] string filePath = "")
         {
             Debug.Log(
@@ -57,7 +74,6 @@ namespace Tooling.Logging
                 context
             );
         }
-#endif
 
         private static string FormatLog(string message, string filePath)
         {
@@ -140,5 +156,17 @@ namespace Tooling.Logging
         public TraceLevel LevelFilter => TraceLevel.Verbose;
 
         #endregion
+    }
+
+    public interface ILogger
+    {
+        public void Log(LogLevel level, string message, [CallerFilePath] string filePath = "", params object[] args);
+    }
+
+    public enum LogLevel
+    {
+        Info,
+        Warning,
+        Error
     }
 }
