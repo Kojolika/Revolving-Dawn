@@ -11,35 +11,25 @@ namespace Tooling.StaticData.Bytecode
         public readonly List<object> Constants    = new();
     }
 
-    public abstract class Expression
-    {
-    }
-
-    public interface IPrefixParselet
-    {
-        Expression Parse(Compiler compiler, Token token);
-    }
-
-    public interface IInfixParselet
-    {
-        Expression Parse(Compiler compiler, Expression left, Token token);
-    }
+    // 1  +  1
+    // 1  +
+    // 0, 6
+    //     
 
     public enum Precedence
     {
-        None,
-        Assignment, // =
-        Or,         // or
-        And,        // and
-        Equality,   // == !=
-        Comparison, // < > <= >=
-        Term,       // + -
-        Factor,     // * /
-        Unary,      // ! -
-        Call,       // . ()
-        Primary
+        None       = 0,
+        Assignment = 1, // =
+        Or         = 2, // or
+        And        = 3, // and
+        Equality   = 4, // == !=
+        Comparison = 5, // < > <= >=
+        Term       = 6, // + -
+        Factor     = 7, // * /
+        Unary      = 8, // ! -
+        Call       = 9, // . ()
+        Primary    = 10
     }
-
 
     /// <summary>
     /// Compiles tokens parsed from the <see cref="Scanner"/> into <see cref="Bytecode"/> operations
@@ -118,8 +108,10 @@ namespace Tooling.StaticData.Bytecode
 
         public bool Interpret(List<Token> tokens, out InstructionSet instructionSet, ILogger logger = null)
         {
+            logger?.Log(LogLevel.Info, "==== Compiling ====");
+            logger?.Log(LogLevel.Info, "Interpret —");
             instructionSet = new InstructionSet();
-            if (tokens.IsNullOrEmpty())
+            if (tokens is { Count: 0 })
             {
                 return true;
             }
@@ -127,16 +119,12 @@ namespace Tooling.StaticData.Bytecode
             this.tokens         = tokens;
             this.instructionSet = instructionSet;
             this.logger         = logger;
-            tokenIndex          = 0;
-
             Advance();
 
             while (!MatchThenAdvance(Token.Type.Eof))
             {
                 Parse();
             }
-
-            this.instructionSet.Instructions.Add((byte)Bytecode.Return);
 
             return !hadError;
         }
@@ -153,6 +141,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void Declaration()
         {
+            logger?.Log(LogLevel.Info, "Declaration —");
             if (MatchThenAdvance(Token.Type.Function))
             {
                 FuncDeclaration();
@@ -169,6 +158,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void FuncDeclaration()
         {
+            logger?.Log(LogLevel.Info, "Function Declaration —");
             Consume(Token.Type.Identifier, "Expected function name");
             Consume(Token.Type.LeftParen, "Expected left parenthesis");
             Parameters();
@@ -178,6 +168,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void Parameters()
         {
+            logger?.Log(LogLevel.Info, "Parameters —");
             Consume(Token.Type.Identifier, "Expected parameter name");
             if (MatchThenAdvance(Token.Type.Comma))
             {
@@ -187,6 +178,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void Block()
         {
+            logger?.Log(LogLevel.Info, "Block —");
             Consume(Token.Type.LeftBrace, "Expected block name");
             Declaration();
             Consume(Token.Type.RightBrace, "Expected right brace");
@@ -194,6 +186,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void VarDeclaration()
         {
+            logger?.Log(LogLevel.Info, "Variable Declaration —");
             Consume(Token.Type.Identifier, "expected variable name");
             Consume(Token.Type.Equal, "Expected assignment operator");
             Expression();
@@ -201,6 +194,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void Statement()
         {
+            logger?.Log(LogLevel.Info, "Statement —");
             switch (current.TokenType)
             {
                 case Token.Type.For:
@@ -229,6 +223,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void ForStatement()
         {
+            logger?.Log(LogLevel.Info, "For —");
             Consume(Token.Type.For);
             Consume(Token.Type.LeftParen, "Expected left parenthesis");
             switch (current.TokenType)
@@ -255,6 +250,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void IfStatement()
         {
+            logger?.Log(LogLevel.Info, "If —");
             Consume(Token.Type.If);
             Consume(Token.Type.LeftParen, "Expected left parenthesis");
             Expression();
@@ -268,6 +264,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void PrintStatement()
         {
+            logger?.Log(LogLevel.Info, "Print —");
             Consume(Token.Type.Print);
             Expression();
             Consume(Token.Type.Semicolon, "Expected semicolon");
@@ -275,6 +272,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void ReturnStatement()
         {
+            logger?.Log(LogLevel.Info, "Return —");
             Consume(Token.Type.Return);
             //TODO: How do check 0 or 1 expressions?
             Expression();
@@ -283,6 +281,7 @@ namespace Tooling.StaticData.Bytecode
 
         private void WhileStatement()
         {
+            logger?.Log(LogLevel.Info, "While —");
             Consume(Token.Type.While);
             Consume(Token.Type.LeftParen, "Expected left parenthesis");
             Expression();
@@ -327,6 +326,11 @@ namespace Tooling.StaticData.Bytecode
             instructionSet.Instructions.Add((byte)code);
         }
 
+        private void EmitByte(byte code)
+        {
+            instructionSet.Instructions.Add(code);
+        }
+
         private bool MatchThenAdvance(Token.Type tokenType)
         {
             if (Match(tokenType))
@@ -351,14 +355,42 @@ namespace Tooling.StaticData.Bytecode
 
         private void Expression(Precedence precedence = Precedence.None)
         {
+            logger?.Log(LogLevel.Info, $"Expression — {precedence}");
+            Advance();
+            var prefixRule = GetParseRule(previous.TokenType).PrefixRule;
+            if (prefixRule == null)
+            {
+                ErrorAtCurrent($"Error, no prefix found for token. tokenType={previous.TokenType}, lexeme={previous.Lexeme}");
+                return;
+            }
+
+            prefixRule.Invoke();
+
+            while (precedence <= GetParseRule(current.TokenType).Precedence)
+            {
+                logger?.Log(LogLevel.Info, "While iteration\n" +
+                                           $"\tprecedence={precedence} to precedence={GetParseRule(current.TokenType).Precedence}");
+                Advance();
+                var infixRule = GetParseRule(previous.TokenType).InfixRule;
+                if (infixRule != null)
+                {
+                    infixRule.Invoke();
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
 
         private void Advance()
         {
             previous = current;
-            while (true)
+            while (tokenIndex < tokens.Count)
             {
-                current = tokens[tokenIndex++];
+                current = tokens[tokenIndex];
+                tokenIndex++;
+                logger?.Log(LogLevel.Info, $"Advancing — previous={previous?.TokenType}, current={current.TokenType}");
                 if (current.TokenType != Token.Type.Error)
                 {
                     break;
@@ -379,6 +411,7 @@ namespace Tooling.StaticData.Bytecode
                 return;
             }
 
+            logger?.Log(LogLevel.Info, $"Consume — {errorMessage}");
             Advance();
         }
 
@@ -389,7 +422,7 @@ namespace Tooling.StaticData.Bytecode
                 return;
             }
 
-            ErrorAt(previous, message);
+            ErrorAt(current, message);
         }
 
         private void ErrorAt(Token token, string message)
@@ -398,7 +431,7 @@ namespace Tooling.StaticData.Bytecode
             {
                 Token.Type.Eof   => " at end.",
                 Token.Type.Error => string.Empty,
-                _                => $" at {token.Lexeme}"
+                _                => $" at {token.Start}:{token.Start + token.Length}"
             };
 
             hadError  = true;
@@ -408,6 +441,8 @@ namespace Tooling.StaticData.Bytecode
 
         private void Grouping()
         {
+            Expression();
+            Consume(Token.Type.RightParen, "Expected right parenthesis after expression");
         }
 
         private void Call()
@@ -416,10 +451,36 @@ namespace Tooling.StaticData.Bytecode
 
         private void Unary()
         {
+            var tokenType = previous.TokenType;
+            Expression();
+            if (tokenType is Token.Type.Minus or Token.Type.Bang)
+            {
+                EmitByte(Bytecode.Negate);
+            }
         }
 
         private void Binary()
         {
+            var tokenType = previous.TokenType;
+            var parseRule = GetParseRule(tokenType);
+            logger?.Log(LogLevel.Info,
+                        $"Binary — previous tokenType={tokenType}, precedence={parseRule.Precedence}, next precedence={parseRule.Precedence + 1}");
+            Expression(parseRule.Precedence + 1);
+            switch (tokenType)
+            {
+                case Token.Type.Plus:
+                    EmitByte(Bytecode.Add);
+                    break;
+                case Token.Type.Minus:
+                    EmitByte(Bytecode.Subtract);
+                    break;
+                case Token.Type.Star:
+                    EmitByte(Bytecode.Multiply);
+                    break;
+                case Token.Type.Slash:
+                    EmitByte(Bytecode.Divide);
+                    break;
+            }
         }
 
         private void Dot()
@@ -434,8 +495,17 @@ namespace Tooling.StaticData.Bytecode
         {
         }
 
+        /// <summary>
+        /// Using boxing to store values in an array.
+        /// TODO: Do we need to free variables ever? Is the boxing a perf problem?
+        /// Can use StructLayout in the future to reduce boxing
+        /// </summary>
         private void Number()
         {
+            float.TryParse(previous.Lexeme, out float result);
+            EmitByte(Bytecode.Constant);
+            instructionSet.Constants.Add(result);
+            EmitByte((byte)(instructionSet.Constants.Count - 1));
         }
 
         private void And()

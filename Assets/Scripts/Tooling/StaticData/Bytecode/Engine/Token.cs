@@ -24,15 +24,15 @@ namespace Tooling.StaticData.Bytecode
         public Token(Type tokenType, int start, int length, string lexeme, int line)
         {
             TokenType = tokenType;
-            Start = start;
-            Length = length;
-            Lexeme = lexeme;
-            Line = line;
+            Start     = start;
+            Length    = length;
+            Lexeme    = lexeme;
+            Line      = line;
         }
 
         public override string ToString()
         {
-            return $"{Line} — {TokenType} \tstart:{Start}\t len:{Length} \tlexeme:{Lexeme}";
+            return $"{Line} — '{Lexeme}' — {TokenType}";
         }
 
         public enum Type

@@ -48,13 +48,12 @@ namespace Tooling.StaticData.Bytecode.Editor
 
             public void CreateGUI()
             {
-                var textField = new TextField
-                {
-                    multiline = true,
-                };
+                var scrollview = new ScrollView();
+                rootVisualElement.Add(scrollview);
 
-                var label = new Label();
-                var logger = new DebugBytecodeLogger(label);
+                var textField         = new TextField { multiline = true };
+                var label             = new Label();
+                var logger            = new DebugBytecodeLogger(label);
                 var compilerContainer = new VisualElement();
                 textField.RegisterValueChangedCallback(evt =>
                 {
@@ -71,26 +70,35 @@ namespace Tooling.StaticData.Bytecode.Editor
                             return;
                         }
 
-
                         Scanner.Scan(textField.value, out var tokens, logger);
 
+                        var compilerLabel  = new Label();
+                        var compilerLogger = new DebugBytecodeLogger(compilerLabel);
+                        var compiler       = new Compiler();
                         if (textField.text.Trim() != string.Empty)
                         {
-                            compilerContainer.Add(new Button(() =>
-                            {
-                                var compiler = new Compiler();
-                                compiler.Interpret(tokens, out _, logger);
-                            })
-                            {
-                                text = "Compile"
-                            });
+                            compilerContainer.Add(
+                                new Button(() =>
+                                {
+                                    compilerLabel.text = string.Empty;
+                                    compiler.Interpret(tokens, out var instructionSet, compilerLogger);
+
+                                    compilerLogger.Log(LogLevel.Info, "\n==== Bytecode ====");
+                                    bool wasPevConstant = false;
+                                    foreach (var code in instructionSet.Instructions)
+                                    {
+                                        compilerLogger.Log(LogLevel.Info, wasPevConstant ? code.ToString() : ((Bytecode)code).ToString());
+                                        wasPevConstant = (Bytecode)code == Bytecode.Constant && !wasPevConstant;
+                                    }
+                                }) { text = "Compile" });
+                            compilerContainer.Add(compilerLabel);
                         }
                     });
                 });
 
-                rootVisualElement.Add(textField);
-                rootVisualElement.Add(label);
-                rootVisualElement.Add(compilerContainer);
+                scrollview.Add(textField);
+                scrollview.Add(label);
+                scrollview.Add(compilerContainer);
             }
         }
     }
