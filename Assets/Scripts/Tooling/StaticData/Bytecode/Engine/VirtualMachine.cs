@@ -58,6 +58,19 @@ namespace Tooling.StaticData.Bytecode
         Method
     }
 
+    public struct CallFrame
+    {
+        // todo: What type can I use instead of object?
+        public object Function;
+
+        /// <summary>
+        /// Instruction pointer, when we return from a function, we just to the ip of the callers CallFrame.
+        /// </summary>
+        public int Ip;
+
+        public List<Value> Slots;
+    }
+
     /// <summary>
     /// Executes a list of <see cref="Bytecode"/> operations
     /// </summary>

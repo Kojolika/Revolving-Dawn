@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Tooling.Logging;
 using Utils.Extensions;
 
@@ -7,14 +8,9 @@ namespace Tooling.StaticData.Bytecode
 {
     public class InstructionSet
     {
-        public readonly List<byte>   Instructions = new();
-        public readonly List<object> Constants    = new();
+        public readonly List<byte>    Instructions = new();
+        public readonly List<CObject> Constants    = new();
     }
-
-    // 1  +  1
-    // 1  +
-    // 0, 6
-    //     
 
     public enum Precedence
     {
@@ -29,6 +25,69 @@ namespace Tooling.StaticData.Bytecode
         Unary      = 8, // ! -
         Call       = 9, // . ()
         Primary    = 10
+    }
+
+    public struct Local
+    {
+        /// <summary>
+        /// Holds the name of the local var in the lexeme property
+        /// </summary>
+        public Token Token;
+
+        /// <summary>
+        /// The depth of which this local val is created in.
+        /// A depth of -1 means in nots initialized.
+        /// </summary>
+        public int Depth;
+    }
+
+    /// <summary>
+    /// Compiler object
+    /// </summary>
+    public struct CObject
+    {
+        public ValueType Type;
+        public Value     Value;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size = 8)]
+    public struct Value
+    {
+        /// <summary>
+        /// Stores number values
+        /// </summary>
+        [FieldOffset(0)]
+        public double Number;
+
+        /// <summary>
+        /// Stores boolean values
+        /// </summary>
+        [FieldOffset(0)]
+        public bool Boolean;
+
+        /// <summary>
+        /// Stores a pointer to all other reference types
+        /// </summary>
+        [FieldOffset(0)]
+        public object Object;
+    }
+
+    public enum ValueType
+    {
+        Null,
+        Boolean,
+        Number,
+        String,
+        Table,
+        Function
+    }
+
+    public enum FunctionType
+    {
+        Function,
+        Initializer,
+        Method,
+        Script
     }
 
     /// <summary>
@@ -101,10 +160,28 @@ namespace Tooling.StaticData.Bytecode
         /// </summary>
         private int tokenIndex;
 
+        /// <summary>
+        /// The previous token being evaluated.
+        /// </summary>
         private Token previous;
+
+        /// <summary>
+        /// The current token being evaluated.
+        /// </summary>
         private Token current;
-        private bool  hadError;
-        private bool  panicMode;
+
+        /// <summary>
+        /// Stores the current local variables
+        /// </summary>
+        private List<Local> Locals = new();
+
+        /// <summary>
+        /// The current scope depth for variables
+        /// </summary>
+        private int scopeDepth;
+
+        private bool hadError;
+        private bool panicMode;
 
         public bool Interpret(List<Token> tokens, out InstructionSet instructionSet, ILogger logger = null)
         {
@@ -159,11 +236,112 @@ namespace Tooling.StaticData.Bytecode
         private void FuncDeclaration()
         {
             logger?.Log(LogLevel.Info, "Function Declaration —");
+            ushort global = ParseVariable();
+            MarkInitialized();
+            Function(FunctionType.Function);
+            DefineVariable(global);
+        }
+
+        private void Function(FunctionType functionType)
+        {
+        }
+
+        private void DefineVariable(ushort global)
+        {
+        }
+
+        private void BeginScope()
+        {
+            scopeDepth++;
+            while (Locals.Count > 0 && Locals[^1].Depth > scopeDepth)
+            {
+                EmitByte(Bytecode.Pop);
+                Locals.RemoveAt(Locals.Count - 1);
+            }
+        }
+
+        private void EndScope()
+        {
+            scopeDepth--;
+        }
+
+        // TODO: what is this doing?
+        // Marks the last created variable as initialized by setting its depth?
+        private void MarkInitialized()
+        {
+            if (scopeDepth == 0) return;
+            if (Locals.Count <= 0) return;
+
+            var lastLocal = Locals[^1];
+            Locals[^1] = new Local
+            {
+                Token = lastLocal.Token,
+                Depth = scopeDepth,
+            };
+        }
+
+        private byte ParseVariable()
+        {
             Consume(Token.Type.Identifier, "Expected function name");
-            Consume(Token.Type.LeftParen, "Expected left parenthesis");
-            Parameters();
-            Consume(Token.Type.RightParen, "Expected right parenthesis");
-            Block();
+
+            DeclareVariable();
+
+            if (scopeDepth > 0)
+            {
+                return 0;
+            }
+
+            return AddConstant(new CObject
+            {
+                Type = ValueType.Function,
+                // Store the var identifier as the reference value
+                Value = new Value { Object = previous.Lexeme }
+            });
+        }
+
+        private void DeclareVariable()
+        {
+            // At runtime, locals aren’t looked up by name.
+            // There’s no need to stuff the variable’s name into the constant table, so if the declaration is inside a local scope,
+            // we return a dummy table index instead
+            if (scopeDepth == 0)
+            {
+                return;
+            }
+
+            string name = previous.Lexeme;
+            foreach (var local in Locals)
+            {
+                // Only check local variables that are declared in this scope
+                if (local.Depth != -1 && local.Depth < scopeDepth)
+                {
+                    continue;
+                }
+
+                if (name == local.Token.Lexeme)
+                {
+                    ErrorAt(previous, "Already a variable with this name in this scope.");
+                }
+            }
+
+            AddLocal(previous);
+        }
+
+        private void AddLocal(Token token)
+        {
+            if (Locals.Count >= byte.MaxValue)
+            {
+                ErrorAt(previous, "Too many local variables in this scope.");
+                return;
+            }
+
+            var local = new Local
+            {
+                Token = token,
+                Depth = scopeDepth = -1
+            };
+
+            Locals.Add(local);
         }
 
         private void Parameters()
@@ -213,7 +391,9 @@ namespace Tooling.StaticData.Bytecode
                     WhileStatement();
                     break;
                 case Token.Type.LeftBrace:
+                    BeginScope();
                     Block();
+                    EndScope();
                     break;
                 default:
                     ExpressionStatement();
@@ -489,6 +669,17 @@ namespace Tooling.StaticData.Bytecode
 
         private void Variable()
         {
+            NamedVariable(previous);
+        }
+
+        private void NamedVariable(Token token)
+        {
+            
+        }
+
+        private int ResolveVariable(Token token)
+        {
+            
         }
 
         private void String()
@@ -504,8 +695,27 @@ namespace Tooling.StaticData.Bytecode
         {
             float.TryParse(previous.Lexeme, out float result);
             EmitByte(Bytecode.Constant);
-            instructionSet.Constants.Add(result);
-            EmitByte((byte)(instructionSet.Constants.Count - 1));
+            ushort lookup = AddConstant(new CObject
+            {
+                Type  = ValueType.Number,
+                Value = new Value { Number = result }
+            });
+            EmitByte((byte)lookup);
+        }
+
+        /// <summary>
+        /// Adds a value to look up table and returns the index to look up the value.
+        /// </summary>
+        private byte AddConstant(CObject constant)
+        {
+            instructionSet.Constants.Add(constant);
+
+            if (instructionSet.Constants.Count > ushort.MaxValue)
+            {
+                ErrorAt(previous, "Too many constants!");
+            }
+
+            return (byte)(instructionSet.Constants.Count - 1);
         }
 
         private void And()
