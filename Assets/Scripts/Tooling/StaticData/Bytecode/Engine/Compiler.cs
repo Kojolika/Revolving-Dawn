@@ -36,7 +36,7 @@ namespace Tooling.StaticData.Bytecode
 
         /// <summary>
         /// The depth of which this local val is created in.
-        /// A depth of -1 means in nots initialized.
+        /// A depth of -1 means it's not initialized yet.
         /// </summary>
         public int Depth;
     }
@@ -236,7 +236,7 @@ namespace Tooling.StaticData.Bytecode
         private void FuncDeclaration()
         {
             logger?.Log(LogLevel.Info, "Function Declaration —");
-            ushort global = ParseVariable();
+            byte global = ParseVariable();
             MarkInitialized();
             Function(FunctionType.Function);
             DefineVariable(global);
@@ -246,8 +246,19 @@ namespace Tooling.StaticData.Bytecode
         {
         }
 
-        private void DefineVariable(ushort global)
+        /// <summary>
+        /// Only used to defined functions so we can call them before they're fully initialized
+        /// </summary>
+        private void DefineVariable(byte global)
         {
+            if (scopeDepth > 0)
+            {
+                MarkInitialized();
+                return;
+            }
+            
+            EmitByte(Bytecode.DefineGlobal);
+            EmitByte(global);
         }
 
         private void BeginScope()
@@ -405,6 +416,7 @@ namespace Tooling.StaticData.Bytecode
         {
             logger?.Log(LogLevel.Info, "For —");
             Consume(Token.Type.For);
+            BeginScope();
             Consume(Token.Type.LeftParen, "Expected left parenthesis");
             switch (current.TokenType)
             {
@@ -419,13 +431,94 @@ namespace Tooling.StaticData.Bytecode
                     break;
             }
 
-            //TODO: How do check 0 or 1 expressions?
-            Expression();
-            Consume(Token.Type.Semicolon, "Expected semicolon");
-            //TODO: How do check 0 or 1 expressions?
-            Expression();
-            Consume(Token.Type.RightParen, "Expected right parenthesis");
+            int loopStartIndex = instructionSet.Instructions.Count - 1;
+            int exitJump       = -1;
+
+            if (!MatchThenAdvance(Token.Type.Semicolon))
+            {
+                Expression();
+                Consume(Token.Type.Semicolon, "Expected semicolon");
+
+                exitJump = EmitJump(Bytecode.JumpIfFalse);
+                // Pop the condition off the stack after evaluating
+                EmitByte(Bytecode.Pop);
+            }
+
+            if (!MatchThenAdvance(Token.Type.RightParen))
+            {
+                int bodyJump       = EmitJump(Bytecode.Jump);
+                int incrementStart = instructionSet.Instructions.Count - 1;
+
+                Expression();
+                // Pop the condition off the stack after evaluating
+                EmitByte(Bytecode.Pop);
+                Consume(Token.Type.RightParen, "Expected right parenthesis");
+
+                EmitLoop(loopStartIndex);
+                loopStartIndex = incrementStart;
+                PatchJump(bodyJump);
+            }
+
             Statement();
+            EmitLoop(loopStartIndex);
+            if (exitJump != -1)
+            {
+                PatchJump(exitJump);
+                EmitByte(Bytecode.Pop);
+            }
+
+            EndScope();
+        }
+
+        private void EmitLoop(int loopStartIndex)
+        {
+            EmitByte(Bytecode.Loop);
+
+            int offset = instructionSet.Instructions.Count - loopStartIndex + 2;
+            if (offset > ushort.MaxValue)
+            {
+                ErrorAt(previous, "Loop value too large in this scope.");
+            }
+
+            // Store the offset on the vm's input as a 2 byte unsigned int16
+            var bytes = BitConverter.GetBytes(offset);
+            if (!BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes);
+            }
+
+            EmitByte(bytes[0]);
+            EmitByte(bytes[1]);
+        }
+
+        private int EmitJump(Bytecode jumpCode)
+        {
+            if (jumpCode is not (Bytecode.Jump or Bytecode.JumpIfFalse))
+            {
+                return -1;
+            }
+
+            EmitByte(jumpCode);
+
+            // We'll patch these instruction offsets later, we're storing the offset
+            // as a short which is why we emit 2 bytes
+            EmitByte(byte.MaxValue);
+            EmitByte(byte.MaxValue);
+
+            return instructionSet.Instructions.Count - 3;
+        }
+
+        private void PatchJump(int offset)
+        {
+            int jump = instructionSet.Instructions.Count - offset - 2;
+            if (jump > ushort.MaxValue)
+            {
+                ErrorAtCurrent("Too much code to jump over");
+            }
+
+            // Update the bytes that store the short value with the jump value
+            instructionSet.Instructions[offset] = (byte)((jump >> 8) & byte.MaxValue);
+            instructionSet.Instructions[offset] = (byte)(jump & byte.MaxValue);
         }
 
         private void IfStatement()
@@ -454,7 +547,6 @@ namespace Tooling.StaticData.Bytecode
         {
             logger?.Log(LogLevel.Info, "Return —");
             Consume(Token.Type.Return);
-            //TODO: How do check 0 or 1 expressions?
             Expression();
             Consume(Token.Type.Semicolon, "Expected semicolon");
         }
@@ -463,12 +555,20 @@ namespace Tooling.StaticData.Bytecode
         {
             logger?.Log(LogLevel.Info, "While —");
             Consume(Token.Type.While);
+            int loopStart = instructionSet.Instructions.Count - 1;
             Consume(Token.Type.LeftParen, "Expected left parenthesis");
             Expression();
             Consume(Token.Type.RightParen, "Expected right parenthesis");
-            Statement();
-        }
 
+            int exitJump = EmitJump(Bytecode.JumpIfFalse);
+            EmitByte(Bytecode.Pop);
+            Statement();
+
+            EmitLoop(loopStart);
+
+            PatchJump(exitJump);
+            EmitByte(Bytecode.Pop);
+        }
 
         /// <summary>
         /// Resets the panic mode flag so we can continue parsing.
@@ -531,6 +631,7 @@ namespace Tooling.StaticData.Bytecode
         {
             Expression();
             Consume(Token.Type.Semicolon, "Expected semicolon");
+            EmitByte(Bytecode.Pop);
         }
 
         private void Expression(Precedence precedence = Precedence.None)
@@ -544,7 +645,8 @@ namespace Tooling.StaticData.Bytecode
                 return;
             }
 
-            prefixRule.Invoke();
+            bool canAssign = precedence <= Precedence.Assignment;
+            prefixRule.Invoke(canAssign);
 
             while (precedence <= GetParseRule(current.TokenType).Precedence)
             {
@@ -554,7 +656,7 @@ namespace Tooling.StaticData.Bytecode
                 var infixRule = GetParseRule(previous.TokenType).InfixRule;
                 if (infixRule != null)
                 {
-                    infixRule.Invoke();
+                    infixRule.Invoke(canAssign);
                 }
                 else
                 {
@@ -619,17 +721,17 @@ namespace Tooling.StaticData.Bytecode
             logger?.Log(LogLevel.Error, message);
         }
 
-        private void Grouping()
+        private void Grouping(bool canAssign)
         {
             Expression();
             Consume(Token.Type.RightParen, "Expected right parenthesis after expression");
         }
 
-        private void Call()
+        private void Call(bool canAssign)
         {
         }
 
-        private void Unary()
+        private void Unary(bool canAssign)
         {
             var tokenType = previous.TokenType;
             Expression();
@@ -639,7 +741,7 @@ namespace Tooling.StaticData.Bytecode
             }
         }
 
-        private void Binary()
+        private void Binary(bool canAssign)
         {
             var tokenType = previous.TokenType;
             var parseRule = GetParseRule(tokenType);
@@ -663,26 +765,56 @@ namespace Tooling.StaticData.Bytecode
             }
         }
 
-        private void Dot()
+        private void Dot(bool canAssign)
         {
         }
 
-        private void Variable()
+        private void Variable(bool canAssign)
         {
-            NamedVariable(previous);
+            NamedVariable(previous, canAssign);
         }
 
-        private void NamedVariable(Token token)
+        private void NamedVariable(Token token, bool canAssign)
         {
-            
+            int arg = ResolveLocal(token);
+
+            if (canAssign && MatchThenAdvance(Token.Type.Equal))
+            {
+                Expression();
+                EmitByte(Bytecode.SetLocal);
+            }
+            else
+            {
+                EmitByte(Bytecode.GetLocal);
+            }
+
+            EmitByte((byte)arg);
         }
 
-        private int ResolveVariable(Token token)
+        /// <param name="token"> The token that contains the given identifier </param>
+        /// <returns> the index of a local variable of the given name, if not found returns -1 </returns>
+        private int ResolveLocal(Token token)
         {
-            
+            for (var index = Locals.Count - 1; index >= 0; index--)
+            {
+                var local = Locals[index];
+                if (local.Depth == -1)
+                {
+                    ErrorAtCurrent("Can't read local variable in its own initializer.");
+                }
+
+                if (token.Lexeme == local.Token.Lexeme)
+                {
+                    return index;
+                }
+            }
+
+            ErrorAtCurrent("Can't read local variable in its own initializer.");
+
+            return -1;
         }
 
-        private void String()
+        private void String(bool canAssign)
         {
         }
 
@@ -691,7 +823,7 @@ namespace Tooling.StaticData.Bytecode
         /// TODO: Do we need to free variables ever? Is the boxing a perf problem?
         /// Can use StructLayout in the future to reduce boxing
         /// </summary>
-        private void Number()
+        private void Number(bool canAssign)
         {
             float.TryParse(previous.Lexeme, out float result);
             EmitByte(Bytecode.Constant);
@@ -718,30 +850,57 @@ namespace Tooling.StaticData.Bytecode
             return (byte)(instructionSet.Constants.Count - 1);
         }
 
-        private void And()
+        private void And(bool canAssign)
+        {
+            int endJump = EmitJump(Bytecode.JumpIfFalse);
+
+            EmitByte(Bytecode.Pop);
+            Expression(Precedence.And);
+
+            PatchJump(endJump);
+        }
+
+        private void Or(bool canAssign)
+        {
+            int elseJump = EmitJump(Bytecode.JumpIfFalse);
+            int endJump  = EmitJump(Bytecode.Jump);
+
+            PatchJump(elseJump);
+            EmitByte(Bytecode.Pop);
+
+            Expression(Precedence.Or);
+            PatchJump(endJump);
+        }
+
+        private void This(bool canAssign)
         {
         }
 
-        private void Or()
+        private void Super(bool canAssign)
         {
         }
 
-        private void This()
-        {
-        }
-
-        private void Super()
-        {
-        }
-
-        private void Literal()
+        private void Literal(bool canAssign)
         {
         }
 
         private class ParseRule
         {
-            public Action     PrefixRule;
-            public Action     InfixRule;
+            /// <summary>
+            /// The rule that corresponds to a prefix of an expression.
+            /// The bool parameter is whether this can be an expression that assigns a value.
+            /// </summary>
+            public Action<bool> PrefixRule;
+
+            /// <summary>
+            /// The rule that corresponds to an infix of an expression.
+            /// The bool parameter is whether this can be an expression that assigns a value.
+            /// </summary>
+            public Action<bool> InfixRule;
+
+            /// <summary>
+            /// The precedence that's associated with this rule
+            /// </summary>
             public Precedence Precedence;
         }
 
