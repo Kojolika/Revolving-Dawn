@@ -8,25 +8,26 @@ namespace Views
 {
     public class LevelView : MonoBehaviour
     {
-        [SerializeField] List<Transform> enemySpawns;
-        [SerializeField] Transform playerSpawn;
-        [SerializeField] Transform charactersParent;
-        public Dictionary<Enemy, EnemyView> EnemyLookup { get; private set; }
+        [SerializeField] private List<Transform> enemySpawns;
+        [SerializeField] private Transform       playerSpawn;
+        [SerializeField] private Transform       charactersParent;
+
+        public Dictionary<Enemy, EnemyView>            EnemyLookup  { get; private set; }
         public Dictionary<PlayerCharacter, PlayerView> PlayerLookup { get; private set; }
 
 
         [Zenject.Inject]
-        private void Construct(PlayerDataManager playerDataManager,
-            PlayerView.Factory playerViewFactory,
-            EnemyView.Factory enemyViewFactory)
+        private void Construct(PlayerDataManager  playerDataManager,
+                               PlayerView.Factory playerViewFactory,
+                               EnemyView.Factory  enemyViewFactory)
         {
             EnemyLookup = new();
             var enemiesForLevel = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam.Members
-                .Select(character => character as Enemy).ToList();
+                                                   .Select(character => character as Enemy).ToList();
 
             for (int i = 0; i < enemiesForLevel.Count; i++)
             {
-                var enemy = enemiesForLevel[i];
+                var enemy        = enemiesForLevel[i];
                 var newEnemyView = enemyViewFactory.Create(enemy);
                 EnemyLookup.Add(enemy, newEnemyView);
                 newEnemyView.transform.SetParent(charactersParent);
@@ -35,7 +36,7 @@ namespace Views
 
             PlayerLookup = new();
             var playerCharacter = playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter;
-            var playerView = playerViewFactory.Create(playerCharacter);
+            var playerView      = playerViewFactory.Create(playerCharacter);
             PlayerLookup.Add(playerCharacter, playerView);
             playerView.transform.SetParent(charactersParent);
             playerView.transform.position = playerSpawn.position;

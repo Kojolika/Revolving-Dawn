@@ -11,22 +11,29 @@ using Tooling.Logging;
 using Zenject;
 using File = System.IO.File;
 using System.Drawing;
+using UnityEditor;
 
 namespace Systems.Managers
 {
     public class SaveManager : IManager
     {
-        static string SavePath => $"{UnityEngine.Application.persistentDataPath}/saves";
-        const string SaveFormat = ".json";
-        static string RunsSavePath => $"{SavePath}/runs";
-        const string PlayerDataFileName = "player_data";
-        static string PlayerSaveFilePath => $"{SavePath}/{PlayerDataFileName}{SaveFormat}";
-        const string PlayerDataJsonObjectName = "player";
+        private static string SavePath => $"{UnityEngine.Application.persistentDataPath}/saves";
+        private const  string SaveFormat = ".json";
+        private static string RunsSavePath => $"{SavePath}/runs";
+        private const  string PlayerDataFileName = "player_data";
+        private static string PlayerSaveFilePath => $"{SavePath}/{PlayerDataFileName}{SaveFormat}";
+        private const  string PlayerDataJsonObjectName = "player";
 
         private JsonSerializer jsonSerializer;
 
+        [MenuItem("KoJy/Open Player Saves Folder")]
+        public static void OpenSaveFolder()
+        {
+            EditorUtility.RevealInFinder(SavePath);
+        }
+
         [Inject]
-        void Construct(CustomContractResolver customContractResolver)
+        private void Construct(CustomContractResolver customContractResolver)
         {
             jsonSerializer = CreateJsonSerializer(customContractResolver);
         }
@@ -36,9 +43,9 @@ namespace Systems.Managers
             var jsonSerializer = new JsonSerializer
             {
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                TypeNameHandling           = TypeNameHandling.Auto,
+                Formatting                 = Formatting.Indented,
+                ReferenceLoopHandling      = ReferenceLoopHandling.Ignore
             };
             jsonSerializer.Converters.Add(new AssetReferenceConverter());
             jsonSerializer.Converters.Add(new Serialization.ColorConverter());
@@ -62,8 +69,8 @@ namespace Systems.Managers
 
             await File.WriteAllTextAsync(PlayerSaveFilePath, playerDefinition.ToString());
 
-            await using StreamWriter file = File.CreateText(PlayerSaveFilePath);
-            using JsonTextWriter writer = new(file);
+            await using StreamWriter file   = File.CreateText(PlayerSaveFilePath);
+            using JsonTextWriter     writer = new(file);
 
             JToken playerJson = JToken.FromObject(playerDefinition, jsonSerializer);
             JObject json = new()
@@ -90,9 +97,9 @@ namespace Systems.Managers
                 {
                     PlayerDefinition playerDefinition = playerData.ToObject<PlayerDefinition>(jsonSerializer);
                     playerDefinition.CurrentRun.PlayerCharacter = playerCharacter;
-                    playerDefinition.CurrentRun.CurrentFight = fightDefinition;
+                    playerDefinition.CurrentRun.CurrentFight    = fightDefinition;
 
-                    using StreamWriter file = File.CreateText(PlayerSaveFilePath);
+                    using StreamWriter   file   = File.CreateText(PlayerSaveFilePath);
                     using JsonTextWriter writer = new(file);
 
                     JToken playerJson = JToken.FromObject(playerDefinition, jsonSerializer);

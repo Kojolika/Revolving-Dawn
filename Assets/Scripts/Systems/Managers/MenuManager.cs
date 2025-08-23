@@ -123,7 +123,7 @@ namespace Systems.Managers
             return instantiatedMenu;
         }
 
-        (TMenu, AsyncOperationHandle operationHandle) LoadMenu<TMenu, TData>() where TMenu : Menu<TData>
+        private (TMenu, AsyncOperationHandle operationHandle) LoadMenu<TMenu, TData>() where TMenu : Menu<TData>
         {
             MyLogger.Log("Creating menu for type " + typeof(TMenu).Name);
 

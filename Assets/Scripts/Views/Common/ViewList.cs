@@ -40,14 +40,14 @@ namespace Views.Common
         private readonly ObjectPool<IView<T>> pool;
 
         public ViewList(IEnumerable<T> data,
-            Func<IView<T>> viewCreationFunction,
-            Transform parent,
-            DiContainer diContainer)
+                        Func<IView<T>> viewCreationFunction,
+                        Transform      parent,
+                        DiContainer    diContainer)
         {
             this.viewCreationFunction = viewCreationFunction;
-            this.data = data;
-            this.parent = parent;
-            this.diContainer = diContainer;
+            this.data                 = data;
+            this.parent               = parent;
+            this.diContainer          = diContainer;
 
             pool = new ObjectPool<IView<T>>(
                 viewCreationFunction,
@@ -98,10 +98,9 @@ namespace Views.Common
             this.diContainer = diContainer;
         }
 
-        public ViewList<T> Create<T>(
-            IEnumerable<T> data,
-            Func<IView<T>> viewCreationFunction,
-            Transform parent
-        ) => new(data, viewCreationFunction, parent, diContainer);
+        public ViewList<T> Create<T>(IEnumerable<T> data, Func<IView<T>> viewCreationFunction, Transform parent)
+        {
+            return new ViewList<T>(data, viewCreationFunction, parent, diContainer);
+        }
     }
 }

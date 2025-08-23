@@ -15,7 +15,7 @@ namespace Serialization
     /// </summary>
     public class CustomContractResolver : DefaultContractResolver
     {
-        private readonly DiContainer diContainer;
+        private readonly DiContainer    diContainer;
         private readonly NamingStrategy namingStrategy = new DefaultNamingStrategy();
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace Serialization
         public CustomContractResolver(DiContainer diContainer)
         {
             this.diContainer = diContainer;
-            NamingStrategy = namingStrategy;
+            NamingStrategy   = namingStrategy;
         }
 
         public CustomContractResolver()
@@ -58,7 +58,7 @@ namespace Serialization
             foreach (var field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (IsStaticDataField(obj, field, out var staticDataReference, arrayIndex)
-                    && (staticDataReference?.IsReferenceValid() ?? false))
+                 && (staticDataReference?.IsReferenceValid() ?? false))
                 {
                     StaticDatabase.Instance.QueueReferenceForInject(
                         staticDataReference.Type,
@@ -79,7 +79,7 @@ namespace Serialization
                     for (int i = 0; i < fieldList.Count; i++)
                     {
                         if (IsStaticDataField(obj, field, out var staticDataRef, i)
-                            && staticDataRef.IsReferenceValid())
+                         && staticDataRef.IsReferenceValid())
                         {
                             StaticDatabase.Instance.QueueReferenceForInject(
                                 staticDataRef.Type,
@@ -102,13 +102,26 @@ namespace Serialization
             bool IsStaticDataField(object objToCheck, FieldInfo field, out StaticDataReference staticDataReference, int index = -1)
             {
                 var isListField = index > -1;
-                var staticData = isListField
-                    ? (field.GetValue(objToCheck) as IList)?[index] as StaticData
-                    : field.GetValue(objToCheck) as StaticData;
+
+                StaticData staticData;
+                staticDataReference = null;
+                if (isListField && field.GetValue(objToCheck) is IList list)
+                {
+                    if (index > list.Count - 1)
+                    {
+                        MyLogger.LogError($"Index passed into field is greater than the list size! fieldName={field.Name}, index={index}, count={list.Count}");
+                        return false;
+                    }
+
+                    staticData = list[index] as StaticData;
+                }
+                else
+                {
+                    staticData = field.GetValue(objToCheck) as StaticData;
+                }
 
                 if (staticData?.Reference == null)
                 {
-                    staticDataReference = null;
                     return false;
                 }
 

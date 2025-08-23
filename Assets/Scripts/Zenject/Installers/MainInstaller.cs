@@ -25,7 +25,7 @@ namespace Zenject.Installers
             InstallMapObjects();
             InstallDependenciesForDeserializer();
             InstallUIUtils();
-            InstallDB();
+            //InstallDB();
         }
 
         private void InstallManagers()

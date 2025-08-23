@@ -138,7 +138,7 @@ namespace Controllers
                     .First();
 
                 Debug.Assert(card != null, "Card shouldn't be null after downgrading." +
-                    "ManaDefinition may be a different instance than the scriptableObject one or card settings do not have ManaDefinition's specified! ");
+                                               "ManaDefinition may be a different instance than the scriptableObject one or card settings do not have ManaDefinition's specified! ");
             }
             else
             {

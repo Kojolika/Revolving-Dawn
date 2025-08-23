@@ -158,8 +158,6 @@ namespace Tooling.StaticData.Bytecode
                         break;
                     case Bytecode.Method:
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
             }
 

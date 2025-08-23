@@ -10,7 +10,6 @@ namespace Fight.Events
 
         public override void Undo()
         {
-            throw new System.NotImplementedException();
         }
 
         public override string Log() => $"{Target.Name} teams turn ended!";

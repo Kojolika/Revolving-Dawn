@@ -82,7 +82,7 @@ namespace Tooling.Logging
             var currentStackFrame = stackTrace.GetFrame(0);
             var logMessage = $"<b><color={uniqueColor}><size=25>@</size></color>" +
                              $"<color={Options.FilenameColor}> [{fileName}]</color></b>" +
-                             $"{message}";
+                             $" {message}";
 
             if (currentStackFrame.GetMethod() is MethodInfo methodInfo)
             {

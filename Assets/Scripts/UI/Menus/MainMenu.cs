@@ -47,10 +47,11 @@ namespace UI.Menus
         {
         }
 
-        async void StartNewGameOrLoadCurrent()
+        private async void StartNewGameOrLoadCurrent()
         {
             // If continuing load current fight or load current map
             // otherwise open character selection
+            
 
             var currentRun = playerDataManager.CurrentPlayerDefinition.CurrentRun;
             if (currentRun == null)

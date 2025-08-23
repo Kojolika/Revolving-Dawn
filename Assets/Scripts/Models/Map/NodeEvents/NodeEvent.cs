@@ -15,12 +15,12 @@ namespace Models.Map
 
         [JsonProperty("map_icon_reference")] private readonly AssetReferenceSprite mapIconReference;
 
-        public string Name => name;
+        public string               Name             => name;
         public AssetReferenceSprite MapIconReference => mapIconReference;
 
         public NodeEvent(string name, AssetReferenceSprite mapIconReference)
         {
-            this.name = name;
+            this.name             = name;
             this.mapIconReference = mapIconReference;
         }
 
@@ -36,33 +36,33 @@ namespace Models.Map
     {
         public class Data
         {
-            public readonly MapSettings MapSettings;
+            public readonly MapSettings    MapSettings;
             public readonly NodeDefinition CurrentNode;
             public readonly NodeDefinition FirstNode;
             public readonly NodeDefinition LastNode;
-            public readonly int MaxNodeLevelForMap;
-            public readonly System.Random RandomNumberGenerator;
-            public readonly float[] CumulativeSums;
-            public readonly float TotalWeights;
+            public readonly int            MaxNodeLevelForMap;
+            public readonly System.Random  RandomNumberGenerator;
+            public readonly float[]        CumulativeSums;
+            public readonly float          TotalWeights;
 
             public Data(
-                MapSettings mapSettings,
+                MapSettings    mapSettings,
                 NodeDefinition currentNode,
                 NodeDefinition firstNode,
                 NodeDefinition lastNode,
-                int maxNodeLevelForMap,
-                System.Random randomNumberGenerator,
-                float[] cumulativeSums,
-                float totalWeights)
+                int            maxNodeLevelForMap,
+                System.Random  randomNumberGenerator,
+                float[]        cumulativeSums,
+                float          totalWeights)
             {
-                MapSettings = mapSettings;
-                CurrentNode = currentNode;
-                FirstNode = firstNode;
-                LastNode = lastNode;
-                MaxNodeLevelForMap = maxNodeLevelForMap;
+                MapSettings           = mapSettings;
+                CurrentNode           = currentNode;
+                FirstNode             = firstNode;
+                LastNode              = lastNode;
+                MaxNodeLevelForMap    = maxNodeLevelForMap;
                 RandomNumberGenerator = randomNumberGenerator;
-                CumulativeSums = cumulativeSums;
-                TotalWeights = totalWeights;
+                CumulativeSums        = cumulativeSums;
+                TotalWeights          = totalWeights;
             }
         }
 
@@ -106,7 +106,6 @@ namespace Models.Map
             ) as NodeEvent;
 
             newNodeEvent?.Populate(data.MapSettings, data.CurrentNode, data.MaxNodeLevelForMap);
-
             Debug.Assert(newNodeEvent != null, "Created a new node event but node event is null!");
 
             return newNodeEvent;

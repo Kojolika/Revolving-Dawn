@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Debug
+  m_EditorClassIdentifier: 
+  m_GroupName: Debug
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 611518e61bc1f5f47a80e4f81411477b
+  m_SerializeEntries:
+  - m_GUID: 3fae5216b64c31441894f8dbb1802db1
+    m_Address: Assets/Prefabs/Debug/DebugCanvas.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ac712677c75f254dabb6ed742f544b3
+    m_Address: Assets/Prefabs/Debug/PlayerDebugMenu.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: beef41c5083d20a479c0ba36310cb526
+    m_Address: Assets/Prefabs/Debug/DebugInstaller.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3788ab0c79ab5ed46b258ba64fadb02d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 47992117fce3dd243a549c9681c79324, type: 2}
+    - {fileID: 11400000, guid: 826da9a697d92d14899d0f422299f957, type: 2}
