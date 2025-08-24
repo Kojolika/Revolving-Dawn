@@ -6,7 +6,10 @@ using UnityEngine.UIElements;
 
 namespace Tooling.StaticData.EditorUI
 {
-    public class InstanceView : VisualElement
+    /// <summary>
+    /// Displays a single row of a static data instance
+    /// </summary>
+    public class InstanceRow : VisualElement
     {
         private readonly VisualElement row;
         private readonly Type staticDataType;
@@ -14,7 +17,7 @@ namespace Tooling.StaticData.EditorUI
 
         public const float EditButtonWidth = 32;
 
-        public InstanceView(Type staticDataType, bool allowEditing)
+        public InstanceRow(Type staticDataType, bool allowEditing)
         {
             this.staticDataType = staticDataType;
             this.allowEditing = allowEditing;
@@ -39,7 +42,7 @@ namespace Tooling.StaticData.EditorUI
             foreach (var field in GetOrderedFields(staticDataType))
             {
                 row.Add(
-                    InstancesView.CreateInstanceColumn(
+                    InstancesTable.CreateInstanceColumn(
                         GetLabelForField(field, instance)
                     )
                 );
@@ -56,7 +59,7 @@ namespace Tooling.StaticData.EditorUI
         /// </summary>
         /// <param name="staticDataType"></param>
         /// <returns></returns>
-        public static IEnumerable<FieldInfo> GetOrderedFields(System.Type staticDataType)
+        public static IEnumerable<FieldInfo> GetOrderedFields(Type staticDataType)
         {
             var fields = Utils.GetFields(staticDataType);
             int nameIndex = 0;

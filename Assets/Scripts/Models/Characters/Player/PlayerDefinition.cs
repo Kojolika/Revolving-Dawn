@@ -1,19 +1,14 @@
-﻿using Newtonsoft.Json;
-
-namespace Models.Characters.Player
+﻿namespace Models.Characters.Player
 {
     [System.Serializable]
-    public class PlayerDefinition 
+    public class PlayerDefinition
     {
+        public int           Id;
+        public RunDefinition CurrentRun;
+
         public PlayerDefinition(int id)
         {
-            ID = id;
+            Id = id;
         }
-
-        [JsonProperty("player_id")] 
-        public int ID;
-        
-        [JsonProperty("current_run")] 
-        public RunDefinition CurrentRun;
     }
 }

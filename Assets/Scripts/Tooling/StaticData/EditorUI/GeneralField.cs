@@ -295,7 +295,7 @@ namespace Tooling.StaticData.EditorUI
                 new ButtonIcon(
                     () =>
                     {
-                        var instanceSelector = InstancesView.Selector.Open(type);
+                        var instanceSelector = InstancesTable.Selector.Open(type);
                         instanceSelector.onSelectionChanged += staticData => OnValueChanged?.Invoke(staticData);
                     },
                     IconPaths.List

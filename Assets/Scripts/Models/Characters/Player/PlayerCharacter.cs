@@ -11,43 +11,29 @@ namespace Models.Characters
     [System.Serializable]
     public class PlayerCharacter : Character, IInventory
     {
-        [JsonProperty("class")]
-        public PlayerClassModel Class { get; private set; }
-
-        [JsonProperty("decks")]
-        public Player.Decks Decks { get; private set; }
-
-        [JsonProperty("inventory")]
-        public List<IItem> Inventory { get; private set; }
-
-        [JsonProperty("gold")]
-        public ulong Gold { get; private set; }
-
-        [JsonProperty("hand_size")]
-        public int HandSize { get; private set; }
-
-        [JsonProperty("draw_amount")]
-        public int DrawAmount { get; private set; }
-
-        [JsonProperty("mana_per_turn")]
-        public int UsableManaPerTurn { get; private set; }
+        public PlayerClassModel Class             { get; private set; }
+        public Player.Decks     Decks             { get; private set; }
+        public List<IItem>      Inventory         { get; private set; }
+        public ulong            Gold              { get; private set; }
+        public int              HandSize          { get; private set; }
+        public int              DrawAmount        { get; private set; }
+        public int              UsableManaPerTurn { get; private set; }
 
         [JsonConstructor]
         public PlayerCharacter()
         {
-
         }
 
         public PlayerCharacter(PlayerClassSODefinition playerClassDefinition, CharacterSettings characterSettings)
         {
-            Class = playerClassDefinition.Representation;
-            Name = playerClassDefinition.name;
-            Decks = new Player.Decks(playerClassDefinition.StartingDeck.Select(cardSO => cardSO.Representation).ToList());
-            Health = new(playerClassDefinition.HealthDefinition.MaxHealth, playerClassDefinition.HealthDefinition.MaxHealth);
-            HandSize = characterSettings.HandSize;
-            DrawAmount = characterSettings.DrawAmount;
+            Class             = playerClassDefinition.Representation;
+            Name              = playerClassDefinition.name;
+            Decks             = new Player.Decks(playerClassDefinition.StartingDeck.Select(cardSO => cardSO.Representation).ToList());
+            Health            = new(playerClassDefinition.HealthDefinition.MaxHealth, playerClassDefinition.HealthDefinition.MaxHealth);
+            HandSize          = characterSettings.HandSize;
+            DrawAmount        = characterSettings.DrawAmount;
             UsableManaPerTurn = characterSettings.UsableManaPerTurn;
-            Buffs = new();
+            Buffs             = new();
         }
     }
 }

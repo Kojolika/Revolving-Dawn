@@ -35,12 +35,12 @@ namespace Tooling.StaticData
 
         private static readonly string StaticDataDirectory = Path.Join(Application.dataPath, "StaticData");
 
-        private readonly Dictionary<System.Type, Dictionary<string, StaticData>> staticDataDictionary = new();
+        private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
 
         public event Action OnStaticDataInstancesBuilt;
-        public bool HaveStaticDataInstancesBeenBuilt { get; private set; } = false;
+        public bool         HaveStaticDataInstancesBeenBuilt { get; private set; } = false;
 
-        public Dictionary<System.Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
+        public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
 
         /// <summary>
         /// Notifies when validation has just been completed. The <see cref="validationErrors"/> will be populated after
@@ -50,7 +50,7 @@ namespace Tooling.StaticData
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new()
         {
-            Formatting = Formatting.Indented,
+            Formatting       = Formatting.Indented,
             ContractResolver = new CustomContractResolver(),
             Converters =
             {
@@ -59,7 +59,7 @@ namespace Tooling.StaticData
                 new StaticDataConverter(),
             },
             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-            TypeNameHandling = TypeNameHandling.Auto,
+            TypeNameHandling      = TypeNameHandling.Auto,
             //TraceWriter = new MyLogger(),
         };
 
@@ -83,13 +83,13 @@ namespace Tooling.StaticData
             Clear();
 
             var staticDataTypes = typeof(StaticData).Assembly.GetTypes()
-                .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
-                .ToList();
+                                                    .Where(type => typeof(StaticData).IsAssignableFrom(type) && !type.IsAbstract)
+                                                    .ToList();
 
             foreach (var type in staticDataTypes)
             {
                 var instanceDictionary = new Dictionary<string, StaticData>();
-                var typeDirectory = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
+                var typeDirectory      = Path.GetFullPath(Path.Join(StaticDataDirectory, type.Name));
 
                 if (Directory.Exists(typeDirectory))
                 {
@@ -132,11 +132,11 @@ namespace Tooling.StaticData
         /// after every <see cref="StaticData"/> is deserialized.
         /// </summary>
         public void QueueReferenceForInject(
-            System.Type staticDataType,
+            Type   staticDataType,
             string instanceName,
             object obj,
             string propertyName,
-            int arrayIndex = -1)
+            int    arrayIndex = -1)
         {
             queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, obj, propertyName, arrayIndex));
         }
@@ -150,7 +150,7 @@ namespace Tooling.StaticData
         {
             foreach (var referenceHandle in queuedInjections)
             {
-                var staticDataType = referenceHandle.ObjectWithReference.GetType();
+                var staticDataType  = referenceHandle.ObjectWithReference.GetType();
                 var staticDataField = Utils.GetField(staticDataType, referenceHandle.PropertyName);
 
                 if (staticDataField == null)
@@ -171,7 +171,7 @@ namespace Tooling.StaticData
                 else
                 {
                     var list = (IList)(staticDataField.GetValue(referenceHandle.ObjectWithReference)
-                                       ?? Activator.CreateInstance(staticDataField.FieldType));
+                                    ?? Activator.CreateInstance(staticDataField.FieldType));
                     list[referenceHandle.ArrayIndex] = GetStaticDataInstance(referenceHandle.Type, referenceHandle.InstanceName);
 
                     staticDataField.SetValue(referenceHandle.ObjectWithReference, list);
@@ -184,7 +184,7 @@ namespace Tooling.StaticData
             /// <summary>
             /// The type of static data being referenced.
             /// </summary>
-            public readonly System.Type Type;
+            public readonly Type Type;
 
             /// <summary>
             /// The instance name of the <see cref="Type"/> being referenced.
@@ -206,17 +206,18 @@ namespace Tooling.StaticData
             /// </summary>
             public readonly int ArrayIndex;
 
-            public StaticDataReferenceHandle(System.Type type,
+            public StaticDataReferenceHandle(
+                Type   type,
                 string instanceName,
                 object objectWithReference,
                 string propertyName,
-                int arrayIndex = -1)
+                int    arrayIndex = -1)
             {
-                Type = type;
-                InstanceName = instanceName;
+                Type                = type;
+                InstanceName        = instanceName;
                 ObjectWithReference = objectWithReference;
-                PropertyName = propertyName;
-                ArrayIndex = arrayIndex;
+                PropertyName        = propertyName;
+                ArrayIndex          = arrayIndex;
             }
         }
 
@@ -226,7 +227,7 @@ namespace Tooling.StaticData
             OnValidationCompleted?.Invoke();
         }
 
-        public void UpdateInstancesForType(System.Type type, List<StaticData> instances)
+        public void UpdateInstancesForType(Type type, List<StaticData> instances)
         {
             if (!staticDataDictionary.TryGetValue(type, out var instanceDict))
             {
@@ -250,7 +251,7 @@ namespace Tooling.StaticData
         public StaticData GetStaticDataInstance(System.Type type, string instanceName)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary)
-                && instanceDictionary.TryGetValue(instanceName, out var dataInstance))
+             && instanceDictionary.TryGetValue(instanceName, out var dataInstance))
             {
                 return dataInstance;
             }
@@ -315,7 +316,7 @@ namespace Tooling.StaticData
                 }
 
                 var staticDataFilePath = Path.GetFullPath(Path.Join(StaticDataDirectory, kvp.Key.Name));
-                var directoryInfo = Directory.CreateDirectory(staticDataFilePath);
+                var directoryInfo      = Directory.CreateDirectory(staticDataFilePath);
 
                 foreach (var directory in directoryInfo.GetDirectories())
                 {
@@ -371,8 +372,8 @@ namespace Tooling.StaticData
 
                 var filePath = $"{Path.Join(typeDirectory, instance.Name)}.json";
                 MyLogger.Log($"Writing {instance.Name} to file: {filePath}");
-                await using StreamWriter file = new StreamWriter(filePath);
-                using JsonWriter writer = new JsonTextWriter(file);
+                await using StreamWriter file   = new StreamWriter(filePath);
+                using JsonWriter         writer = new JsonTextWriter(file);
 
                 JsonSerializer.Serialize(writer, instance);
             }
@@ -386,7 +387,7 @@ namespace Tooling.StaticData
 
             HaveStaticDataInstancesBeenBuilt = false;
             if (OnStaticDataInstancesBuilt?.GetInvocationList() is var subList
-                && subList.IsNullOrEmpty())
+             && subList.IsNullOrEmpty())
             {
                 return;
             }

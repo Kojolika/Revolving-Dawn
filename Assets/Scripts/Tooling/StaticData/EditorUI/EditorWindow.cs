@@ -42,7 +42,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// <see cref="ListView"/> of static data instances of the currently selected static data type.
         /// </summary>
-        private InstancesView instancesView;
+        private InstancesTable instancesTable;
 
         public static readonly StyleColor BorderColor = new(Color.gray);
         public static readonly StyleFloat BorderWidth = new(0.5f);
@@ -100,9 +100,9 @@ namespace Tooling.StaticData.EditorUI
 
                 // TODO: figure out why split view is being weird
                 var validatorErrorView = new ValidatorErrorView(selectedType);
-                instancesView = new InstancesView(selectedType, true, validatorErrorView.OnStaticDataSelected);
+                instancesTable = new InstancesTable(selectedType, true, validatorErrorView.OnStaticDataSelected);
 
-                rightPanel.Add(instancesView);
+                rightPanel.Add(instancesTable);
                 rightPanel.Add(validatorErrorView);
             };
 
@@ -319,7 +319,7 @@ namespace Tooling.StaticData.EditorUI
                 }
 
                 StaticDatabase.Instance.Add(editingObj);
-                openedEditorWindow.instancesView.Refresh();
+                openedEditorWindow.instancesTable.Refresh();
                 base.SaveChanges();
             }
         }

@@ -83,6 +83,11 @@ namespace Systems.Managers
             MyLogger.Log("Saved successfully.");
         }
 
+        public async UniTask DeleteCurrentRun()
+        {
+            
+        }
+
         public async UniTask SaveFight(FightDefinition fightDefinition, PlayerCharacter playerCharacter)
         {
             if (!File.Exists(PlayerSaveFilePath))
