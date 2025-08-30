@@ -321,7 +321,7 @@ namespace Tooling.StaticData.EditorUI
         private VisualElement RecursiveDrawElements(Type type)
         {
             var currentObj = GetValue();
-            if (GetValue() == null)
+            if (GetValue() == null && type.GetConstructor(Type.EmptyTypes) != null)
             {
                 currentObj = Activator.CreateInstance(type);
                 SetValue(currentObj);
