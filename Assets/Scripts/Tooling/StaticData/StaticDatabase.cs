@@ -106,14 +106,16 @@ namespace Tooling.StaticData
                         catch (Exception e)
                         {
                             MyLogger.LogError($"Exception while deserializing: {e}");
+                            MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized. Setting value to default...");
+                            staticDataFromJson = Activator.CreateInstance(type) as StaticData;
                         }
 
                         if (staticDataFromJson == null)
                         {
-                            MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized.");
+                            MyLogger.LogError("Static data is still null, is the type wrong...?");
                             continue;
                         }
-
+                        
                         var fileNameWithExtension = new FileInfo(file).Name;
                         staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
 
@@ -248,7 +250,7 @@ namespace Tooling.StaticData
             staticDataDictionary[type] = instanceDict;
         }
 
-        public StaticData GetStaticDataInstance(System.Type type, string instanceName)
+        public StaticData GetStaticDataInstance(Type type, string instanceName)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary)
              && instanceDictionary.TryGetValue(instanceName, out var dataInstance))
@@ -258,6 +260,18 @@ namespace Tooling.StaticData
 
             return null;
         }
+
+        public T GetStaticDataInstance<T>(string instanceName) where T : StaticData
+        {
+            if (staticDataDictionary.TryGetValue(typeof(T), out var instanceDictionary)
+             && instanceDictionary.TryGetValue(instanceName, out var dataInstance))
+            {
+                return dataInstance as T;
+            }
+
+            return null;
+        }
+
 
         private List<StaticData> GetAllStaticDataInstances()
         {

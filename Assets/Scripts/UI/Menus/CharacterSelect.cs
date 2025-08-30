@@ -7,7 +7,7 @@ using Tooling.Logging;
 using UI.Common;
 using Systems.Managers;
 using Settings;
-using Models.Player;
+using Tooling.StaticData;
 
 namespace UI.Menus
 {
@@ -15,24 +15,24 @@ namespace UI.Menus
     {
         public class Data
         {
-            public List<PlayerClassSODefinition> Classes;
+            public List<PlayerClass> Classes;
         }
 
         [ResourcePath]
         public string ResourcePath => nameof(CharacterSelect);
 
-        [SerializeField] ClassDisplayElement classDisplayElementPrefab;
-        [SerializeField] Transform classDisplayListRoot;
-        [SerializeField] MyButton playButton;
+        [SerializeField] private ClassDisplayElement classDisplayElementPrefab;
+        [SerializeField] private Transform           classDisplayListRoot;
+        [SerializeField] private MyButton            playButton;
 
-        List<ClassDisplayElement> classDisplayElements = new();
-        PlayerClassSODefinition selectedClass;
-        MenuManager menuManager;
-        PlayerDataManager playerDataManager;
-        MapSettings mapSettings;
+        private List<ClassDisplayElement> classDisplayElements = new();
+        private PlayerClass               selectedClass;
+        private MenuManager               menuManager;
+        private PlayerDataManager         playerDataManager;
+        private MapSettings               mapSettings;
 
         [Zenject.Inject]
-        void Construct(MenuManager menuManager, PlayerDataManager playerDataManager, MapSettings mapSettings)
+        private void Construct(MenuManager menuManager, PlayerDataManager playerDataManager, MapSettings mapSettings)
         {
             this.menuManager = menuManager;
             this.playerDataManager = playerDataManager;
@@ -62,7 +62,7 @@ namespace UI.Menus
             playButton.Pressed += SaveSelectionAndGenerateRun;
         }
 
-        async void SaveSelectionAndGenerateRun()
+        private async void SaveSelectionAndGenerateRun()
         {
             MyLogger.Log("Generating map...");
             await playerDataManager.StartNewRun(selectedClass);

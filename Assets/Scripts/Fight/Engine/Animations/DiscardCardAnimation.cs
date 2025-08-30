@@ -16,9 +16,9 @@ namespace Fight.Animations
             this.playerHandView = playerHandView;
         }
 
-        public async override UniTask Play(DiscardCardEvent battleEvent)
+        public override async UniTask Play(DiscardCardEvent battleEvent)
         {
-            await playerHandView.DiscardCardAnimation(battleEvent.Target);
+            await playerHandView.DiscardCardAnimation(battleEvent.Card);
             IsFinished = true;
         }
 

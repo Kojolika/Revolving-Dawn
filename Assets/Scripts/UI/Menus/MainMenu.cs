@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Data;
-using Models.Player;
 using Systems.Managers;
+using Tooling.StaticData;
 using UI.Common;
 using UI.Menus.Common;
 using UnityEngine;
@@ -19,28 +19,22 @@ namespace UI.Menus
         [SerializeField] private MyButton quitButton;
 
         private PlayerDataManager playerDataManager;
-        private MySceneManager mySceneManager;
-        private MenuManager menuManager;
-        private List<PlayerClassSODefinition> playerClassDefinitions;
+        private MySceneManager    mySceneManager;
+        private MenuManager       menuManager;
 
         [Zenject.Inject]
-        async void Construct(
-            PlayerDataManager playerDataManager,
-            MySceneManager mySceneManager,
-            MenuManager menuManager,
-            StaticDataReference<PlayerClassSODefinition> playerClassReferences)
+        private void Construct(PlayerDataManager playerDataManager, MySceneManager mySceneManager, MenuManager menuManager)
         {
             this.playerDataManager = playerDataManager;
-            this.mySceneManager = mySceneManager;
-            this.menuManager = menuManager;
-            playerClassDefinitions = await playerClassReferences.LoadAssetsAsync();
+            this.mySceneManager    = mySceneManager;
+            this.menuManager       = menuManager;
         }
 
         private void Awake()
         {
-            playButton.Pressed += StartNewGameOrLoadCurrent;
+            playButton.Pressed     += StartNewGameOrLoadCurrent;
             settingsButton.Pressed += OpenSettings;
-            quitButton.Pressed += QuitGame;
+            quitButton.Pressed     += QuitGame;
         }
 
         public override void Populate(Null data)
@@ -51,13 +45,13 @@ namespace UI.Menus
         {
             // If continuing load current fight or load current map
             // otherwise open character selection
-            
+
 
             var currentRun = playerDataManager.CurrentPlayerDefinition.CurrentRun;
             if (currentRun == null)
             {
                 _ = menuManager.Open<CharacterSelect, CharacterSelect.Data>(
-                    new CharacterSelect.Data() { Classes = playerClassDefinitions }
+                    new CharacterSelect.Data { Classes = StaticDatabase.Instance.GetInstancesForType<PlayerClass>() }
                 );
             }
             else if (currentRun.CurrentFight != null)

@@ -1,4 +1,4 @@
-using Systems.Managers.Base;
+using Systems.Managers;
 using Fight;
 using Views;
 using Fight.Events;
@@ -9,23 +9,20 @@ namespace Systems.Managers
 {
     public class FightManager : IPartTimeManager
     {
-        private readonly PlayerDataManager playerDataManager;
-        private readonly MySceneManager mySceneManager;
-        private readonly BattleEngine battleEngine;
+        private readonly PlayerDataManager     playerDataManager;
+        private readonly MySceneManager        mySceneManager;
+        private readonly BattleEngine          battleEngine;
         private readonly BattleAnimationEngine battleAnimationEngine;
-        private readonly TurnStartedEvent.BattleEventFactoryT<TurnStartedEvent> turnStartedFactory;
 
-        public FightManager(PlayerDataManager playerDataManager,
-            MySceneManager mySceneManager,
-            BattleEngine battleEngine,
-            BattleAnimationEngine battleAnimationEngine,
-            TurnStartedEvent.BattleEventFactoryT<TurnStartedEvent> turnStartedFactory)
+        public FightManager(PlayerDataManager     playerDataManager,
+                            MySceneManager        mySceneManager,
+                            BattleEngine          battleEngine,
+                            BattleAnimationEngine battleAnimationEngine)
         {
-            this.playerDataManager = playerDataManager;
-            this.mySceneManager = mySceneManager;
-            this.battleEngine = battleEngine;
+            this.playerDataManager     = playerDataManager;
+            this.mySceneManager        = mySceneManager;
+            this.battleEngine          = battleEngine;
             this.battleAnimationEngine = battleAnimationEngine;
-            this.turnStartedFactory = turnStartedFactory;
 
             _ = StartBattle();
         }
@@ -40,7 +37,7 @@ namespace Systems.Managers
             {
                 battleEngine.AddEvent(new BattleStartedEvent());
                 var player = playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter;
-                battleEngine.AddEvent(turnStartedFactory.Create(player));
+                battleEngine.AddEvent(new TurnStartedEvent(player));
             }
         }
     }

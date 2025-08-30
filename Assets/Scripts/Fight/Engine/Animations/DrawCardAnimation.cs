@@ -12,12 +12,12 @@ namespace Fight.Animations
         private PlayerHandView playerHandView;
 
         [Zenject.Inject]
-        void Construct(PlayerHandView playerHandView)
+        private void Construct(PlayerHandView playerHandView)
         {
             this.playerHandView = playerHandView;
         }
 
-        public async override UniTask Play(DrawCardEvent battleEvent)
+        public override async UniTask Play(DrawCardEvent battleEvent)
         {
             await playerHandView.DrawCard(battleEvent.CardDrawn);
             IsFinished = true;

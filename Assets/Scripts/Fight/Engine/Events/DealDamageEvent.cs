@@ -1,21 +1,35 @@
-using Models;
+using Fight.Engine;
 
 namespace Fight.Events
 {
-    public class DealDamageEvent : BattleEventTargetingIBuffable<IHealth>
+    public class DealDamageEvent : BattleEvent<ICombatParticipant, ICombatParticipant>
     {
-        public ulong Amount { get; set; }
-        public DealDamageEvent(IHealth target, ulong amount) : base(target)
+        private float amount;
+
+        public float Amount
+        {
+            get => amount;
+            set
+            {
+                if (value < 0)
+                {
+                    value = 0;
+                }
+
+                amount = value;
+            }
+        }
+
+        public DealDamageEvent(ICombatParticipant source, ICombatParticipant target, float amount) : base(source, target)
         {
             Amount = amount;
         }
 
-        public override void Execute(IHealth target, BattleEngine battleEngine)
-        {
-            target.DealDamage(Amount);
-        }
-
         public override string Log() => $"{Target} is dealt {Amount} damage";
+
+        public override void Execute(Context fightContext)
+        {
+        }
 
         public override void Undo()
         {

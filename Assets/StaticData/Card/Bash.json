@@ -1,0 +1,12 @@
+{
+  "Art": null,
+  "Manas": null,
+  "PlayerClass": null,
+  "Upgrade": null,
+  "Downgrade": null,
+  "IsLostOnPlay": false,
+  "TargetingOptions": null,
+  "CardLogic": {
+    "$type": "Models.Cards.Warrior.Bash, Assembly-CSharp"
+  }
+}

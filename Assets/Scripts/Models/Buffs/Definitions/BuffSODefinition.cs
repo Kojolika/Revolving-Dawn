@@ -13,13 +13,13 @@ namespace Models.Buffs
         [SerializeField] private AssetReferenceSprite icon;
         [SerializeField] private ulong maxStackSize;
 
-        [SerializeReference, DisplayAbstract(typeof(IBuffProperty))]
-        private List<IBuffProperty> buffProperties;
+        [SerializeReference, DisplayAbstract(typeof(IBeforeEvent))]
+        private List<IBeforeEvent> buffProperties;
 
         public string Name => name;
         public AssetReferenceSprite Icon => icon;
         public ulong MaxStackSize => maxStackSize;
-        public List<IBuffProperty> BuffProperties => buffProperties;
+        public List<IBeforeEvent> BuffProperties => buffProperties;
         
         private BuffDefinition representation;
 
@@ -45,7 +45,7 @@ namespace Models.Buffs
         public readonly ulong MaxStackSize;
 
         [JsonProperty("buff_properties")] 
-        public readonly List<IBuffProperty> BuffProperties;
+        public readonly List<IBeforeEvent> BuffProperties;
         
         [JsonConstructor]
         public BuffDefinition()

@@ -1,68 +1,61 @@
 using System;
+using Fight.Engine;
 using Models.Buffs;
+using Tooling.StaticData;
+using UnityEngine.Assertions;
 
 namespace Fight.Events
 {
-    public class BuffTriggeredEvent<TEvent> : BattleEvent<TEvent>
-        where TEvent : IBattleEvent
+    /// <summary>
+    /// The intended usage of this to only provide one of <see cref="IBeforeEvent"/> or <see cref="IAfterEvent"/>.
+    /// We'll reuse this event for buff triggers.
+    /// </summary>
+    public class BuffTriggeredEvent : BattleEvent<IBattleEvent<ICombatParticipant>>
     {
-        /// <summary>
-        /// This delegate handles what happens when an event causes a buffed to trigger.
-        /// The return is the stackSize of the buff after triggering the effect.
-        /// </summary>
-        /// <param name="triggerEvent">Event that triggered this TriggerEvent</param>
-        /// <param name="buff">Buff that was triggered.</param>
-        /// <returns></returns>
-        public delegate ulong TriggerEffectDelegate(TEvent triggerEvent, Buff buff);
-        public Buff Buff { get; private set; }
-        public TriggerEffectDelegate TriggerEffect { get; private set; }
+        public readonly IBeforeEvent BeforeEvent;
+        public readonly IAfterEvent  AfterEvent;
+        public readonly Buff         Buff;
+        public readonly int          CurrentStackSize;
 
-        public BuffTriggeredEvent(TEvent target, TriggerEffectDelegate triggerEffect, Buff buff) : base(target)
+        public BuffTriggeredEvent(
+            IBattleEvent<ICombatParticipant> target,
+            IBeforeEvent                     onBeforeEvent,
+            IAfterEvent                      onAfterEvent,
+            Buff                             buff,
+            int                              currentStackSize)
+            : base(target)
         {
-            Buff = buff;
-            TriggerEffect = triggerEffect;
+            Assert.IsTrue(onBeforeEvent != null || onAfterEvent != null, "Only one of OnBeforeEvent or OnAfterEvent can be given.");
+            Assert.IsFalse(onBeforeEvent != null && onAfterEvent != null, "Only one of OnBeforeEvent or OnAfterEvent can be given.");
+
+            BeforeEvent      = onBeforeEvent;
+            AfterEvent       = onAfterEvent;
+            Buff             = buff;
+            CurrentStackSize = currentStackSize;
         }
 
-        public override void Execute(TEvent target, BattleEngine battleEngine)
+        public override void Execute(Context fightContext)
         {
-            Buff.StackSize = TriggerEffect.Invoke(target, Buff);
-        }
+            ICombatParticipant targetParticipant = Target.Target;
+            if (BeforeEvent != null)
+            {
+                targetParticipant.SetBuff(Buff, BeforeEvent.OnBeforeExecute(fightContext, Target, Buff, CurrentStackSize));
+            }
 
-        public override string Log() => $"Buff {Buff.Definition.Name} triggered off of {nameof(TEvent)}";
+            if (AfterEvent != null)
+            {
+                targetParticipant.SetBuff(Buff, AfterEvent.OnAfterExecute(fightContext, Target, Buff, CurrentStackSize));
+            }
+        }
 
         public override void Undo()
         {
             throw new NotImplementedException();
         }
-    }
 
-    public static class BuffTriggeredEventFactory
-    {
-        public enum Timing
+        public override string Log()
         {
-            Before,
-            After
-        }
-        public static BuffTriggeredEvent<TEvent> GenerateTriggeredEvent<TEvent>(TEvent eventToCheck, Buff buff, Timing timing) where TEvent : IBattleEvent
-        {
-            if (timing == Timing.Before)
-            {
-                if (buff.Definition is ITriggerableBuffBefore<TEvent> triggerableBuff)
-                {
-                    return new BuffTriggeredEvent<TEvent>(eventToCheck, triggerableBuff.OnBeforeTrigger, buff);
-                }
-
-                return null;
-            }
-            else
-            {
-                if (buff.Definition is ITriggerableBuffAfter<TEvent> triggerableBuff)
-                {
-                    return new BuffTriggeredEvent<TEvent>(eventToCheck, triggerableBuff.OnAfterTrigger, buff);
-                }
-
-                return null;
-            }
+            throw new NotImplementedException();
         }
     }
 }

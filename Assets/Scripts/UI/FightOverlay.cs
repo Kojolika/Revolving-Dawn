@@ -19,58 +19,59 @@ namespace UI
 
         public Canvas Canvas => canvas;
 
-        private RunDefinition currentRun;
+        private RunDefinition  currentRun;
         private PlayerHandView playerHandView;
-        private DiscardCardEvent.Factory discardCardEventFactory;
-        private BattleEngine battleEngine;
+        private BattleEngine   battleEngine;
+
+        /// <summary>
+        /// Which participant this view is overlay is currently for.
+        /// TODO: Best way to get this reference?
+        /// </summary>
+        private ICardDeckParticipant currentParticipant;
 
         [Zenject.Inject]
-        private void Construct(RunDefinition currentRun,
-            PlayerHandView playerHandView,
-            DiscardCardEvent.Factory discardCardEventFactory,
-            BattleEngine battleEngine)
+        private void Construct(RunDefinition currentRun, PlayerHandView playerHandView, BattleEngine battleEngine)
         {
-            this.currentRun = currentRun;
+            this.currentRun     = currentRun;
             this.playerHandView = playerHandView;
-            this.discardCardEventFactory = discardCardEventFactory;
-            this.battleEngine = battleEngine;
+            this.battleEngine   = battleEngine;
 
             endTurnButton.onClick.AddListener(EndPlayerTurn);
             this.battleEngine.SubscribeToEvent<TurnStartedEvent>(this);
         }
-        
+
         private void EndPlayerTurn()
         {
             endTurnButton.interactable = false;
             var playerCharacter = currentRun.PlayerCharacter;
 
-
             foreach (var cardView in playerHandView.CardViewsLookup.Values)
             {
-                battleEngine.AddEvent(discardCardEventFactory.Create(cardView));
+                battleEngine.AddEvent(new DiscardCardEvent(currentParticipant, cardView.Model));
             }
 
             battleEngine.AddEvent(new TurnEndedEvent(playerCharacter));
 
-            var enemies = currentRun.CurrentFight.EnemyTeam.Members
-                .Select(member => member as Enemy);
+            // TODO: Add turn ended internal event for enemies
+            /*var enemies = currentRun.CurrentFight.EnemyTeam.Members
+                                    .Select(member => member as Enemy);
             var enemyEvents = enemies
-                .SelectMany(enemy => enemy.NextMove.MoveEffects)
-                .SelectMany(effect =>
-                {
+                             .SelectMany(enemy => enemy.NextMove.MoveEffects)
+                             .SelectMany(effect =>
+                              {
 /*                     var target = effect.Targeting switch
                     {
                         Cards.Targeting.Options.
-                    }; */
-                    return effect.Execute(new List<IHealth> { playerCharacter });
-                });
+                    }; #1#
+                                  return effect.Execute(new List<IHealth> { playerCharacter });
+                              });
 
             foreach (var enemyEvent in enemyEvents)
             {
                 battleEngine.AddEvent(enemyEvent);
-            }
+            }*/
         }
-        
+
         public void OnEvent(PhaseEndedEvent eventData)
         {
             if (eventData.Target.IsPlayerTeam())

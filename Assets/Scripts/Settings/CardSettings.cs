@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace Settings
 {
+    
+    // TODO: settings in static data
     [CreateAssetMenu(fileName = "New " + nameof(CardSettings), menuName = "RevolvingDawn/Settings/" + nameof(CardSettings))]
     public class CardSettings : ScriptableObject
     {
@@ -12,10 +14,10 @@ namespace Settings
         public class CardManaPair
         {
             [SerializeField] private ManaSODefinition manaDefinition;
-            [SerializeField] private CardSODefinition card; 
+            //SerializeField] private CardSODefinition card; 
 
             public ManaSODefinition ManaSODefinition => manaDefinition;
-            public CardSODefinition Card => card;
+          //  public CardSODefinition Card => card;
         }
 
         [Tooltip("The Card and mana defined here will determine the final downgrade a card can have for which mana type it is."

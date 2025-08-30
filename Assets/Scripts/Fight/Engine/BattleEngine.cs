@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Common.Util;
 using Cysharp.Threading.Tasks;
 using Fight.Engine;
 using Fight.Events;
@@ -12,13 +13,20 @@ namespace Fight
     public class BattleEngine
     {
         public Stack<IBattleEvent> BattleEventHistory { get; private set; } = new();
-        
-        private List<IBattleEvent> battleEventQueue;
+
+        private          List<IBattleEvent>                       battleEventQueue;
         private readonly Dictionary<Type, List<IEventSubscriber>> battleEventSubscribers = new();
-        
+
+        int eventIndex = 0;
+
+        // TODO: Set reference
+        private Context fightContext;
+
         public void Run()
         {
             battleEventQueue = new List<IBattleEvent>();
+            eventIndex = 0;
+
             _ = EngineLoop();
         }
 
@@ -53,21 +61,11 @@ namespace Fight
 
         private async UniTask EngineLoop()
         {
-            int eventIndex = 0;
-            while (Application.isPlaying)
+            while (true)
             {
                 if (eventIndex < battleEventQueue.Count)
                 {
-                    battleEventQueue[eventIndex].OnBeforeExecute(this);
-
-                    battleEventQueue[eventIndex].Execute(this);
-                    BattleEventHistory.Push(battleEventQueue[eventIndex]);
-                    
-                    DispatchEvent(battleEventQueue[eventIndex]);
-
-                    MyLogger.Log($"{battleEventQueue[eventIndex].GetType().Name}: {battleEventQueue[eventIndex].Log()}");
-
-                    battleEventQueue[eventIndex].OnAfterExecute(this);
+                    ResolveEvent(battleEventQueue[eventIndex]);
                     eventIndex++;
                 }
                 else
@@ -77,7 +75,62 @@ namespace Fight
             }
         }
 
-        public void AddEvent(IBattleEvent battleEvent) => battleEventQueue.Add(battleEvent);
+        private void ResolveEvent(IBattleEvent battleEvent)
+        {
+            TriggerOnBeforeBuffEffects(battleEventQueue[eventIndex]);
+            battleEventQueue[eventIndex].Execute(fightContext);
+            TriggerOnAfterBuffEffects(battleEventQueue[eventIndex]);
+
+            BattleEventHistory.Push(battleEventQueue[eventIndex]);
+
+            DispatchEvent(battleEventQueue[eventIndex]);
+
+            MyLogger.Log($"{battleEventQueue[eventIndex].GetType().Name}: {battleEventQueue[eventIndex].Log()}");
+        }
+
+        private void TriggerOnBeforeBuffEffects(IBattleEvent battleEvent)
+        {
+            // If out event is targeted against combat participants, trigger their on before buffs
+            if (battleEvent is not IBattleEvent<ICombatParticipant> { Target: not null } combatParticipantTargetEvent)
+            {
+                return;
+            }
+
+            foreach (var (stackSize, buff) in combatParticipantTargetEvent.Target.GetBuffs().OrEmptyIfNull())
+            {
+                foreach (var onBefore in buff.OnBefore.OrEmptyIfNull())
+                {
+                    ResolveEvent(new BuffTriggeredEvent(combatParticipantTargetEvent, onBeforeEvent: onBefore, onAfterEvent: null, buff, stackSize));
+                }
+            }
+        }
+
+        private void TriggerOnAfterBuffEffects(IBattleEvent battleEvent)
+        {
+            // If out event is targeted against combat participants, trigger their on before buffs
+            if (battleEvent is not IBattleEvent<ICombatParticipant> { Target: not null } combatParticipantTargetEvent)
+            {
+                return;
+            }
+
+            foreach (var (stackSize, buff) in combatParticipantTargetEvent.Target.GetBuffs().OrEmptyIfNull())
+            {
+                foreach (var onAfter in buff.OnAfter.OrEmptyIfNull())
+                {
+                    ResolveEvent(new BuffTriggeredEvent(combatParticipantTargetEvent, onBeforeEvent: null, onAfterEvent: onAfter, buff, stackSize));
+                }
+            }
+        }
+
+        public void AddEvent(IBattleEvent battleEvent)
+        {
+            battleEventQueue.Add(battleEvent);
+        }
+
+        public void AddEvents(params IBattleEvent[] battleEvents)
+        {
+            battleEventQueue.AddRange(battleEvents);
+        }
 
         public void SubscribeToEvent<T>(IEventSubscriber subscriber) where T : IBattleEvent
         {

@@ -1,6 +1,8 @@
 using System.Runtime.InteropServices;
 using Fight;
+using Fight.Engine;
 using Models;
+using Models.Cards;
 using Models.Characters;
 using Systems;
 using TMPro;
@@ -23,16 +25,17 @@ namespace Views
         private BattleEngine battleEngine;
 
         [Inject]
-        private void Construct(Character character, BattleEngine battleEngine)
+        private void Construct(ICombatParticipant combatParticipant, BattleEngine battleEngine)
         {
-            this.health = character.Health;
+            // TODO: Health stat
+            //this.health = combatParticipant.Health;
             this.battleEngine = battleEngine;
 
             UpdateHealthDisplay();
             health.HealthUpdated += OnHealthUpdated;
         }
 
-        public void PreviewCardEffects(CardModel cardModel)
+        public void PreviewCardEffects(Card card)
         {
 
         }

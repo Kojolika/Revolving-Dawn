@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Systems.Managers.Base;
+using Systems.Managers;
 using Tooling.Logging;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -14,35 +14,38 @@ namespace Systems.Managers
     public class AddressablesManager : IManager
     {
         private Dictionary<string, Dictionary<Type, UnityEngine.Object>> loadedAssets = new();
+
         public async UniTask LoadAssetsFromLabels(
-            List<AssetLabelReference> assetLabelReferences,
-            Func<bool> releaseCondition,
-            Action<UnityEngine.Object> onSuccess = null,
-            CancellationToken cancellationToken = default,
-            Action onFail = null)
+            List<AssetLabelReference>  assetLabelReferences,
+            Func<bool>                 releaseCondition,
+            Action<UnityEngine.Object> onSuccess         = null,
+            CancellationToken          cancellationToken = default,
+            Action                     onFail            = null)
         {
             var resourceLocationsHandle = Addressables.LoadResourceLocationsAsync(assetLabelReferences, Addressables.MergeMode.Union);
             await resourceLocationsHandle.Task;
 
             int resourceLocationCount = resourceLocationsHandle.Result.Count;
-            var loadTasks = new UniTask[resourceLocationCount];
+            var loadTasks             = new UniTask[resourceLocationCount];
             for (int i = 0; i < resourceLocationCount; i++)
             {
                 var resourceLocation = resourceLocationsHandle.Result[i];
                 loadTasks[i] = LoadAsset(resourceLocation, releaseCondition, onSuccess, cancellationToken);
             }
+
             await UniTask.WhenAll(loadTasks).SuppressCancellationThrow();
 
             Addressables.Release(resourceLocationsHandle);
         }
+
         private async UniTask LoadAsset(
-            IResourceLocation resourceLocation,
-            Func<bool> releaseCondition,
+            IResourceLocation          resourceLocation,
+            Func<bool>                 releaseCondition,
             Action<UnityEngine.Object> onSuccess,
-            CancellationToken cancellationToken,
-            Action onFail = null)
+            CancellationToken          cancellationToken,
+            Action                     onFail = null)
         {
-            var key = resourceLocation.PrimaryKey;
+            var key       = resourceLocation.PrimaryKey;
             var assetType = resourceLocation.ResourceType;
 
             if (loadedAssets.TryGetValue(key, out var assetDictionary) && assetDictionary.TryGetValue(assetType, out var asset))
@@ -60,6 +63,7 @@ namespace Systems.Managers
                     {
                         loadedAssets[key] = new();
                     }
+
                     loadedAssets[key][assetType] = opHandle.Result;
 
                     onSuccess?.Invoke(opHandle.Result);
@@ -72,9 +76,9 @@ namespace Systems.Managers
 
                     onFail?.Invoke();
                 }
-
             }
         }
+
         /// <summary>
         /// Load an asset defined in the addressable groups.
         /// </summary>
@@ -86,14 +90,14 @@ namespace Systems.Managers
         /// <returns>The loaded asset.</returns>
         public async UniTask<T> LoadGenericAsset<T>(
             AssetReferenceT<T> assetReference,
-            Func<bool> releaseCondition,
-            Action<T> onSuccess = null,
-            Action onFail = null,
-            CancellationToken cancellationToken = default
+            Func<bool>         releaseCondition,
+            Action<T>          onSuccess         = null,
+            Action             onFail            = null,
+            CancellationToken  cancellationToken = default
         ) where T : UnityEngine.Object
         {
             var locationsOpHandle = Addressables.LoadResourceLocationsAsync(assetReference, typeof(T));
-            var locations = await locationsOpHandle.Task;
+            var locations         = await locationsOpHandle.Task;
             if (locations.IsNullOrEmpty())
             {
                 onFail?.Invoke();
@@ -101,6 +105,7 @@ namespace Systems.Managers
                 Addressables.Release(locationsOpHandle);
                 return null;
             }
+
             var asset = await LoadGenericAsset(locations[0], releaseCondition, onSuccess, onFail, cancellationToken);
             Addressables.Release(locationsOpHandle);
             return asset;
@@ -119,8 +124,10 @@ namespace Systems.Managers
                 Addressables.Release(locationsOpHandle);
                 return null;
             }
+
             return LoadAssetInternalSync<T>(locations[0].PrimaryKey, releaseCondition, cancellationToken);
         }
+
         public T LoadGenericAssetSync<T>(string key, Func<bool> releaseCondition, CancellationToken cancellationToken = default)
             where T : UnityEngine.Object
         {
@@ -134,23 +141,24 @@ namespace Systems.Managers
                 Addressables.Release(locationsOpHandle);
                 return null;
             }
+
             return LoadAssetInternalSync<T>(locations[0].PrimaryKey, releaseCondition, cancellationToken);
         }
 
         public async UniTask<T> LoadGenericAsset<T>(
             IResourceLocation resourceLocation,
-            Func<bool> releaseCondition,
-            Action<T> onSuccess = null,
-            Action onFail = null,
+            Func<bool>        releaseCondition,
+            Action<T>         onSuccess         = null,
+            Action            onFail            = null,
             CancellationToken cancellationToken = default
         ) where T : UnityEngine.Object
             => await LoadAssetInternal(resourceLocation.PrimaryKey, releaseCondition, onSuccess, onFail, cancellationToken);
 
         private T LoadAssetInternalSync<T>(
-            string key,
-            Func<bool> releaseCondition,
-            CancellationToken cancellationToken = default
-        ) where T : UnityEngine.Object
+            string            key,
+            Func<bool>        releaseCondition,
+            CancellationToken cancellationToken = default)
+            where T : UnityEngine.Object
         {
             if (loadedAssets.TryGetValue(key, out var assetDictionary) && assetDictionary.TryGetValue(typeof(T), out var asset))
             {
@@ -160,13 +168,14 @@ namespace Systems.Managers
             var opHandle = Addressables.LoadAssetAsync<T>(key);
             return HandleAsyncOperationInternalSync<T>(opHandle, key, releaseCondition, cancellationToken);
         }
+
         private async UniTask<T> LoadAssetInternal<T>(
-            string key,
-            Func<bool> releaseCondition,
-            Action<T> onSuccess = null,
-            Action onFail = null,
-            CancellationToken cancellationToken = default
-        ) where T : UnityEngine.Object
+            string            key,
+            Func<bool>        releaseCondition,
+            Action<T>         onSuccess         = null,
+            Action            onFail            = null,
+            CancellationToken cancellationToken = default)
+            where T : UnityEngine.Object
         {
             if (loadedAssets.TryGetValue(key, out var assetDictionary) && assetDictionary.TryGetValue(typeof(T), out var asset))
             {
@@ -180,10 +189,10 @@ namespace Systems.Managers
 
         private T HandleAsyncOperationInternalSync<T>(
             AsyncOperationHandle opHandle,
-            string key,
-            Func<bool> releaseCondition,
-            CancellationToken cancellationToken = default
-            ) where T : UnityEngine.Object
+            string               key,
+            Func<bool>           releaseCondition,
+            CancellationToken    cancellationToken = default)
+            where T : UnityEngine.Object
         {
             opHandle.WaitForCompletion();
 
@@ -207,12 +216,12 @@ namespace Systems.Managers
 
         private async UniTask<T> HandleAsyncOperationInternal<T>(
             AsyncOperationHandle opHandle,
-            string key,
-            Func<bool> releaseCondition,
-            Action<T> onSuccess = null,
-            Action onFail = null,
-            CancellationToken cancellationToken = default
-            ) where T : UnityEngine.Object
+            string               key,
+            Func<bool>           releaseCondition,
+            Action<T>            onSuccess         = null,
+            Action               onFail            = null,
+            CancellationToken    cancellationToken = default)
+            where T : UnityEngine.Object
         {
             try
             {
@@ -222,6 +231,7 @@ namespace Systems.Managers
                 {
                     loadedAssets[key] = new();
                 }
+
                 loadedAssets[key][typeof(T)] = (T)opHandle.Result;
 
                 onSuccess?.Invoke((T)opHandle.Result);
@@ -238,12 +248,11 @@ namespace Systems.Managers
             return (T)opHandle.Result;
         }
 
-        async UniTask ReleaseWhen(
-            Func<bool> condition,
+        private async UniTask ReleaseWhen(
+            Func<bool>           condition,
             AsyncOperationHandle operationHandle,
-            string key,
-            CancellationToken cancellationToken
-        )
+            string               key,
+            CancellationToken    cancellationToken)
         {
             _ = await UniTask.WaitUntil(condition, cancellationToken: cancellationToken).SuppressCancellationThrow();
 

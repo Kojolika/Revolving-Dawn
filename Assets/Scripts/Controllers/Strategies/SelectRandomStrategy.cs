@@ -1,4 +1,5 @@
 using Controllers.Strategies;
+using Tooling.StaticData;
 
 namespace Models.Characters.Enemies.Strategies
 {

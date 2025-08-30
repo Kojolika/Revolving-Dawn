@@ -6,7 +6,6 @@ using Fight.Events;
 using Fight.Input;
 using Mana;
 using Models;
-using Models.Buffs;
 using Models.Characters;
 using Models.Characters.Player;
 using Models.Fight;
@@ -14,96 +13,95 @@ using Models.Map;
 using Settings;
 using Systems;
 using Systems.Managers;
+using Tooling.StaticData;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Views;
 using Zenject.Installers.Facades;
+using Card = Models.Cards.Card;
+using Enemy = Models.Characters.Enemy;
 
 namespace Zenject.Installers
 {
     public class FightInstaller : MonoInstaller<FightInstaller>
     {
-        [SerializeField] LevelView levelView;
-        [SerializeField] CardView cardView;
-        [SerializeField] PlayerView playerView;
-        [SerializeField] EnemyView enemyView;
-        [SerializeField] HealthView healthViewPrefab;
-        [SerializeField] PlayerHandView playerHandView;
-        [SerializeField] ManaPoolView manaPoolView;
-        [SerializeField] ManaView manaView;
-        [SerializeField] FightOverlay fightOverlayPrefab;
-        [SerializeField] InputActionAsset playerHandInput;
-        [SerializeField] PlayerHandViewSettings playerHandInputSettings;
-        [SerializeField] TargetingArrowView targetingArrowView;
+        [SerializeField] LevelView                            levelView;
+        [SerializeField] CardView                             cardView;
+        [SerializeField] PlayerView                           playerView;
+        [SerializeField] EnemyView                            enemyView;
+        [SerializeField] HealthView                           healthViewPrefab;
+        [SerializeField] PlayerHandView                       playerHandView;
+        [SerializeField] ManaPoolView                         manaPoolView;
+        [SerializeField] ManaView                             manaView;
+        [SerializeField] FightOverlay                         fightOverlayPrefab;
+        [SerializeField] InputActionAsset                     playerHandInput;
+        [SerializeField] PlayerHandViewSettings               playerHandInputSettings;
+        [SerializeField] TargetingArrowView                   targetingArrowView;
         [SerializeField] GameLoop.AddressableAssetLabelLoader addressableAssetLabelLoader;
-        [SerializeField] WorldUI worldUIPrefab;
-        [SerializeField] BuffsView buffsViewPrefab;
-        [SerializeField] BuffElement buffElementPrefab;
+        [SerializeField] WorldUI                              worldUIPrefab;
+        [SerializeField] BuffsView                            buffsViewPrefab;
+        [SerializeField] BuffElement                          buffElementPrefab;
 
 
         public override void InstallBindings()
         {
             Container.Bind<FightManager>()
-                .FromNew()
-                .AsSingle()
-                .NonLazy();
+                     .FromNew()
+                     .AsSingle()
+                     .NonLazy();
 
             Container.Bind<BattleEngine>()
-                .FromNew()
-                .AsSingle();
+                     .FromNew()
+                     .AsSingle();
 
             Container.Bind<BattleAnimationEngine>()
-                .FromNew()
-                .AsSingle();
+                     .FromNew()
+                     .AsSingle();
 
             Container.BindFactory<IBattleEvent, IBattleAnimation, IBattleAnimation.Factory>()
-                .FromFactory<IBattleAnimation.CustomFactory>();
+                     .FromFactory<IBattleAnimation.CustomFactory>();
 
             Container.Bind<Camera>()
-                .FromInstance(Camera.main);
+                     .FromInstance(Camera.main);
 
-            Container.BindFactory<CardModel, CardView, CardView.Factory>()
-                .FromComponentInNewPrefab(cardView)
-                .AsSingle();
+            Container.BindFactory<Card, CardView, CardView.Factory>()
+                     .FromComponentInNewPrefab(cardView)
+                     .AsSingle();
 
             Container.BindFactory<PlayerCharacter, PlayerView, PlayerView.Factory>()
-                .FromSubContainerResolve()
-                .ByNewContextPrefab<PlayerViewInstaller>(playerView)
-                .AsSingle();
+                     .FromSubContainerResolve()
+                     .ByNewContextPrefab<PlayerViewInstaller>(playerView)
+                     .AsSingle();
 
             Container.BindFactory<Enemy, EnemyView, EnemyView.Factory>()
-                .FromSubContainerResolve()
-                .ByNewContextPrefab<EnemyViewInstaller>(enemyView)
-                .AsSingle();
+                     .FromSubContainerResolve()
+                     .ByNewContextPrefab<EnemyViewInstaller>(enemyView)
+                     .AsSingle();
 
             Container.BindFactory<Models.Mana.ManaSODefinition, ManaView, ManaView.Factory>()
-                .FromComponentInNewPrefab(manaView)
-                .AsSingle();
+                     .FromComponentInNewPrefab(manaView)
+                     .AsSingle();
 
             Container.Bind<PlayerHandView>()
-                .FromComponentInNewPrefab(playerHandView)
-                .AsSingle();
+                     .FromComponentInNewPrefab(playerHandView)
+                     .AsSingle();
 
             Container.Bind<TargetingArrowView>()
-                .FromComponentInNewPrefab(targetingArrowView)
-                .AsSingle()
-                .NonLazy();
+                     .FromComponentInNewPrefab(targetingArrowView)
+                     .AsSingle()
+                     .NonLazy();
 
             Container.Bind<LevelView>()
-                .FromComponentInNewPrefab(levelView)
-                .AsSingle()
-                .NonLazy();
-
-            Container.Bind<PlayerHandController>()
-                .AsSingle();
+                     .FromComponentInNewPrefab(levelView)
+                     .AsSingle()
+                     .NonLazy();
 
             Container.Bind<FightOverlay>()
-                .FromComponentInNewPrefab(fightOverlayPrefab)
-                .AsSingle();
+                     .FromComponentInNewPrefab(fightOverlayPrefab)
+                     .AsSingle();
 
             InstallCurrentFightData();
-            InstallBattleEventFactories();
             InstallPlayerHandInputs();
             InstallAddressableAssets();
             InstallWorldUI();
@@ -112,84 +110,67 @@ namespace Zenject.Installers
         private void InstallCurrentFightData()
         {
             Container.Bind<RunDefinition>()
-                .FromResolveGetter<PlayerDataManager>(
-                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun)
-                .AsSingle();
+                     .FromResolveGetter<PlayerDataManager>(
+                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun)
+                     .AsSingle();
 
             Container.Bind<PlayerCharacter>()
-                .FromResolveGetter<PlayerDataManager>(
-                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.PlayerCharacter)
-                .AsSingle();
+                     .FromResolveGetter<PlayerDataManager>(
+                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.PlayerCharacter)
+                     .AsSingle();
 
             Container.Bind<MapDefinition>()
-                .FromResolveGetter<PlayerDataManager>(
-                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentMap)
-                .AsSingle();
+                     .FromResolveGetter<PlayerDataManager>(
+                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentMap)
+                     .AsSingle();
 
             Container.Bind<FightDefinition>()
-                .FromResolveGetter<PlayerDataManager>(
-                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight)
-                .AsSingle();
+                     .FromResolveGetter<PlayerDataManager>(
+                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight)
+                     .AsSingle();
 
             Container.Bind<Team>()
-                .WithId(Team.PlayerTeamName)
-                .FromResolveGetter<PlayerDataManager>(
-                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.PlayerTeam)
-                .AsCached();
+                      /*.WithId(Team.PlayerTeamName)*/
+                     .FromResolveGetter<PlayerDataManager>(
+                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.PlayerTeam)
+                     .AsCached();
 
             Container.Bind<Team>()
-                .WithId(Team.EnemyTeamName)
-                .FromResolveGetter<PlayerDataManager>(
-                    playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam)
-                .AsCached();
-        }
-
-        private void InstallBattleEventFactories()
-        {
-            Container.BindFactory<PlayerCharacter, DrawCardEvent, DrawCardEvent.BattleEventFactoryT<DrawCardEvent>>()
-                .AsSingle();
-
-            Container.BindFactory<Character, TurnStartedEvent, TurnStartedEvent.BattleEventFactoryT<TurnStartedEvent>>()
-                .AsSingle();
-
-            Container
-                .BindFactory<CardView, List<IHealth>[], PlayCardEvent,
-                    PlayCardEvent.BattleEventFactoryST<PlayCardEvent>>()
-                .AsSingle();
-
-            Container.BindFactory<CardView, DiscardCardEvent, DiscardCardEvent.Factory>()
-                .AsSingle();
+                      /*.WithId(Team.EnemyTeamName)*/
+                     .FromResolveGetter<PlayerDataManager>(
+                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam)
+                     .AsCached();
         }
 
         private void InstallPlayerHandInputs()
         {
             Container.Bind<InputActionAsset>()
-                .FromInstance(playerHandInput);
+                     .FromInstance(playerHandInput);
 
             Container.Bind<PlayerHandViewSettings>()
-                .FromInstance(playerHandInputSettings);
+                     .FromInstance(playerHandInputSettings);
 
             Container.Bind<PlayerHandInputController>()
-                .AsSingle()
-                .NonLazy();
+                     .AsSingle()
+                     .NonLazy();
 
             Container.Bind<DefaultState>()
-                .AsSingle();
+                     .AsSingle();
 
             Container.BindFactory<CardView, HoveringState, HoveringState.Factory>()
-                .AsSingle();
+                     .AsSingle();
 
             Container.BindFactory<CardView, DraggingState, DraggingState.Factory>()
-                .AsSingle();
+                     .AsSingle();
 
             Container.BindFactory<CardView, TargetingState, TargetingState.Factory>()
-                .AsSingle();
+                     .AsSingle();
         }
 
         private void InstallAddressableAssets()
         {
             Container.BindInterfacesAndSelfTo<GameLoop.AddressableAssetLabelLoader>()
-                .FromInstance(addressableAssetLabelLoader);
+                     .FromInstance(addressableAssetLabelLoader);
 
             Container.QueueForInject(addressableAssetLabelLoader);
         }
@@ -197,16 +178,16 @@ namespace Zenject.Installers
         private void InstallWorldUI()
         {
             Container.Bind<WorldUI>()
-                .FromComponentInNewPrefab(worldUIPrefab)
-                .AsSingle()
-                .NonLazy();
+                     .FromComponentInNewPrefab(worldUIPrefab)
+                     .AsSingle()
+                     .NonLazy();
 
             Container.Bind<BuffElement>()
-                .FromInstance(buffElementPrefab)
-                .WhenInjectedInto<BuffElement.CustomFactory>();
+                     .FromInstance(buffElementPrefab)
+                     .WhenInjectedInto<BuffElement.CustomFactory>();
 
-            Container.BindFactory<Buff, BuffElement, BuffElement.Factory>()
-                .FromFactory<BuffElement.CustomFactory>();
+            /*Container.BindFactory<Buff, BuffElement, BuffElement.Factory>()
+                     .FromFactory<BuffElement.CustomFactory>();*/
         }
     }
 }

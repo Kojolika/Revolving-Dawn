@@ -6,7 +6,7 @@ using Models.Fight;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serialization;
-using Systems.Managers.Base;
+using Systems.Managers;
 using Tooling.Logging;
 using Zenject;
 using File = System.IO.File;

@@ -3,7 +3,14 @@ using UnityEngine.Assertions;
 using System.Collections.Generic;
 using Tooling.Logging;
 
-namespace Fight.Engine
+// THIS PROJECT HAS BEEN DECOMMISSIONED
+// Decided to not pursue bytecode to make it as flexible as I want would require a lot of custom tooling
+// And as a solo dev I don't need to have a designer friendly way to script cards... I can just code them myself
+// We lose out on the ability to DLC card effects, but I don't think that is a big problem
+// Will keep this file here in case a good reason ever comes up to restore this project
+
+
+/*namespace Fight.Engine
 {
     public enum InstructionType
     {
@@ -384,4 +391,4 @@ namespace Fight.Engine
             return StackValue.ValueType.Null;
         }
     }
-}
+}*/

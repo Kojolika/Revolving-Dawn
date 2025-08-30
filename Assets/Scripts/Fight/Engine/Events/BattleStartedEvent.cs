@@ -1,9 +1,15 @@
 namespace Fight.Events
 {
-    public class BattleStartedEvent : BattleEvent
+    public class BattleStartedEvent : IBattleEvent
     {
-        public override void Execute(BattleEngine battleEngine) { }
-        public override string Log() => "Fight started!";
-        public override void Undo() { }
+        public string Log() => "Fight started!";
+
+        public void Execute(Context fightContext)
+        {
+        }
+
+        public void Undo()
+        {
+        }
     }
 }

@@ -1,18 +1,23 @@
-using Models.Characters;
+using Fight.Engine;
 
 namespace Fight.Events
 {
-    public class TurnEndedEvent : BattleEvent<Character>
+    public class TurnEndedEvent : BattleEvent<ICombatParticipant>
     {
-        public TurnEndedEvent(Character target) : base(target) { }
+        public TurnEndedEvent(ICombatParticipant target) : base(target)
+        {
+        }
 
-        public override void Execute(Character target, BattleEngine battleEngine) { }
-
-        public override string Log() => $"{Target.Name}'s turn ended!";
+        public override void Execute(Context fightContext)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public override void Undo()
         {
             throw new System.NotImplementedException();
         }
+
+        public override string Log() => $"{Target.Name}'s turn ended!";
     }
 }

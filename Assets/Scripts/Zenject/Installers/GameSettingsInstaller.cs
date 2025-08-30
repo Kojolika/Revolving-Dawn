@@ -1,5 +1,3 @@
-using Data;
-using Models.Player;
 using Settings;
 using UnityEngine;
 using Zenject;
@@ -8,23 +6,19 @@ using Zenject;
 public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInstaller>
 {
     #region Settings
-    [SerializeField] MapSettings mapSettings;
-    [SerializeField] CardSettings cardSettings;
-    [SerializeField] CharacterSettings characterSettings;
-    #endregion
 
-    #region Asset Data
-    [SerializeField] private StaticDataReference<PlayerClassSODefinition> playerClassDefinitions;
+    [SerializeField] MapSettings       mapSettings;
+    [SerializeField] CardSettings      cardSettings;
+    [SerializeField] CharacterSettings characterSettings;
 
     #endregion
 
     public override void InstallBindings()
     {
         Container.BindInstances(
-            mapSettings, 
+            mapSettings,
             cardSettings,
-            characterSettings,
-            playerClassDefinitions
+            characterSettings
         );
     }
 }

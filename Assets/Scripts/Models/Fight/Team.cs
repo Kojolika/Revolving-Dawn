@@ -1,29 +1,41 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Models.Characters;
+using Fight.Engine;
 
 namespace Models.Fight
 {
+    public enum TeamType
+    {
+        None,
+        Player,
+        Enemy
+    }
+
     [Serializable]
     public class Team
     {
-        public readonly string Name;
-        public readonly List<Character> Members;
+        public readonly TeamType                 Type;
+        public readonly List<ICombatParticipant> Members;
 
-        public const string PlayerTeamName = "Player";
-        public const string EnemyTeamName = "Enemy";
-
-        public Team(List<Character> members, string name)
+        public Team(List<ICombatParticipant> members, TeamType type)
         {
             Members = members;
-            Name = name;
+            Type    = type;
         }
 
-        public void AddMember(Character character) => Members.Add(character);
+        public void AddMember(ICombatParticipant character)
+        {
+            Members.Add(character);
+        }
 
-        public void RemoveMember(Character character) => Members.Remove(character);
+        public void RemoveMember(ICombatParticipant character)
+        {
+            Members.Remove(character);
+        }
 
-        public bool IsPlayerTeam() => Name == PlayerTeamName;
+        public bool IsPlayerTeam()
+        {
+            return Type == TeamType.Player;
+        }
     }
 }

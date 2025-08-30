@@ -1,36 +1,62 @@
 using System;
-using Newtonsoft.Json;
+using System.Collections.Generic;
+using Controllers.Strategies;
+using Fight.Engine;
+using Models.Fight;
+using Tooling.StaticData;
 
 namespace Models.Characters
 {
-    public class Enemy : Character
+    public class Enemy : IMoveParticipant
     {
-        [JsonProperty("model")]
         public EnemyModel Model { get; private set; }
 
-        [JsonProperty("next_move")]
         public EnemyMove NextMove { get; private set; }
 
-        public event Action<EnemyMove> CurrentMoveUpdated;
-
-        [JsonConstructor]
-        public Enemy()
-        {
-
-        }
+        // TODO: SET REF
+        public ISelectMoveStrategy SelectMoveStrategy { get; private set; }
 
         public void SelectMove()
         {
             NextMove = Model.SelectMoveStrategy.SelectMove(Model);
-            CurrentMoveUpdated?.Invoke(NextMove);
         }
 
-        public Enemy(EnemySODefinition enemyDefinition, Health health)
+        public string   Name { get; }
+        public TeamType Team { get; }
+
+        public bool HasStat(Stat stat)
         {
-            Name = enemyDefinition.name;
-            Model = enemyDefinition.Representation;
-            Health = health;
-            Buffs = new();
+            throw new NotImplementedException();
+        }
+
+        public float GetStat(Stat stat)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStat(Stat stat, float value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetBuff(Buff buff)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetBuff(Buff buff, int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<(int stackSize, Buff)> GetBuffs()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<(float amount, Stat)> GetStats()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Models.Cards;
 using Settings;
 using Systems.Managers;
 using TMPro;
@@ -11,45 +12,38 @@ namespace Views
     {
         [SerializeField] SpriteRenderer cardBorderRenderer;
         [SerializeField] SpriteRenderer cardArtRenderer;
-        [SerializeField] TextMeshPro nameText;
-        [SerializeField] TextMeshPro descriptionText;
-        [SerializeField] Collider cardCollider;
+        [SerializeField] TextMeshPro    nameText;
+        [SerializeField] TextMeshPro    descriptionText;
+        [SerializeField] Collider       cardCollider;
 
-        public Models.CardModel Model { get; private set; }
+        public Card Model { get; private set; }
 
-        public Collider Collider => cardCollider;
+        public Collider       Collider           => cardCollider;
         public SpriteRenderer CardBorderRenderer => cardBorderRenderer;
-        public Vector3 DefaultScale { get; private set; }
+        public Vector3        DefaultScale       { get; private set; }
 
         [Inject]
-        private void Construct(AddressablesManager addressablesManager, Models.CardModel cardModel)
+        private void Construct(AddressablesManager addressablesManager, LocalizationManager localizationManager, Card cardModel)
         {
-            this.Model = cardModel;
-            nameText.SetText(cardModel.Name);
+            Model = cardModel;
+            nameText.SetText(cardModel.StaticData.Name);
 
-            var description = "";
-            foreach (var cardEffect in cardModel.PlayEffects)
-            {
-                description += cardEffect.Description;
-            }
-            descriptionText.SetText(description);
+            descriptionText.SetText(localizationManager.Translate(cardModel.StaticData.Description));
 
             var cancellationToken = this.GetCancellationTokenOnDestroy();
-            _ = addressablesManager.LoadGenericAsset(cardModel.PlayerClass,
-                () => cancellationToken.IsCancellationRequested,
-                asset =>
-                {
-                    _ = addressablesManager.LoadGenericAsset(asset.CardBorderReference,
-                        () => cancellationToken.IsCancellationRequested,
-                        asset => cardBorderRenderer.sprite = asset
-                    );
-                }
-            );
 
-            _ = addressablesManager.LoadGenericAsset(cardModel.ArtReference,
+
+            _ = addressablesManager.LoadGenericAsset(
+                assetReference: cardModel.StaticData.PlayerClass.CardBorderArt,
+                releaseCondition: () => cancellationToken.IsCancellationRequested,
+                onSuccess: asset => cardBorderRenderer.sprite = asset,
+                cancellationToken: cancellationToken);
+
+
+            _ = addressablesManager.LoadGenericAsset(
+                cardModel.StaticData.Art,
                 () => cancellationToken.IsCancellationRequested,
-                asset => cardArtRenderer.sprite = asset
-            );
+                asset => cardArtRenderer.sprite = asset, cancellationToken: cancellationToken);
         }
 
         private void Awake()
@@ -57,9 +51,8 @@ namespace Views
             DefaultScale = transform.localScale;
         }
 
-        public class Factory : PlaceholderFactory<Models.CardModel, CardView>
+        public class Factory : PlaceholderFactory<Card, CardView>
         {
-
         }
     }
 }

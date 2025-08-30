@@ -2,14 +2,9 @@ using UnityEngine;
 
 namespace Views.Common
 {
-    public interface IGameObject
+    public interface IView<in T>
     {
-        // ReSharper disable once InconsistentNaming
+        void       Populate(T data);
         GameObject gameObject { get; }
-    }
-
-    public interface IView<T> : IGameObject
-    {
-        void Populate(T data);
     }
 }

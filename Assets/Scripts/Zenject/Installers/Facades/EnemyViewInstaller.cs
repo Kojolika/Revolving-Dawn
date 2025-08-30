@@ -1,3 +1,4 @@
+using Fight.Engine;
 using Models.Characters;
 using UnityEngine;
 using Views;
@@ -26,7 +27,7 @@ namespace Zenject.Installers.Facades
                 .FromInstance(enemy)
                 .AsSingle();
 
-            Container.Bind<Character>()
+            Container.Bind<ICombatParticipant>()
                 .FromInstance(enemy)
                 .AsSingle();
 

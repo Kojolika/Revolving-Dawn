@@ -1,25 +1,37 @@
-using Models.Buffs;
+using Fight.Engine;
+using Fight.Events.SubEvents;
+using Tooling.StaticData;
+using UnityEngine.Assertions;
 
 namespace Fight.Events
 {
-    public class ApplyBuffEvent : BattleEvent<IBuffable>
+    /// <summary>
+    /// Event that occurs when a combat participant applies a buff to another
+    /// Separate from <see cref="BuffedEvent"/> as buffs can trigger off of this.
+    /// </summary>
+    public class ApplyBuffEvent : BattleEvent<ICombatParticipant, ICombatParticipant>
     {
-        Buff Buff { get; set; }
-        public ApplyBuffEvent(IBuffable target, Buff buff) : base(target)
+        public          int  Amount;
+        public readonly Buff Buff;
+
+        public ApplyBuffEvent(ICombatParticipant target, ICombatParticipant source, Buff buff, int amount) : base(target, source)
         {
-            Buff = buff;
+            Assert.IsTrue(amount > 0, "Must have a positive value when adding a buff to a participant");
+
+            Amount = amount;
+            Buff   = buff;
         }
 
-        public override void Execute(IBuffable target, BattleEngine battleEngine)
+        public override void Execute(Context fightContext)
         {
-            target.Buffs.Add(Buff);
+            fightContext.BattleEngine.AddEvent(new BuffedEvent(Target, Buff, Amount));
         }
-
-        public override string Log() => $"Applied {Buff.Definition.Name} to {Target}";
 
         public override void Undo()
         {
-            Target.Buffs.Remove(Buff);
+            throw new System.NotImplementedException();
         }
+
+        public override string Log() => $"Applied {Buff.Name} to {Target.Name}";
     }
 }

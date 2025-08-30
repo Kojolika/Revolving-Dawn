@@ -1,4 +1,7 @@
 {
   "IsStackable": true,
-  "MaxStackSize": 0
+  "MaxStackSize": 0,
+  "IsVisible": false,
+  "OnBefore": null,
+  "OnAfter": null
 }

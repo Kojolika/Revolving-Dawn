@@ -1,39 +1,92 @@
 using System.Collections.Generic;
-using System.Linq;
-using Models.Buffs;
-using Models.Player;
+using Fight.Engine;
+using Models.Fight;
 using Newtonsoft.Json;
 using Settings;
-using UnityEngine.AddressableAssets;
+using Tooling.StaticData;
+using Card = Models.Cards.Card;
 
 namespace Models.Characters
 {
     [System.Serializable]
-    public class PlayerCharacter : Character, IInventory
+    public class PlayerCharacter : IInventory, ICardDeckParticipant
     {
-        public PlayerClassModel Class             { get; private set; }
-        public Player.Decks     Decks             { get; private set; }
-        public List<IItem>      Inventory         { get; private set; }
-        public ulong            Gold              { get; private set; }
-        public int              HandSize          { get; private set; }
-        public int              DrawAmount        { get; private set; }
-        public int              UsableManaPerTurn { get; private set; }
+        public PlayerClass Class     { get; private set; }
+        public List<IItem> Inventory { get; private set; }
+        public ulong       Gold      { get; private set; }
+
+        // TODO: Convert to stats?
+        public int HandSize          { get; private set; }
+        public int DrawAmount        { get; private set; }
+        public int UsableManaPerTurn { get; private set; }
 
         [JsonConstructor]
         public PlayerCharacter()
         {
         }
 
-        public PlayerCharacter(PlayerClassSODefinition playerClassDefinition, CharacterSettings characterSettings)
+        public PlayerCharacter(PlayerClass playerClass, CharacterSettings characterSettings)
         {
-            Class             = playerClassDefinition.Representation;
-            Name              = playerClassDefinition.name;
-            Decks             = new Player.Decks(playerClassDefinition.StartingDeck.Select(cardSO => cardSO.Representation).ToList());
-            Health            = new(playerClassDefinition.HealthDefinition.MaxHealth, playerClassDefinition.HealthDefinition.MaxHealth);
+            Class             = playerClass;
+            Name              = playerClass.Name;
             HandSize          = characterSettings.HandSize;
             DrawAmount        = characterSettings.DrawAmount;
             UsableManaPerTurn = characterSettings.UsableManaPerTurn;
-            Buffs             = new();
+            
+            // TODO: Set initial buffs
+            //Buffs             = new();
         }
+
+        #region ICombatParticipant
+
+        public string   Name { get; }
+        public TeamType Team { get; }
+
+        public bool HasStat(Stat stat)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public float GetStat(Stat stat)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetStat(Stat stat, float value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int GetBuff(Buff buff)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetBuff(Buff buff, int value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public List<(int stackSize, Buff)> GetBuffs()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public List<(float amount, Stat)> GetStats()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+
+        #region ICardDeckParticipant
+
+        public List<Card> Deck    { get; }
+        public List<Card> Draw    { get; }
+        public List<Card> Hand    { get; }
+        public List<Card> Discard { get; }
+        public List<Card> Lost    { get; }
+
+        #endregion
     }
 }

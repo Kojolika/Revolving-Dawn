@@ -2,10 +2,9 @@
 using Cysharp.Threading.Tasks;
 using Models.Fight;
 using Models.Map;
-using Models.Player;
 using Settings;
-using Systems.Managers.Base;
 using Tooling.Logging;
+using Tooling.StaticData;
 
 namespace Systems.Managers
 {
@@ -13,18 +12,18 @@ namespace Systems.Managers
     {
         public PlayerDefinition CurrentPlayerDefinition { get; private set; }
 
-        private SaveManager saveManager;
-        private MapSettings mapSettings;
-        private CharacterSettings characterSettings;
+        private SaveManager           saveManager;
+        private MapSettings           mapSettings;
+        private CharacterSettings     characterSettings;
         private MapDefinition.Factory mapFactory;
 
         [Zenject.Inject]
         async void Construct(SaveManager saveManager, MapSettings mapSettings, CharacterSettings characterSettings, MapDefinition.Factory mapFactory)
         {
-            this.saveManager = saveManager;
-            this.mapSettings = mapSettings;
+            this.saveManager       = saveManager;
+            this.mapSettings       = mapSettings;
             this.characterSettings = characterSettings;
-            this.mapFactory = mapFactory;
+            this.mapFactory        = mapFactory;
 
             CurrentPlayerDefinition = await saveManager.TryLoadSavedData();
 
@@ -57,13 +56,13 @@ namespace Systems.Managers
             await saveManager.Save(CurrentPlayerDefinition);
         }
 
-        public async UniTask StartNewRun(PlayerClassSODefinition playerClass)
+        public async UniTask StartNewRun(PlayerClass playerClass)
         {
             var newMap = mapFactory.Create(mapSettings);
             CurrentPlayerDefinition.CurrentRun = new RunDefinition()
             {
-                Name = "Test",
-                CurrentMap = newMap,
+                Name            = "Test",
+                CurrentMap      = newMap,
                 PlayerCharacter = new(playerClass, characterSettings)
             };
 
