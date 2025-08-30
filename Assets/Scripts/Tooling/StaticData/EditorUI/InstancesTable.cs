@@ -12,9 +12,10 @@ namespace Tooling.StaticData.EditorUI
     /// </summary>
     public class InstancesTable : VisualElement
     {
-        private readonly ListView listView;
-        private readonly Type     selectedType;
-        private readonly bool     allowEditing;
+        private          ListView           listView;
+        private readonly Type               selectedType;
+        private readonly bool               allowEditing;
+        private readonly Action<StaticData> onSelectionChanged;
 
         private const float RowPadding = 4f;
 
@@ -22,8 +23,25 @@ namespace Tooling.StaticData.EditorUI
 
         public InstancesTable(Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
         {
-            this.selectedType = selectedType;
-            this.allowEditing = allowEditing;
+            this.selectedType       = selectedType;
+            this.allowEditing       = allowEditing;
+            this.onSelectionChanged = onSelectionChanged;
+
+            StaticDatabase.Instance.InstancesUpdated    += OnInstancesUpdated;
+            StaticDatabase.Instance.ValidationCompleted += OnValidationCompleted;
+
+            RefreshView();
+        }
+
+        ~InstancesTable()
+        {
+            StaticDatabase.Instance.InstancesUpdated    -= OnInstancesUpdated;
+            StaticDatabase.Instance.ValidationCompleted -= OnValidationCompleted;
+        }
+
+        private void RefreshView()
+        {
+            Clear();
 
             var instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
             if (!allowEditing)
@@ -48,10 +66,11 @@ namespace Tooling.StaticData.EditorUI
                     }
 
                     var instance = instances[index];
-                    (item as InstanceRow)!.BindItem(instance,
-                                                     instance != null && (validationErrors?.TryGetValue(selectedType, out var instanceValidationDict) ?? false)
-                                                         ? instanceValidationDict.GetValueOrDefault(instance)
-                                                         : null
+                    (item as InstanceRow)!.BindItem(
+                        instance,
+                        instance != null && (validationErrors?.TryGetValue(selectedType, out var instanceValidationDict) ?? false)
+                            ? instanceValidationDict.GetValueOrDefault(instance)
+                            : null
                     );
                 },
                 unbindItem                    = (item, _) => (item as InstanceRow)!.UnBindItem(),
@@ -67,6 +86,7 @@ namespace Tooling.StaticData.EditorUI
             {
                 foreach (var index in ints)
                 {
+                    MyLogger.Log($"Index added: {index}, instances count: {instances.Count}");
                     // Item is added as null, create a new instance of that type and set the name to a unique name
                     instances[index] = Activator.CreateInstance(selectedType) as StaticData;
                     string newInstanceName = StaticDatabase.Instance.GetStaticDataInstance(selectedType, $"{selectedType.Name}_{index}") == null
@@ -80,19 +100,11 @@ namespace Tooling.StaticData.EditorUI
             };
 
             // listview already removes the element, just update our StaticData dict
-            listView.itemsRemoved += _ => StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
-
+            listView.itemsRemoved     += _ => StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
             listView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.FirstOrDefault() as StaticData);
-
-            StaticDatabase.Instance.OnValidationCompleted += OnValidationCompleted;
 
             Add(CreateInstanceHeader(selectedType));
             Add(listView);
-        }
-
-        ~InstancesTable()
-        {
-            StaticDatabase.Instance.OnValidationCompleted -= OnValidationCompleted;
         }
 
         public static Label CreateInstanceColumn(string labelText) => new(labelText)
@@ -149,16 +161,20 @@ namespace Tooling.StaticData.EditorUI
             return header;
         }
 
-        public void Refresh()
-        {
-            listView.itemsSource = StaticDatabase.Instance.GetInstancesForType(selectedType);
-            listView.Rebuild();
-        }
-
         private void OnValidationCompleted()
         {
             validationErrors = StaticDatabase.Instance.validationErrors;
             listView.RefreshItems();
+        }
+
+        private void OnInstancesUpdated(Type type)
+        {
+            if (type != selectedType)
+            {
+                return;
+            }
+
+            RefreshView();
         }
 
         /// <summary>
@@ -166,25 +182,26 @@ namespace Tooling.StaticData.EditorUI
         /// </summary>
         public class Selector : UnityEditor.EditorWindow
         {
-            private bool                    isInitialized;
-            private Type                    staticDataType;
-            public event Action<StaticData> onSelectionChanged;
+            private bool               isInitialized;
+            private Type               staticDataType;
+            private Action<StaticData> onSelectionChanged;
 
-            public static Selector Open(Type staticDataType)
+            public static Selector Open(Type staticDataType, Action<StaticData> onSelectionChanged)
             {
                 var instanceSelector = GetWindow<Selector>();
-                instanceSelector.Initialize(staticDataType);
+                instanceSelector.staticDataType     = staticDataType;
+                instanceSelector.onSelectionChanged = onSelectionChanged;
+
+                instanceSelector.Initialize();
                 instanceSelector.Show(true);
                 instanceSelector.Focus();
 
                 return instanceSelector;
             }
 
-            private void Initialize(Type staticDataType)
+            private void Initialize()
             {
-                this.staticDataType = staticDataType;
-                isInitialized       = true;
-
+                isInitialized = true;
                 CreateGUI();
             }
 
@@ -196,14 +213,16 @@ namespace Tooling.StaticData.EditorUI
                     return;
                 }
 
-                var instancesView = new InstancesTable(staticDataType, false, onSelectionChanged);
-                instancesView.listView.selectionChanged += _ =>
+                // Append closing this window to the on select action 
+                onSelectionChanged += _ =>
                 {
                     Close();
                     var instanceEditorWindow = GetWindow<EditorWindow.InstanceEditorWindow>();
                     instanceEditorWindow.Show();
                     instanceEditorWindow.Focus();
                 };
+
+                var instancesView = new InstancesTable(staticDataType, false, onSelectionChanged);
                 rootVisualElement.Add(instancesView);
             }
         }

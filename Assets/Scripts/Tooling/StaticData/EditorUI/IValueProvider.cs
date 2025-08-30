@@ -44,7 +44,7 @@ namespace Tooling.StaticData
 
         public void SetValue(object value)
         {
-            setValueFunc.Invoke((T)value);
+            setValueFunc?.Invoke((T)value);
         }
 
         public object GetValue()

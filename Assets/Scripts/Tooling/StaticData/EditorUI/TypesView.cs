@@ -33,7 +33,7 @@ namespace Tooling.StaticData
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All
             };
 
-            StaticDatabase.Instance.OnValidationCompleted += OnValidationCompleted;
+            StaticDatabase.Instance.ValidationCompleted += ValidationCompleted;
 
             validationErrors = StaticDatabase.Instance.validationErrors;
 
@@ -42,10 +42,10 @@ namespace Tooling.StaticData
 
         ~TypesView()
         {
-            StaticDatabase.Instance.OnValidationCompleted -= OnValidationCompleted;
+            StaticDatabase.Instance.ValidationCompleted -= ValidationCompleted;
         }
 
-        private void OnValidationCompleted()
+        private void ValidationCompleted()
         {
             validationErrors = StaticDatabase.Instance.validationErrors;
             ListView.RefreshItems();

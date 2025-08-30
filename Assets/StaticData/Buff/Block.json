@@ -1,7 +1,8 @@
 {
   "IsStackable": true,
   "MaxStackSize": 0,
-  "IsVisible": false,
+  "IsInternal": false,
+  "Icon": null,
   "OnBefore": null,
   "OnAfter": null
 }

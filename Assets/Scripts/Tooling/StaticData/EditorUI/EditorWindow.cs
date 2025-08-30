@@ -8,6 +8,7 @@ using UnityEditor.Callbacks;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Utils.Extensions;
 
 namespace Tooling.StaticData.EditorUI
 {
@@ -38,11 +39,6 @@ namespace Tooling.StaticData.EditorUI
         /// <see cref="ListView"/> wrapper of all our of different static data types.
         /// </summary>
         private TypesView typesListView;
-
-        /// <summary>
-        /// <see cref="ListView"/> of static data instances of the currently selected static data type.
-        /// </summary>
-        private InstancesTable instancesTable;
 
         public static readonly StyleColor BorderColor = new(Color.gray);
         public static readonly StyleFloat BorderWidth = new(0.5f);
@@ -89,7 +85,7 @@ namespace Tooling.StaticData.EditorUI
             typesListView.ListView.selectionChanged += _ =>
             {
                 selectedIndex = typesListView.ListView.selectedIndex;
-                selectedType = StaticDatabase.Instance.GetAllStaticDataTypes()[selectedIndex];
+                selectedType  = StaticDatabase.Instance.GetAllStaticDataTypes()[selectedIndex];
 
                 rightPanel.Clear();
 
@@ -100,7 +96,7 @@ namespace Tooling.StaticData.EditorUI
 
                 // TODO: figure out why split view is being weird
                 var validatorErrorView = new ValidatorErrorView(selectedType);
-                instancesTable = new InstancesTable(selectedType, true, validatorErrorView.OnStaticDataSelected);
+                var instancesTable = new InstancesTable(selectedType, true, validatorErrorView.OnStaticDataSelected);
 
                 rightPanel.Add(instancesTable);
                 rightPanel.Add(validatorErrorView);
@@ -109,7 +105,7 @@ namespace Tooling.StaticData.EditorUI
             var twoPanelSplit = new TwoPaneSplitView
             {
                 fixedPaneInitialDimension = 140,
-                orientation = TwoPaneSplitViewOrientation.Horizontal
+                orientation               = TwoPaneSplitViewOrientation.Horizontal
             };
             twoPanelSplit.Add(typesListView);
             twoPanelSplit.Add(rightPanel);
@@ -184,9 +180,9 @@ namespace Tooling.StaticData.EditorUI
         {
             var twoPaneSplitView = new TwoPaneSplitView
             {
-                fixedPaneIndex = 1,
+                fixedPaneIndex            = 1,
                 fixedPaneInitialDimension = 100,
-                orientation = TwoPaneSplitViewOrientation.Vertical
+                orientation               = TwoPaneSplitViewOrientation.Vertical
             };
 
             // temp until we populate a type
@@ -198,11 +194,11 @@ namespace Tooling.StaticData.EditorUI
 
         public class InstanceEditorWindow : UnityEditor.EditorWindow
         {
-            private Type selectedType;
-            private StaticData editingObj;
-            private EditorWindow openedEditorWindow;
-            private bool isInitialized;
-            private string nameOnOpening;
+            private          Type         selectedType;
+            private          StaticData   editingObj;
+            private          EditorWindow openedEditorWindow;
+            private          bool         isInitialized;
+            private          string       nameOnOpening;
             private readonly List<Action> disposeActions = new();
 
             public Context staticDataContext { get; private set; }
@@ -216,7 +212,7 @@ namespace Tooling.StaticData.EditorUI
             {
                 rootVisualElement.Clear();
                 this.selectedType = selectedType;
-                this.editingObj = editingObj;
+                this.editingObj   = editingObj;
 
                 staticDataContext = new Context(editingObj);
 
@@ -241,7 +237,7 @@ namespace Tooling.StaticData.EditorUI
 
                 var root = rootVisualElement;
                 saveChangesMessage = "You have unsaved changes. Do you want to save these changes?";
-                titleContent = new GUIContent($"Edit {editingObj?.Name}");
+                titleContent       = new GUIContent($"Edit {editingObj?.Name}");
 
                 if (DrawerManager.Instance.StaticDataDrawers.TryGetValue(selectedType, out var customDrawer))
                 {
@@ -308,19 +304,22 @@ namespace Tooling.StaticData.EditorUI
                 {
                     instanceEditorWindow.Initialize(instanceEditorWindow.editingObj, instanceEditorWindow.selectedType);
                 }
-                
             }
 
             public override void SaveChanges()
             {
-                if (StaticDatabase.Instance.GetStaticDataInstance(selectedType, nameOnOpening) is not null)
+                if (HasNameChanged(nameOnOpening, editingObj))
                 {
                     StaticDatabase.Instance.Remove(selectedType, nameOnOpening);
                 }
 
-                StaticDatabase.Instance.Add(editingObj);
-                openedEditorWindow.instancesTable.Refresh();
+                StaticDatabase.Instance.AddOrUpdate(editingObj);
                 base.SaveChanges();
+            }
+
+            private static bool HasNameChanged(string nameOnOpening, StaticData editingObj)
+            {
+                return editingObj.Name != nameOnOpening;
             }
         }
     }

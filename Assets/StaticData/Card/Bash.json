@@ -2,11 +2,19 @@
   "Art": null,
   "Manas": null,
   "PlayerClass": null,
-  "Upgrade": null,
+  "Upgrade": {
+    "$type": "Tooling.StaticData.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Reference": {
+      "Type": "Tooling.StaticData.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "InstanceName": "Bash"
+    }
+  },
   "Downgrade": null,
+  "Description": null,
   "IsLostOnPlay": false,
   "TargetingOptions": null,
   "CardLogic": {
-    "$type": "Models.Cards.Warrior.Bash, Assembly-CSharp"
+    "$type": "Models.Cards.Warrior.Bash, Assembly-CSharp",
+    "StaticData": null
   }
 }

@@ -52,9 +52,9 @@ namespace Tooling.StaticData.EditorUI
 
         public GeneralField(Type type, IValueProvider valueProvider, Options options = default)
         {
-            this.Type = type;
+            this.Type          = type;
             this.valueProvider = valueProvider;
-            this.options = options;
+            this.options       = options;
 
             AddToClassList(Styles.RecursiveFieldContainer);
 
@@ -111,10 +111,6 @@ namespace Tooling.StaticData.EditorUI
             {
                 editorForFieldType = CreateStaticDataField(type);
             }
-            else if (typeof(Enum).IsAssignableFrom(type))
-            {
-                editorForFieldType = CreateEnumField(type);
-            }
             else if (type.IsInterface || type.IsAbstract)
             {
                 editorForFieldType = CreateAbstractTypeSelection(type);
@@ -154,7 +150,7 @@ namespace Tooling.StaticData.EditorUI
                 return type.GetMember(valueName)
                            .First()
                            .GetCustomAttribute<DisplayNameAttribute>() is var displayNameAttribute
-                       && !string.IsNullOrEmpty(displayNameAttribute?.Name)
+                    && !string.IsNullOrEmpty(displayNameAttribute?.Name)
                     ? displayNameAttribute.Name
                     : valueName;
             }
@@ -187,25 +183,25 @@ namespace Tooling.StaticData.EditorUI
                     elementType,
                     new ListValueProvider(itemsSource.Count - 1, itemsSource),
                     new Options { IsArrayElement = true }),
-                bindItem = (item, index) => ((GeneralField)item).BindArrayIndex(index),
-                unbindItem = (item, _) => ((GeneralField)item).BindArrayIndex(-1),
+                bindItem                      = (item, index) => ((GeneralField)item).BindArrayIndex(index),
+                unbindItem                    = (item, _) => ((GeneralField)item).BindArrayIndex(-1),
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
-                reorderable = true,
-                showBorder = true,
-                virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-                reorderMode = ListViewReorderMode.Animated,
-                showFoldoutHeader = true,
-                headerTitle = valueProvider?.ValueName ?? string.Empty,
+                reorderable                   = true,
+                showBorder                    = true,
+                virtualizationMethod          = CollectionVirtualizationMethod.DynamicHeight,
+                reorderMode                   = ListViewReorderMode.Animated,
+                showFoldoutHeader             = true,
+                headerTitle                   = valueProvider?.ValueName ?? string.Empty,
                 // TODO: use stanadard add remove
-                showAddRemoveFooter = false,
-                showBoundCollectionSize = false,
+                showAddRemoveFooter        = false,
+                showBoundCollectionSize    = false,
                 horizontalScrollingEnabled = true
             };
 
-            listView.itemsAdded += _ => OnValueChanged?.Invoke(itemsSource);
-            listView.itemsRemoved += _ => OnValueChanged?.Invoke(itemsSource);
+            listView.itemsAdded         += _ => OnValueChanged?.Invoke(itemsSource);
+            listView.itemsRemoved       += _ => OnValueChanged?.Invoke(itemsSource);
             listView.itemsSourceChanged += () => OnValueChanged?.Invoke(itemsSource);
-            listView.itemIndexChanged += (_, _) => OnValueChanged?.Invoke(itemsSource);
+            listView.itemIndexChanged   += (_, _) => OnValueChanged?.Invoke(itemsSource);
 
             root.Add(listView);
 
@@ -218,34 +214,34 @@ namespace Tooling.StaticData.EditorUI
             buttonContainer.AddToClassList(Styles.ListViewButtonContainer);
 
             buttonContainer.Add(new Button(() =>
-            {
-                itemsSource.Add(GetDefaultValue(elementType));
-                SetValue(itemsSource);
-                listView.RefreshItems();
-            })
-            {
-                text = "+"
-            });
+                                {
+                                    itemsSource.Add(GetDefaultValue(elementType));
+                                    SetValue(itemsSource);
+                                    listView.RefreshItems();
+                                })
+                                {
+                                    text = "+"
+                                });
 
             buttonContainer.Add(new Button(() =>
-            {
-                var selectedIndex = listView.selectedIndex;
-                selectedIndex = selectedIndex == -1
-                    ? itemsSource.Count - 1
-                    : selectedIndex;
+                                {
+                                    var selectedIndex = listView.selectedIndex;
+                                    selectedIndex = selectedIndex == -1
+                                        ? itemsSource.Count - 1
+                                        : selectedIndex;
 
-                if (selectedIndex < 0)
-                {
-                    return;
-                }
+                                    if (selectedIndex < 0)
+                                    {
+                                        return;
+                                    }
 
-                itemsSource.RemoveAt(selectedIndex);
-                SetValue(itemsSource);
-                listView.RefreshItems();
-            })
-            {
-                text = "-"
-            });
+                                    itemsSource.RemoveAt(selectedIndex);
+                                    SetValue(itemsSource);
+                                    listView.RefreshItems();
+                                })
+                                {
+                                    text = "-"
+                                });
 
             return root;
 
@@ -295,18 +291,26 @@ namespace Tooling.StaticData.EditorUI
                 new ButtonIcon(
                     () =>
                     {
-                        var instanceSelector = InstancesTable.Selector.Open(type);
-                        instanceSelector.onSelectionChanged += staticData => OnValueChanged?.Invoke(staticData);
+                        InstancesTable.Selector.Open(
+                            staticDataType: type,
+                            onSelectionChanged: staticData =>
+                            {
+                                SetValue(staticData);
+                                RefreshView();
+                                OnValueChanged?.Invoke(staticData);
+                            });
                     },
                     IconPaths.List
                 )
             );
             root.Add(nameLabel);
 
+            /*
             if (!type.IsInstanceOfType(GetValue()))
             {
                 SetValue(null);
             }
+            */
 
             return root;
         }
@@ -325,33 +329,17 @@ namespace Tooling.StaticData.EditorUI
 
             var root = new VisualElement();
             root.AddToClassList(Styles.RecursiveFieldContainer);
+
             var fields = Utils.GetFields(type);
-
-            // Move name to the top of our editor for static data types
-            // while keeping the order of the rest of the fields
-            if (typeof(StaticData).IsAssignableFrom(type) && fields.Count > 1)
-            {
-                var nameField = fields.First(field => field.Name == nameof(StaticData.Name));
-                var nameIndex = fields.IndexOf(nameField);
-                for (int i = fields.Count - 1; i > 0; i--)
-                {
-                    if (i > nameIndex)
-                    {
-                        continue;
-                    }
-
-                    fields[i] = fields[i - 1];
-                }
-
-                fields[0] = nameField;
-            }
+            SortFields(fields, type);
 
             foreach (var field in fields)
             {
                 var generalField = new GeneralField(field.FieldType, new FieldValueProvider(field, currentObj));
                 generalField.OnValueChanged += obj => OnValueChanged?.Invoke(obj);
 
-                if (Utils.GetFields(field.FieldType).Count > 1 && !typeof(StaticData).IsAssignableFrom(field.FieldType))
+                if (Utils.GetFields(field.FieldType).Count > 1
+                 && !typeof(StaticData).IsAssignableFrom(field.FieldType)) // Hacky - out static data has a custom editor where we don't want a foldout
                 {
                     var foldout = new Foldout();
                     foldout.Add(generalField);
@@ -366,18 +354,44 @@ namespace Tooling.StaticData.EditorUI
             return root;
         }
 
+
+        /// <summary>
+        /// If our type is a static data type, sort the fields to have the name at the top while retaining the order of the rest of the fields
+        /// </summary>
+        private static void SortFields(List<FieldInfo> fields, Type type)
+        {
+            if (!typeof(StaticData).IsAssignableFrom(type) || fields.Count <= 1)
+            {
+                return;
+            }
+
+            var nameField = fields.First(field => field.Name == nameof(StaticData.Name));
+            var nameIndex = fields.IndexOf(nameField);
+            for (int i = fields.Count - 1; i > 0; i--)
+            {
+                if (i > nameIndex)
+                {
+                    continue;
+                }
+
+                fields[i] = fields[i - 1];
+            }
+
+            fields[0] = nameField;
+        }
+
         private VisualElement CreateAbstractTypeSelection(Type type)
         {
             var root = new VisualElement();
             var concreteTypes = type.Assembly.DefinedTypes
-                .Where(t => type.IsAssignableFrom(t)
-                            && !t.IsAbstract
-                            && !t.IsInterface
-                            && t.GetCustomAttribute<GeneralFieldIgnoreAttribute>() is not { IgnoreType: IgnoreType.Interface }
-                            && t.GetInterfaces()
-                                .All(tInterface => tInterface.GetCustomAttribute<GeneralFieldIgnoreAttribute>() == null))
-                .Select(tInfo => tInfo.AsType())
-                .ToList();
+                                    .Where(t => type.IsAssignableFrom(t)
+                                             && !t.IsAbstract
+                                             && !t.IsInterface
+                                             && t.GetCustomAttribute<GeneralFieldIgnoreAttribute>() is not { IgnoreType: IgnoreType.Interface }
+                                             && t.GetInterfaces()
+                                                 .All(tInterface => tInterface.GetCustomAttribute<GeneralFieldIgnoreAttribute>() == null))
+                                    .Select(tInfo => tInfo.AsType())
+                                    .ToList();
 
             if (concreteTypes.Count < 1)
             {
@@ -435,10 +449,10 @@ namespace Tooling.StaticData.EditorUI
                 // Allow creating a default instance for objects
                 // We don't need this for unity engine objects or static data since we can select instances with the general field
                 var shouldCreateNewInstance = (GetValue() == null || selectedType != previousSelectedType)
-                                              && (selectedType.IsValueType || selectedType.GetConstructor(Type.EmptyTypes) != null)
-                                              && (!typeof(StaticData).IsAssignableFrom(typeToDisplay)
-                                                  || options.EnumerateStaticDataProperties)
-                                              && !typeof(Object).IsAssignableFrom(typeToDisplay);
+                                           && (selectedType.IsValueType || selectedType.GetConstructor(Type.EmptyTypes) != null)
+                                           && (!typeof(StaticData).IsAssignableFrom(typeToDisplay)
+                                            || options.EnumerateStaticDataProperties)
+                                           && !typeof(Object).IsAssignableFrom(typeToDisplay);
 
                 if (shouldCreateNewInstance)
                 {
@@ -460,7 +474,7 @@ namespace Tooling.StaticData.EditorUI
             root.Add(new Label(valueProvider.ValueName));
 
             var isGenericAssetReference = false;
-            var assetReferenceType = type;
+            var assetReferenceType      = type;
 
             while (assetReferenceType != typeof(AssetReference) && assetReferenceType != null && !isGenericAssetReference)
             {
@@ -485,13 +499,13 @@ namespace Tooling.StaticData.EditorUI
             var objectPicker = new ObjectField
             {
                 objectType = objectType,
-                value = (GetValue() as AssetReference)?.editorAsset
+                value      = (GetValue() as AssetReference)?.editorAsset
             };
 
             objectPicker.RegisterValueChangedCallback(evt =>
             {
-                var assetPath = AssetDatabase.GetAssetPath(evt.newValue);
-                var guid = AssetDatabase.AssetPathToGUID(assetPath);
+                var assetPath      = AssetDatabase.GetAssetPath(evt.newValue);
+                var guid           = AssetDatabase.AssetPathToGUID(assetPath);
                 var assetReference = Activator.CreateInstance(type, guid);
                 SetValue(assetReference);
             });
@@ -526,7 +540,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Used internally by the <see cref="GeneralField"/> to draw list elements.
         /// </summary>
-        public class ListValueProvider : IValueProvider
+        private class ListValueProvider : IValueProvider
         {
             private readonly IList list;
 
@@ -536,7 +550,7 @@ namespace Tooling.StaticData.EditorUI
 
             public ListValueProvider(int arrayIndex, IList list)
             {
-                this.list = list;
+                this.list  = list;
                 ArrayIndex = arrayIndex;
             }
 

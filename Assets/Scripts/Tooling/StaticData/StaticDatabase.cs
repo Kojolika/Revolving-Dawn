@@ -37,8 +37,8 @@ namespace Tooling.StaticData
 
         private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
 
-        public event Action OnStaticDataInstancesBuilt;
-        public bool         HaveStaticDataInstancesBeenBuilt { get; private set; } = false;
+        public event Action       OnStaticDataInstancesBuilt;
+        public event Action<Type> InstancesUpdated;
 
         public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
 
@@ -46,7 +46,7 @@ namespace Tooling.StaticData
         /// Notifies when validation has just been completed. The <see cref="validationErrors"/> will be populated after
         /// this is called.
         /// </summary>
-        public event Action OnValidationCompleted;
+        public event Action ValidationCompleted;
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new()
         {
@@ -115,7 +115,7 @@ namespace Tooling.StaticData
                             MyLogger.LogError("Static data is still null, is the type wrong...?");
                             continue;
                         }
-                        
+
                         var fileNameWithExtension = new FileInfo(file).Name;
                         staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
 
@@ -226,7 +226,7 @@ namespace Tooling.StaticData
         public void ValidateStaticData()
         {
             validationErrors = validator.ValidateObjects(GetAllStaticDataInstances());
-            OnValidationCompleted?.Invoke();
+            ValidationCompleted?.Invoke();
         }
 
         public void UpdateInstancesForType(Type type, List<StaticData> instances)
@@ -248,6 +248,7 @@ namespace Tooling.StaticData
             }
 
             staticDataDictionary[type] = instanceDict;
+            InstancesUpdated?.Invoke(type);
         }
 
         public StaticData GetStaticDataInstance(Type type, string instanceName)
@@ -278,7 +279,7 @@ namespace Tooling.StaticData
             return staticDataDictionary.SelectMany(kvp => kvp.Value.Values).ToList();
         }
 
-        public List<StaticData> GetInstancesForType(System.Type type)
+        public List<StaticData> GetInstancesForType(Type type)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary))
             {
@@ -298,24 +299,32 @@ namespace Tooling.StaticData
             return new List<T>();
         }
 
-        public List<System.Type> GetAllStaticDataTypes()
+        public List<Type> GetAllStaticDataTypes()
         {
             return staticDataDictionary.Select(kvp => kvp.Key).ToList();
         }
 
-        public void Remove(System.Type type, string instanceName)
+        public void Remove(Type type, string instanceName)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary))
             {
                 instanceDictionary.Remove(instanceName);
+                InstancesUpdated?.Invoke(type);
             }
         }
 
-        public void Add(StaticData staticData)
+        public void AddOrUpdate(StaticData staticData)
         {
-            if (staticDataDictionary.TryGetValue(staticData.GetType(), out var instanceDictionary))
+            Type staticDataType = staticData?.GetType();
+            if (staticDataType == null)
+            {
+                return;
+            }
+
+            if (staticDataDictionary.TryGetValue(staticDataType, out var instanceDictionary))
             {
                 instanceDictionary[staticData.Name] = staticData;
+                InstancesUpdated?.Invoke(staticDataType);
             }
         }
 
@@ -399,7 +408,6 @@ namespace Tooling.StaticData
             staticDataDictionary.Clear();
             validationErrors.Clear();
 
-            HaveStaticDataInstancesBeenBuilt = false;
             if (OnStaticDataInstancesBuilt?.GetInvocationList() is var subList
              && subList.IsNullOrEmpty())
             {

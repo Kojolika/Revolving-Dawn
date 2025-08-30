@@ -13,12 +13,12 @@ namespace Tooling.StaticData
         {
             this.selectedType = selectedType;
 
-            StaticDatabase.Instance.OnValidationCompleted += RefreshValidationView;
+            StaticDatabase.Instance.ValidationCompleted += RefreshValidationView;
         }
 
         ~ValidatorErrorView()
         {
-            StaticDatabase.Instance.OnValidationCompleted -= RefreshValidationView;
+            StaticDatabase.Instance.ValidationCompleted -= RefreshValidationView;
         }
 
         public void OnStaticDataSelected(StaticData staticData)
