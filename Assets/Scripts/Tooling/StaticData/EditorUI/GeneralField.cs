@@ -111,6 +111,10 @@ namespace Tooling.StaticData.EditorUI
             {
                 editorForFieldType = CreateStaticDataField(type);
             }
+            else if (typeof(Enum).IsAssignableFrom(type))
+            {
+                editorForFieldType = CreateEnumField(type);
+            }
             else if (type.IsInterface || type.IsAbstract)
             {
                 editorForFieldType = CreateAbstractTypeSelection(type);

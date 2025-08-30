@@ -3,6 +3,10 @@
   "MaxStackSize": 0,
   "IsInternal": false,
   "Icon": null,
-  "OnBefore": null,
+  "OnBefore": [
+    {
+      "$type": "Models.Buffs.BlockProperty, Assembly-CSharp"
+    }
+  ],
   "OnAfter": null
 }

@@ -91,7 +91,7 @@ namespace Tooling.StaticData.EditorUI
                 : $"{fieldInfo.GetValue(instance)}";
         }
 
-        private ButtonIcon CreateEditButton(StaticData instance, Type staticDataType)
+        private static ButtonIcon CreateEditButton(StaticData instance, Type staticDataType)
         {
             return new ButtonIcon(() => EditorWindow.InstanceEditorWindow.Open(instance, staticDataType), IconPaths.Edit);
         }

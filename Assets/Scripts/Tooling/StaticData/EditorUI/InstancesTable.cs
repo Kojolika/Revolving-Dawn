@@ -86,7 +86,6 @@ namespace Tooling.StaticData.EditorUI
             {
                 foreach (var index in ints)
                 {
-                    MyLogger.Log($"Index added: {index}, instances count: {instances.Count}");
                     // Item is added as null, create a new instance of that type and set the name to a unique name
                     instances[index] = Activator.CreateInstance(selectedType) as StaticData;
                     string newInstanceName = StaticDatabase.Instance.GetStaticDataInstance(selectedType, $"{selectedType.Name}_{index}") == null

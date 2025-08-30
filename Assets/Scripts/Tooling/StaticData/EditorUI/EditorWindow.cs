@@ -96,7 +96,7 @@ namespace Tooling.StaticData.EditorUI
 
                 // TODO: figure out why split view is being weird
                 var validatorErrorView = new ValidatorErrorView(selectedType);
-                var instancesTable = new InstancesTable(selectedType, true, validatorErrorView.OnStaticDataSelected);
+                var instancesTable     = new InstancesTable(selectedType, true, validatorErrorView.OnStaticDataSelected);
 
                 rightPanel.Add(instancesTable);
                 rightPanel.Add(validatorErrorView);
@@ -252,9 +252,11 @@ namespace Tooling.StaticData.EditorUI
                         selectedType,
                         new ValueProvider<StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name),
                         new GeneralField.Options { EnumerateStaticDataProperties = true });
+
                     Action<object> onValueChanged = _ => hasUnsavedChanges = true;
-                    generalField.OnValueChanged += _ => hasUnsavedChanges = true;
+                    generalField.OnValueChanged += onValueChanged;
                     AddDisposeAction(() => generalField.OnValueChanged -= onValueChanged);
+
                     root.Add(generalField);
                 }
 
