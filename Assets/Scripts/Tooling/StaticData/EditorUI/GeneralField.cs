@@ -143,7 +143,7 @@ namespace Tooling.StaticData.EditorUI
                 GetEnumName,
                 GetEnumName);
 
-            popupField.RegisterValueChangedCallback(evt => SetValue(evt.newValue));
+            popupField.RegisterValueChangedCallback(evt => { SetValue(evt.newValue); });
 
             return popupField;
 
@@ -187,7 +187,11 @@ namespace Tooling.StaticData.EditorUI
                     elementType,
                     new ListValueProvider(itemsSource.Count - 1, itemsSource),
                     new Options { IsArrayElement = true }),
-                bindItem                      = (item, index) => ((GeneralField)item).BindArrayIndex(index),
+                bindItem = (item, index) =>
+                {
+                    var generalField = (GeneralField)item;
+                    generalField.BindArrayIndex(index);
+                },
                 unbindItem                    = (item, _) => ((GeneralField)item).BindArrayIndex(-1),
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 reorderable                   = true,
@@ -196,70 +200,28 @@ namespace Tooling.StaticData.EditorUI
                 reorderMode                   = ListViewReorderMode.Animated,
                 showFoldoutHeader             = true,
                 headerTitle                   = valueProvider?.ValueName ?? string.Empty,
-                // TODO: use stanadard add remove
-                showAddRemoveFooter        = false,
-                showBoundCollectionSize    = false,
-                horizontalScrollingEnabled = true
+                showAddRemoveFooter           = true,
+                showBoundCollectionSize       = false,
+                horizontalScrollingEnabled    = true
             };
 
-            listView.itemsAdded         += _ => OnValueChanged?.Invoke(itemsSource);
+            listView.itemsAdded += indices =>
+            {
+                foreach (var index in indices)
+                {
+                    itemsSource[index] = GetDefaultValue(elementType);
+                }
+
+                listView.RefreshItems();
+                OnValueChanged?.Invoke(itemsSource);
+            };
             listView.itemsRemoved       += _ => OnValueChanged?.Invoke(itemsSource);
             listView.itemsSourceChanged += () => OnValueChanged?.Invoke(itemsSource);
             listView.itemIndexChanged   += (_, _) => OnValueChanged?.Invoke(itemsSource);
 
             root.Add(listView);
 
-            var buttonContainer = new VisualElement();
-
-            var listViewFoldOut = listView.Q<Foldout>(name: "unity-list-view__foldout-header");
-            listViewFoldOut.RegisterValueChangedCallback(evt => ShowAddRemoveButtons(evt.newValue));
-            ShowAddRemoveButtons(listViewFoldOut.value);
-
-            buttonContainer.AddToClassList(Styles.ListViewButtonContainer);
-
-            buttonContainer.Add(new Button(() =>
-                                {
-                                    itemsSource.Add(GetDefaultValue(elementType));
-                                    SetValue(itemsSource);
-                                    listView.RefreshItems();
-                                })
-                                {
-                                    text = "+"
-                                });
-
-            buttonContainer.Add(new Button(() =>
-                                {
-                                    var selectedIndex = listView.selectedIndex;
-                                    selectedIndex = selectedIndex == -1
-                                        ? itemsSource.Count - 1
-                                        : selectedIndex;
-
-                                    if (selectedIndex < 0)
-                                    {
-                                        return;
-                                    }
-
-                                    itemsSource.RemoveAt(selectedIndex);
-                                    SetValue(itemsSource);
-                                    listView.RefreshItems();
-                                })
-                                {
-                                    text = "-"
-                                });
-
             return root;
-
-            void ShowAddRemoveButtons(bool show)
-            {
-                if (show)
-                {
-                    root.Add(buttonContainer);
-                }
-                else
-                {
-                    root.RemoveIfChild(buttonContainer);
-                }
-            }
         }
 
         /// <summary>
