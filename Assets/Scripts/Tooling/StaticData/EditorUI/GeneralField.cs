@@ -122,7 +122,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             }
             else if (type == typeof(Type))
             {
-                editorForFieldType = CreateTypeField(type);
+                editorForFieldType = CreateTypeField();
             }
             else if (type.IsInterface || type.IsAbstract)
             {
@@ -172,7 +172,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             }
         }
 
-        private PopupField<Type> CreateTypeField(Type type)
+        private PopupField<Type> CreateTypeField()
         {
             var typeValues = GetPossibleTypes(valueProvider);
             var popupField = new PopupField<Type>(
