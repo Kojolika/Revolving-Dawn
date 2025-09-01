@@ -28,10 +28,10 @@ namespace Tooling.StaticData.EditorUI.Validation
                 return false;
             }
 
-            var isValid = this.TargetType.IsAssignableFrom(typeToCheck);
+            var isValid = TargetType.IsAssignableFrom(typeToCheck);
             if (!isValid)
             {
-                errorMessages.Add($"Type {typeToCheck} is not assignable to " + this.TargetType);
+                errorMessages.Add($"Type {typeToCheck} is not assignable to " + TargetType);
                 return false;
             }
 

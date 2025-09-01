@@ -24,8 +24,7 @@ namespace Tooling.StaticData.EditorUI
         public readonly Type Type;
 
         /// <summary>
-        /// The instance name of <see cref="StaticData"/> we're referencing, at runtime the instance can be found in
-        /// the <see cref="StaticDatabase"/>
+        /// The instance name of <see cref="StaticData"/> we're referencing, at runtime the instance can be found in the <see cref="StaticDatabase"/>
         /// </summary>
         public readonly string InstanceName;
 

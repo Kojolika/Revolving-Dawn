@@ -1,0 +1,82 @@
+{
+  "NumberOfNodes": 30,
+  "NumberOfPaths": 3,
+  "XDimension": 500,
+  "YDimension": 1000,
+  "EdgePadding": 20,
+  "RegionPadding": 20,
+  "FirstNodeEvent": {
+    "$type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Reference": {
+      "Type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "InstanceName": "EncounterEvent"
+    }
+  },
+  "FinalNodeEvent": {
+    "$type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Reference": {
+      "Type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "InstanceName": "BossEvent"
+    }
+  },
+  "EventSettings": [
+    {
+      "Weight": 70.0,
+      "NodeEvent": {
+        "$type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "EnemyEvent"
+        }
+      }
+    },
+    {
+      "Weight": 10.0,
+      "NodeEvent": {
+        "$type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "CampfireEvent"
+        }
+      }
+    },
+    {
+      "Weight": 10.0,
+      "NodeEvent": {
+        "$type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "EncounterEvent"
+        }
+      }
+    },
+    {
+      "Weight": 10.0,
+      "NodeEvent": {
+        "$type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "EncounterEvent"
+        }
+      }
+    }
+  ],
+  "EnemySpawnSettings": [
+    {
+      "Enemy": {
+        "$type": "Tooling.StaticData.EditorUI.Enemy, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.EditorUI.Enemy, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "Slime"
+        }
+      },
+      "MinSpawnRange": 0.0,
+      "MaxSpawnRange": 0.0,
+      "EnemyDifficultyRating": 0
+    }
+  ],
+  "EliteSpawnSettings": null,
+  "BossSpawnSettings": null,
+  "EnemyDifficultyMultiplier": 0.0,
+  "EnemyHealthMultiplier": 0.0
+}
