@@ -60,10 +60,10 @@ namespace Systems.Managers
 
         public async UniTask Save(PlayerDefinition playerDefinition)
         {
-            MyLogger.Log($"Saving file at {PlayerSaveFilePath}");
+            MyLogger.Info($"Saving file at {PlayerSaveFilePath}");
             if (!Directory.Exists(SavePath))
             {
-                MyLogger.Log("Directory not found, creating new...");
+                MyLogger.Info("Directory not found, creating new...");
                 Directory.CreateDirectory(SavePath);
             }
 
@@ -80,7 +80,7 @@ namespace Systems.Managers
             };
 
             json.WriteTo(writer);
-            MyLogger.Log("Saved successfully.");
+            MyLogger.Info("Saved successfully.");
         }
 
         public async UniTask DeleteCurrentRun()
@@ -115,18 +115,18 @@ namespace Systems.Managers
                     };
 
                     json.WriteTo(writer);
-                    MyLogger.Log("Saved successfully.");
+                    MyLogger.Info("Saved successfully.");
                 }
             }
             catch (JsonReaderException e)
             {
-                MyLogger.LogError($"Error reading save file: {e.Message}");
+                MyLogger.Error($"Error reading save file: {e.Message}");
             }
         }
 
         public async UniTask<PlayerDefinition> TryLoadSavedData()
         {
-            MyLogger.Log($"Loading from {PlayerSaveFilePath}");
+            MyLogger.Info($"Loading from {PlayerSaveFilePath}");
             if (File.Exists(PlayerSaveFilePath))
             {
                 try
@@ -144,12 +144,12 @@ namespace Systems.Managers
                 }
                 catch (JsonReaderException e)
                 {
-                    MyLogger.LogError($"Error reading save file: {e.Message}");
+                    MyLogger.Error($"Error reading save file: {e.Message}");
                     return null;
                 }
             }
 
-            MyLogger.Log($"No save path found.");
+            MyLogger.Info($"No save path found.");
             return null;
         }
     }

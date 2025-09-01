@@ -65,7 +65,7 @@ namespace UI.Menus
 
         private async void SaveSelectionAndGenerateRun()
         {
-            MyLogger.Log("Generating map...");
+            MyLogger.Info("Generating map...");
             await playerDataManager.StartNewRun(selectedClass);
             _ = menuManager.Open<MapView, MapView.Data>(
                 new MapView.Data()

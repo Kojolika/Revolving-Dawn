@@ -38,7 +38,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                     }
                     else
                     {
-                        MyLogger.LogError($"Error: statement input count is: {statement.Inputs?.Count} but index is: {index}!");
+                        MyLogger.Error($"Error: statement input count is: {statement.Inputs?.Count} but index is: {index}!");
                     }
                 },
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
@@ -197,7 +197,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                     if (newType == null)
                     {
                         variable.Type = default;
-                        MyLogger.LogError("Error: Variable object type could not be found!");
+                        MyLogger.Error("Error: Variable object type could not be found!");
 
                         return;
                     }

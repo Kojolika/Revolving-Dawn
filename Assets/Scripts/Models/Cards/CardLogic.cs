@@ -35,7 +35,7 @@ namespace Models.Cards
         {
             if (index >= Model.TargetingOptions.Count || index < 0)
             {
-                MyLogger.LogError($"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
+                MyLogger.Error($"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
             }
 
             targetingLookup[index] = targets;
@@ -49,13 +49,13 @@ namespace Models.Cards
         {
             if (index >= Model.TargetingOptions.Count || index < 0)
             {
-                MyLogger.LogError($"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
+                MyLogger.Error($"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
                 return null;
             }
 
             if (!targetingLookup.TryGetValue(index, out var targets))
             {
-                MyLogger.LogError($"Fatal error! Targeting look up does not contain targets for the index requested! index={index}");
+                MyLogger.Error($"Fatal error! Targeting look up does not contain targets for the index requested! index={index}");
                 return null;
             }
 

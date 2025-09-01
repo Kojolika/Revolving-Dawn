@@ -38,7 +38,7 @@ namespace Systems.Managers
         {
             // TODO: Implement steam id
             CurrentPlayerDefinition = new PlayerDefinition(1);
-            MyLogger.Log($"Created new player with id {CurrentPlayerDefinition.Id}");
+            MyLogger.Info($"Created new player with id {CurrentPlayerDefinition.Id}");
 
             await saveManager.Save(CurrentPlayerDefinition);
         }

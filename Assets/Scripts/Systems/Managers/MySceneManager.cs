@@ -45,7 +45,7 @@ namespace Systems.Managers
             IsLoading = true;
             _ = menuManager.CloseAll();
 
-            MyLogger.Log("Loading scene " + index);
+            MyLogger.Info("Loading scene " + index);
 
             await SceneManager.LoadSceneAsync((int)index);
 

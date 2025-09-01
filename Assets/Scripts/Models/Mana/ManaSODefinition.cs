@@ -16,12 +16,12 @@ namespace Models.Mana
         {
             get
             {
-                MyLogger.Log($"Getting mana rep, : {representation == null}, {representation?.Color}, {representation?.Name}");
+                MyLogger.Info($"Getting mana rep, : {representation == null}, {representation?.Color}, {representation?.Name}");
                 if (representation == null)
                 {
-                    MyLogger.Log($"Rep is null");
+                    MyLogger.Info($"Rep is null");
                     representation = new ManaModel(this);
-                    MyLogger.LogError($"Rep color is now {representation.Color}");
+                    MyLogger.Error($"Rep color is now {representation.Color}");
                 }
                 return representation;
             }

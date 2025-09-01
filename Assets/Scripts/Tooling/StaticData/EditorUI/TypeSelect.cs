@@ -73,7 +73,7 @@ public class TypeSelect<T> : VisualElement, INotifyValueChanged<T>
             typeToDisplay = evt.newValue;
             if (typeToDisplay == null)
             {
-                MyLogger.LogError($"Selected type {evt.newValue} but cannot find type in assembly!");
+                MyLogger.Error($"Selected type {evt.newValue} but cannot find type in assembly!");
                 return;
             }
 

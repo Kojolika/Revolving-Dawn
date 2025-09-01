@@ -108,14 +108,14 @@ namespace Tooling.StaticData.EditorUI
                         }
                         catch (Exception e)
                         {
-                            MyLogger.LogError($"Exception while deserializing: {e}");
-                            MyLogger.LogError($"Static Data of type {type.Name} could not be deserialized. Setting value to default...");
+                            MyLogger.Error($"Exception while deserializing: {e}");
+                            MyLogger.Error($"Static Data of type {type.Name} could not be deserialized. Setting value to default...");
                             staticDataFromJson = Activator.CreateInstance(type) as StaticData;
                         }
 
                         if (staticDataFromJson == null)
                         {
-                            MyLogger.LogError("Static data is still null, is the type wrong...?");
+                            MyLogger.Error("Static data is still null, is the type wrong...?");
                             continue;
                         }
 
@@ -160,7 +160,7 @@ namespace Tooling.StaticData.EditorUI
 
                 if (staticDataField == null)
                 {
-                    MyLogger.LogError($"Could not find field {referenceHandle.PropertyName} " +
+                    MyLogger.Error($"Could not find field {referenceHandle.PropertyName} " +
                                       $"on Static Data of type {staticDataType}");
 
                     continue;
@@ -368,7 +368,7 @@ namespace Tooling.StaticData.EditorUI
             }
             catch (Exception e)
             {
-                MyLogger.LogError($"Error saving to json: {e}");
+                MyLogger.Error($"Error saving to json: {e}");
             }
             finally
             {
@@ -386,18 +386,18 @@ namespace Tooling.StaticData.EditorUI
             {
                 if (instance == null)
                 {
-                    MyLogger.LogError($"Trying to serialize null StaticData in typeDirectory: {typeDirectory}");
+                    MyLogger.Error($"Trying to serialize null StaticData in typeDirectory: {typeDirectory}");
                     return;
                 }
 
                 if (!Directory.Exists(typeDirectory))
                 {
-                    MyLogger.LogError($"Type directory {typeDirectory} does not exist!");
+                    MyLogger.Error($"Type directory {typeDirectory} does not exist!");
                     return;
                 }
 
                 var filePath = $"{Path.Join(typeDirectory, instance.Name)}.json";
-                MyLogger.Log($"Writing {instance.Name} to file: {filePath}");
+                MyLogger.Info($"Writing {instance.Name} to file: {filePath}");
                 await using StreamWriter file   = new StreamWriter(filePath);
                 using JsonWriter         writer = new JsonTextWriter(file);
 

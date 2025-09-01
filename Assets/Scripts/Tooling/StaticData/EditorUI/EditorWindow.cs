@@ -57,7 +57,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             defaultTheme = AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>("Assets/UIToolkit/EditorTheme.tss");
             if (defaultTheme == null)
             {
-                MyLogger.LogError("Could not load theme style sheet!");
+                MyLogger.Error("Could not load theme style sheet!");
             }
 
             rootVisualElement.styleSheets.Add(defaultTheme);

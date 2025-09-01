@@ -13,14 +13,14 @@ namespace Tooling.Logging
             switch (level)
             {
                 case TraceLevel.Error:
-                    MyLogger.LogError(message);
+                    MyLogger.Error(message);
                     break;
                 case TraceLevel.Warning:
-                    MyLogger.LogWarning(message);
+                    MyLogger.Warning(message);
                     break;
                 case TraceLevel.Info:
                 case TraceLevel.Verbose:
-                    MyLogger.Log(message);
+                    MyLogger.Info(message);
                     break;
             }
         }

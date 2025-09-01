@@ -108,7 +108,7 @@ namespace Tooling.StaticData.EditorUI.Validation
                     var validationAttribute = (IValidator)attribute;
                     if (!validationAttribute.CanValidate(field.FieldType))
                     {
-                        MyLogger.LogError($"Validation attribute :{attribute.GetType()} is applied to field type {field.FieldType}" +
+                        MyLogger.Error($"Validation attribute :{attribute.GetType()} is applied to field type {field.FieldType}" +
                                           $"but the {nameof(IValidator.CanValidate)} returns false for the field type.");
                         attributeCounter++;
                         continue;

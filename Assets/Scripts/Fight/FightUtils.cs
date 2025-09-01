@@ -16,7 +16,7 @@ namespace Fight
         {
             if (!participant.Hand.Remove(cardLogic))
             {
-                MyLogger.LogError($"Cannot discard card {cardLogic.Model.Name} because its not in the participant {participant.Name}'s hand!");
+                MyLogger.Error($"Cannot discard card {cardLogic.Model.Name} because its not in the participant {participant.Name}'s hand!");
                 return;
             }
 
@@ -50,7 +50,7 @@ namespace Fight
             {
                 if (participant.Discard.Count == 0)
                 {
-                    MyLogger.LogError($"Fatal: No cards in the draw pile or discard pile! participant={participant.Name}");
+                    MyLogger.Error($"Fatal: No cards in the draw pile or discard pile! participant={participant.Name}");
                     return null;
                 }
 
@@ -84,7 +84,7 @@ namespace Fight
         {
             if (cardLogic.Model.Upgrade == null)
             {
-                MyLogger.LogError($"Cannot upgrade a card without an upgrade! card={cardLogic.Model.Name}");
+                MyLogger.Error($"Cannot upgrade a card without an upgrade! card={cardLogic.Model.Name}");
                 return;
             }
             // TODO:
@@ -97,11 +97,11 @@ namespace Fight
             {
                 if (cardLogic.Model.Manas.IsNullOrEmpty())
                 {
-                    MyLogger.LogError($"Cannot downgrade card {cardLogic.Model.Name} with zero mana to upgrade it.");
+                    MyLogger.Error($"Cannot downgrade card {cardLogic.Model.Name} with zero mana to upgrade it.");
                     return;
                 }
 
-                MyLogger.LogError("ERROR: TODO:, ADD default downgrades");
+                MyLogger.Error("ERROR: TODO:, ADD default downgrades");
 
                 /*var cardModel = card;
                 card = CardSettings.DowngradeBaseCardsForMana

@@ -72,7 +72,7 @@ namespace Systems.Managers
                 }
                 catch (Exception e)
                 {
-                    MyLogger.LogError($"Failed to load addressable {key} of type {assetType} with exception {e.Message}");
+                    MyLogger.Error($"Failed to load addressable {key} of type {assetType} with exception {e.Message}");
 
                     onFail?.Invoke();
                 }
@@ -101,7 +101,7 @@ namespace Systems.Managers
             if (locations.IsNullOrEmpty())
             {
                 onFail?.Invoke();
-                MyLogger.LogError($"Attempted to load asset {assetReference} of type {typeof(T)} but could not find a resource location for the asset.");
+                MyLogger.Error($"Attempted to load asset {assetReference} of type {typeof(T)} but could not find a resource location for the asset.");
                 Addressables.Release(locationsOpHandle);
                 return null;
             }
@@ -120,7 +120,7 @@ namespace Systems.Managers
             var locations = locationsOpHandle.Result;
             if (locations.IsNullOrEmpty())
             {
-                MyLogger.LogError($"Attempted to load asset {assetReference} of type {typeof(T)} but could not find a resource location for the asset.");
+                MyLogger.Error($"Attempted to load asset {assetReference} of type {typeof(T)} but could not find a resource location for the asset.");
                 Addressables.Release(locationsOpHandle);
                 return null;
             }
@@ -137,7 +137,7 @@ namespace Systems.Managers
             var locations = locationsOpHandle.Result;
             if (locations.IsNullOrEmpty())
             {
-                MyLogger.LogError($"Attempted to load asset {key} of type {typeof(T)} but could not find a resource location for the asset.");
+                MyLogger.Error($"Attempted to load asset {key} of type {typeof(T)} but could not find a resource location for the asset.");
                 Addressables.Release(locationsOpHandle);
                 return null;
             }
@@ -240,7 +240,7 @@ namespace Systems.Managers
             }
             catch (Exception e)
             {
-                MyLogger.LogError($"Failed to load addressable {key} of type {typeof(T)} with exception {e.Message}");
+                MyLogger.Error($"Failed to load addressable {key} of type {typeof(T)} with exception {e.Message}");
 
                 onFail?.Invoke();
             }

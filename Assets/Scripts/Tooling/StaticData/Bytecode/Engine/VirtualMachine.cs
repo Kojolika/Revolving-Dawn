@@ -168,7 +168,7 @@ namespace Tooling.StaticData.EditorUI.Bytecode
         {
             if (instructionPointer >= instructions.Count)
             {
-                MyLogger.LogError("Error, instruction pointer is out of range.");
+                MyLogger.Error("Error, instruction pointer is out of range.");
                 return default;
             }
 

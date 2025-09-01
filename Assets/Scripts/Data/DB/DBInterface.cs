@@ -24,7 +24,7 @@ namespace Data.DB
         {
             connection = new SqliteConnection(ConnectionString);
             connection.Open();
-            MyLogger.Log($"Opened database: {connection.Database}");
+            MyLogger.Info($"Opened database: {connection.Database}");
             command = connection.CreateCommand();
         }
 

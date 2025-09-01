@@ -85,7 +85,7 @@ namespace Views
 
             if (!CardViewsLookup.Remove(cardLogicModel))
             {
-                MyLogger.LogError($"Trying to set a card that doesn't exist in the hand.");
+                MyLogger.Error($"Trying to set a card that doesn't exist in the hand.");
             }
 
             orderedCardViews.Remove(

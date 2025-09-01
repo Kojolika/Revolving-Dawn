@@ -21,7 +21,7 @@ namespace UI.Common
         {
             if (parentUIBar == null)
             {
-                MyLogger.LogError("Parent UI Bar fill is null!");
+                MyLogger.Error("Parent UI Bar fill is null!");
             }
         }
     }

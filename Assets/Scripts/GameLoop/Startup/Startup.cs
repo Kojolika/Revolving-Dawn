@@ -32,12 +32,12 @@ namespace GameLoop.Startup
         {
             await Addressables.InitializeAsync();
 
-            MyLogger.Log("Waiting for the dependency injection object graph is constructed...");
+            MyLogger.Info("Waiting for the dependency injection object graph is constructed...");
             await UniTask.WaitWhile(() => sceneManager == null && menuManager == null && diContainer == null);
 
             await SetupDebug(diContainer);
 
-            MyLogger.Log("Loading Main Menu...");
+            MyLogger.Info("Loading Main Menu...");
             await sceneManager.LoadScene(MySceneManager.SceneIndex.MainMenu);
 
             _ = await menuManager.Open<MainMenu, Data.Null>(null);
@@ -51,7 +51,7 @@ namespace GameLoop.Startup
             DebugInstaller installerComponent = null;
             if (installerPrefab == null || !installerPrefab.TryGetComponent(out installerComponent))
             {
-                MyLogger.LogError($"Failed to load debug installer! installerPrefab={installerPrefab}, installerComponent={installerComponent}");
+                MyLogger.Error($"Failed to load debug installer! installerPrefab={installerPrefab}, installerComponent={installerComponent}");
                 return;
             }
 

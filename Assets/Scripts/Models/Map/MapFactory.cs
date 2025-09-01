@@ -117,7 +117,7 @@ namespace Models.Map
 
                     if (closestNode == null)
                     {
-                        MyLogger.LogError($"Error during map creation: Couldn't find a valid node to continue the path generation! Node : {node.Coord}");
+                        MyLogger.Error($"Error during map creation: Couldn't find a valid node to continue the path generation! Node : {node.Coord}");
                         break;
                     }
 

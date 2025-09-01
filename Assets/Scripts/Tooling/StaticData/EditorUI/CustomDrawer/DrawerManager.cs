@@ -41,14 +41,14 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             {
                 if (Activator.CreateInstance(type) is not ICustomStaticDataDrawer customStaticDataDrawer)
                 {
-                    MyLogger.LogWarning($"Invalid callback type for {type}");
+                    MyLogger.Warning($"Invalid callback type for {type}");
                     continue;
                 }
 
                 var typeReceivingCallback = customStaticDataDrawer.DrawType;
                 if (!dictionary.TryAdd(typeReceivingCallback, customStaticDataDrawer))
                 {
-                    MyLogger.LogWarning(
+                    MyLogger.Warning(
                         $"There's already a {nameof(ICustomStaticDataDrawer)} type {typeReceivingCallback} " +
                         $"defined in our {nameof(ICustomStaticDataDrawer)} dictionary." +
                         $"Ignoring this {nameof(ICustomStaticDataDrawer)} from type {type}");
@@ -73,14 +73,14 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                 var decorator = Activator.CreateInstance(type) as IDrawer;
                 if (decorator == null)
                 {
-                    MyLogger.LogWarning($"Invalid callback type for {type}");
+                    MyLogger.Warning($"Invalid callback type for {type}");
                     continue;
                 }
 
                 var typeReceivingCallback = decorator.DrawType;
                 if (!dictionary.TryAdd(typeReceivingCallback, decorator))
                 {
-                    MyLogger.LogWarning(
+                    MyLogger.Warning(
                         $"There's already a {nameof(IDrawer)} type {typeReceivingCallback} defined in our {nameof(IDrawer)} dictionary." +
                         $"Ignoring this {nameof(IDrawer)} from type {type}");
                 }

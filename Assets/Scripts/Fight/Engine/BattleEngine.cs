@@ -85,7 +85,7 @@ namespace Fight
 
             DispatchEvent(battleEventQueue[eventIndex]);
 
-            MyLogger.Log($"{battleEventQueue[eventIndex].GetType().Name}: {battleEventQueue[eventIndex].Log()}");
+            MyLogger.Info($"{battleEventQueue[eventIndex].GetType().Name}: {battleEventQueue[eventIndex].Log()}");
         }
 
         private void TriggerOnBeforeBuffEffects(IBattleEvent battleEvent)
@@ -148,7 +148,7 @@ namespace Fight
             var eventType = typeof(T);
             if (!battleEventSubscribers.TryGetValue(eventType, out var eventSubscriber))
             {
-                MyLogger.LogError($"Trying to unsubscribe from an event type that has no subscribers!");
+                MyLogger.Error($"Trying to unsubscribe from an event type that has no subscribers!");
                 return;
             }
 

@@ -44,7 +44,7 @@ namespace Zenject.Installers
 
             foreach (var managerType in managerTypes)
             {
-                MyLogger.Log($"Creating manager {managerType.Name}...");
+                MyLogger.Info($"Creating manager {managerType.Name}...");
                 Container.BindInterfacesAndSelfTo(managerType).AsSingle();
             }
         }

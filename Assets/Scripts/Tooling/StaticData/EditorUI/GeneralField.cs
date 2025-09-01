@@ -140,7 +140,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
 
             if (editorForFieldType is INotifyValueChanged<object> notifier)
             {
-                notifier.RegisterValueChangedCallback(evt => MyLogger.Log($"Value changed: {evt.newValue}"));
+                notifier.RegisterValueChangedCallback(evt => MyLogger.Info($"Value changed: {evt.newValue}"));
             }
 
             return editorForFieldType;
@@ -425,7 +425,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                 typeToDisplay = evt.newValue;
                 if (typeToDisplay == null)
                 {
-                    MyLogger.LogError($"Selected type {evt.newValue} but cannot find type in assembly!");
+                    MyLogger.Error($"Selected type {evt.newValue} but cannot find type in assembly!");
                     return;
                 }
 
@@ -494,7 +494,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
 
             if (!typeof(Object).IsAssignableFrom(objectType))
             {
-                MyLogger.LogError($"Invalid type {type}, cannot find asset reference type {objectType} because it does not" +
+                MyLogger.Error($"Invalid type {type}, cannot find asset reference type {objectType} because it does not" +
                                   $"derive from {typeof(Object)}");
                 return null;
             }

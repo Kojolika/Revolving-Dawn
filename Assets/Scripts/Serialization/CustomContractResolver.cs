@@ -109,7 +109,7 @@ namespace Serialization
                 {
                     if (index > list.Count - 1)
                     {
-                        MyLogger.LogError($"Index passed into field is greater than the list size! fieldName={field.Name}, index={index}, count={list.Count}");
+                        MyLogger.Error($"Index passed into field is greater than the list size! fieldName={field.Name}, index={index}, count={list.Count}");
                         return false;
                     }
 

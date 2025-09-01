@@ -52,7 +52,7 @@ namespace Tooling.StaticData.EditorUI
                 var staticDataRef = new StaticDataReference(staticDataType, value.Name);
                 if (string.IsNullOrEmpty(staticDataRef.InstanceName))
                 {
-                    MyLogger.LogError($"Trying to serialize a reference to object type {staticDataType} but " +
+                    MyLogger.Error($"Trying to serialize a reference to object type {staticDataType} but " +
                                       $"the {nameof(StaticDataReference.InstanceName)} of this reference is null!");
 
                     return;

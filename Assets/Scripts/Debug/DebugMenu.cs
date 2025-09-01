@@ -92,7 +92,7 @@ namespace Koj.Debug
             }
             else
             {
-                MyLogger.LogError($"Could not find a folder or page from path! path={path}");
+                MyLogger.Error($"Could not find a folder or page from path! path={path}");
             }
         }
 
@@ -131,7 +131,7 @@ namespace Koj.Debug
                 var tab = diContainer.InstantiatePrefabForComponent<DebugTab>(tabPrefab, parentTransform: folderContent);
                 if (tab == null)
                 {
-                    MyLogger.LogError($"Tab prefab has no {nameof(DebugTab)} component! page={pageName}");
+                    MyLogger.Error($"Tab prefab has no {nameof(DebugTab)} component! page={pageName}");
                     continue;
                 }
 
@@ -154,7 +154,7 @@ namespace Koj.Debug
 
             if (pagePrefab == null)
             {
-                MyLogger.LogError($"pagePrefab is null! pageName={pageName}, folderName={folderName}");
+                MyLogger.Error($"pagePrefab is null! pageName={pageName}, folderName={folderName}");
                 return;
             }
 
@@ -177,13 +177,13 @@ namespace Koj.Debug
 
             if (string.IsNullOrEmpty(path))
             {
-                MyLogger.LogError("Cannot add empty path!");
+                MyLogger.Error("Cannot add empty path!");
                 return;
             }
 
             if (!TryGetPageFromPath(path, out var pageName))
             {
-                MyLogger.LogError("Path does not contain a valid page!");
+                MyLogger.Error("Path does not contain a valid page!");
                 return;
             }
 
@@ -196,21 +196,21 @@ namespace Koj.Debug
 
             if (pages.ContainsKey(pageName))
             {
-                MyLogger.LogError($"Cannot add duplicate page! pageName={pageName}, debugPath={path}, addressableKey={addressableKey}");
+                MyLogger.Error($"Cannot add duplicate page! pageName={pageName}, debugPath={path}, addressableKey={addressableKey}");
                 return;
             }
 
             var pagePrefab = await Addressables.LoadAssetAsync<GameObject>(addressableKey);
             if (pagePrefab == null)
             {
-                MyLogger.LogError($"Could not add page! Could not find prefab from key! debugPath={path}, addressableKey={addressableKey}");
+                MyLogger.Error($"Could not add page! Could not find prefab from key! debugPath={path}, addressableKey={addressableKey}");
                 return;
             }
 
             var page = pagePrefab.GetComponent<Page>();
             if (page == null)
             {
-                MyLogger.LogError($"Could not add page! Page does not have Page component! debugPath={path}, addressableKey={addressableKey}");
+                MyLogger.Error($"Could not add page! Page does not have Page component! debugPath={path}, addressableKey={addressableKey}");
                 Addressables.Release(addressableKey);
                 return;
             }

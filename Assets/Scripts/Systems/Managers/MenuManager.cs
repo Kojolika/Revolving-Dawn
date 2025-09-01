@@ -74,14 +74,14 @@ namespace Systems.Managers
         {
             if (menuOnStack == null)
             {
-                MyLogger.LogError("Trying to close menu with null MenuInfo!");
+                MyLogger.Error("Trying to close menu with null MenuInfo!");
                 return;
             }
 
             if (!MenuStack.Remove(MenuStack.LastOrDefault(menu => menu == menuOnStack)))
             {
                 // If failed to remove a menu, return
-                MyLogger.LogError($"Couldn't find {menuOnStack} on the MenuStack to close!");
+                MyLogger.Error($"Couldn't find {menuOnStack} on the MenuStack to close!");
                 return;
             }
 
@@ -125,7 +125,7 @@ namespace Systems.Managers
 
         private (TMenu, AsyncOperationHandle operationHandle) LoadMenu<TMenu, TData>() where TMenu : Menu<TData>
         {
-            MyLogger.Log("Creating menu for type " + typeof(TMenu).Name);
+            MyLogger.Info("Creating menu for type " + typeof(TMenu).Name);
 
             foreach (var property in typeof(TMenu).GetProperties())
             {
@@ -138,7 +138,7 @@ namespace Systems.Managers
                         var propVal = property.GetValue(null);
                         if (propVal is string resourcePath)
                         {
-                            MyLogger.Log("Loading resourcePath: " + resourcePath);
+                            MyLogger.Info("Loading resourcePath: " + resourcePath);
                             var opHandle = Addressables.LoadAssetAsync<GameObject>(resourcePath);
                             opHandle.WaitForCompletion();
 
@@ -148,7 +148,7 @@ namespace Systems.Managers
                 }
             }
 
-            MyLogger.LogError("Couldn't find an addressable asset for " + typeof(Menu<TData>));
+            MyLogger.Error("Couldn't find an addressable asset for " + typeof(Menu<TData>));
 
             return (null, default);
         }

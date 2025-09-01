@@ -17,27 +17,27 @@ namespace Tooling.Logging
             switch (level)
             {
                 case LogLevel.Info:
-                    Log(message, filePath);
+                    Info(message, filePath);
                     break;
                 case LogLevel.Warning:
-                    LogWarning(message, filePath);
+                    Warning(message, filePath);
                     break;
                 case LogLevel.Error:
-                    LogError(message, filePath);
+                    Error(message, filePath);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }
         }
 
-        public static void Log(string message, [CallerFilePath] string filePath = "")
+        public static void Info(string message, [CallerFilePath] string filePath = "")
         {
             Debug.Log(
                 FormatLog(message, filePath)
             );
         }
 
-        public static void Log(string message, GameObject context, [CallerFilePath] string filePath = "")
+        public static void Info(string message, GameObject context, [CallerFilePath] string filePath = "")
         {
             Debug.Log(
                 FormatLog(message, filePath),
@@ -45,14 +45,14 @@ namespace Tooling.Logging
             );
         }
 
-        public static void LogWarning(string message, [CallerFilePath] string filePath = "")
+        public static void Warning(string message, [CallerFilePath] string filePath = "")
         {
             Debug.LogWarning(
                 FormatLog(message, filePath)
             );
         }
 
-        public static void LogWarning(string message, GameObject context, [CallerFilePath] string filePath = "")
+        public static void Warning(string message, GameObject context, [CallerFilePath] string filePath = "")
         {
             Debug.LogWarning(
                 FormatLog(message, filePath),
@@ -60,14 +60,14 @@ namespace Tooling.Logging
             );
         }
 
-        public static void LogError(string message, [CallerFilePath] string filePath = "")
+        public static void Error(string message, [CallerFilePath] string filePath = "")
         {
             Debug.LogError(
                 FormatLog(message, filePath)
             );
         }
 
-        public static void LogError(string message, GameObject context, [CallerFilePath] string filePath = "")
+        public static void Error(string message, GameObject context, [CallerFilePath] string filePath = "")
         {
             Debug.LogError(
                 FormatLog(message, filePath),
@@ -137,16 +137,16 @@ namespace Tooling.Logging
             switch (level)
             {
                 case TraceLevel.Error:
-                    LogError(message);
+                    Error(message);
                     break;
                 case TraceLevel.Info:
-                    Log(message);
+                    Info(message);
                     break;
                 case TraceLevel.Verbose:
-                    Log(message);
+                    Info(message);
                     break;
                 case TraceLevel.Warning:
-                    LogWarning(message);
+                    Warning(message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);
