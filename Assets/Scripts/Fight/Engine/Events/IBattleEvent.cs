@@ -34,12 +34,10 @@ namespace Fight.Events
     public abstract class BattleEvent<TSource, TTarget> : BattleEvent<TTarget>
     {
         public TSource Source { get; }
-        public TTarget Target { get; }
 
         protected BattleEvent(TTarget target, TSource source) : base(target)
         {
             Source = source;
-            Target = target;
         }
     }
 }
