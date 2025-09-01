@@ -138,11 +138,6 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                 editorForFieldType = RecursiveDrawElements(type);
             }
 
-            if (editorForFieldType is INotifyValueChanged<object> notifier)
-            {
-                notifier.RegisterValueChangedCallback(evt => MyLogger.Info($"Value changed: {evt.newValue}"));
-            }
-
             return editorForFieldType;
         }
 
@@ -228,6 +223,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                     : typeof(object);
 
             var itemsSource = GetValue() as IList ?? (IList)Activator.CreateInstance(type);
+            SetValueWithoutNotify(itemsSource);
 
             var listView = new ListView
             {
@@ -252,18 +248,17 @@ namespace Tooling.StaticData.EditorUI.EditorUI
 
             listView.itemsAdded += indices =>
             {
-                var oldList = listView.itemsSource;
                 foreach (var index in indices)
                 {
                     listView.itemsSource[index] = GetDefaultValue(elementType);
                 }
 
                 listView.RefreshItems();
-                SendEvent(ChangeEvent<IList>.GetPooled(oldList, listView.itemsSource));
+                SetValueAndNotify(listView.itemsSource);
             };
-            listView.itemsRemoved       += _ => SendEvent(ChangeEvent<IList>.GetPooled(listView.itemsSource, listView.itemsSource));
-            listView.itemsSourceChanged += () => SendEvent(ChangeEvent<IList>.GetPooled(listView.itemsSource, listView.itemsSource));
-            listView.itemIndexChanged   += (_, _) => SendEvent(ChangeEvent<IList>.GetPooled(listView.itemsSource, listView.itemsSource));
+            listView.itemsRemoved       += _ => SetValueAndNotify(listView.itemsSource);
+            listView.itemsSourceChanged += () => SetValueAndNotify(listView.itemsSource);
+            listView.itemIndexChanged   += (_, _) => SetValueAndNotify(listView.itemsSource);
 
             root.Add(listView);
 
@@ -495,7 +490,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             if (!typeof(Object).IsAssignableFrom(objectType))
             {
                 MyLogger.Error($"Invalid type {type}, cannot find asset reference type {objectType} because it does not" +
-                                  $"derive from {typeof(Object)}");
+                               $"derive from {typeof(Object)}");
                 return null;
             }
 
@@ -521,11 +516,14 @@ namespace Tooling.StaticData.EditorUI.EditorUI
         /// <summary>
         /// Sets the value on the underlying instance this field is bound to.
         /// </summary>
-        private void SetValueAndNotify(object newValue)
+        public void SetValueAndNotify(object newValue)
         {
             var oldValue = GetValue();
             valueProvider.SetValue(newValue);
-            SendEvent(ChangeEvent<object>.GetPooled(oldValue, newValue));
+
+            var changeEvent = ChangeEvent<object>.GetPooled(oldValue, newValue);
+            changeEvent.target = this;
+            SendEvent(changeEvent);
         }
 
         public void SetValueWithoutNotify(object newValue)

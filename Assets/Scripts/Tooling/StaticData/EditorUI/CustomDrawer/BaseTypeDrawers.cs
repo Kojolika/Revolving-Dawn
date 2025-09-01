@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using JetBrains.Annotations;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -19,7 +16,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                 value = (TType)valueProvider.GetValue()
             };
 
-            root.RegisterValueChangedCallback(evt => valueProvider.SetValue(evt.newValue));
+            root.RegisterValueChangedCallback(evt => field.SetValueAndNotify(evt.newValue));
 
             return root;
         }
@@ -74,45 +71,6 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             }
 
             return root;
-        }
-    }
-
-    [UsedImplicitly]
-    public class EnumDrawer : GeneralFieldDrawer<Enum>
-    {
-        public override VisualElement Draw(IValueProvider valueProvider, GeneralField field)
-        {
-            var type = valueProvider.GetValue()?.GetType();
-            if (type == null)
-            {
-                return new Label("Null enum! Cannot draw enum field.");
-            }
-
-            var enumValues = Enum.GetValues(type).Cast<Enum>().ToList();
-            var popupField = new PopupField<Enum>(
-                valueProvider.ValueName,
-                enumValues,
-                enumValues.FirstOrDefault(),
-                GetEnumName,
-                GetEnumName)
-            {
-                style = { alignSelf = Align.FlexStart }
-            };
-
-            popupField.RegisterValueChangedCallback(evt => valueProvider.SetValue(evt.newValue));
-            return popupField;
-
-            // Returns the name of an Enum value or the overriden name
-            string GetEnumName(Enum value)
-            {
-                var valueName = Enum.GetName(type, value) ?? string.Empty;
-                return type.GetMember(valueName)
-                           .First()
-                           .GetCustomAttribute<DisplayNameAttribute>() is var prettifyNameAttribute
-                       && !string.IsNullOrEmpty(prettifyNameAttribute?.Name)
-                    ? prettifyNameAttribute.Name
-                    : valueName;
-            }
         }
     }
 }
