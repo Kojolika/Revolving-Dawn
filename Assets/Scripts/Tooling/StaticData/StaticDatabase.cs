@@ -37,7 +37,7 @@ namespace Tooling.StaticData.EditorUI
 
         private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
 
-        public event Action       OnStaticDataInstancesBuilt;
+        public event Action       StaticDataInstancesBuilt;
         public event Action<Type> InstancesUpdated;
 
         public Dictionary<Type, Dictionary<StaticData, List<string>>> validationErrors { get; private set; } = new();
@@ -411,7 +411,7 @@ namespace Tooling.StaticData.EditorUI
             staticDataDictionary.Clear();
             validationErrors.Clear();
 
-            if (OnStaticDataInstancesBuilt?.GetInvocationList() is var subList
+            if (StaticDataInstancesBuilt?.GetInvocationList() is var subList
              && subList.IsNullOrEmpty())
             {
                 return;
@@ -419,7 +419,7 @@ namespace Tooling.StaticData.EditorUI
 
             foreach (var subscriber in subList!)
             {
-                OnStaticDataInstancesBuilt -= (Action)subscriber;
+                StaticDataInstancesBuilt -= (Action)subscriber;
             }
         }
     }
