@@ -1,0 +1,4 @@
+{
+  "Icon": "7b920439d31f14e4fbaf16b35db655ff",
+  "Logic": "Models.Map.EncounterEventLogic, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+}

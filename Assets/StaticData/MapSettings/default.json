@@ -5,8 +5,20 @@
   "YDimension": 1000,
   "EdgePadding": 20,
   "RegionPadding": 20,
-  "FirstNodeEvent": null,
-  "FinalNodeEvent": null,
+  "FirstNodeEvent": {
+    "$type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Reference": {
+      "Type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "InstanceName": "EncounterEvent"
+    }
+  },
+  "FinalNodeEvent": {
+    "$type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Reference": {
+      "Type": "Tooling.StaticData.EditorUI.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "InstanceName": "BossEvent"
+    }
+  },
   "EventSettings": null,
   "EnemySpawnSettings": null,
   "EliteSpawnSettings": null,

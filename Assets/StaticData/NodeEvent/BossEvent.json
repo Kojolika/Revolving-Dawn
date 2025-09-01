@@ -1,0 +1,4 @@
+{
+  "Icon": "e35cc54cea8489b4ea21bc3508317060",
+  "Logic": "Models.Map.BossEventLogic, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+}
