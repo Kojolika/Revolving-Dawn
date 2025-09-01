@@ -140,22 +140,17 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             return editorForFieldType;
         }
 
-        private VisualElement CreateEnumField(Type type)
+        private PopupField<Enum> CreateEnumField(Type type)
         {
-            MyLogger.Log($"Creating general field enum popup for type: {type}");
             var enumValues = Enum.GetValues(type).Cast<Enum>().ToList();
             var popupField = new PopupField<Enum>(
                 valueProvider.ValueName,
                 enumValues,
-                enumValues.FirstOrDefault(),
+                (GetValue() ?? GetDefaultValue(type)) as Enum,
                 GetEnumName,
                 GetEnumName);
 
-            popupField.RegisterValueChangedCallback(evt =>
-            {
-                MyLogger.LogError($"On Value changed! {evt.previousValue}, {evt.newValue}");
-                SetValueAndNotify(evt.newValue);
-            });
+            popupField.RegisterValueChangedCallback(evt => { SetValueAndNotify(evt.newValue); });
 
             return popupField;
 
@@ -179,7 +174,6 @@ namespace Tooling.StaticData.EditorUI.EditorUI
         /// <exception cref="ArgumentException">Fired if the fieldInfo is not a type of <see cref="IList"/></exception>
         private VisualElement CreateListField(Type type)
         {
-            MyLogger.Log($"Creating general field list for type: {type}");
             var root = new VisualElement();
             root.AddToClassList(Styles.ListView);
 
@@ -237,26 +231,12 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             {
                 var generalField = (GeneralField)item;
                 generalField.BindListElement(index);
-                generalField.RegisterValueChangedCallback(OnListItemChanged);
-
-                void OnListItemChanged(ChangeEvent<object> evt)
-                {
-                    itemsSource[index] = evt.newValue;
-                    SetValueAndNotify(itemsSource);
-                }
             }
 
             void UnbindItem(VisualElement item, int index)
             {
                 var generalField = (GeneralField)item;
                 generalField.BindListElement(-1);
-                generalField.UnregisterValueChangedCallback(OnListItemChanged);
-
-                void OnListItemChanged(ChangeEvent<object> evt)
-                {
-                    itemsSource[index] = evt.newValue;
-                    SetValueAndNotify(itemsSource);
-                }
             }
         }
 
@@ -340,13 +320,8 @@ namespace Tooling.StaticData.EditorUI.EditorUI
 
             foreach (var field in fields)
             {
-                MyLogger.Log($"Creating general field for type: {field.FieldType}");
                 var generalField = new GeneralField(field.FieldType, new FieldValueProvider(field, currentObj));
-                generalField.RegisterValueChangedCallback(evt =>
-                {
-                    MyLogger.LogError($"Change event invoked: {evt.newValue}");
-                    SendEvent(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue));
-                });
+                generalField.RegisterValueChangedCallback(evt => { SendEvent(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue)); });
 
                 if (Utils.GetFields(field.FieldType).Count > 1
                  && !typeof(StaticData).IsAssignableFrom(field.FieldType)) // Hacky - out static data has a custom editor where we don't want a foldout

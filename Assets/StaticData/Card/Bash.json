@@ -7,7 +7,7 @@
   "Description": null,
   "IsLostOnPlay": false,
   "TargetingOptions": [
-    3
+    1
   ],
   "CardLogic": {
     "$type": "Models.Cards.Warrior.Bash, Assembly-CSharp",
