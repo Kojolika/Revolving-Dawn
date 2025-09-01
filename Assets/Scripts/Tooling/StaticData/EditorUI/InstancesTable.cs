@@ -5,17 +5,19 @@ using Tooling.Logging;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     /// <summary>
     /// Displays a list of static data instances as rows in a table
     /// </summary>
     public class InstancesTable : VisualElement
     {
-        private          ListView           listView;
-        private readonly Type               selectedType;
+        private ListView listView;
+
         private readonly bool               allowEditing;
         private readonly Action<StaticData> onSelectionChanged;
+
+        public readonly Type SelectedType;
 
         private const float RowPadding = 4f;
 
@@ -23,7 +25,7 @@ namespace Tooling.StaticData.EditorUI
 
         public InstancesTable(Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
         {
-            this.selectedType       = selectedType;
+            this.SelectedType       = selectedType;
             this.allowEditing       = allowEditing;
             this.onSelectionChanged = onSelectionChanged;
 
@@ -43,7 +45,7 @@ namespace Tooling.StaticData.EditorUI
         {
             Clear();
 
-            var instances = StaticDatabase.Instance.GetInstancesForType(selectedType);
+            var instances = StaticDatabase.Instance.GetInstancesForType(SelectedType);
             if (!allowEditing)
             {
                 // allow selection of null
@@ -54,7 +56,7 @@ namespace Tooling.StaticData.EditorUI
 
             listView = new ListView
             {
-                makeItem = () => new InstanceRow(selectedType, allowEditing),
+                makeItem = () => new InstanceRow(SelectedType, allowEditing),
                 bindItem = (item, index) =>
                 {
                     if (instances.IsNullOrEmpty()
@@ -68,7 +70,7 @@ namespace Tooling.StaticData.EditorUI
                     var instance = instances[index];
                     (item as InstanceRow)!.BindItem(
                         instance,
-                        instance != null && (validationErrors?.TryGetValue(selectedType, out var instanceValidationDict) ?? false)
+                        instance != null && (validationErrors?.TryGetValue(SelectedType, out var instanceValidationDict) ?? false)
                             ? instanceValidationDict.GetValueOrDefault(instance)
                             : null
                     );
@@ -87,22 +89,22 @@ namespace Tooling.StaticData.EditorUI
                 foreach (var index in ints)
                 {
                     // Item is added as null, create a new instance of that type and set the name to a unique name
-                    instances[index] = Activator.CreateInstance(selectedType) as StaticData;
-                    string newInstanceName = StaticDatabase.Instance.GetStaticDataInstance(selectedType, $"{selectedType.Name}_{index}") == null
-                        ? $"{selectedType.Name}_{index}"
-                        : $"{selectedType.Name}_{index}(1)";
+                    instances[index] = Activator.CreateInstance(SelectedType) as StaticData;
+                    string newInstanceName = StaticDatabase.Instance.GetStaticDataInstance(SelectedType, $"{SelectedType.Name}_{index}") == null
+                        ? $"{SelectedType.Name}_{index}"
+                        : $"{SelectedType.Name}_{index}(1)";
 
                     instances[index].Name = newInstanceName;
                 }
 
-                StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
+                StaticDatabase.Instance.UpdateInstancesForType(SelectedType, instances);
             };
 
             // listview already removes the element, just update our StaticData dict
-            listView.itemsRemoved     += _ => StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
+            listView.itemsRemoved     += _ => StaticDatabase.Instance.UpdateInstancesForType(SelectedType, instances);
             listView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.FirstOrDefault() as StaticData);
 
-            Add(CreateInstanceHeader(selectedType));
+            Add(CreateInstanceHeader(SelectedType));
             Add(listView);
         }
 
@@ -168,7 +170,7 @@ namespace Tooling.StaticData.EditorUI
 
         private void OnInstancesUpdated(Type type)
         {
-            if (type != selectedType)
+            if (type != SelectedType)
             {
                 return;
             }

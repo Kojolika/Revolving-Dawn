@@ -2,7 +2,7 @@ using System;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     /// <summary>
     /// Types inheriting this will be instantiated by the <see cref="DrawerManager"/> during the editor when the <see cref="GeneralField"/>

@@ -8,7 +8,7 @@ namespace Models.Cards
 {
     /// <summary>
     /// Class that represents the logic of what happens when this card is played.
-    /// The rest of the data and assets related to a card are stored in <see cref="Tooling.StaticData.Card"/> in the <see cref="Tooling.StaticData.StaticDatabase"/>
+    /// The rest of the data and assets related to a card are stored in <see cref="Tooling.StaticData.EditorUI.Card"/> in the <see cref="Tooling.StaticData.EditorUI.StaticDatabase"/>
     ///
     /// These types are reference in the static database and are dynamically instanced with the card view during run time.
     /// </summary>
@@ -19,9 +19,9 @@ namespace Models.Cards
         /// <summary>
         /// Contains the static data and assets for this card.
         /// </summary>
-        public Tooling.StaticData.Card StaticData { get; }
+        public Tooling.StaticData.EditorUI.Card StaticData { get; }
 
-        public Card(Tooling.StaticData.Card staticData)
+        public Card(Tooling.StaticData.EditorUI.Card staticData)
         {
             StaticData = staticData;
         }
@@ -43,7 +43,7 @@ namespace Models.Cards
         /// <summary>
         /// Use this during overrides of the <see cref="Play"/> to select which targets match your card effects.
         /// </summary>
-        /// <returns> The target(s) from the <see cref="Tooling.StaticData.Card.TargetingOptions"/> at the index </returns>
+        /// <returns> The target(s) from the <see cref="Tooling.StaticData.EditorUI.Card.TargetingOptions"/> at the index </returns>
         protected List<ICombatParticipant> GetTargetsForOptionIndex(int index)
         {
             if (index >= StaticData.TargetingOptions.Count || index < 0)

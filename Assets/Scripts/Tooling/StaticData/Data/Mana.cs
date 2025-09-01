@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     public class Mana : StaticData
     {

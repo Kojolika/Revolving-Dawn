@@ -7,7 +7,7 @@ using Tooling.Logging;
 using UI.Common;
 using Systems.Managers;
 using Settings;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 
 namespace UI.Menus
 {

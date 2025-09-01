@@ -11,12 +11,12 @@ using UnityEngine.UIElements;
 using Utils.Extensions;
 using Object = UnityEngine.Object;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     /// <summary>
     /// A property field that supports multiple types.
     /// </summary>
-    public class GeneralField : VisualElement
+    public class GeneralField : VisualElement, INotifyValueChanged<object>
     {
         /// <summary>
         /// The type this field is drawing.
@@ -28,12 +28,19 @@ namespace Tooling.StaticData.EditorUI
         /// </summary>
         private readonly IValueProvider valueProvider;
 
-        private readonly Options options;
+        /// <summary>
+        /// <see cref="INotifyValueChanged{T}"/> interface implementation
+        /// </summary>
+        public object value
+        {
+            get => GetValue();
+            set => SetValueAndNotify(value);
+        }
 
         /// <summary>
-        /// Invoked when the value that this field is drawing has changed.
+        /// Internal options used to draw the field
         /// </summary>
-        public event Action<object> OnValueChanged;
+        private readonly Options options;
 
         /// <summary>
         /// Label when this is an array element, null otherwise.
@@ -56,8 +63,6 @@ namespace Tooling.StaticData.EditorUI
             this.valueProvider = valueProvider;
             this.options       = options;
 
-            AddToClassList(Styles.RecursiveFieldContainer);
-
             drawer = DrawerManager.Instance.Drawers.GetValueOrDefault(type);
 
             RefreshView();
@@ -69,9 +74,8 @@ namespace Tooling.StaticData.EditorUI
 
             if (options.IsArrayElement && valueProvider is ListValueProvider listValueProvider)
             {
-                arrayIndexLabel = new Label($"[{listValueProvider.ArrayIndex}]");
                 var rowElement = new VisualElement();
-                rowElement.Add(arrayIndexLabel);
+                Utils.AddLabel(rowElement, $"[{listValueProvider.ArrayIndex}]");
                 rowElement.Add(DrawEditorForType(Type));
 
                 rowElement.AddToClassList(Styles.ListViewContainer);
@@ -128,13 +132,17 @@ namespace Tooling.StaticData.EditorUI
                 editorForFieldType = RecursiveDrawElements(type);
             }
 
-            editorForFieldType.RegisterCallback<ChangeEvent<object>>(evt => MyLogger.Log($"Value changed: {evt.newValue}"));
+            if (editorForFieldType is INotifyValueChanged<object> notifier)
+            {
+                notifier.RegisterValueChangedCallback(evt => MyLogger.Log($"Value changed: {evt.newValue}"));
+            }
 
             return editorForFieldType;
         }
 
         private VisualElement CreateEnumField(Type type)
         {
+            MyLogger.Log($"Creating general field enum popup for type: {type}");
             var enumValues = Enum.GetValues(type).Cast<Enum>().ToList();
             var popupField = new PopupField<Enum>(
                 valueProvider.ValueName,
@@ -143,7 +151,11 @@ namespace Tooling.StaticData.EditorUI
                 GetEnumName,
                 GetEnumName);
 
-            popupField.RegisterValueChangedCallback(evt => { SetValue(evt.newValue); });
+            popupField.RegisterValueChangedCallback(evt =>
+            {
+                MyLogger.LogError($"On Value changed! {evt.previousValue}, {evt.newValue}");
+                SetValueAndNotify(evt.newValue);
+            });
 
             return popupField;
 
@@ -167,6 +179,7 @@ namespace Tooling.StaticData.EditorUI
         /// <exception cref="ArgumentException">Fired if the fieldInfo is not a type of <see cref="IList"/></exception>
         private VisualElement CreateListField(Type type)
         {
+            MyLogger.Log($"Creating general field list for type: {type}");
             var root = new VisualElement();
             root.AddToClassList(Styles.ListView);
 
@@ -187,12 +200,8 @@ namespace Tooling.StaticData.EditorUI
                     elementType,
                     new ListValueProvider(itemsSource.Count - 1, itemsSource),
                     new Options { IsArrayElement = true }),
-                bindItem = (item, index) =>
-                {
-                    var generalField = (GeneralField)item;
-                    generalField.BindArrayIndex(index);
-                },
-                unbindItem                    = (item, _) => ((GeneralField)item).BindArrayIndex(-1),
+                bindItem                      = BindItem,
+                unbindItem                    = UnbindItem,
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 reorderable                   = true,
                 showBorder                    = true,
@@ -207,21 +216,48 @@ namespace Tooling.StaticData.EditorUI
 
             listView.itemsAdded += indices =>
             {
+                var oldList = itemsSource;
                 foreach (var index in indices)
                 {
                     itemsSource[index] = GetDefaultValue(elementType);
                 }
 
                 listView.RefreshItems();
-                OnValueChanged?.Invoke(itemsSource);
+                SendEvent(ChangeEvent<IList>.GetPooled(oldList, itemsSource));
             };
-            listView.itemsRemoved       += _ => OnValueChanged?.Invoke(itemsSource);
-            listView.itemsSourceChanged += () => OnValueChanged?.Invoke(itemsSource);
-            listView.itemIndexChanged   += (_, _) => OnValueChanged?.Invoke(itemsSource);
+            listView.itemsRemoved       += _ => SendEvent(ChangeEvent<IList>.GetPooled(null, itemsSource));
+            listView.itemsSourceChanged += () => SendEvent(ChangeEvent<IList>.GetPooled(null, itemsSource));
+            listView.itemIndexChanged   += (_, _) => SendEvent(ChangeEvent<IList>.GetPooled(null, itemsSource));
 
             root.Add(listView);
 
             return root;
+
+            void BindItem(VisualElement item, int index)
+            {
+                var generalField = (GeneralField)item;
+                generalField.BindListElement(index);
+                generalField.RegisterValueChangedCallback(OnListItemChanged);
+
+                void OnListItemChanged(ChangeEvent<object> evt)
+                {
+                    itemsSource[index] = evt.newValue;
+                    SetValueAndNotify(itemsSource);
+                }
+            }
+
+            void UnbindItem(VisualElement item, int index)
+            {
+                var generalField = (GeneralField)item;
+                generalField.BindListElement(-1);
+                generalField.UnregisterValueChangedCallback(OnListItemChanged);
+
+                void OnListItemChanged(ChangeEvent<object> evt)
+                {
+                    itemsSource[index] = evt.newValue;
+                    SetValueAndNotify(itemsSource);
+                }
+            }
         }
 
         /// <summary>
@@ -229,7 +265,7 @@ namespace Tooling.StaticData.EditorUI
         /// is where the value should get retrieved from.
         /// </summary>
         /// <param name="index"></param>
-        private void BindArrayIndex(int index)
+        private void BindListElement(int index)
         {
             if (index < 0)
             {
@@ -244,32 +280,35 @@ namespace Tooling.StaticData.EditorUI
         private VisualElement CreateStaticDataField(Type type)
         {
             var root = new VisualElement();
-
             root.AddToClassList(Styles.StaticDataSelectorContainer);
 
-            var label = new Label(valueProvider.ValueName);
-            label.AddToClassList("unity-base-field__label");
-            root.Add(label);
+            var selectedStaticData = GetValue() as StaticData;
 
-            var nameLabel = new Label((GetValue() as StaticData)?.Name ?? StaticDataNullLabel);
+            Utils.AddLabel(root, valueProvider.ValueName);
+            Utils.AddLabel(root, selectedStaticData?.Name ?? StaticDataNullLabel);
 
-            root.Add(
-                new ButtonIcon(
-                    () =>
-                    {
-                        InstancesTable.Selector.Open(
-                            staticDataType: type,
-                            onSelectionChanged: staticData =>
-                            {
-                                SetValue(staticData);
-                                RefreshView();
-                                OnValueChanged?.Invoke(staticData);
-                            });
-                    },
-                    IconPaths.List
-                )
+            var editButton = new ButtonIcon(
+                clickEvent: () =>
+                {
+                    InstancesTable.Selector.Open(
+                        staticDataType: type,
+                        onSelectionChanged: staticData =>
+                        {
+                            SetValueAndNotify(staticData);
+                            RefreshView();
+                        });
+                },
+                iconPath: IconPaths.List
             );
-            root.Add(nameLabel);
+            root.Add(editButton);
+
+            if (selectedStaticData != null)
+            {
+                var redirectButton = new ButtonIcon(
+                    clickEvent: () => { EditorWindow.InstanceEditorWindow.Open(selectedStaticData, selectedStaticData.GetType()); },
+                    iconPath: IconPaths.Redirect);
+                root.Add(redirectButton);
+            }
 
             /*
             if (!type.IsInstanceOfType(GetValue()))
@@ -290,19 +329,24 @@ namespace Tooling.StaticData.EditorUI
             if (GetValue() == null && type.GetConstructor(Type.EmptyTypes) != null)
             {
                 currentObj = Activator.CreateInstance(type);
-                SetValue(currentObj);
+                SetValueAndNotify(currentObj);
             }
 
             var root = new VisualElement();
-            root.AddToClassList(Styles.RecursiveFieldContainer);
+            root.AddToClassList(Styles.AlignStart);
 
             var fields = Utils.GetFields(type);
-            SortFields(fields, type);
+            Utils.SortFields(fields, type);
 
             foreach (var field in fields)
             {
+                MyLogger.Log($"Creating general field for type: {field.FieldType}");
                 var generalField = new GeneralField(field.FieldType, new FieldValueProvider(field, currentObj));
-                generalField.OnValueChanged += obj => OnValueChanged?.Invoke(obj);
+                generalField.RegisterValueChangedCallback(evt =>
+                {
+                    MyLogger.LogError($"Change event invoked: {evt.newValue}");
+                    SendEvent(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue));
+                });
 
                 if (Utils.GetFields(field.FieldType).Count > 1
                  && !typeof(StaticData).IsAssignableFrom(field.FieldType)) // Hacky - out static data has a custom editor where we don't want a foldout
@@ -318,32 +362,6 @@ namespace Tooling.StaticData.EditorUI
             }
 
             return root;
-        }
-
-
-        /// <summary>
-        /// If our type is a static data type, sort the fields to have the name at the top while retaining the order of the rest of the fields
-        /// </summary>
-        private static void SortFields(List<FieldInfo> fields, Type type)
-        {
-            if (!typeof(StaticData).IsAssignableFrom(type) || fields.Count <= 1)
-            {
-                return;
-            }
-
-            var nameField = fields.First(field => field.Name == nameof(StaticData.Name));
-            var nameIndex = fields.IndexOf(nameField);
-            for (int i = fields.Count - 1; i > 0; i--)
-            {
-                if (i > nameIndex)
-                {
-                    continue;
-                }
-
-                fields[i] = fields[i - 1];
-            }
-
-            fields[0] = nameField;
         }
 
         private VisualElement CreateAbstractTypeSelection(Type type)
@@ -422,7 +440,7 @@ namespace Tooling.StaticData.EditorUI
 
                 if (shouldCreateNewInstance)
                 {
-                    SetValue(Activator.CreateInstance(selectedType));
+                    SetValueAndNotify(Activator.CreateInstance(selectedType));
                 }
             }
         }
@@ -437,7 +455,9 @@ namespace Tooling.StaticData.EditorUI
         private VisualElement CreateAssetReferenceObjectPicker(Type type)
         {
             var root = new VisualElement();
-            root.Add(new Label(valueProvider.ValueName));
+            root.AddToClassList(Styles.FlexRow);
+
+            Utils.AddLabel(root, valueProvider.ValueName);
 
             var isGenericAssetReference = false;
             var assetReferenceType      = type;
@@ -473,7 +493,7 @@ namespace Tooling.StaticData.EditorUI
                 var assetPath      = AssetDatabase.GetAssetPath(evt.newValue);
                 var guid           = AssetDatabase.AssetPathToGUID(assetPath);
                 var assetReference = Activator.CreateInstance(type, guid);
-                SetValue(assetReference);
+                SetValueAndNotify(assetReference);
             });
 
             root.Add(objectPicker);
@@ -484,10 +504,16 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Sets the value on the underlying instance this field is bound to.
         /// </summary>
-        public void SetValue(object value)
+        private void SetValueAndNotify(object newValue)
+        {
+            var oldValue = GetValue();
+            valueProvider.SetValue(newValue);
+            SendEvent(ChangeEvent<object>.GetPooled(oldValue, newValue));
+        }
+
+        public void SetValueWithoutNotify(object newValue)
         {
             valueProvider.SetValue(value);
-            OnValueChanged?.Invoke(value);
         }
 
         /// <summary>

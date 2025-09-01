@@ -3,7 +3,7 @@ using System.Linq;
 using Tooling.Logging;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.Bytecode
+namespace Tooling.StaticData.EditorUI.Bytecode
 {
     public interface IErrorReport
     {

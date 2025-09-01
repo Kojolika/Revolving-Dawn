@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Tooling.Logging;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     /// <summary>
     /// Classes in this project that inherit from <see cref="IDrawer"/> that have an open (parameterless) constructor

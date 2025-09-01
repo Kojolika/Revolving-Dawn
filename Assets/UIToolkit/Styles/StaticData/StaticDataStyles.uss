@@ -74,7 +74,12 @@
 }
 
 .gf_recursive-container {
-    margin-bottom: var(--std-margin-small);
+    padding: var(--std-padding);
+    align-items: center;
+}
+
+.gf_align-start {
+    align-items: flex-start;
 }
 
 .gf_list-button-container {
@@ -117,14 +122,20 @@
 
 .unity-text-element {
     color: var(--text-color);
+    justify-content: center;
+    align-self: center;
 }
 
 .sd_save_button {
     margin-top: var(--std-margin-large);
 }
 
-.column {
+.flex-column {
     flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
 }
 
 .margin-bottom-small {

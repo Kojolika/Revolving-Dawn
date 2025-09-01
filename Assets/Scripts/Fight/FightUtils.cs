@@ -4,7 +4,7 @@ using Common.Util;
 using Fight.Engine;
 using Fight.Events;
 using Tooling.Logging;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using UnityEngine.Assertions;
 using Utils.Extensions;
 using Card = Models.Cards.Card;
@@ -13,26 +13,6 @@ namespace Fight
 {
     public static class FightUtils
     {
-        /// <summary>
-        /// Util function to deal damage to another combat participant from another.
-        /// </summary>
-        /// <param name="source"> The combat participant dealing the damage </param>
-        /// <param name="target"> The combat participant taking the damage </param>
-        /// <param name="damage"> The amount of damage </param>
-        /// <returns> The event that performs this damage </returns>
-        public static DealDamageEvent DealDamage(ICombatParticipant source, ICombatParticipant target, float damage)
-        {
-            if (source != null)
-            {
-                var buffs = source.GetBuffs().OrEmptyIfNull();
-                foreach (var buff in buffs)
-                {
-                }
-            }
-
-            return null;
-        }
-
         public static void DiscardCard(this ICardDeckParticipant participant, Card card)
         {
             if (!participant.Hand.Remove(card))

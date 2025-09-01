@@ -1,6 +1,6 @@
-using Tooling.StaticData.Bytecode;
+using Tooling.StaticData.EditorUI.Bytecode;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     [ByteObject]
     public class Stat : StaticData

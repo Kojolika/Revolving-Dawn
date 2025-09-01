@@ -6,13 +6,13 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using Tooling.Logging;
-using Tooling.StaticData.Bytecode;
+using Tooling.StaticData.EditorUI.Bytecode;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 using Type = System.Type;
-using ByteValueType = Tooling.StaticData.Bytecode.Type;
+using ByteValueType = Tooling.StaticData.EditorUI.Bytecode.Type;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     [UsedImplicitly]
     public class StatementStaticDataDrawer : CustomStaticDataDrawer<Statement>
@@ -22,13 +22,13 @@ namespace Tooling.StaticData.EditorUI
             var root = new VisualElement();
 
             var nameField = new GeneralField<string>(new FieldValueProvider(typeof(Statement).GetField(nameof(Statement.Name)), statement));
-            nameField.OnValueChanged += _ => InvokeValueChanged();
+            nameField.RegisterValueChangedCallback(_ => InvokeValueChanged());
             root.Add(nameField);
 
             var inputsField = new ListView
             {
                 itemsSource = statement.Inputs,
-                makeItem = () => new InputView(),
+                makeItem    = () => new InputView(),
                 bindItem = (item, index) =>
                 {
                     var inputView = (InputView)item;
@@ -42,53 +42,53 @@ namespace Tooling.StaticData.EditorUI
                     }
                 },
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
-                reorderable = true,
-                showBorder = true,
-                virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-                reorderMode = ListViewReorderMode.Animated,
-                showFoldoutHeader = true,
-                headerTitle = nameof(Statement.Inputs),
-                showAddRemoveFooter = true,
-                showBoundCollectionSize = false,
-                horizontalScrollingEnabled = true,
+                reorderable                   = true,
+                showBorder                    = true,
+                virtualizationMethod          = CollectionVirtualizationMethod.DynamicHeight,
+                reorderMode                   = ListViewReorderMode.Animated,
+                showFoldoutHeader             = true,
+                headerTitle                   = nameof(Statement.Inputs),
+                showAddRemoveFooter           = true,
+                showBoundCollectionSize       = false,
+                horizontalScrollingEnabled    = true,
                 tooltip = "Options inputs for this statement. This is only used when you reference this statement in another statement. " +
                           "For example, if we created a statement that was for a DealDamage effect, we would want the inputs of the amount " +
                           "of damage, and the target of the affect. Then we could reuse the DealDamage effect in multiple other statements."
             };
-            inputsField.itemsAdded += _ => InvokeValueChanged();
-            inputsField.itemsRemoved += _ => InvokeValueChanged();
+            inputsField.itemsAdded         += _ => InvokeValueChanged();
+            inputsField.itemsRemoved       += _ => InvokeValueChanged();
             inputsField.itemsSourceChanged += InvokeValueChanged;
-            inputsField.itemIndexChanged += (_, _) => InvokeValueChanged();
+            inputsField.itemIndexChanged   += (_, _) => InvokeValueChanged();
             root.Add(inputsField);
 
             statement.Instructions ??= new List<InstructionModel>();
             var listView = new ListView
             {
                 itemsSource = statement.Instructions,
-                makeItem = () => new InstructionView(statement),
+                makeItem    = () => new InstructionView(statement),
                 bindItem = (item, index) =>
                 {
                     var instructionView = (InstructionView)item;
                     instructionView.RefreshView(index, statement.Instructions[index]);
                     instructionView.OnValueChanged += InvokeValueChanged;
                 },
-                unbindItem = (item, _) => ((InstructionView)item).OnValueChanged -= InvokeValueChanged,
+                unbindItem                    = (item, _) => ((InstructionView)item).OnValueChanged -= InvokeValueChanged,
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
-                reorderable = true,
-                showBorder = true,
-                virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-                reorderMode = ListViewReorderMode.Animated,
-                showFoldoutHeader = true,
-                headerTitle = nameof(Statement.Instructions),
-                showAddRemoveFooter = true,
-                showBoundCollectionSize = false,
-                horizontalScrollingEnabled = true
+                reorderable                   = true,
+                showBorder                    = true,
+                virtualizationMethod          = CollectionVirtualizationMethod.DynamicHeight,
+                reorderMode                   = ListViewReorderMode.Animated,
+                showFoldoutHeader             = true,
+                headerTitle                   = nameof(Statement.Instructions),
+                showAddRemoveFooter           = true,
+                showBoundCollectionSize       = false,
+                horizontalScrollingEnabled    = true
             };
 
-            listView.itemsAdded += _ => InvokeValueChanged();
-            listView.itemsRemoved += _ => InvokeValueChanged();
+            listView.itemsAdded         += _ => InvokeValueChanged();
+            listView.itemsRemoved       += _ => InvokeValueChanged();
             listView.itemsSourceChanged += InvokeValueChanged;
-            listView.itemIndexChanged += (_, _) => InvokeValueChanged();
+            listView.itemIndexChanged   += (_, _) => InvokeValueChanged();
 
             root.Add(listView);
 
@@ -121,17 +121,17 @@ namespace Tooling.StaticData.EditorUI
                 Add(nameField);
 
                 var availableTypes = new List<string>();
-                var enumTypes = Enum.GetValues(typeof(ByteValueType))
-                    .Cast<ByteValueType>()
-                    .Select(type => type.ToString())
-                    .ToList();
+                var enumTypes = Enum.GetValues(typeof(Bytecode.Type))
+                                    .Cast<Bytecode.Type>()
+                                    .Select(type => type.ToString())
+                                    .ToList();
                 availableTypes.AddRange(enumTypes);
 
                 var objectTypes = Assembly.GetCallingAssembly()
-                    .GetTypes()
-                    .Where(type => type.GetCustomAttribute<ByteObject>() != null)
-                    .Select(type => type.FullName)
-                    .ToList();
+                                          .GetTypes()
+                                          .Where(type => type.GetCustomAttribute<ByteObject>() != null)
+                                          .Select(type => type.FullName)
+                                          .ToList();
                 availableTypes.AddRange(objectTypes);
 
                 Func<string, string> popupFieldFormatting = typeString =>
@@ -157,7 +157,7 @@ namespace Tooling.StaticData.EditorUI
                     popupFieldFormatting,
                     popupFieldFormatting)
                 {
-                    value = value.Type != ByteValueType.Object || value.ObjectType == null
+                    value = value.Type != Bytecode.Type.Object || value.ObjectType == null
                         ? value.Type.ToString()
                         : popupFieldFormatting(value.ObjectType.FullName)
                 };
@@ -166,7 +166,7 @@ namespace Tooling.StaticData.EditorUI
                 RefreshVariableTypeView(
                     value,
                     objectTypeContainer,
-                    value.Type != ByteValueType.Object || value.ObjectType == null
+                    value.Type != Bytecode.Type.Object || value.ObjectType == null
                         ? value.Type.ToString()
                         : value.ObjectType.FullName,
                     enumTypes,
@@ -179,17 +179,17 @@ namespace Tooling.StaticData.EditorUI
             }
 
             private static void RefreshVariableTypeView(
-                Variable variable,
+                Variable      variable,
                 VisualElement objectTypeContainer,
-                string selectedType,
-                List<string> enumTypes,
-                List<string> objectTypes)
+                string        selectedType,
+                List<string>  enumTypes,
+                List<string>  objectTypes)
             {
                 objectTypeContainer.Clear();
 
                 if (enumTypes.Contains(selectedType))
                 {
-                    variable.Type = (ByteValueType)Enum.Parse(typeof(ByteValueType), selectedType);
+                    variable.Type = (Bytecode.Type)Enum.Parse(typeof(Bytecode.Type), selectedType);
                 }
                 else if (objectTypes.Contains(selectedType))
                 {
@@ -202,7 +202,7 @@ namespace Tooling.StaticData.EditorUI
                         return;
                     }
 
-                    variable.Type = ByteValueType.Object;
+                    variable.Type       = Bytecode.Type.Object;
                     variable.ObjectType = newType;
                     var objectTypeTextField = new TextField("Object Type")
                     {
@@ -216,7 +216,7 @@ namespace Tooling.StaticData.EditorUI
 
         private class InstructionView : VisualElement
         {
-            public event Action OnValueChanged;
+            public event Action        OnValueChanged;
             private readonly Statement statement;
 
             public InstructionView(Statement statement)
@@ -256,7 +256,7 @@ namespace Tooling.StaticData.EditorUI
                     case ReadVariableModel readVariableModel:
                     {
                         // Provides a default selection that we won't save if no variable is selected
-                        var nullVariable = new Variable { Name = "(none)", Type = ByteValueType.Null };
+                        var nullVariable     = new Variable { Name = "(none)", Type = Bytecode.Type.Null };
                         var definedVariables = new List<Variable> { nullVariable };
 
                         if (!statement.Inputs.IsNullOrEmpty())
@@ -285,33 +285,33 @@ namespace Tooling.StaticData.EditorUI
                             {
                                 var variable = definedVariables[i];
                                 string variableNamePrefix =
-                                    $"{variable.Name} ({(variable.Type == ByteValueType.Object && variable.ObjectType != null ? variable.ObjectType.Name : variable.Name)}) ";
-                                if (variable.Type == ByteValueType.Object && variable.ObjectType != null)
+                                    $"{variable.Name} ({(variable.Type == Bytecode.Type.Object && variable.ObjectType != null ? variable.ObjectType.Name : variable.Name)}) ";
+                                if (variable.Type == Bytecode.Type.Object && variable.ObjectType != null)
                                 {
                                     var fieldVariables = variable.ObjectType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                                        .Where(p => p.GetCustomAttribute<ByteProperty>() != null)
-                                        .Select(p => new Variable
-                                        {
-                                            Name = $"{variableNamePrefix}/ {p.Name}",
-                                            Type = p.GetCustomAttribute<ByteProperty>().Type
-                                        });
+                                                                 .Where(p => p.GetCustomAttribute<ByteProperty>() != null)
+                                                                 .Select(p => new Variable
+                                                                  {
+                                                                      Name = $"{variableNamePrefix}/ {p.Name}",
+                                                                      Type = p.GetCustomAttribute<ByteProperty>().Type
+                                                                  });
 
                                     var propertyVariables = variable.ObjectType
-                                        .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                                        .Where(p => p.GetCustomAttribute<ByteProperty>() != null)
-                                        .Select(p => new Variable
-                                        {
-                                            Name = $"{variableNamePrefix}/ {p.Name}",
-                                            Type = p.GetCustomAttribute<ByteProperty>().Type
-                                        });
+                                                                    .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                                                    .Where(p => p.GetCustomAttribute<ByteProperty>() != null)
+                                                                    .Select(p => new Variable
+                                                                     {
+                                                                         Name = $"{variableNamePrefix}/ {p.Name}",
+                                                                         Type = p.GetCustomAttribute<ByteProperty>().Type
+                                                                     });
 
                                     var methodVariables = variable.ObjectType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                                        .Where(m => m.GetCustomAttribute<ByteFunction>() != null)
-                                        .Select(m => new Variable
-                                        {
-                                            Name = $"{variableNamePrefix}/ {m.Name}",
-                                            Type = m.GetCustomAttribute<ByteFunction>().Output
-                                        });
+                                                                  .Where(m => m.GetCustomAttribute<ByteFunction>() != null)
+                                                                  .Select(m => new Variable
+                                                                   {
+                                                                       Name = $"{variableNamePrefix}/ {m.Name}",
+                                                                       Type = m.GetCustomAttribute<ByteFunction>().Output
+                                                                   });
 
                                     definedVariables.AddRange(propertyVariables);
                                     definedVariables.AddRange(fieldVariables);
@@ -323,10 +323,10 @@ namespace Tooling.StaticData.EditorUI
                         }
 
                         var variableSelection = new PopupField<Variable>("Select Variable",
-                            definedVariables,
-                            definedVariables.FirstOrDefault(),
-                            variable => $"{variable.Name} ({variable.Type})",
-                            variable => $"{variable.Name} ({variable.Type})");
+                                                                         definedVariables,
+                                                                         definedVariables.FirstOrDefault(),
+                                                                         variable => $"{variable.Name} ({variable.Type})",
+                                                                         variable => $"{variable.Name} ({variable.Type})");
                         variableSelection.RegisterValueChangedCallback(evt =>
                         {
                             // Set the selected variable, if it's our designated null variable, we set the value to null
@@ -384,10 +384,10 @@ namespace Tooling.StaticData.EditorUI
                 public ValueField(ValueModel value, bool allowTypeChange = true, bool allowEditing = true)
                 {
                     this.allowTypeChange = allowTypeChange;
-                    this.allowEditing = allowEditing;
+                    this.allowEditing    = allowEditing;
 
                     originalValue = value ??= new ValueModel();
-                    this.value = originalValue.Clone();
+                    this.value    = originalValue.Clone();
 
                     AddToClassList(Styles.Container);
                     AddToClassList(Styles.Border);
@@ -408,13 +408,13 @@ namespace Tooling.StaticData.EditorUI
                     var foldout = new Foldout
                     {
                         value = false,
-                        text = GetFoldoutText(this.value)
+                        text  = GetFoldoutText(this.value)
                     };
 
                     var manualValueField = new ManualValueField(value);
                     manualValueField.RegisterValueChangedCallback(evt =>
                     {
-                        value = evt.newValue;
+                        value        = evt.newValue;
                         foldout.text = GetFoldoutText(this.value);
                     });
 
@@ -424,7 +424,7 @@ namespace Tooling.StaticData.EditorUI
                     };
                     valueTypeField.RegisterValueChangedCallback(evt =>
                     {
-                        var newType = (ByteValueType)evt.newValue;
+                        var newType = (Bytecode.Type)evt.newValue;
                         value.Type = newType;
                         if (value.Source == Source.Manual)
                         {
@@ -438,7 +438,7 @@ namespace Tooling.StaticData.EditorUI
                     gameFunctionField.RegisterValueChangedCallback(evt =>
                     {
                         value.GameFunction = (GameFunction)evt.newValue;
-                        foldout.text = GetFoldoutText(this.value);
+                        foldout.text       = GetFoldoutText(this.value);
                     });
 
                     var varSourceField = new EnumField("Source", value.Source)
@@ -461,16 +461,16 @@ namespace Tooling.StaticData.EditorUI
                     foldout.Add(varSourceField);
                     foldout.Add(gameFunctionField);
                     foldout.Add(new Button(() =>
-                    {
-                        // apply the edits to the original
-                        var changeEvent = ChangeEvent<ValueModel>.GetPooled(originalValue, value);
-                        changeEvent.target = this;
-                        originalValue = value;
-                        SendEvent(changeEvent);
-                    })
-                    {
-                        text = "Save"
-                    });
+                                {
+                                    // apply the edits to the original
+                                    var changeEvent = ChangeEvent<ValueModel>.GetPooled(originalValue, value);
+                                    changeEvent.target = this;
+                                    originalValue      = value;
+                                    SendEvent(changeEvent);
+                                })
+                                {
+                                    text = "Save"
+                                });
                 }
 
                 /// <summary>
@@ -482,11 +482,11 @@ namespace Tooling.StaticData.EditorUI
                 }
 
                 private static void SetViewStateBasedOnSource(
-                    EnumField varTypeField,
-                    bool allowTypeChange,
-                    EnumField gameFunctionField,
+                    EnumField        varTypeField,
+                    bool             allowTypeChange,
+                    EnumField        gameFunctionField,
                     ManualValueField manualValueField,
-                    Source source)
+                    Source           source)
                 {
                     varTypeField.SetEnabled(source == Source.Manual && allowTypeChange);
                     manualValueField.SetEnabled(source == Source.Manual);
@@ -509,29 +509,29 @@ namespace Tooling.StaticData.EditorUI
                 }
 
                 // TODO: On save, set all other values to their default values
-                public void RefreshView(ByteValueType type)
+                public void RefreshView(Bytecode.Type type)
                 {
                     Clear();
                     switch (type)
                     {
-                        case ByteValueType.Null:
-                        case ByteValueType.Bool:
-                        case ByteValueType.String:
-                        case ByteValueType.Int:
-                        case ByteValueType.Long:
-                        case ByteValueType.Float:
-                        case ByteValueType.Double:
+                        case Bytecode.Type.Null:
+                        case Bytecode.Type.Bool:
+                        case Bytecode.Type.String:
+                        case Bytecode.Type.Int:
+                        case Bytecode.Type.Long:
+                        case Bytecode.Type.Float:
+                        case Bytecode.Type.Double:
                         {
                             var validationLabel = new Label();
-                            var valueTextField = new TextField("Value");
+                            var valueTextField  = new TextField("Value");
                             var variablesList = new ListView
                             {
-                                itemsSource = value.BooleanModel.ExpressionValues,
-                                showFoldoutHeader = false,
-                                showAddRemoveFooter = false,
+                                itemsSource                   = value.BooleanModel.ExpressionValues,
+                                showFoldoutHeader             = false,
+                                showAddRemoveFooter           = false,
                                 showAlternatingRowBackgrounds = AlternatingRowBackground.ContentOnly,
-                                reorderable = true,
-                                makeItem = () => new ValueField(null),
+                                reorderable                   = true,
+                                makeItem                      = () => new ValueField(null),
                                 bindItem = (item, index) =>
                                 {
                                     var valueField = (ValueField)item;
@@ -566,13 +566,13 @@ namespace Tooling.StaticData.EditorUI
                                     Scanner.Scan(value.String, out var tokens, errorReport: errorReport);
                                 });
                             });
-                            
+
                             Add(valueTextField);
 
                             break;
                         }
 
-                        case ByteValueType.List:
+                        case Bytecode.Type.List:
                         {
                             value.List ??= new ListValueModel();
 
@@ -583,7 +583,7 @@ namespace Tooling.StaticData.EditorUI
                                 bindItem = (item, index) =>
                                 {
                                     var valueField = (ValueField)item;
-                                    var newValue = (ValueModel)value.List[index];
+                                    var newValue   = (ValueModel)value.List[index];
                                     newValue.Type = value.List.Type;
                                     valueField.RefreshView(newValue);
                                 },
@@ -592,11 +592,11 @@ namespace Tooling.StaticData.EditorUI
                                     var valueField = (ValueField)item;
                                     valueField.RefreshView(null);
                                 },
-                                showAddRemoveFooter = true,
-                                showFoldoutHeader = true,
-                                showBoundCollectionSize = true,
+                                showAddRemoveFooter           = true,
+                                showFoldoutHeader             = true,
+                                showBoundCollectionSize       = true,
                                 showAlternatingRowBackgrounds = AlternatingRowBackground.ContentOnly,
-                                headerTitle = "List"
+                                headerTitle                   = "List"
                             };
                             listField.itemsAdded += indices =>
                             {
@@ -609,14 +609,14 @@ namespace Tooling.StaticData.EditorUI
 
                                 SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             };
-                            listField.itemsRemoved += _ => SendEvent(ChangeEvent<ValueModel>.GetPooled());
+                            listField.itemsRemoved       += _ => SendEvent(ChangeEvent<ValueModel>.GetPooled());
                             listField.itemsSourceChanged += () => SendEvent(ChangeEvent<ValueModel>.GetPooled());
-                            listField.itemIndexChanged += (_, _) => SendEvent(ChangeEvent<ValueModel>.GetPooled());
+                            listField.itemIndexChanged   += (_, _) => SendEvent(ChangeEvent<ValueModel>.GetPooled());
 
                             valueTypeField.RegisterValueChangedCallback(evt =>
                             {
                                 var oldValue = value.Clone();
-                                value.List.Type = (ByteValueType)evt.newValue;
+                                value.List.Type = (Bytecode.Type)evt.newValue;
                                 listField.Rebuild();
                                 SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
@@ -626,7 +626,7 @@ namespace Tooling.StaticData.EditorUI
                             break;
                         }
 
-                        case ByteValueType.Object:
+                        case Bytecode.Type.Object:
                         {
                             Add(new Label("TODO: What do we want to display for an Object"));
                             break;
@@ -651,14 +651,14 @@ namespace Tooling.StaticData.EditorUI
 
                 private class ValueErrorReport : IErrorReport
                 {
-                    private readonly Label label;
-                    private readonly TextField rawExpressionField;
+                    private readonly Label         label;
+                    private readonly TextField     rawExpressionField;
                     private readonly VisualElement errorMessageContainer;
 
                     private const string ColorStart = "<color=red>";
-                    private const string ColorEnd = "</color>";
-                    private int lengthOfColorStart => ColorStart.Length;
-                    private int lengthOfColorEnd => ColorEnd.Length;
+                    private const string ColorEnd   = "</color>";
+                    private       int    lengthOfColorStart => ColorStart.Length;
+                    private       int    lengthOfColorEnd   => ColorEnd.Length;
 
                     /// <summary>
                     /// Stores of the offsets of where the source string's characters are located in the current validation label.
@@ -668,8 +668,8 @@ namespace Tooling.StaticData.EditorUI
 
                     public ValueErrorReport(Label label, TextField rawExpressionField, VisualElement errorMessageContainer)
                     {
-                        this.label = label;
-                        this.rawExpressionField = rawExpressionField;
+                        this.label                 = label;
+                        this.rawExpressionField    = rawExpressionField;
                         this.errorMessageContainer = errorMessageContainer;
                     }
 
@@ -685,11 +685,11 @@ namespace Tooling.StaticData.EditorUI
                         if (offsetsFromSourceString == null)
                         {
                             offsetsFromSourceString = new int[rawExpressionField.text.Length];
-                            label.text = rawExpressionField.text;
+                            label.text              = rawExpressionField.text;
                         }
 
                         string validationString = label.text;
-                        int startIndex = columnNumber + offsetsFromSourceString[columnNumber];
+                        int    startIndex       = columnNumber + offsetsFromSourceString[columnNumber];
                         validationString = validationString.Insert(startIndex, ColorStart);
                         for (int i = columnNumber; i < offsetsFromSourceString.Length; i++)
                         {
@@ -697,7 +697,7 @@ namespace Tooling.StaticData.EditorUI
                         }
 
                         int lexemeEndIndex = columnNumber + length - 1;
-                        int endIndex = lexemeEndIndex + offsetsFromSourceString[lexemeEndIndex] + 1;
+                        int endIndex       = lexemeEndIndex + offsetsFromSourceString[lexemeEndIndex] + 1;
                         validationString = validationString.Insert(endIndex, ColorEnd);
                         for (int i = lexemeEndIndex; i < offsetsFromSourceString.Length; i++)
                         {
@@ -714,7 +714,7 @@ namespace Tooling.StaticData.EditorUI
                     /// </summary>
                     public void Reset()
                     {
-                        label.text = string.Empty;
+                        label.text              = string.Empty;
                         offsetsFromSourceString = null;
                         errorMessageContainer.Clear();
                     }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Tooling.StaticData.Validation;
+using Tooling.StaticData.EditorUI.Validation;
 using UnityEngine.AddressableAssets;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     public class PlayerClass : StaticData
     {

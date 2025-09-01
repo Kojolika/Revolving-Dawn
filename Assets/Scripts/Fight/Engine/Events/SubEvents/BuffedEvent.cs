@@ -1,5 +1,5 @@
 using Fight.Engine;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 
 namespace Fight.Events.SubEvents
 {

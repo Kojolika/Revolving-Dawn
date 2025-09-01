@@ -3,7 +3,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Tooling.Logging;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// The purpose is to only serialize each static data once and then reference that static data

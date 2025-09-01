@@ -1,4 +1,4 @@
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     public class LocKey : StaticData
     {

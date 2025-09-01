@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Newtonsoft.Json.Serialization;
 using Tooling.Logging;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using Zenject;
 using Type = System.Type;
 

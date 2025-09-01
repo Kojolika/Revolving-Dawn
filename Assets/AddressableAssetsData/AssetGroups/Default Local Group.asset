@@ -69,12 +69,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cb928e790e6382a4cbc364a9596de11f
-    m_Address: player_class_warrior
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 800bb8b75bced384981baaac7271f2b8
     m_Address: card_block
     m_ReadOnly: 0
@@ -191,12 +185,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 97608a3c0220d3c418750a48d3ed8f83
-    m_Address: player_class_time_keeper
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d64d33cd3d35f84b846fd22e87ff5fa
     m_Address: card_mana_socket
     m_ReadOnly: 0
@@ -255,6 +243,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d05fb482a1c33014690747c2df9f8605
     m_Address: Assets/Prefabs/Debug/DebugTab.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7421f5dc9612a7944b443208866e5353
+    m_Address: Assets/Sprites/Cards/Warrior_Cripple.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

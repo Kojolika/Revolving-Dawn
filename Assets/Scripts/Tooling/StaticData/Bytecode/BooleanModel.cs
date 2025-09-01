@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tooling.StaticData.Bytecode
+namespace Tooling.StaticData.EditorUI.Bytecode
 {
     public struct BooleanModel : IEquatable<BooleanModel>
     {

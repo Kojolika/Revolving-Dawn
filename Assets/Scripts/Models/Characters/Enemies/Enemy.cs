@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Controllers.Strategies;
 using Fight.Engine;
 using Models.Fight;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 
 namespace Models.Characters
 {

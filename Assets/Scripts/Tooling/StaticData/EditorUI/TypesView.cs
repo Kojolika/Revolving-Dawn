@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     public class TypesView : VisualElement
     {

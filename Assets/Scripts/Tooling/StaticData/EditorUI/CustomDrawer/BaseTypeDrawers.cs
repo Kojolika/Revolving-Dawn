@@ -6,7 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     public abstract class BaseTypeDrawer<TType, TField> : GeneralFieldDrawer<TType>
         where TField : BaseField<TType>, new()

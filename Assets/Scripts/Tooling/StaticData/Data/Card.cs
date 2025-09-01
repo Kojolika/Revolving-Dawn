@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     public class Card : StaticData
     {

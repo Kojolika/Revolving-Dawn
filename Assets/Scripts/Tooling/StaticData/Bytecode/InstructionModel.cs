@@ -1,4 +1,6 @@
-namespace Tooling.StaticData
+using Tooling.StaticData.EditorUI.EditorUI;
+
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// We're using the bytecode pattern for our games combat.
@@ -7,7 +9,7 @@ namespace Tooling.StaticData
     {
         /// <summary>
         /// Guarantees a public constructor for types that inherit this.
-        /// We create types at runtime in <see cref="Tooling.StaticData.EditorUI.StatementStaticDataDrawer"/> with <see cref="System.Activator"/>
+        /// We create types at runtime in <see cref="StatementStaticDataDrawer"/> with <see cref="System.Activator"/>
         /// </summary>
         public InstructionModel()
         {

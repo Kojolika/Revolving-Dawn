@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     /// <summary>
     /// Designed to be a CMS system where we manage our static data.
@@ -39,6 +39,9 @@ namespace Tooling.StaticData.EditorUI
         /// <see cref="ListView"/> wrapper of all our of different static data types.
         /// </summary>
         private TypesView typesListView;
+
+        private InstancesTable instancesTable;
+        private VisualElement  rightPanel;
 
         public static readonly StyleColor BorderColor = new(Color.gray);
         public static readonly StyleFloat BorderWidth = new(0.5f);
@@ -81,25 +84,12 @@ namespace Tooling.StaticData.EditorUI
 
             typesListView = new TypesView();
 
-            var rightPanel = CreateRightPanel();
+            rightPanel = CreateRightPanel();
             typesListView.ListView.selectionChanged += _ =>
             {
                 selectedIndex = typesListView.ListView.selectedIndex;
                 selectedType  = StaticDatabase.Instance.GetAllStaticDataTypes()[selectedIndex];
-
-                rightPanel.Clear();
-
-                if (selectedType == null)
-                {
-                    return;
-                }
-
-                // TODO: figure out why split view is being weird
-                var validatorErrorView = new ValidatorErrorView(selectedType);
-                var instancesTable     = new InstancesTable(selectedType, true, validatorErrorView.OnStaticDataSelected);
-
-                rightPanel.Add(instancesTable);
-                rightPanel.Add(validatorErrorView);
+                OpenInstancesTable(selectedType);
             };
 
             var twoPanelSplit = new TwoPaneSplitView
@@ -110,6 +100,22 @@ namespace Tooling.StaticData.EditorUI
             twoPanelSplit.Add(typesListView);
             twoPanelSplit.Add(rightPanel);
             root.Add(twoPanelSplit);
+        }
+
+        private void OpenInstancesTable(Type selectedType)
+        {
+            rightPanel.Clear();
+            if (selectedType == null)
+            {
+                return;
+            }
+
+            // TODO: figure out why split view is being weird
+            var validatorErrorView = new ValidatorErrorView(selectedType);
+            instancesTable = new InstancesTable(selectedType, true, validatorErrorView.OnStaticDataSelected);
+
+            rightPanel.Add(instancesTable);
+            rightPanel.Add(validatorErrorView);
         }
 
         /// <summary>
@@ -201,8 +207,6 @@ namespace Tooling.StaticData.EditorUI
             private          string       nameOnOpening;
             private readonly List<Action> disposeActions = new();
 
-            public Context staticDataContext { get; private set; }
-
             public static void Open(StaticData editingObj, Type selectedType)
             {
                 GetWindow<InstanceEditorWindow>().Initialize(editingObj, selectedType);
@@ -213,8 +217,6 @@ namespace Tooling.StaticData.EditorUI
                 rootVisualElement.Clear();
                 this.selectedType = selectedType;
                 this.editingObj   = editingObj;
-
-                staticDataContext = new Context(editingObj);
 
                 openedEditorWindow = GetWindow<EditorWindow>();
                 rootVisualElement.styleSheets.Add(openedEditorWindow.defaultTheme);
@@ -253,10 +255,7 @@ namespace Tooling.StaticData.EditorUI
                         new ValueProvider<StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name),
                         new GeneralField.Options { EnumerateStaticDataProperties = true });
 
-                    Action<object> onValueChanged = _ => hasUnsavedChanges = true;
-                    generalField.OnValueChanged += onValueChanged;
-                    AddDisposeAction(() => generalField.OnValueChanged -= onValueChanged);
-
+                    generalField.RegisterValueChangedCallback(_ => hasUnsavedChanges = true);
                     root.Add(generalField);
                 }
 

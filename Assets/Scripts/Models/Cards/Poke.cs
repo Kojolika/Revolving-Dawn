@@ -3,17 +3,20 @@ using Fight;
 using Fight.Engine;
 using Fight.Events;
 
-namespace Models.Cards.Warrior
+namespace Models.Cards
 {
-    public class Bash : Card
+    /// <summary>
+    /// Weak card, default card for red mana on downgrades
+    /// </summary>
+    public class Poke : Card
     {
-        public Bash(Tooling.StaticData.EditorUI.Card staticData) : base(staticData)
+        public Poke(Tooling.StaticData.EditorUI.Card staticData) : base(staticData)
         {
         }
 
         // TODO: Named float numbers in static data
         // We can specify them in json instead of hardcoded
-        private const float Damage = 6f;
+        private const float Damage = 1f;
 
         public override List<IBattleEvent> Play(Context fightContext, ICombatParticipant owner)
         {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Tooling.StaticData.Bytecode
+namespace Tooling.StaticData.EditorUI.Bytecode
 {
     /// <summary>
     /// Marks a class as having functions with <see cref="ByteFunction"/> attributes that will be used at runtime.

@@ -4,7 +4,7 @@ using Models.Fight;
 using Models.Map;
 using Settings;
 using Tooling.Logging;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 
 namespace Systems.Managers
 {

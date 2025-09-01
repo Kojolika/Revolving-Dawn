@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Models.Fight;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using Card = Models.Cards.Card;
 
 namespace Fight.Engine

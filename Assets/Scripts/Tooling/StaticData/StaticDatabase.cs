@@ -7,12 +7,12 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Serialization;
 using Tooling.Logging;
-using Tooling.StaticData.Validation;
+using Tooling.StaticData.EditorUI.Validation;
 using UnityEditor;
 using UnityEngine;
 using Utils.Extensions;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     [InitializeOnLoad]
     public class StaticDatabase

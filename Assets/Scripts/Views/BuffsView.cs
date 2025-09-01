@@ -4,7 +4,7 @@ using Fight.Engine;
 using Models.Buffs;
 using Models.Characters;
 using Systems;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using UI;
 using UnityEngine;
 using Zenject;

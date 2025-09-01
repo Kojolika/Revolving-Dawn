@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Controllers.Strategies;
 using Newtonsoft.Json;
 using Serialization;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 

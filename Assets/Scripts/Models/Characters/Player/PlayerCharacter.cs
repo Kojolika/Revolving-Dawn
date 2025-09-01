@@ -3,7 +3,7 @@ using Fight.Engine;
 using Models.Fight;
 using Newtonsoft.Json;
 using Settings;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using Card = Models.Cards.Card;
 
 namespace Models.Characters

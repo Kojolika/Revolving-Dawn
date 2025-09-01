@@ -1,7 +1,7 @@
 using System;
 using Fight.Engine;
 using Models.Buffs;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using UnityEngine.Assertions;
 
 namespace Fight.Events

@@ -6,7 +6,7 @@ using Tooling.Logging;
 using UnityEditor;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.Validation
+namespace Tooling.StaticData.EditorUI.Validation
 {
     public class MainValidator
     {

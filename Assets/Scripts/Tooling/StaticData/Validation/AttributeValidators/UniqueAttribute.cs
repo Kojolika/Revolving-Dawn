@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Tooling.Logging;
 
-namespace Tooling.StaticData.Validation
+namespace Tooling.StaticData.EditorUI.Validation
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class UniqueAttribute : Attribute, IValidator

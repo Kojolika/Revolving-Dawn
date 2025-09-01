@@ -1,6 +1,6 @@
 using System;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     /// <summary>
     /// The <see cref="GeneralField"/> will ignore drawing editing fields for fields with this attribute or if a class has this attribute

@@ -1,0 +1,13 @@
+{
+  "Art": "7421f5dc9612a7944b443208866e5353",
+  "Manas": null,
+  "PlayerClass": null,
+  "Upgrade": null,
+  "Downgrade": null,
+  "Description": null,
+  "IsLostOnPlay": false,
+  "TargetingOptions": [
+    1
+  ],
+  "CardLogic": null
+}

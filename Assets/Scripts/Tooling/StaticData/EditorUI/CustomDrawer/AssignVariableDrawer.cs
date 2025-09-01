@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Tooling.Logging;
-using Tooling.StaticData.Bytecode;
+using Tooling.StaticData.EditorUI.Bytecode;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     /*public class AssignVariableDrawer : GeneralFieldDrawer<AssignVariable>
     {

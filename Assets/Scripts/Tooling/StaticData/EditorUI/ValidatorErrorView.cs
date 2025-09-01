@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     public class ValidatorErrorView : VisualElement
     {

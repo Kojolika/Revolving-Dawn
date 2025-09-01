@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Systems.Managers;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using UnityEngine;
 using Enemy = Models.Characters.Enemy;
 

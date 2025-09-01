@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     public class Enemy : StaticData
     {

@@ -1,10 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Common.Util;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.EditorUI.EditorUI
 {
     /// <summary>
     /// Displays a single row of a static data instance
@@ -86,9 +88,17 @@ namespace Tooling.StaticData.EditorUI
                 return "null";
             }
 
-            return typeof(StaticData).IsAssignableFrom(fieldInfo.FieldType)
-                ? (fieldInfo.GetValue(instance) as StaticData)?.Name
-                : $"{fieldInfo.GetValue(instance)}";
+            if (typeof(StaticData).IsAssignableFrom(fieldInfo.FieldType))
+            {
+                return (fieldInfo.GetValue(instance) as StaticData)?.Name;
+            }
+
+            if (typeof(IEnumerable).IsAssignableFrom(fieldInfo.FieldType))
+            {
+                return (fieldInfo.GetValue(instance) as IEnumerable).ToCommaSeparatedString();
+            }
+
+            return $"{fieldInfo.GetValue(instance)}";
         }
 
         private static ButtonIcon CreateEditButton(StaticData instance, Type staticDataType)

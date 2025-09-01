@@ -13,7 +13,7 @@ using Models.Map;
 using Settings;
 using Systems;
 using Systems.Managers;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;

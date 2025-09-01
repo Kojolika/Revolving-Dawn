@@ -1,8 +1,8 @@
 using System;
 using System.Reflection;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.EditorUI.EditorUI;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// Abstracts how a <see cref="GeneralField"/> sets and gets the value of the object that it is representing.

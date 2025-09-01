@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Tooling.StaticData.Bytecode;
+using Tooling.StaticData.EditorUI.Bytecode;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     [System.Serializable]
     public class Statement : StaticData

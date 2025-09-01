@@ -1,5 +1,5 @@
 using Models.Characters;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 
 namespace Controllers.Strategies
 {

@@ -1,4 +1,4 @@
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// Paths to icons used in our static data editor.
@@ -9,5 +9,6 @@ namespace Tooling.StaticData
         public static readonly string Edit = "Assets/Sprites/Editor/icon_edit.png";
         public static readonly string List = "Assets/Sprites/Editor/icon_list.png";
         public static readonly string Circle = "Assets/Sprites/Editor/icon_circle.png";
+        public static readonly string Redirect = "Assets/Sprites/Editor/icon_redirect.png";
     }
 }

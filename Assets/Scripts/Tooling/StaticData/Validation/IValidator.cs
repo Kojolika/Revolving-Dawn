@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Tooling.StaticData.Validation
+namespace Tooling.StaticData.EditorUI.Validation
 {
     public interface IValidator
     {

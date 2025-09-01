@@ -1,6 +1,6 @@
 using Fight.Engine;
 using Fight.Events.SubEvents;
-using Tooling.StaticData;
+using Tooling.StaticData.EditorUI;
 using UnityEngine.Assertions;
 
 namespace Fight.Events

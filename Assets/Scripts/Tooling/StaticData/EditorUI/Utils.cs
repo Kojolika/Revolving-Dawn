@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.EditorUI.EditorUI;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Utils.Extensions;
 
-namespace Tooling.StaticData
+namespace Tooling.StaticData.EditorUI
 {
     public static class Utils
     {
@@ -46,6 +48,46 @@ namespace Tooling.StaticData
         {
             return (field.IsPublic || field.GetCustomAttribute<SerializeField>() != null)
                    && field.GetCustomAttribute<GeneralFieldIgnoreAttribute>()?.IgnoreType != IgnoreType.Field;
+        }
+
+        /// <summary>
+        /// If our type is a static data type, sort the fields to have the name at the top while retaining the order of the rest of the fields
+        /// </summary>
+        public static void SortFields(List<FieldInfo> fields, Type type)
+        {
+            if (!typeof(StaticData).IsAssignableFrom(type) || fields.Count <= 1)
+            {
+                return;
+            }
+
+            var nameField = fields.First(field => field.Name == nameof(StaticData.Name));
+            var nameIndex = fields.IndexOf(nameField);
+            for (int i = fields.Count - 1; i > 0; i--)
+            {
+                if (i > nameIndex)
+                {
+                    continue;
+                }
+
+                fields[i] = fields[i - 1];
+            }
+
+            fields[0] = nameField;
+        }
+
+        /// <summary>
+        /// Adds a label to a parent for any field value
+        /// </summary>
+        public static void AddLabel(VisualElement root, string text)
+        {
+            if (text.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            var label = new Label(text);
+            label.AddToClassList("unity-base-field__label");
+            root.Add(label);
         }
     }
 }
