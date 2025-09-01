@@ -1,4 +1,6 @@
+using System;
 using Models.Map;
+using Tooling.StaticData.EditorUI.Validation;
 using UnityEngine.AddressableAssets;
 
 namespace Tooling.StaticData.EditorUI
@@ -9,6 +11,8 @@ namespace Tooling.StaticData.EditorUI
     public class NodeEvent : StaticData
     {
         public AssetReferenceSprite Icon;
-        public NodeEventLogic       Logic;
+
+        [IsAssignableFrom(typeof(NodeEventLogic))]
+        public Type Logic;
     }
 }

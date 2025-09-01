@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using Models.Cards;
 using Models.Fight;
 using Tooling.StaticData.EditorUI;
-using Card = Models.Cards.Card;
 
 namespace Fight.Engine
 {
@@ -64,27 +64,27 @@ namespace Fight.Engine
         /// <summary>
         /// Returns all the cards in the deck of this participant
         /// </summary>
-        List<Card> Deck { get; }
+        List<CardLogic> Deck { get; }
 
         /// <summary>
         /// Returns all  the cards in the draw pile of this participant
         /// </summary>
-        List<Card> Draw { get; }
+        List<CardLogic> Draw { get; }
 
         /// <summary>
         /// Returns all the cards in the hand of this participant
         /// </summary>
-        List<Card> Hand { get; }
+        List<CardLogic> Hand { get; }
 
         /// <summary>
         /// Returns all the cards in the discard pile of this participant
         /// </summary>
-        List<Card> Discard { get; }
+        List<CardLogic> Discard { get; }
 
         /// <summary>
         /// Returns all the cards in the lost pile of this participant
         /// </summary>
-        List<Card> Lost { get; }
+        List<CardLogic> Lost { get; }
     }
 
     /// <summary>

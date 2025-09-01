@@ -31,15 +31,15 @@ namespace Tooling.StaticData.EditorUI
     /// </summary>
     public class ValueProvider<T> : IValueProvider
     {
-        private readonly Func<T> getValueFunc;
+        private readonly Func<T>   getValueFunc;
         private readonly Action<T> setValueFunc;
-        public string ValueName { get; }
+        public           string    ValueName { get; }
 
         public ValueProvider(Func<T> getValueFunc, Action<T> setValueFunc, string valueName)
         {
             this.getValueFunc = getValueFunc;
             this.setValueFunc = setValueFunc;
-            ValueName = valueName;
+            ValueName         = valueName;
         }
 
         public void SetValue(object value)
@@ -54,28 +54,29 @@ namespace Tooling.StaticData.EditorUI
     }
 
     /// <summary>
-    /// Value provider if the <see cref="GeneralField"/> is drawing a <see cref="FieldInfo"/> for an object.F
+    /// Value provider if the <see cref="GeneralField"/> is drawing a <see cref="System.Reflection.FieldInfo"/> for an object.F
     /// </summary>
     public class FieldValueProvider : IValueProvider
     {
-        private readonly FieldInfo field;
-        private readonly object objectWithField;
-        public string ValueName => field?.Name ?? string.Empty;
+        public readonly  FieldInfo FieldInfo;
+        private readonly object    objectWithField;
 
-        public FieldValueProvider(FieldInfo field, object objectWithField)
+        public string ValueName => FieldInfo?.Name ?? string.Empty;
+
+        public FieldValueProvider(FieldInfo fieldInfo, object objectWithField)
         {
-            this.field = field;
+            FieldInfo            = fieldInfo;
             this.objectWithField = objectWithField;
         }
 
         public void SetValue(object value)
         {
-            field.SetValue(objectWithField, value);
+            FieldInfo.SetValue(objectWithField, value);
         }
 
         public object GetValue()
         {
-            return field.GetValue(objectWithField);
+            return FieldInfo.GetValue(objectWithField);
         }
     }
 }

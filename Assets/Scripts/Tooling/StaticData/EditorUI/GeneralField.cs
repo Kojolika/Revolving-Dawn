@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Tooling.Logging;
+using Tooling.StaticData.EditorUI.Validation;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.AddressableAssets;
@@ -119,6 +120,10 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             {
                 editorForFieldType = CreateEnumField(type);
             }
+            else if (type == typeof(Type))
+            {
+                editorForFieldType = CreateTypeField(type);
+            }
             else if (type.IsInterface || type.IsAbstract)
             {
                 editorForFieldType = CreateAbstractTypeSelection(type);
@@ -165,6 +170,39 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                     ? displayNameAttribute.Name
                     : valueName;
             }
+        }
+
+        private PopupField<Type> CreateTypeField(Type type)
+        {
+            var typeValues = GetPossibleTypes(valueProvider);
+            var popupField = new PopupField<Type>(
+                valueProvider.ValueName,
+                typeValues,
+                (GetValue() ?? typeValues.FirstOrDefault()) as Type,
+                formatListItemCallback: selectedType => selectedType?.FullName?.Replace('.', '/') ?? string.Empty);
+
+            popupField.RegisterValueChangedCallback(evt => { SetValueAndNotify(evt.newValue); });
+
+            return popupField;
+        }
+
+        /// <summary>
+        /// Gets the list of selectable types for a field with a type of 'System.Type'
+        /// </summary>
+        /// <param name="valueProvider"> The value provider this general field is using</param>
+        /// <returns> The list of possible types to use </returns>
+        private static List<Type> GetPossibleTypes(IValueProvider valueProvider)
+        {
+            var typeValues = Assembly.GetCallingAssembly().GetTypes().ToList();
+
+            // If possible, filter types by the attribute on our field values
+            if (valueProvider is FieldValueProvider fieldValueProvider
+             && fieldValueProvider.FieldInfo.GetCustomAttribute<IsAssignableFromAttribute>() is var isAssignableFromAttribute)
+            {
+                typeValues = typeValues.Where(t => isAssignableFromAttribute.TargetType.IsAssignableFrom(t)).ToList();
+            }
+
+            return typeValues;
         }
 
         /// <summary>

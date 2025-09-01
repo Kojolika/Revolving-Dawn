@@ -5,7 +5,7 @@ namespace Fight.Events
 {
     public class DrawCardEvent : BattleEvent<ICardDeckParticipant>
     {
-        public Card CardDrawn { get; private set; }
+        public CardLogic cardLogicDrawn { get; private set; }
 
         public DrawCardEvent(ICardDeckParticipant target) : base(target)
         {
@@ -15,7 +15,7 @@ namespace Fight.Events
 
         public override void Execute(Context fightContext)
         {
-            CardDrawn = Target.DrawCard();
+            cardLogicDrawn = Target.DrawCard();
         }
 
         public override void Undo()

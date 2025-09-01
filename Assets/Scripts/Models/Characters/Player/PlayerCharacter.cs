@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Fight.Engine;
+using Models.Cards;
 using Models.Fight;
 using Newtonsoft.Json;
 using Settings;
 using Tooling.StaticData.EditorUI;
-using Card = Models.Cards.Card;
 
 namespace Models.Characters
 {
@@ -81,11 +81,11 @@ namespace Models.Characters
 
         #region ICardDeckParticipant
 
-        public List<Card> Deck    { get; }
-        public List<Card> Draw    { get; }
-        public List<Card> Hand    { get; }
-        public List<Card> Discard { get; }
-        public List<Card> Lost    { get; }
+        public List<CardLogic> Deck    { get; }
+        public List<CardLogic> Draw    { get; }
+        public List<CardLogic> Hand    { get; }
+        public List<CardLogic> Discard { get; }
+        public List<CardLogic> Lost    { get; }
 
         #endregion
     }

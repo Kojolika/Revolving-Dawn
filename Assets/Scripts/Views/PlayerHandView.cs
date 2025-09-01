@@ -29,7 +29,7 @@ namespace Views
 
         private const float ApproxDistanceEquals = 0.1f;
 
-        public  Dictionary<Card, CardView> CardViewsLookup { get; private set; }
+        public  Dictionary<CardLogic, CardView> CardViewsLookup { get; private set; }
         private List<CardView>             orderedCardViews;
         public  BattleEngine               BattleEngine          { get; private set; }
         public  BattleAnimationEngine      BattleAnimationEngine { get; private set; }
@@ -50,28 +50,28 @@ namespace Views
             BattleAnimationEngine       = battleAnimationEngine;
         }
 
-        public async UniTask DrawCard(Card cardModel)
+        public async UniTask DrawCard(CardLogic cardLogicModel)
         {
-            var newCardView = cardViewFactory.Create(cardModel);
+            var newCardView = cardViewFactory.Create(cardLogicModel);
             newCardView.transform.position = cardSpawnLocation.position;
             newCardView.transform.SetParent(handParent);
-            CardViewsLookup.Add(cardModel, newCardView);
+            CardViewsLookup.Add(cardLogicModel, newCardView);
             orderedCardViews.Add(newCardView);
 
             await CreateHandCurveAnimation(playerHandViewSettings.CardDrawMoveSpeed,
                                            playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
         }
 
-        public async UniTask PlayCardAnimation(Card card)
+        public async UniTask PlayCardAnimation(CardLogic cardLogic)
         {
-            if (!CardViewsLookup.TryGetValue(card, out var cardView))
+            if (!CardViewsLookup.TryGetValue(cardLogic, out var cardView))
             {
                 return;
             }
 
-            if (!cardView.Model.StaticData.IsLostOnPlay)
+            if (!cardView.Model.Model.IsLostOnPlay)
             {
-                await DiscardCardAnimation(card);
+                await DiscardCardAnimation(cardLogic);
             }
             else
             {
@@ -79,23 +79,23 @@ namespace Views
             }
         }
 
-        public void RemoveCardFromHand(Card cardModel)
+        public void RemoveCardFromHand(CardLogic cardLogicModel)
         {
-            CardViewsLookup[cardModel].Collider.enabled = false;
+            CardViewsLookup[cardLogicModel].Collider.enabled = false;
 
-            if (!CardViewsLookup.Remove(cardModel))
+            if (!CardViewsLookup.Remove(cardLogicModel))
             {
                 MyLogger.LogError($"Trying to set a card that doesn't exist in the hand.");
             }
 
             orderedCardViews.Remove(
-                orderedCardViews.First(cardView => cardView.Model == cardModel)
+                orderedCardViews.First(cardView => cardView.Model == cardLogicModel)
             );
         }
 
-        public async UniTask DiscardCardAnimation(Card card)
+        public async UniTask DiscardCardAnimation(CardLogic cardLogic)
         {
-            if (!CardViewsLookup.TryGetValue(card, out var cardView))
+            if (!CardViewsLookup.TryGetValue(cardLogic, out var cardView))
             {
                 return;
             }

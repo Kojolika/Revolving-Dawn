@@ -6,16 +6,16 @@ namespace Fight.Events
 {
     public class DiscardCardEvent : BattleEvent<ICardDeckParticipant>
     {
-        public readonly Card Card;
+        public readonly CardLogic CardLogic;
 
-        public DiscardCardEvent(ICardDeckParticipant target, Card card) : base(target)
+        public DiscardCardEvent(ICardDeckParticipant target, CardLogic cardLogic) : base(target)
         {
-            Card = card;
+            CardLogic = cardLogic;
         }
 
         public override void Execute(Context fightContext)
         {
-            Target.DiscardCard(Card);
+            Target.DiscardCard(CardLogic);
         }
 
         public override void Undo()
@@ -24,7 +24,7 @@ namespace Fight.Events
 
         public override string Log()
         {
-            return $"{Target.Name} discard card {Card.StaticData.Name}";
+            return $"{Target.Name} discard card {CardLogic.Model.Name}";
         }
     }
 }

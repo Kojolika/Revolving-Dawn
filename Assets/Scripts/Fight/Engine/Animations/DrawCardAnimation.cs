@@ -19,7 +19,7 @@ namespace Fight.Animations
 
         public override async UniTask Play(DrawCardEvent battleEvent)
         {
-            await playerHandView.DrawCard(battleEvent.CardDrawn);
+            await playerHandView.DrawCard(battleEvent.cardLogicDrawn);
             IsFinished = true;
         }
 

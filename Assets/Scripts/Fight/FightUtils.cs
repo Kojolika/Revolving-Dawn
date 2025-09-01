@@ -2,49 +2,49 @@ using System;
 using System.Collections.Generic;
 using Fight.Engine;
 using Fight.Events;
+using Models.Cards;
 using Tooling.Logging;
 using Tooling.StaticData.EditorUI;
 using UnityEngine.Assertions;
 using Utils.Extensions;
-using Card = Models.Cards.Card;
 
 namespace Fight
 {
     public static class FightUtils
     {
-        public static void DiscardCard(this ICardDeckParticipant participant, Card card)
+        public static void DiscardCard(this ICardDeckParticipant participant, CardLogic cardLogic)
         {
-            if (!participant.Hand.Remove(card))
+            if (!participant.Hand.Remove(cardLogic))
             {
-                MyLogger.LogError($"Cannot discard card {card.StaticData.Name} because its not in the participant {participant.Name}'s hand!");
+                MyLogger.LogError($"Cannot discard card {cardLogic.Model.Name} because its not in the participant {participant.Name}'s hand!");
                 return;
             }
 
-            participant.Discard.Add(card);
+            participant.Discard.Add(cardLogic);
         }
 
-        public static void LoseCard(this ICardDeckParticipant participant, Card card)
+        public static void LoseCard(this ICardDeckParticipant participant, CardLogic cardLogic)
         {
-            if (participant.Hand.Contains(card))
+            if (participant.Hand.Contains(cardLogic))
             {
-                participant.Hand.Remove(card);
+                participant.Hand.Remove(cardLogic);
             }
-            else if (participant.Discard.Contains(card))
+            else if (participant.Discard.Contains(cardLogic))
             {
-                participant.Discard.Remove(card);
+                participant.Discard.Remove(cardLogic);
             }
-            else if (participant.Draw.Contains(card))
+            else if (participant.Draw.Contains(cardLogic))
             {
-                participant.Draw.Remove(card);
+                participant.Draw.Remove(cardLogic);
             }
 
-            participant.Lost.Add(card);
+            participant.Lost.Add(cardLogic);
         }
 
         /// <summary>
         /// Performs the logic to draw a card from a participant draw pile and returns the card drawn.
         /// </summary>
-        public static Card DrawCard(this ICardDeckParticipant participant)
+        public static CardLogic DrawCard(this ICardDeckParticipant participant)
         {
             if (participant.Draw.Count == 0)
             {
@@ -67,37 +67,37 @@ namespace Fight
             return cardDrawn;
         }
 
-        public static void PlayCard(this ICardDeckParticipant participant, Context fightContext, Card card)
+        public static void PlayCard(this ICardDeckParticipant participant, Context fightContext, CardLogic cardLogic)
         {
-            fightContext.BattleEngine.AddEvents(card.Play(fightContext, participant).ToArray());
-            if (card.StaticData.IsLostOnPlay)
+            fightContext.BattleEngine.AddEvents(cardLogic.Play(fightContext, participant).ToArray());
+            if (cardLogic.Model.IsLostOnPlay)
             {
-                fightContext.BattleEngine.AddEvent(new LoseCardEvent(participant, card));
+                fightContext.BattleEngine.AddEvent(new LoseCardEvent(participant, cardLogic));
             }
             else
             {
-                fightContext.BattleEngine.AddEvent(new DiscardCardEvent(participant, card));
+                fightContext.BattleEngine.AddEvent(new DiscardCardEvent(participant, cardLogic));
             }
         }
 
-        public static void UpgradeCard(ref Card card)
+        public static void UpgradeCard(ref CardLogic cardLogic)
         {
-            if (card.StaticData.Upgrade == null)
+            if (cardLogic.Model.Upgrade == null)
             {
-                MyLogger.LogError($"Cannot upgrade a card without an upgrade! card={card.StaticData.Name}");
+                MyLogger.LogError($"Cannot upgrade a card without an upgrade! card={cardLogic.Model.Name}");
                 return;
             }
-
-            card = card.StaticData.Upgrade.CardLogic;
+            // TODO:
+            // cardLogic = cardLogic.Model.Upgrade.CardLogic;
         }
 
-        public static void DowngradeCard(ref Card card)
+        public static void DowngradeCard(ref CardLogic cardLogic)
         {
-            if (card.StaticData.Downgrade == null)
+            if (cardLogic.Model.Downgrade == null)
             {
-                if (card.StaticData.Manas.IsNullOrEmpty())
+                if (cardLogic.Model.Manas.IsNullOrEmpty())
                 {
-                    MyLogger.LogError($"Cannot downgrade card {card.StaticData.Name} with zero mana to upgrade it.");
+                    MyLogger.LogError($"Cannot downgrade card {cardLogic.Model.Name} with zero mana to upgrade it.");
                     return;
                 }
 
@@ -114,7 +114,8 @@ namespace Fight
             }
             else
             {
-                card = card.StaticData.Downgrade.CardLogic;
+                // TODO: impl
+                //cardLogic = cardLogic.Model.Downgrade.CardLogic;
             }
         }
 
@@ -122,7 +123,7 @@ namespace Fight
         /// Shuffle the specified deck by using the Fisher-Yates shuffle algorithm.
         /// </summary>
         /// <param name="deck">Deck to shuffle.</param>
-        private static void ShuffleDeck(List<Card> deck)
+        private static void ShuffleDeck(List<CardLogic> deck)
         {
             if (deck.IsNullOrEmpty())
             {

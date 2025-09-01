@@ -19,8 +19,8 @@ namespace Tooling.StaticData.EditorUI.Validation
         /// <param name="fieldInfo">The FieldInfo for this field</param>
         /// <param name="allObjects">All static data objects including <see cref="obj"/></param>
         /// <returns>True if valid.</returns>
-        bool Validate(System.Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects);
+        bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects);
 
-        bool CanValidate(System.Type type);
+        bool CanValidate(Type type);
     }
 }

@@ -5,16 +5,16 @@ namespace Fight.Events
 {
     public class LoseCardEvent : BattleEvent<ICardDeckParticipant>
     {
-        public readonly Card Card;
+        public readonly CardLogic CardLogic;
 
-        public LoseCardEvent(ICardDeckParticipant target, Card card) : base(target)
+        public LoseCardEvent(ICardDeckParticipant target, CardLogic cardLogic) : base(target)
         {
-            Card = card;
+            CardLogic = cardLogic;
         }
 
         public override void Execute(Context fightContext)
         {
-            Target.LoseCard(Card);
+            Target.LoseCard(CardLogic);
         }
 
         public override void Undo()

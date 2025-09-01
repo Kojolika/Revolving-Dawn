@@ -35,7 +35,7 @@ namespace Views
             health.HealthUpdated += OnHealthUpdated;
         }
 
-        public void PreviewCardEffects(Card card)
+        public void PreviewCardEffects(CardLogic cardLogic)
         {
 
         }

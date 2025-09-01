@@ -48,13 +48,13 @@ namespace Views
 
         [Inject]
         private void Construct(
-            EnemyLogic               enemyLogic,
+            EnemyLogic          enemyLogic,
             HealthView          healthView,
             EnemyMoveView       enemyMoveView,
             BuffsView           buffsView,
             AddressablesManager addressablesManager)
         {
-            enemyLogicModel         = enemyLogic;
+            enemyLogicModel    = enemyLogic;
             this.healthView    = healthView;
             this.enemyMoveView = enemyMoveView;
             this.buffsView     = buffsView;
@@ -69,15 +69,6 @@ namespace Views
                 }
             );
         }
-
-        #region IChangeMaterial
-
-        public void SetMaterial(Material material)
-        {
-            spriteRenderer.material = material;
-        }
-
-        #endregion
 
         public class Factory : PlaceholderFactory<EnemyLogic, EnemyView>
         {

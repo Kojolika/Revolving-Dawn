@@ -84,12 +84,12 @@ namespace Fight
         {
             base.OnEnter();
 
-            numberOfTargetingOptions = cardView.Model.StaticData.TargetingOptions.Count;
+            numberOfTargetingOptions = cardView.Model.Model.TargetingOptions.Count;
             acquiredTarget           = new bool[numberOfTargetingOptions];
 
             for (int i = 0; i < numberOfTargetingOptions; i++)
             {
-                var targetingOption = cardView.Model.StaticData.TargetingOptions[i];
+                var targetingOption = cardView.Model.Model.TargetingOptions[i];
                 acquiredTarget[i] = targetingOption is not Targeting.Options.Enemy and not Targeting.Options.Friendly;
             }
 
@@ -97,7 +97,7 @@ namespace Fight
             shouldDrawCurve = acquiredTarget.Any(acquired => !acquired);
             targetingArrowView.SetActive(shouldDrawCurve);
 
-            if (cardView.Model.StaticData.TargetingOptions.Any(option => option == Targeting.Options.Enemy
+            if (cardView.Model.Model.TargetingOptions.Any(option => option == Targeting.Options.Enemy
                                                                       || option == Targeting.Options.RandomEnemy
                                                                       || option == Targeting.Options.AllEnemies
                                                                       || option == Targeting.Options.All))
@@ -108,7 +108,7 @@ namespace Fight
                 }
             }
 
-            if (cardView.Model.StaticData.TargetingOptions.Any(option => option == Targeting.Options.Friendly
+            if (cardView.Model.Model.TargetingOptions.Any(option => option == Targeting.Options.Friendly
                                                                       || option == Targeting.Options.All))
             {
                 foreach (var player in levelView.PlayerLookup.Values)

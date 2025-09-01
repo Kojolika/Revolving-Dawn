@@ -8,9 +8,9 @@ namespace Models.Cards
     /// <summary>
     /// Weak card, default card for red mana on downgrades
     /// </summary>
-    public class Poke : Card
+    public class Poke : CardLogic
     {
-        public Poke(Tooling.StaticData.EditorUI.Card staticData) : base(staticData)
+        public Poke(Tooling.StaticData.EditorUI.Card model) : base(model)
         {
         }
 

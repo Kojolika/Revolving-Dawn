@@ -1,5 +1,5 @@
 {
-  "Art": "7421f5dc9612a7944b443208866e5353",
+  "Art": "083b62d404bf9bd47bed1e084f79134d",
   "Manas": null,
   "PlayerClass": null,
   "Upgrade": null,
@@ -9,5 +9,5 @@
   "TargetingOptions": [
     1
   ],
-  "CardLogic": null
+  "CardLogic": "Models.Cards.Poke, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
 }

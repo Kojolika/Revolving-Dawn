@@ -5,16 +5,16 @@ namespace Fight.Events
 {
     public class PlayCardEvent : BattleEvent<ICardDeckParticipant>
     {
-        public readonly Card Card;
+        public readonly CardLogic CardLogic;
 
-        public PlayCardEvent(ICardDeckParticipant target, Card card) : base(target)
+        public PlayCardEvent(ICardDeckParticipant target, CardLogic cardLogic) : base(target)
         {
-            Card = card;
+            CardLogic = cardLogic;
         }
 
         public override void Execute(Context fightContext)
         {
-            Target.PlayCard(fightContext, Card);
+            Target.PlayCard(fightContext, CardLogic);
         }
 
         public override void Undo()
@@ -22,6 +22,6 @@ namespace Fight.Events
             throw new System.NotImplementedException();
         }
 
-        public override string Log() => $"{Target.Name} played card {Card.StaticData.Name}";
+        public override string Log() => $"{Target.Name} played card {CardLogic.Model.Name}";
     }
 }

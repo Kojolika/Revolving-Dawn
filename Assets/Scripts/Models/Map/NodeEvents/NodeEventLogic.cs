@@ -11,11 +11,6 @@ namespace Models.Map
     {
         public readonly NodeEvent Model;
 
-        [JsonConstructor]
-        public NodeEventLogic()
-        {
-        }
-
         public NodeEventLogic(NodeEvent model, MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
         {
             this.Model = model;

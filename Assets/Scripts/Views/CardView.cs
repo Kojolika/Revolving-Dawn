@@ -16,32 +16,32 @@ namespace Views
         [SerializeField] TextMeshPro    descriptionText;
         [SerializeField] Collider       cardCollider;
 
-        public Card Model { get; private set; }
+        public CardLogic Model { get; private set; }
 
         public Collider       Collider           => cardCollider;
         public SpriteRenderer CardBorderRenderer => cardBorderRenderer;
         public Vector3        DefaultScale       { get; private set; }
 
         [Inject]
-        private void Construct(AddressablesManager addressablesManager, LocalizationManager localizationManager, Card cardModel)
+        private void Construct(AddressablesManager addressablesManager, LocalizationManager localizationManager, CardLogic cardLogicModel)
         {
-            Model = cardModel;
-            nameText.SetText(cardModel.StaticData.Name);
+            Model = cardLogicModel;
+            nameText.SetText(cardLogicModel.Model.Name);
 
-            descriptionText.SetText(localizationManager.Translate(cardModel.StaticData.Description));
+            descriptionText.SetText(localizationManager.Translate(cardLogicModel.Model.Description));
 
             var cancellationToken = this.GetCancellationTokenOnDestroy();
 
 
             _ = addressablesManager.LoadGenericAsset(
-                assetReference: cardModel.StaticData.PlayerClass.CardBorderArt,
+                assetReference: cardLogicModel.Model.PlayerClass.CardBorderArt,
                 releaseCondition: () => cancellationToken.IsCancellationRequested,
                 onSuccess: asset => cardBorderRenderer.sprite = asset,
                 cancellationToken: cancellationToken);
 
 
             _ = addressablesManager.LoadGenericAsset(
-                cardModel.StaticData.Art,
+                cardLogicModel.Model.Art,
                 () => cancellationToken.IsCancellationRequested,
                 asset => cardArtRenderer.sprite = asset, cancellationToken: cancellationToken);
         }
@@ -51,7 +51,7 @@ namespace Views
             DefaultScale = transform.localScale;
         }
 
-        public class Factory : PlaceholderFactory<Card, CardView>
+        public class Factory : PlaceholderFactory<CardLogic, CardView>
         {
         }
     }

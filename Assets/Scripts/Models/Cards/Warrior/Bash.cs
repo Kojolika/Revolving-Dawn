@@ -5,9 +5,9 @@ using Fight.Events;
 
 namespace Models.Cards.Warrior
 {
-    public class Bash : Card
+    public class Bash : CardLogic
     {
-        public Bash(Tooling.StaticData.EditorUI.Card staticData) : base(staticData)
+        public Bash(Tooling.StaticData.EditorUI.Card model) : base(model)
         {
         }
 

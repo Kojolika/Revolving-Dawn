@@ -3,6 +3,7 @@ using Fight;
 using Fight.Engine;
 using Fight.Events;
 using Tooling.Logging;
+using Tooling.StaticData.EditorUI;
 
 namespace Models.Cards
 {
@@ -12,18 +13,18 @@ namespace Models.Cards
     ///
     /// These types are reference in the static database and are dynamically instanced with the card view during run time.
     /// </summary>
-    public abstract class Card
+    public abstract class CardLogic
     {
         private readonly Dictionary<int, List<ICombatParticipant>> targetingLookup = new();
 
         /// <summary>
         /// Contains the static data and assets for this card.
         /// </summary>
-        public Tooling.StaticData.EditorUI.Card StaticData { get; }
+        public Card Model { get; }
 
-        public Card(Tooling.StaticData.EditorUI.Card staticData)
+        public CardLogic(Card model)
         {
-            StaticData = staticData;
+            Model = model;
         }
 
         /// <summary>
@@ -32,9 +33,9 @@ namespace Models.Cards
         /// </summary>
         public void SetTargetsForIndex(int index, List<ICombatParticipant> targets)
         {
-            if (index >= StaticData.TargetingOptions.Count || index < 0)
+            if (index >= Model.TargetingOptions.Count || index < 0)
             {
-                MyLogger.LogError($"Invalid index targeting index! Must be in range of the {StaticData.TargetingOptions}! index={index}");
+                MyLogger.LogError($"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
             }
 
             targetingLookup[index] = targets;
@@ -46,9 +47,9 @@ namespace Models.Cards
         /// <returns> The target(s) from the <see cref="Tooling.StaticData.EditorUI.Card.TargetingOptions"/> at the index </returns>
         protected List<ICombatParticipant> GetTargetsForOptionIndex(int index)
         {
-            if (index >= StaticData.TargetingOptions.Count || index < 0)
+            if (index >= Model.TargetingOptions.Count || index < 0)
             {
-                MyLogger.LogError($"Invalid index targeting index! Must be in range of the {StaticData.TargetingOptions}! index={index}");
+                MyLogger.LogError($"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
                 return null;
             }
 

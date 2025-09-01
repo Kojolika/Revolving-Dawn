@@ -6,6 +6,7 @@ using Fight.Events;
 using Fight.Input;
 using Mana;
 using Models;
+using Models.Cards;
 using Models.Characters;
 using Models.Characters.Player;
 using Models.Fight;
@@ -19,7 +20,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Views;
 using Zenject.Installers.Facades;
-using Card = Models.Cards.Card;
 
 namespace Zenject.Installers
 {
@@ -64,7 +64,7 @@ namespace Zenject.Installers
             Container.Bind<Camera>()
                      .FromInstance(Camera.main);
 
-            Container.BindFactory<Card, CardView, CardView.Factory>()
+            Container.BindFactory<CardLogic, CardView, CardView.Factory>()
                      .FromComponentInNewPrefab(cardView)
                      .AsSingle();
 

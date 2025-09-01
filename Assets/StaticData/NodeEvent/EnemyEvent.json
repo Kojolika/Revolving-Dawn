@@ -1,0 +1,4 @@
+{
+  "Icon": "205954ae161227c418555d528d4ef5be",
+  "Logic": "Models.Map.EnemyEventLogic, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+}

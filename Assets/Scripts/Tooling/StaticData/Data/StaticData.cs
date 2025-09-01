@@ -10,7 +10,7 @@ namespace Tooling.StaticData.EditorUI
         [JsonIgnore, Required(allowDefaultValues: false), Unique]
         public string Name;
 
-       public StaticDataReference Reference { get; set; }
+        public StaticDataReference Reference { get; set; }
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ namespace Tooling.StaticData.EditorUI
 
         public StaticDataReference(Type type, string instanceName)
         {
-            Type = type;
+            Type         = type;
             InstanceName = instanceName;
         }
 
