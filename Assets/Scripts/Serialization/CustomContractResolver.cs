@@ -64,8 +64,7 @@ namespace Serialization
                         staticDataReference.Type,
                         staticDataReference.InstanceName,
                         obj,
-                        field.Name,
-                        arrayIndex
+                        field.Name
                     );
                 }
                 else if (typeof(IList).IsAssignableFrom(field.FieldType))
