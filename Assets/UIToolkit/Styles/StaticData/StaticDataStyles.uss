@@ -17,17 +17,6 @@
     --button-bg-color: #595959;
 }
 
-.sd_toolbar {
-    flex-direction: row;
-}
-
-.sd_toolbar-button {
-    margin-left: 1px;
-    margin-right: 1px;
-    padding: 100px;
-
-    min-width: 100px;
-}
 
 .sd_border {
     border-color: var(--text-border-color);
@@ -110,12 +99,23 @@
     margin-bottom: var(--std-margin-small);
 }
 
+.sd_toolbar {
+    flex-direction: row;
+}
+
+.sd_toolbar-button {
+    min-width: 100px;
+}
+
 .unity-button {
+    border-radius: var(--std-border-raidus);
+    background-color: var(--button-bg-color);
+}
+
+.unity-button, .sd_toolbar-button {
     padding: var(--std-padding);
     border-color: var(--button-border-color);
     border-width: var(--std-border-width);
-    border-radius: var(--std-border-raidus);
-    background-color: var(--button-bg-color);
     margin: var(--std-margin-small);
     width: 200px;
 }

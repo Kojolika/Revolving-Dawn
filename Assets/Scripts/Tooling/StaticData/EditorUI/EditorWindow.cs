@@ -40,8 +40,8 @@ namespace Tooling.StaticData.EditorUI.EditorUI
         /// </summary>
         private TypesView typesListView;
 
-        private InstancesTable instancesTable;
-        private VisualElement  rightPanel;
+        private InstancesTable   instancesTable;
+        private TwoPaneSplitView rightPane;
 
         public static readonly StyleColor BorderColor = new(Color.gray);
         public static readonly StyleFloat BorderWidth = new(0.5f);
@@ -79,12 +79,21 @@ namespace Tooling.StaticData.EditorUI.EditorUI
 
             StaticDatabase.Instance.BuildDictionaryFromJson();
 
-            var topToolBar = CreateTopToolBar();
-            root.Add(topToolBar);
+            root.Add(CreateTopToolBar());
 
+            var twoPanelSplit = new TwoPaneSplitView
+            {
+                fixedPaneInitialDimension = 140,
+                orientation               = TwoPaneSplitViewOrientation.Horizontal,
+                style =
+                {
+                    flexGrow   = 1,
+                    flexShrink = 0
+                }
+            };
+
+            rightPane     = CreateRightPane();
             typesListView = new TypesView();
-
-            rightPanel = CreateRightPanel();
             typesListView.ListView.selectionChanged += _ =>
             {
                 selectedIndex = typesListView.ListView.selectedIndex;
@@ -92,19 +101,14 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                 OpenInstancesTable(selectedType);
             };
 
-            var twoPanelSplit = new TwoPaneSplitView
-            {
-                fixedPaneInitialDimension = 140,
-                orientation               = TwoPaneSplitViewOrientation.Horizontal
-            };
             twoPanelSplit.Add(typesListView);
-            twoPanelSplit.Add(rightPanel);
+            twoPanelSplit.Add(rightPane);
             root.Add(twoPanelSplit);
         }
 
         private void OpenInstancesTable(Type selectedType)
         {
-            rightPanel.Clear();
+            rightPane.Clear();
             if (selectedType == null)
             {
                 return;
@@ -114,8 +118,8 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             var validatorErrorView = new ValidatorErrorView(selectedType);
             instancesTable = new InstancesTable(selectedType, true, validatorErrorView.OnStaticDataSelected);
 
-            rightPanel.Add(instancesTable);
-            rightPanel.Add(validatorErrorView);
+            rightPane.Add(instancesTable);
+            rightPane.Add(validatorErrorView);
         }
 
         /// <summary>
@@ -137,7 +141,6 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             root.AddToClassList(Styles.BorderBottom);
 
             root.Add(CreateToolbarButton("Validate then Save to Json", () => _ = SaveAllStaticDataToJson(true)));
-            root.Add(CreateToolbarButton("Save and Export to Database", () => MyLogger.Log("Saving and exporting to database...")));
             root.Add(CreateToolbarButton("Validate Data", StaticDatabase.Instance.ValidateStaticData));
             root.Add(CreateToolbarButton("Remove All Json", RemoveAllJson));
 
@@ -154,7 +157,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             await StaticDatabase.Instance.SaveAllStaticDataToJson();
         }
 
-        private ToolbarButton CreateToolbarButton(string text, Action onClick = null)
+        private static Button CreateToolbarButton(string text, Action onClick = null)
         {
             var button = new ToolbarButton(() => onClick?.Invoke())
             {
@@ -182,13 +185,13 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             CreateGUI();
         }
 
-        private TwoPaneSplitView CreateRightPanel()
+        private static TwoPaneSplitView CreateRightPane()
         {
             var twoPaneSplitView = new TwoPaneSplitView
             {
                 fixedPaneIndex            = 1,
-                fixedPaneInitialDimension = 100,
-                orientation               = TwoPaneSplitViewOrientation.Vertical
+                fixedPaneInitialDimension = 200,
+                orientation               = TwoPaneSplitViewOrientation.Vertical,
             };
 
             // temp until we populate a type

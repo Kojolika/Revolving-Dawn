@@ -6,10 +6,10 @@ namespace Tooling.StaticData.EditorUI
 {
     public class ValidatorErrorView : VisualElement
     {
-        private readonly System.Type selectedType;
-        private StaticData instance;
+        private readonly Type       selectedType;
+        private          StaticData instance;
 
-        public ValidatorErrorView(System.Type selectedType)
+        public ValidatorErrorView(Type selectedType)
         {
             this.selectedType = selectedType;
 
@@ -37,7 +37,7 @@ namespace Tooling.StaticData.EditorUI
             }
 
             if (!StaticDatabase.Instance.validationErrors.TryGetValue(selectedType, out var errorDict)
-                || !errorDict.TryGetValue(instance, out var errors))
+             || !errorDict.TryGetValue(instance, out var errors))
             {
                 return;
             }
@@ -48,7 +48,7 @@ namespace Tooling.StaticData.EditorUI
                 {
                     style =
                     {
-                        color = Color.red,
+                        color      = Color.red,
                         whiteSpace = WhiteSpace.Normal
                     }
                 });

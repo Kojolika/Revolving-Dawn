@@ -74,6 +74,9 @@ namespace Tooling.StaticData.EditorUI
             }
         );
 
+        /// <summary>
+        /// Prevents creating this instance externally
+        /// </summary>
         private StaticDatabase()
         {
         }

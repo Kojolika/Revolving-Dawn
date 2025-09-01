@@ -68,12 +68,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                     }
 
                     var instance = instances[index];
-                    (item as InstanceRow)!.BindItem(
-                        instance,
-                        instance != null && (validationErrors?.TryGetValue(SelectedType, out var instanceValidationDict) ?? false)
-                            ? instanceValidationDict.GetValueOrDefault(instance)
-                            : null
-                    );
+                    (item as InstanceRow)!.BindItem(instance);
                 },
                 unbindItem                    = (item, _) => (item as InstanceRow)!.UnBindItem(),
                 itemsSource                   = instances,
