@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Common.Util;
 using Tooling.Logging;
 using Tooling.StaticData.EditorUI.Validation;
 using UnityEditor;
@@ -172,6 +173,9 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             }
         }
 
+        /// <summary>
+        /// Creates a dropdown field to select a type that's in the current project.
+        /// </summary>
         private PopupField<Type> CreateTypeField()
         {
             var typeValues = GetPossibleTypes(valueProvider);
@@ -248,18 +252,18 @@ namespace Tooling.StaticData.EditorUI.EditorUI
 
             listView.itemsAdded += indices =>
             {
-                var oldList = itemsSource;
+                var oldList = listView.itemsSource;
                 foreach (var index in indices)
                 {
-                    itemsSource[index] = GetDefaultValue(elementType);
+                    listView.itemsSource[index] = GetDefaultValue(elementType);
                 }
 
                 listView.RefreshItems();
-                SendEvent(ChangeEvent<IList>.GetPooled(oldList, itemsSource));
+                SendEvent(ChangeEvent<IList>.GetPooled(oldList, listView.itemsSource));
             };
-            listView.itemsRemoved       += _ => SendEvent(ChangeEvent<IList>.GetPooled(null, itemsSource));
-            listView.itemsSourceChanged += () => SendEvent(ChangeEvent<IList>.GetPooled(null, itemsSource));
-            listView.itemIndexChanged   += (_, _) => SendEvent(ChangeEvent<IList>.GetPooled(null, itemsSource));
+            listView.itemsRemoved       += _ => SendEvent(ChangeEvent<IList>.GetPooled(listView.itemsSource, listView.itemsSource));
+            listView.itemsSourceChanged += () => SendEvent(ChangeEvent<IList>.GetPooled(listView.itemsSource, listView.itemsSource));
+            listView.itemIndexChanged   += (_, _) => SendEvent(ChangeEvent<IList>.GetPooled(listView.itemsSource, listView.itemsSource));
 
             root.Add(listView);
 
