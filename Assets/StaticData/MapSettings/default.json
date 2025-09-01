@@ -1,0 +1,16 @@
+{
+  "NumberOfNodes": 50,
+  "NumberOfPaths": 3,
+  "XDimension": 500,
+  "YDimension": 1000,
+  "EdgePadding": 20,
+  "RegionPadding": 20,
+  "FirstNodeEvent": null,
+  "FinalNodeEvent": null,
+  "EventSettings": null,
+  "EnemySpawnSettings": null,
+  "EliteSpawnSettings": null,
+  "BossSpawnSettings": null,
+  "EnemyDifficultyMultiplier": 0.0,
+  "EnemyHealthMultiplier": 0.0
+}

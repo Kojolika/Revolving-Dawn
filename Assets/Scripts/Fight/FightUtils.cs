@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Common.Util;
 using Fight.Engine;
 using Fight.Events;
 using Tooling.Logging;
@@ -175,6 +174,21 @@ namespace Fight
             Assert.IsTrue(newAmount >= currentAmount);
 
             target.SetStat(stat, newAmount);
+        }
+
+        // TODO: Add a common key static class, create tests to make sure these common keys are defined in the static data base
+        public const string HealthKey = "Health";
+
+        public static void SetHealth(ICombatParticipant target, float health)
+        {
+            var healthStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>(HealthKey);
+            target.SetStat(healthStat, health);
+        }
+
+        public static void SetMaxHealth(ICombatParticipant target, float health)
+        {
+            var healthStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>($"Max{HealthKey}");
+            target.SetStat(healthStat, health);
         }
     }
 }

@@ -2,9 +2,8 @@ using UnityEngine;
 using Tooling.Logging;
 using System.Linq;
 using System.Collections.Generic;
-using Settings;
 using System;
-using Systems.Managers;
+using Tooling.StaticData.Data;
 using Utils.Extensions;
 using Zenject;
 
@@ -12,10 +11,10 @@ namespace Models.Map
 {
     public class MapFactory : IFactory<MapSettings, MapDefinition>
     {
-        private NodeEvent.Factory nodeEventFactory;
+        private NodeEventFactory nodeEventFactory;
 
         [Inject]
-        void Construct(NodeEvent.Factory nodeEventFactory)
+        void Construct(NodeEventFactory nodeEventFactory)
         {
             this.nodeEventFactory = nodeEventFactory;
         }
@@ -258,7 +257,7 @@ namespace Models.Map
                     totalWeights
                 );
 
-                node.Event = nodeEventFactory.Create(nodeFactoryData);
+                node.EventLogic = nodeEventFactory.Create(nodeFactoryData);
             }
             return nodes;
         }

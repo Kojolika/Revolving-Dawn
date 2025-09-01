@@ -12,7 +12,7 @@ namespace Views
         [SerializeField] private Transform       playerSpawn;
         [SerializeField] private Transform       charactersParent;
 
-        public Dictionary<Enemy, EnemyView>            EnemyLookup  { get; private set; }
+        public Dictionary<EnemyLogic, EnemyView>            EnemyLookup  { get; private set; }
         public Dictionary<PlayerCharacter, PlayerView> PlayerLookup { get; private set; }
 
 
@@ -23,7 +23,7 @@ namespace Views
         {
             EnemyLookup = new();
             var enemiesForLevel = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam.Members
-                                                   .Select(character => character as Enemy).ToList();
+                                                   .Select(character => character as EnemyLogic).ToList();
 
             for (int i = 0; i < enemiesForLevel.Count; i++)
             {

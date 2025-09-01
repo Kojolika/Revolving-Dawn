@@ -38,12 +38,12 @@ namespace UI.DisplayElements
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>
             {
-                data.Definition.Event.StartEvent();
+                data.Definition.EventLogic.StartEvent();
                 button.interactable = false;
                 _ = playerDataManager.UpdateMapNode(data.Definition);
             });
 
-            _ = addressablesManager.LoadGenericAsset(data.Definition.Event.MapIconReference,
+            _ = addressablesManager.LoadGenericAsset(data.Definition.EventLogic.Model.Icon,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset => image.sprite = asset
             );

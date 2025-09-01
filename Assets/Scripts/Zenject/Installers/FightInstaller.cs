@@ -20,7 +20,6 @@ using UnityEngine.InputSystem;
 using Views;
 using Zenject.Installers.Facades;
 using Card = Models.Cards.Card;
-using Enemy = Models.Characters.Enemy;
 
 namespace Zenject.Installers
 {
@@ -74,7 +73,7 @@ namespace Zenject.Installers
                      .ByNewContextPrefab<PlayerViewInstaller>(playerView)
                      .AsSingle();
 
-            Container.BindFactory<Enemy, EnemyView, EnemyView.Factory>()
+            Container.BindFactory<EnemyLogic, EnemyView, EnemyView.Factory>()
                      .FromSubContainerResolve()
                      .ByNewContextPrefab<EnemyViewInstaller>(enemyView)
                      .AsSingle();

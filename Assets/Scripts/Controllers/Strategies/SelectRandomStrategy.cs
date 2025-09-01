@@ -3,15 +3,14 @@ using Tooling.StaticData.EditorUI;
 
 namespace Models.Characters.Enemies.Strategies
 {
-    [System.Serializable]
     public class SelectRandomStrategy : ISelectMoveStrategy
     {
-        public EnemyMove SelectMove(EnemyModel enemyModel)
+        public EnemyMove SelectMove(Enemy enemy)
         {
-            var moves = enemyModel.Moves;
+            var moves         = enemy.PossibleMoves;
             var enemyMoveSize = moves.Count;
-            var rng = new System.Random();
-            var randomMove = moves[rng.Next(enemyMoveSize - 1)];
+            var rng           = new System.Random();
+            var randomMove    = moves[rng.Next(enemyMoveSize - 1)];
 
             return randomMove;
         }

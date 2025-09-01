@@ -7,6 +7,7 @@ using Serialization;
 using Settings;
 using Systems.Managers;
 using Tooling.Logging;
+using Tooling.StaticData.Data;
 using UI.DisplayElements;
 using UnityEngine;
 using Views.Common;
@@ -56,8 +57,10 @@ namespace Zenject.Installers
 
         private void InstallMapObjects()
         {
-            Container.BindFactory<NodeEventFactory.Data, NodeEvent, NodeEvent.Factory>()
+            /*
+            Container.BindFactory<NodeEventFactory.Data, NodeEventLogic, NodeEventLogic.Factory>()
                 .FromFactory<NodeEventFactory>();
+                */
 
             Container.BindFactory<MapSettings, MapDefinition, MapDefinition.Factory>()
                 .FromFactory<MapFactory>();

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using Settings;
+using Tooling.StaticData.Data;
 using Zenject;
 
 namespace Models.Map

@@ -2,26 +2,18 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Models.Map
 {
     [Serializable]
     public class NodeDefinition
     {
-        [JsonProperty("coordinate")]
-        public Coordinate Coord;
-
-        [JsonProperty("event")]
-        public NodeEvent Event;
-
-        [JsonProperty("next_nodes")]
+        public Coordinate       Coord;
+        public NodeEventLogic   EventLogic;
         public List<Coordinate> NextNodes;
-
-        [JsonProperty("previous_nodes")]
         public List<Coordinate> PreviousNodes;
-
-        [JsonProperty("level")]
-        public int Level = int.MaxValue;
+        public int              Level = int.MaxValue;
 
         [JsonIgnore]
         public int NumberOfEdges => NextNodes?.Count ?? 0 + PreviousNodes?.Count ?? 0;
@@ -57,13 +49,13 @@ namespace Models.Map
 
             public bool Equals(Coordinate other)
                 => !ReferenceEquals(other, null)
-                    && x == other.x
-                    && y == other.y;
+                && x == other.x
+                && y == other.y;
 
             public int CompareTo(Coordinate other)
             {
                 var subtractedCoord = other - this;
-                var combinedValue = subtractedCoord.x + subtractedCoord.y;
+                var combinedValue   = subtractedCoord.x + subtractedCoord.y;
                 return combinedValue;
             }
         }

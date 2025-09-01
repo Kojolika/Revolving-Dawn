@@ -1,8 +1,8 @@
 using Cysharp.Threading.Tasks;
+using Models.Characters;
 using Systems.Managers;
 using Tooling.StaticData.EditorUI;
 using UnityEngine;
-using Enemy = Models.Characters.Enemy;
 
 namespace Views
 {
@@ -10,13 +10,13 @@ namespace Views
     {
         [SerializeField] SpriteRenderer spriteRenderer;
 
-        private Enemy               enemy;
+        private EnemyLogic               enemyLogic;
         private AddressablesManager addressablesManager;
 
         [Zenject.Inject]
-        private void Construct(Enemy enemy, AddressablesManager addressablesManager)
+        private void Construct(EnemyLogic enemyLogic, AddressablesManager addressablesManager)
         {
-            this.enemy               = enemy;
+            this.enemyLogic               = enemyLogic;
             this.addressablesManager = addressablesManager;
 
             // TODO: Add battle event animation and subscribe to when that triggers

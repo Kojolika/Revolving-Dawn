@@ -1,38 +1,30 @@
-using UnityEngine.AddressableAssets;
-using UnityEngine;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
-using Settings;
+using UnityEngine;
+using Tooling.StaticData.Data;
+using Tooling.StaticData.EditorUI;
 using Zenject;
-using System.Linq;
-using Systems.Managers;
 
 namespace Models.Map
 {
-    [System.Serializable, JsonObject(MemberSerialization.OptIn)]
-    public abstract class NodeEvent
+    public abstract class NodeEventLogic
     {
-        [JsonProperty("name")] private readonly string name;
+        public readonly NodeEvent Model;
 
-        [JsonProperty("map_icon_reference")] private readonly AssetReferenceSprite mapIconReference;
-
-        public string               Name             => name;
-        public AssetReferenceSprite MapIconReference => mapIconReference;
-
-        public NodeEvent(string name, AssetReferenceSprite mapIconReference)
-        {
-            this.name             = name;
-            this.mapIconReference = mapIconReference;
-        }
-
-        public abstract void StartEvent();
-        public abstract void Populate(MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap);
-
-        public class Factory : PlaceholderFactory<NodeEventFactory.Data, NodeEvent>
+        [JsonConstructor]
+        public NodeEventLogic()
         {
         }
+
+        public NodeEventLogic(NodeEvent model, MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
+        {
+            this.Model = model;
+        }
+
+        public abstract UniTask StartEvent();
     }
 
-    public class NodeEventFactory : IFactory<NodeEventFactory.Data, NodeEvent>
+    public class NodeEventFactory : IFactory<NodeEventFactory.Data, NodeEventLogic>
     {
         public class Data
         {
@@ -73,17 +65,17 @@ namespace Models.Map
             this.instantiator = instantiator;
         }
 
-        public NodeEvent Create(Data data)
+        public NodeEventLogic Create(Data data)
         {
-            NodeEventSODefinition nodeEventDefinition = null;
+            NodeEvent nodeEvent = null;
 
             if (data.CurrentNode == data.FirstNode)
             {
-                nodeEventDefinition = data.MapSettings.FinalNodeEvent;
+                nodeEvent = data.MapSettings.FinalNodeEvent;
             }
             else if (data.CurrentNode == data.LastNode)
             {
-                nodeEventDefinition = data.MapSettings.FinalNodeEvent;
+                nodeEvent = data.MapSettings.FinalNodeEvent;
             }
             else
             {
@@ -92,20 +84,23 @@ namespace Models.Map
                 {
                     if (randomNum <= data.CumulativeSums[i])
                     {
-                        nodeEventDefinition = data.MapSettings.EventSettings[i].NodeEventDefinition;
+                        nodeEvent = data.MapSettings.EventSettings[i].NodeEvent;
 
                         break;
                     }
                 }
             }
 
+            Debug.Assert(nodeEvent != null, "Created a new node event but node event is null!");
 
-            var newNodeEvent = instantiator.Instantiate(
-                nodeEventDefinition.EventAction.GetType(),
-                new object[] { nodeEventDefinition.name, nodeEventDefinition.MapIconReference }
-            ) as NodeEvent;
+            var newNodeEvent = instantiator.Instantiate(nodeEvent.Logic.GetType(),
+                                                        new object[]
+                                                        {
+                                                            data.MapSettings,
+                                                            data.CurrentNode,
+                                                            data.MaxNodeLevelForMap
+                                                        }) as NodeEventLogic;
 
-            newNodeEvent?.Populate(data.MapSettings, data.CurrentNode, data.MaxNodeLevelForMap);
             Debug.Assert(newNodeEvent != null, "Created a new node event but node event is null!");
 
             return newNodeEvent;

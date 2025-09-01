@@ -15,12 +15,12 @@ namespace Views
         private EnemyMoveView enemyMoveView;
         private BuffsView     buffsView;
 
-        public Enemy EnemyModel { get; private set; }
+        public EnemyLogic enemyLogicModel { get; private set; }
 
         #region ICharacterView
 
         public SpriteRenderer     SpriteRenderer => spriteRenderer;
-        public ICombatParticipant Model          => EnemyModel;
+        public ICombatParticipant Model          => enemyLogicModel;
         public Collider           Collider       { get; private set; }
         public Renderer           Renderer       => spriteRenderer;
 
@@ -48,19 +48,19 @@ namespace Views
 
         [Inject]
         private void Construct(
-            Enemy               enemy,
+            EnemyLogic               enemyLogic,
             HealthView          healthView,
             EnemyMoveView       enemyMoveView,
             BuffsView           buffsView,
             AddressablesManager addressablesManager)
         {
-            EnemyModel         = enemy;
+            enemyLogicModel         = enemyLogic;
             this.healthView    = healthView;
             this.enemyMoveView = enemyMoveView;
             this.buffsView     = buffsView;
 
             _ = addressablesManager.LoadGenericAsset(
-                enemy.Model.AvatarReference,
+                enemyLogic.Model.Image,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset =>
                 {
@@ -79,7 +79,7 @@ namespace Views
 
         #endregion
 
-        public class Factory : PlaceholderFactory<Enemy, EnemyView>
+        public class Factory : PlaceholderFactory<EnemyLogic, EnemyView>
         {
         }
     }

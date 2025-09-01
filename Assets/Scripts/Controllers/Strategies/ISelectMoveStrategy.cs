@@ -5,6 +5,6 @@ namespace Controllers.Strategies
 {
     public interface ISelectMoveStrategy
     {
-        EnemyMove SelectMove(EnemyModel enemyModel);
+        EnemyMove SelectMove(Enemy enemy);
     }
 }
