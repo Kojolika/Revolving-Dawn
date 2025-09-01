@@ -17,6 +17,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
         private readonly VisualElement row;
         private readonly Type          staticDataType;
         private readonly bool          allowEditing;
+        private readonly StyleColor    defaultColor;
 
         public const float EditButtonWidth = 32;
 
@@ -28,6 +29,8 @@ namespace Tooling.StaticData.EditorUI.EditorUI
         {
             this.staticDataType = staticDataType;
             this.allowEditing   = allowEditing;
+
+            defaultColor = style.backgroundColor;
 
             row = new VisualElement
             {
@@ -76,10 +79,9 @@ namespace Tooling.StaticData.EditorUI.EditorUI
                 );
             }
 
-            if (HasValidationErrors(instance, validationErrors))
-            {
-                style.backgroundColor = new Color(255, 0, 0, 0.5f); // dark red
-            }
+            style.backgroundColor = HasValidationErrors(instance, validationErrors)
+                ? new Color(255, 0, 0, 0.5f) // dark red
+                : defaultColor;
         }
 
         private static bool HasValidationErrors(StaticData instance, Dictionary<StaticData, List<string>> validationErrors)

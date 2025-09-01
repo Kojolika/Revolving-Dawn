@@ -6,6 +6,8 @@
   "Downgrade": null,
   "Description": null,
   "IsLostOnPlay": false,
-  "TargetingOptions": null,
+  "TargetingOptions": [
+    1
+  ],
   "CardLogic": "Models.Cards.Warrior.Bash, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
 }
