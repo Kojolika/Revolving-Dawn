@@ -1,6 +1,6 @@
 using System;
 
-namespace Tooling.StaticData.EditorUI.EditorUI
+namespace Tooling.StaticData.Data.EditorUI
 {
     /// <summary>
     /// Overrides the display name when drawn by a <see cref="GeneralField"/>'s enum or dropdown.

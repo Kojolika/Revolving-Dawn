@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI.Validation
+namespace Tooling.StaticData.Data.Validation
 {
     public class AddressableAssetKeyAttribute : Attribute, IValidator
     {

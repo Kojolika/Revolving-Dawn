@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Models.Mana;
-using Settings;
+using Tooling.StaticData.Data;
 using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.Events;

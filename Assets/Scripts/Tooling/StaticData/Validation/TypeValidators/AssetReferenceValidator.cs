@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine.AddressableAssets;
 
-namespace Tooling.StaticData.EditorUI.Validation
+namespace Tooling.StaticData.Data.Validation
 {
     public class AssetReferenceValidator : TypeValidator<AssetReference>
     {

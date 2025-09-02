@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Tooling.StaticData.EditorUI.Bytecode
+namespace Tooling.StaticData.Data.Bytecode
 {
     public class ValueModel : IEquatable<ValueModel>
     {

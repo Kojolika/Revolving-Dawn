@@ -3,8 +3,7 @@ using Fight.Engine;
 using Models.Cards;
 using Models.Fight;
 using Newtonsoft.Json;
-using Settings;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 
 namespace Models.Characters
 {

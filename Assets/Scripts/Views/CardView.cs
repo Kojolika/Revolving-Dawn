@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Models.Cards;
-using Settings;
+using Tooling.StaticData.Data;
 using Systems.Managers;
 using TMPro;
 using UnityEngine;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Tooling.Logging;
 
-namespace Tooling.StaticData.EditorUI.Validation
+namespace Tooling.StaticData.Data.Validation
 {
     public abstract class TypeValidator<T> : IValidator where T : class
     {

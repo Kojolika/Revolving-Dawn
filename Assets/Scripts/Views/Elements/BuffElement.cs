@@ -4,7 +4,7 @@ using Models.Buffs;
 using Systems.Managers;
 using TMPro;
 using Tooling.Logging;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 using UnityEngine;
 using Zenject;
 

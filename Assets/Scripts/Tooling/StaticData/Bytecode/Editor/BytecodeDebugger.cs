@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using ILogger = Tooling.Logging.ILogger;
 
-namespace Tooling.StaticData.EditorUI.Bytecode.Editor
+namespace Tooling.StaticData.Data.Bytecode.Editor
 {
     public class BytecodeDebugger
     {

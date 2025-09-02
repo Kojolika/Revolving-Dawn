@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Tooling.StaticData.EditorUI.Bytecode
+namespace Tooling.StaticData.Data.Bytecode
 {
     public class While : InstructionModel
     {

@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using PrimeTween;
 using Mana;
 using Models;
-using Settings;
+using Tooling.StaticData.Data;
 using UnityEngine;
 using Utils;
 using Fight.Animations;

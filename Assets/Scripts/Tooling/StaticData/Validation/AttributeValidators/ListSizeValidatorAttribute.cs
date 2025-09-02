@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Tooling.StaticData.EditorUI.Validation
+namespace Tooling.StaticData.Data.Validation
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class ListSizeValidatorAttribute : Attribute, IValidator

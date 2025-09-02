@@ -1,9 +1,9 @@
 using System;
 using Models.Map;
-using Tooling.StaticData.EditorUI.Validation;
+using Tooling.StaticData.Data.Validation;
 using UnityEngine.AddressableAssets;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     /// <summary>
     /// Represents a vertex on that map that is interactable by the player.

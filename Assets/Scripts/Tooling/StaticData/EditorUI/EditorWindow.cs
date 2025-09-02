@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI.EditorUI
+namespace Tooling.StaticData.Data.EditorUI
 {
     /// <summary>
     /// Designed to be a CMS system where we manage our static data.

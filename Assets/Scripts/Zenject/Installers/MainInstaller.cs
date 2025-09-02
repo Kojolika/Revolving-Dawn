@@ -4,7 +4,6 @@ using System.Linq;
 using Data.DB;
 using Models.Map;
 using Serialization;
-using Settings;
 using Systems.Managers;
 using Tooling.Logging;
 using Tooling.StaticData.Data;
@@ -57,13 +56,12 @@ namespace Zenject.Installers
 
         private void InstallMapObjects()
         {
-            /*
             Container.BindFactory<NodeEventFactory.Data, NodeEventLogic, NodeEventLogic.Factory>()
-                .FromFactory<NodeEventFactory>();
-                */
+                     .FromFactory<NodeEventFactory>();
+
 
             Container.BindFactory<MapSettings, MapDefinition, MapDefinition.Factory>()
-                .FromFactory<MapFactory>();
+                     .FromFactory<MapFactory>();
         }
 
         private void InstallDependenciesForDeserializer()

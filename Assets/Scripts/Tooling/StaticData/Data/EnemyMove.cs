@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Models.Cards;
 using UnityEngine.AddressableAssets;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     public class EnemyMove : StaticData
     {

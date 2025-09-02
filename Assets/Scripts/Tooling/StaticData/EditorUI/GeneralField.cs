@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Common.Util;
 using Tooling.Logging;
-using Tooling.StaticData.EditorUI.Validation;
+using Tooling.StaticData.Data.Validation;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.AddressableAssets;
@@ -13,7 +13,7 @@ using UnityEngine.UIElements;
 using Utils.Extensions;
 using Object = UnityEngine.Object;
 
-namespace Tooling.StaticData.EditorUI.EditorUI
+namespace Tooling.StaticData.Data.EditorUI
 {
     /// <summary>
     /// A property field that supports multiple types.
@@ -77,7 +77,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             if (options.IsArrayElement && valueProvider is ListValueProvider listValueProvider)
             {
                 var rowElement = new VisualElement();
-                Utils.AddLabel(rowElement, $"[{listValueProvider.ArrayIndex}]");
+                Utils.AddLabel(rowElement, $"[{listValueProvider.ArrayIndex}]", valueProvider);
                 rowElement.Add(DrawEditorForType(Type));
 
                 rowElement.AddToClassList(Styles.ListViewContainer);
@@ -301,8 +301,8 @@ namespace Tooling.StaticData.EditorUI.EditorUI
 
             var selectedStaticData = GetValue() as StaticData;
 
-            Utils.AddLabel(root, valueProvider.ValueName);
-            Utils.AddLabel(root, selectedStaticData?.Name ?? StaticDataNullLabel);
+            Utils.AddLabel(root, valueProvider.ValueName, valueProvider);
+            Utils.AddLabel(root, selectedStaticData?.Name ?? StaticDataNullLabel, valueProvider);
 
             var editButton = new ButtonIcon(
                 clickEvent: () =>
@@ -469,7 +469,7 @@ namespace Tooling.StaticData.EditorUI.EditorUI
             var root = new VisualElement();
             root.AddToClassList(Styles.FlexRow);
 
-            Utils.AddLabel(root, valueProvider.ValueName);
+            Utils.AddLabel(root, valueProvider.ValueName, valueProvider);
 
             var isGenericAssetReference = false;
             var assetReferenceType      = type;

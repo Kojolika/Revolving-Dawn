@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 using UnityEngine;
 
 namespace Tooling.StaticData.Data
 {
-    public class MapSettings : EditorUI.StaticData
+    public class MapSettings : StaticData
     {
         [Tooltip("The number of nodes to generate for the map. Each node will be an enemy,event,shop,etc. that the player can travel to")]
         [SerializeField]

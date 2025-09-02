@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Models.Cards;
-using Tooling.StaticData.EditorUI.Validation;
+using Tooling.StaticData.Data.Validation;
 using UnityEngine.AddressableAssets;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     public class Card : StaticData
     {

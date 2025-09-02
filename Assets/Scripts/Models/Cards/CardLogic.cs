@@ -3,13 +3,13 @@ using Fight;
 using Fight.Engine;
 using Fight.Events;
 using Tooling.Logging;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 
 namespace Models.Cards
 {
     /// <summary>
     /// Class that represents the logic of what happens when this card is played.
-    /// The rest of the data and assets related to a card are stored in <see cref="Tooling.StaticData.EditorUI.Card"/> in the <see cref="Tooling.StaticData.EditorUI.StaticDatabase"/>
+    /// The rest of the data and assets related to a card are stored in <see cref="Tooling.StaticData.Data.Card"/> in the <see cref="Tooling.StaticData.Data.StaticDatabase"/>
     ///
     /// These types are reference in the static database and are dynamically instanced with the card view during run time.
     /// </summary>
@@ -44,7 +44,7 @@ namespace Models.Cards
         /// <summary>
         /// Use this during overrides of the <see cref="Play"/> to select which targets match your card effects.
         /// </summary>
-        /// <returns> The target(s) from the <see cref="Tooling.StaticData.EditorUI.Card.TargetingOptions"/> at the index </returns>
+        /// <returns> The target(s) from the <see cref="Tooling.StaticData.Data.Card.TargetingOptions"/> at the index </returns>
         protected List<ICombatParticipant> GetTargetsForOptionIndex(int index)
         {
             if (index >= Model.TargetingOptions.Count || index < 0)

@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     public class Icon : VisualElement
     {

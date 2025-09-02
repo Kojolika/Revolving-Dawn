@@ -1,7 +1,7 @@
-using Tooling.StaticData.EditorUI.EditorUI;
+using Tooling.StaticData.Data.EditorUI;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI.Bytecode
+namespace Tooling.StaticData.Data.Bytecode
 {
     public abstract class ExpressionModel
     {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Settings;
+using Tooling.StaticData.Data;
 using UnityEngine;
 using Utils;
 

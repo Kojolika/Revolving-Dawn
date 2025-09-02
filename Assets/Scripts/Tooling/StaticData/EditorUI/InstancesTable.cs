@@ -5,7 +5,7 @@ using Tooling.Logging;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI.EditorUI
+namespace Tooling.StaticData.Data.EditorUI
 {
     /// <summary>
     /// Displays a list of static data instances as rows in a table

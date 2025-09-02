@@ -1,8 +1,5 @@
-using Tooling.StaticData.EditorUI.Bytecode;
-
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
-    [ByteObject]
     public class Stat : StaticData
     {
         public bool   IsInternal;

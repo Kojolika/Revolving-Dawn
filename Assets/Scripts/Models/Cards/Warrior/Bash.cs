@@ -7,7 +7,7 @@ namespace Models.Cards.Warrior
 {
     public class Bash : CardLogic
     {
-        public Bash(Tooling.StaticData.EditorUI.Card model) : base(model)
+        public Bash(Tooling.StaticData.Data.Card model) : base(model)
         {
         }
 

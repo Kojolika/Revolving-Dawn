@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Tooling.Logging;
 
-namespace Tooling.StaticData.EditorUI.Bytecode
+namespace Tooling.StaticData.Data.Bytecode
 {
     public enum ExecuteResult
     {

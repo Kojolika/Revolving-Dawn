@@ -7,12 +7,12 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Serialization;
 using Tooling.Logging;
-using Tooling.StaticData.EditorUI.Validation;
+using Tooling.StaticData.Data.Validation;
 using UnityEditor;
 using UnityEngine;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     [InitializeOnLoad]
     public class StaticDatabase
@@ -96,9 +96,9 @@ namespace Tooling.StaticData.EditorUI
 
                 if (Directory.Exists(typeDirectory))
                 {
-                    foreach (var file in Directory.EnumerateFiles(typeDirectory, "*.json"))
+                    foreach (var filePath in Directory.EnumerateFiles(typeDirectory, "*.json"))
                     {
-                        using var streamReader = File.OpenText(file);
+                        using var streamReader = File.OpenText(filePath);
 
                         StaticData staticDataFromJson = null;
 
@@ -108,8 +108,7 @@ namespace Tooling.StaticData.EditorUI
                         }
                         catch (Exception e)
                         {
-                            MyLogger.Error($"Exception while deserializing: {e}");
-                            MyLogger.Error($"Static Data of type {type.Name} could not be deserialized. Setting value to default...");
+                            MyLogger.Error($"Exception while deserializing file {Path.GetFileName(filePath)} of type {type.Name}: {e.Message}\n {e}");
                             staticDataFromJson = Activator.CreateInstance(type) as StaticData;
                         }
 
@@ -119,7 +118,7 @@ namespace Tooling.StaticData.EditorUI
                             continue;
                         }
 
-                        var fileNameWithExtension = new FileInfo(file).Name;
+                        var fileNameWithExtension = new FileInfo(filePath).Name;
                         staticDataFromJson.Name = fileNameWithExtension[..^".json".Length];
 
                         instanceDictionary.Add(staticDataFromJson.Name, staticDataFromJson);
@@ -161,7 +160,7 @@ namespace Tooling.StaticData.EditorUI
                 if (staticDataField == null)
                 {
                     MyLogger.Error($"Could not find field {referenceHandle.PropertyName} " +
-                                      $"on Static Data of type {staticDataType}");
+                                   $"on Static Data of type {staticDataType}");
 
                     continue;
                 }

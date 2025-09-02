@@ -10,7 +10,6 @@ using Models.Fight;
 using Newtonsoft.Json;
 using Systems.Managers;
 using Tooling.StaticData.Data;
-using Tooling.StaticData.EditorUI;
 using UnityEngine;
 
 namespace Models.Map

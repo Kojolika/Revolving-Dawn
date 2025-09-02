@@ -4,7 +4,7 @@ using Fight.Engine;
 using Fight.Events;
 using Models.Cards;
 using Tooling.Logging;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 using UnityEngine.Assertions;
 using Utils.Extensions;
 

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
+    // TODO: Create default cards and a default static data instance
     public class DefaultCardSettings : StaticData
     {
         public List<DefaultDowngrade> DefaultDowngrades;

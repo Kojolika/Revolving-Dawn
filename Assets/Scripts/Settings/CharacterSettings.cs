@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Models.Mana;
 using UnityEngine;
 
-namespace Settings
+namespace Tooling.StaticData.Data
 {
     [CreateAssetMenu(fileName = "New " + nameof(CharacterSettings), menuName = "RevolvingDawn/Settings/" + nameof(CharacterSettings))]
     public class CharacterSettings : ScriptableObject

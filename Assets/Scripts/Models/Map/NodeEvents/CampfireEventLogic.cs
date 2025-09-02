@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using Tooling.StaticData.Data;
-using Tooling.StaticData.EditorUI;
 
 namespace Models.Map
 {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Models.Buffs;
 using UnityEngine.AddressableAssets;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     public class Buff : StaticData
     {

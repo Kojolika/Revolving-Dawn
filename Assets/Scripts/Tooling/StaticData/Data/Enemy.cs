@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     public class Enemy : StaticData
     {

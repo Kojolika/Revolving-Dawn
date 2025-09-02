@@ -10,7 +10,7 @@ namespace Models.Cards
     /// </summary>
     public class Poke : CardLogic
     {
-        public Poke(Tooling.StaticData.EditorUI.Card model) : base(model)
+        public Poke(Tooling.StaticData.Data.Card model) : base(model)
         {
         }
 

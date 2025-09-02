@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.EditorUI.EditorUI
+namespace Tooling.StaticData.Data.EditorUI
 {
     public interface ICustomStaticDataDrawer
     {

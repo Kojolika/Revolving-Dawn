@@ -6,13 +6,13 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using Tooling.Logging;
-using Tooling.StaticData.EditorUI.Bytecode;
+using Tooling.StaticData.Data.Bytecode;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 using Type = System.Type;
-using ByteValueType = Tooling.StaticData.EditorUI.Bytecode.Type;
+using ByteValueType = Tooling.StaticData.Data.Bytecode.Type;
 
-namespace Tooling.StaticData.EditorUI.EditorUI
+namespace Tooling.StaticData.Data.EditorUI
 {
     [UsedImplicitly]
     public class StatementStaticDataDrawer : CustomStaticDataDrawer<Statement>

@@ -1,6 +1,6 @@
 using Fight;
 using Fight.Events;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 
 namespace Models.Buffs
 {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Models.Cards;
 using Models.Fight;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 
 namespace Fight.Engine
 {

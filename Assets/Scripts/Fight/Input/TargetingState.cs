@@ -5,7 +5,7 @@ using Fight.Engine;
 using Fight.Events;
 using Fight.Input;
 using Models.Cards;
-using Settings;
+using Tooling.StaticData.Data;
 using Systems.Managers;
 using UnityEngine;
 using UnityEngine.InputSystem;

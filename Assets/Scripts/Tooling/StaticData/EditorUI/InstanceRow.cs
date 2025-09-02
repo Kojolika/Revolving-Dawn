@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI.EditorUI
+namespace Tooling.StaticData.Data.EditorUI
 {
     /// <summary>
     /// Displays a single row of a static data instance

@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
 using Tooling.StaticData.Data;
-using Tooling.StaticData.EditorUI;
 using Zenject;
 
 namespace Models.Map
@@ -17,6 +16,10 @@ namespace Models.Map
         }
 
         public abstract UniTask StartEvent();
+
+        public class Factory : PlaceholderFactory<NodeEventFactory.Data, NodeEventLogic>
+        {
+        }
     }
 
     public class NodeEventFactory : IFactory<NodeEventFactory.Data, NodeEventLogic>

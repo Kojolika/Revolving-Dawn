@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Tooling.StaticData.EditorUI.EditorUI;
+using Tooling.StaticData.Data.EditorUI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     public static class Utils
     {
@@ -78,7 +78,7 @@ namespace Tooling.StaticData.EditorUI
         /// <summary>
         /// Adds a label to a parent for any field value
         /// </summary>
-        public static void AddLabel(VisualElement root, string text)
+        public static void AddLabel(VisualElement root, string text, IValueProvider valueProvider)
         {
             if (text.IsNullOrEmpty())
             {

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Tooling.Logging;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.EditorUI.Bytecode
+namespace Tooling.StaticData.Data.Bytecode
 {
     public class InstructionSet
     {

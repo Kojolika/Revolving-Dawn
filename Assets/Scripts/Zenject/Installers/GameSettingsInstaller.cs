@@ -1,4 +1,3 @@
-using Settings;
 using Tooling.StaticData.Data;
 using UnityEngine;
 using Zenject;
@@ -14,7 +13,7 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
     public override void InstallBindings()
     {
         Container.BindInstances(
-            mapSettings,
+            StaticDatabase.Instance.GetStaticDataInstance<MapSettings>("default"),
             cardSettings,
             characterSettings
         );

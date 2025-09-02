@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Models.Characters;
 using Systems.Managers;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 using UnityEngine;
 
 namespace Views

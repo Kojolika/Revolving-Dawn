@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Data;
 using Systems.Managers;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 using UI.Common;
 using UI.Menus.Common;
 using UnityEngine;

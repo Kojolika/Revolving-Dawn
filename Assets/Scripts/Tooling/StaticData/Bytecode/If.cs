@@ -1,4 +1,4 @@
-namespace Tooling.StaticData.EditorUI.Bytecode
+namespace Tooling.StaticData.Data.Bytecode
 {
     /// <summary>
     /// If the Boolean evaluates to true, execute the next combat byte instruction.

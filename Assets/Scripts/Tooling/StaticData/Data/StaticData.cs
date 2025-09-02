@@ -1,8 +1,8 @@
 using System;
 using Newtonsoft.Json;
-using Tooling.StaticData.EditorUI.Validation;
+using Tooling.StaticData.Data.Validation;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     public abstract class StaticData
     {

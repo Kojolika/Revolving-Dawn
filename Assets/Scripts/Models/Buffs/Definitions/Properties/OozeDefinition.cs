@@ -3,7 +3,7 @@ using Fight;
 using Fight.Engine;
 using Fight.Events;
 using Models.Characters;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 
 namespace Models.Buffs
 {

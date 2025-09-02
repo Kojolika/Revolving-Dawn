@@ -1,6 +1,6 @@
-using Tooling.StaticData.EditorUI.EditorUI;
+using Tooling.StaticData.Data.EditorUI;
 
-namespace Tooling.StaticData.EditorUI
+namespace Tooling.StaticData.Data
 {
     /// <summary>
     /// We're using the bytecode pattern for our games combat.
