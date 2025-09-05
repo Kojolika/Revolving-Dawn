@@ -174,11 +174,17 @@ namespace Tooling.StaticData.Data.EditorUI
         /// </summary>
         private PopupField<Type> CreateTypeField()
         {
-            var typeValues = GetPossibleTypes(valueProvider);
+            var typeValues  = GetPossibleTypes(valueProvider);
+            if (GetValue() is not Type currentType)
+            {
+                currentType = typeValues.FirstOrDefault();
+                SetValueWithoutNotify(currentType);
+            }
+
             var popupField = new PopupField<Type>(
                 valueProvider.ValueName,
                 typeValues,
-                (GetValue() ?? typeValues.FirstOrDefault()) as Type,
+                currentType,
                 formatListItemCallback: selectedType => selectedType?.FullName?.Replace('.', '/') ?? string.Empty);
 
             popupField.RegisterValueChangedCallback(evt => { SetValueAndNotify(evt.newValue); });
