@@ -24,8 +24,8 @@ namespace Tooling.StaticData.Data
             }
 
             fields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)
-                .Where(IsDrawable)
-                .ToList();
+                         .Where(IsDrawable)
+                         .ToList();
 
             return fields;
         }
@@ -36,8 +36,8 @@ namespace Tooling.StaticData.Data
         public static FieldInfo GetField(Type type, string fieldName)
         {
             return type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)
-                .Where(IsDrawable)
-                .FirstOrDefault(field => field.Name == fieldName);
+                       .Where(IsDrawable)
+                       .FirstOrDefault(field => field.Name == fieldName);
         }
 
 
@@ -47,7 +47,7 @@ namespace Tooling.StaticData.Data
         private static bool IsDrawable(FieldInfo field)
         {
             return (field.IsPublic || field.GetCustomAttribute<SerializeField>() != null)
-                   && field.GetCustomAttribute<GeneralFieldIgnoreAttribute>()?.IgnoreType != IgnoreType.Field;
+                && field.GetCustomAttribute<GeneralFieldIgnoreAttribute>()?.IgnoreType != IgnoreType.Field;
         }
 
         /// <summary>
@@ -78,16 +78,39 @@ namespace Tooling.StaticData.Data
         /// <summary>
         /// Adds a label to a parent for any field value
         /// </summary>
-        public static void AddLabel(VisualElement root, string text, IValueProvider valueProvider)
+        public static void AddLabel(VisualElement root, string text, string tooltip)
         {
             if (text.IsNullOrEmpty())
             {
                 return;
             }
 
-            var label = new Label(text);
+            var label = new Label(text) { tooltip = tooltip };
             label.AddToClassList("unity-base-field__label");
             root.Add(label);
+        }
+
+        /// <summary>
+        /// Returns whether a value provider has an attribute from its source
+        /// Currently only useful for <see cref="FieldValueProvider"/>... but will leave in as a util function
+        /// </summary>
+        public static bool HasAttribute<T>(IValueProvider valueProvider, out T attribute) where T : Attribute
+        {
+            if (valueProvider is not FieldValueProvider fieldValueProvider)
+            {
+                attribute = null;
+                return false;
+            }
+
+            attribute = fieldValueProvider.FieldInfo.GetCustomAttribute<T>();
+            return attribute != null;
+        }
+
+        public static string GetTooltip(IValueProvider valueProvider)
+        {
+            return HasAttribute(valueProvider, out TooltipAttribute attribute)
+                ? attribute.tooltip
+                : string.Empty;
         }
     }
 }

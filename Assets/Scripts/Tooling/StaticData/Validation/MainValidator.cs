@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Tooling.Logging;
 using UnityEditor;
 using Utils.Extensions;
@@ -17,7 +16,7 @@ namespace Tooling.StaticData.Data.Validation
             this.validators = validators;
         }
 
-        public Dictionary<System.Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects)
+        public Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects)
         {
             return ValidateObjects(objects, validators);
         }
@@ -28,15 +27,13 @@ namespace Tooling.StaticData.Data.Validation
         /// <param name="objects">List of objects to validate</param>
         /// <param name="validators">List of custom validators</param>
         /// <returns>A dictionary mapping the type to the list of errors for that type.</returns>
-        private static Dictionary<System.Type, Dictionary<StaticData, List<string>>> ValidateObjects(
-            List<StaticData> objects,
-            List<IValidator> validators)
+        private static Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects, List<IValidator> validators)
         {
-            var errorDict = new Dictionary<System.Type, Dictionary<StaticData, List<string>>>();
+            var errorDict   = new Dictionary<Type, Dictionary<StaticData, List<string>>>();
             var objectCount = objects.Count;
             for (int i = 0; i < objectCount; i++)
             {
-                var obj = objects[i];
+                var obj     = objects[i];
                 var objType = obj.GetType();
 
                 EditorUtility.DisplayProgressBar("Validating", $"{objType.Name}", (float)i / objectCount);
@@ -62,21 +59,22 @@ namespace Tooling.StaticData.Data.Validation
             return errorDict;
         }
 
-        private static bool IsValid(System.Type type,
-            StaticData obj,
+        private static bool IsValid(
+            Type             type,
+            StaticData       obj,
             List<StaticData> objects,
             out List<string> errorMessages,
             List<IValidator> validators = null)
         {
             var fieldAttributesTuple = Utils.GetFields(type)
-                .Select(field => (field, attributes: field.GetCustomAttributes(true)
-                    .Where(attribute => attribute is IValidator)))
-                .ToList();
+                                            .Select(field => (field, attributes: field.GetCustomAttributes(true)
+                                                                                      .Where(attribute => attribute is IValidator)))
+                                            .ToList();
 
             // use to display the progress on the progress bar
             var attributeCount = fieldAttributesTuple
-                .SelectMany(tuple => tuple.attributes)
-                .Count();
+                                .SelectMany(tuple => tuple.attributes)
+                                .Count();
 
             errorMessages = new();
             int attributeCounter = 0;
@@ -93,7 +91,8 @@ namespace Tooling.StaticData.Data.Validation
                         if (!validator.Validate(type, obj, field, objects))
                         {
                             errorMessages.AddRange(validator.errorMessages
-                                .Select(errorMessage => $"{validator.GetType().Name}: [{type.Name}.{field.Name}] error: {errorMessage}"));
+                                                            .Select(errorMessage =>
+                                                                        $"{validator.GetType().Name}: [{type.Name}.{field.Name}] error: {errorMessage}"));
                         }
                     }
                 }
@@ -109,7 +108,7 @@ namespace Tooling.StaticData.Data.Validation
                     if (!validationAttribute.CanValidate(field.FieldType))
                     {
                         MyLogger.Error($"Validation attribute :{attribute.GetType()} is applied to field type {field.FieldType}" +
-                                          $"but the {nameof(IValidator.CanValidate)} returns false for the field type.");
+                                       $"but the {nameof(IValidator.CanValidate)} returns false for the field type.");
                         attributeCounter++;
                         continue;
                     }
@@ -118,8 +117,8 @@ namespace Tooling.StaticData.Data.Validation
                     {
                         var tuple1 = tuple;
                         errorMessages.AddRange(validationAttribute.errorMessages
-                            .Select(errorMessage =>
-                                $"{attribute.GetType().Name}: [{type.Name}.{tuple1.field.Name}] error: {errorMessage}"));
+                                                                  .Select(errorMessage =>
+                                                                              $"{attribute.GetType().Name}: [{type.Name}.{tuple1.field.Name}] error: {errorMessage}"));
                     }
 
                     attributeCounter++;

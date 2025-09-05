@@ -19,7 +19,7 @@ namespace Models.Cards.Warrior
         {
             var target = GetTargetsForOptionIndex(0)[0];
 
-            return new List<IBattleEvent> { new DealDamageEvent(owner, target, Damage) };
+            return new List<IBattleEvent> { FightUtils.DealDamage(owner, target, Damage) };
         }
     }
 }

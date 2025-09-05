@@ -217,7 +217,9 @@ namespace Tooling.StaticData.Data.EditorUI
 
             private void Initialize(StaticData editingObj, Type selectedType)
             {
+                Dispose();
                 rootVisualElement.Clear();
+
                 this.selectedType = selectedType;
                 this.editingObj   = editingObj;
 
@@ -282,6 +284,12 @@ namespace Tooling.StaticData.Data.EditorUI
 
             public void OnDisable()
             {
+                Dispose();
+            }
+
+            private void Dispose()
+            {
+                hasUnsavedChanges = false;
                 foreach (var action in disposeActions)
                 {
                     action.Invoke();

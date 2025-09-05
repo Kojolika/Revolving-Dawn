@@ -12,6 +12,15 @@ namespace Fight
 {
     public static class FightUtils
     {
+        // TODO: Add a common key static class, create tests to make sure these common keys are defined in the static data base
+        public const string HealthKey = "Health";
+
+        public static IBattleEvent DealDamage(ICombatParticipant source, ICombatParticipant target, float damage)
+        {
+            var healthStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>(HealthKey);
+            return new StatLostEvent(target, source, healthStat, damage);
+        }
+
         public static void DiscardCard(this ICardDeckParticipant participant, CardLogic cardLogic)
         {
             if (!participant.Hand.Remove(cardLogic))
@@ -177,8 +186,6 @@ namespace Fight
             target.SetStat(stat, newAmount);
         }
 
-        // TODO: Add a common key static class, create tests to make sure these common keys are defined in the static data base
-        public const string HealthKey = "Health";
 
         public static void SetHealth(ICombatParticipant target, float health)
         {

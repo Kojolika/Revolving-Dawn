@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Fight.Animations
 {
-    public interface IBattleAnimation
+    public interface  IBattleAnimation
     {
         bool ShouldWait { get; }
         bool IsFinished { get; }

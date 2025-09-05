@@ -16,6 +16,7 @@ namespace Fight.Events.SubEvents
 
         public override void Execute(Context fightContext)
         {
+            fightContext.BattleEngine.AddEvent(new StatAddedEvent(Target, Stat, Amount));
         }
 
         public override void Undo()

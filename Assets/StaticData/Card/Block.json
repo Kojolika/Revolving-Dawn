@@ -7,7 +7,7 @@
   "Description": null,
   "IsLostOnPlay": true,
   "TargetingOptions": [
-    1
+    0
   ],
-  "CardLogic": "Models.Cards.Poke, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+  "CardLogic": "Models.Cards.Block, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
 }

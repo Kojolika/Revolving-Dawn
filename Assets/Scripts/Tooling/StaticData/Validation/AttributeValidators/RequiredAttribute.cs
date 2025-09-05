@@ -16,12 +16,12 @@ namespace Tooling.StaticData.Data.Validation
 
         public List<string> errorMessages { get; } = new();
 
-        public RequiredAttribute(bool allowDefaultValues)
+        public RequiredAttribute(bool allowDefaultValues = false)
         {
             this.allowDefaultValues = allowDefaultValues;
         }
 
-        public bool Validate(System.Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
         {
             if (fieldInfo.FieldType.IsClass && fieldInfo.GetValue(obj) == null)
             {

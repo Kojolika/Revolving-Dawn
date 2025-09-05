@@ -5,8 +5,6 @@ using Zenject;
 [CreateAssetMenu(fileName = "GameSettingsInstaller", menuName = "Installers/GameSettingsInstaller")]
 public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInstaller>
 {
-    private          MapSettings       mapSettings;
-    [SerializeField] CardSettings      cardSettings;
     [SerializeField] CharacterSettings characterSettings;
 
 
@@ -14,7 +12,7 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
     {
         Container.BindInstances(
             StaticDatabase.Instance.GetStaticDataInstance<MapSettings>("default"),
-            cardSettings,
+            StaticDatabase.Instance.GetStaticDataInstance<DowngradeCardSettings>("default"),
             characterSettings
         );
     }

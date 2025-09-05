@@ -8,6 +8,7 @@ using Tooling.Logging;
 using Tooling.StaticData.Data.Validation;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 using Utils.Extensions;
@@ -77,7 +78,7 @@ namespace Tooling.StaticData.Data.EditorUI
             if (options.IsArrayElement && valueProvider is ListValueProvider listValueProvider)
             {
                 var rowElement = new VisualElement();
-                Utils.AddLabel(rowElement, $"[{listValueProvider.ArrayIndex}]", valueProvider);
+                Utils.AddLabel(rowElement, $"[{listValueProvider.ArrayIndex}]", null);
                 rowElement.Add(DrawEditorForType(Type));
 
                 rowElement.AddToClassList(Styles.ListViewContainer);
@@ -243,7 +244,8 @@ namespace Tooling.StaticData.Data.EditorUI
                 headerTitle                   = valueProvider?.ValueName ?? string.Empty,
                 showAddRemoveFooter           = true,
                 showBoundCollectionSize       = false,
-                horizontalScrollingEnabled    = true
+                horizontalScrollingEnabled    = true,
+                tooltip                       = Utils.GetTooltip(valueProvider)
             };
 
             listView.itemsAdded += indices =>
@@ -301,8 +303,8 @@ namespace Tooling.StaticData.Data.EditorUI
 
             var selectedStaticData = GetValue() as StaticData;
 
-            Utils.AddLabel(root, valueProvider.ValueName, valueProvider);
-            Utils.AddLabel(root, selectedStaticData?.Name ?? StaticDataNullLabel, valueProvider);
+            Utils.AddLabel(root, valueProvider.ValueName, Utils.GetTooltip(valueProvider));
+            Utils.AddLabel(root, selectedStaticData?.Name ?? StaticDataNullLabel, null);
 
             var editButton = new ButtonIcon(
                 clickEvent: () =>
@@ -469,7 +471,7 @@ namespace Tooling.StaticData.Data.EditorUI
             var root = new VisualElement();
             root.AddToClassList(Styles.FlexRow);
 
-            Utils.AddLabel(root, valueProvider.ValueName, valueProvider);
+            Utils.AddLabel(root, valueProvider.ValueName, Utils.GetTooltip(valueProvider));
 
             var isGenericAssetReference = false;
             var assetReferenceType      = type;

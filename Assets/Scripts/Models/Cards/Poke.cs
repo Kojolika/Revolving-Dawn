@@ -21,8 +21,7 @@ namespace Models.Cards
         public override List<IBattleEvent> Play(Context fightContext, ICombatParticipant owner)
         {
             var target = GetTargetsForOptionIndex(0)[0];
-
-            return new List<IBattleEvent> { new DealDamageEvent(owner, target, Damage) };
+            return new List<IBattleEvent> { FightUtils.DealDamage(owner, target, Damage) };
         }
     }
 }
