@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
-using Mana;
-using Models;
 using Tooling.StaticData.Data;
 using UnityEngine;
 using Utils;
@@ -30,10 +28,10 @@ namespace Views
         private const float ApproxDistanceEquals = 0.1f;
 
         public  Dictionary<CardLogic, CardView> CardViewsLookup { get; private set; }
-        private List<CardView>             orderedCardViews;
-        public  BattleEngine               BattleEngine          { get; private set; }
-        public  BattleAnimationEngine      BattleAnimationEngine { get; private set; }
-        public  Camera                     Camera                => handViewCamera;
+        private List<CardView>                  orderedCardViews;
+        public  BattleEngine                    BattleEngine          { get; private set; }
+        public  BattleAnimationEngine           BattleAnimationEngine { get; private set; }
+        public  Camera                          Camera                => handViewCamera;
 
         [Zenject.Inject]
         private void Construct(

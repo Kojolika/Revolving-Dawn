@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Tooling.StaticData.Data
 {
-    // TODO: Create default cards and a default static data instance
     public class DowngradeCardSettings : StaticData
     {
         [Tooltip("The Card and mana defined here will determine the final downgrade a card can have for which mana type it is."
@@ -13,12 +12,9 @@ namespace Tooling.StaticData.Data
         public List<DefaultDowngrade> DefaultDowngrades;
     }
 
-    public struct DefaultDowngrade
+    public class DefaultDowngrade
     {
-        [Required]
         public Mana Mana;
-
-        [Required]
         public Card Card;
     }
 }

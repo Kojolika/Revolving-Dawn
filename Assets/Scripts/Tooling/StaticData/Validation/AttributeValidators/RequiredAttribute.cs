@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace Tooling.StaticData.Data.Validation
 {
+    /// <summary>
+    /// NOTE: Only works on static data fields, NOT fields of fields on static data
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public class RequiredAttribute : Attribute, IValidator
     {

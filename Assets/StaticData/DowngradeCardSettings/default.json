@@ -1,8 +1,68 @@
 {
   "DefaultDowngrades": [
     {
-      "Mana": null,
-      "Card": null
+      "Mana": {
+        "$type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "Red"
+        }
+      },
+      "Card": {
+        "$type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "Poke"
+        }
+      }
+    },
+    {
+      "Mana": {
+        "$type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "Blue"
+        }
+      },
+      "Card": {
+        "$type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "Block"
+        }
+      }
+    },
+    {
+      "Mana": {
+        "$type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "Green"
+        }
+      },
+      "Card": {
+        "$type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "Bandage"
+        }
+      }
+    },
+    {
+      "Mana": {
+        "$type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "White"
+        }
+      },
+      "Card": {
+        "$type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "Refresh"
+        }
+      }
     }
   ]
 }

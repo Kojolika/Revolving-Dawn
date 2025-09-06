@@ -1,0 +1,36 @@
+{
+  "HandSize": 8,
+  "DrawAmount": 4,
+  "UsableManaPerTurn": 1,
+  "NumberOfManaRefreshedPerTurn": 4,
+  "AllManaTypesAvailable": [
+    {
+      "$type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Reference": {
+        "Type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "InstanceName": "Blue"
+      }
+    },
+    {
+      "$type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Reference": {
+        "Type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "InstanceName": "Green"
+      }
+    },
+    {
+      "$type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Reference": {
+        "Type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "InstanceName": "Red"
+      }
+    },
+    {
+      "$type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Reference": {
+        "Type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "InstanceName": "White"
+      }
+    }
+  ]
+}

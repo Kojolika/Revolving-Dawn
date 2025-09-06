@@ -1,11 +1,8 @@
-using System.Collections.Generic;
 using Controllers;
 using Fight;
 using Fight.Animations;
 using Fight.Events;
 using Fight.Input;
-using Mana;
-using Models;
 using Models.Cards;
 using Models.Characters;
 using Models.Characters.Player;
@@ -77,7 +74,7 @@ namespace Zenject.Installers
                      .ByNewContextPrefab<EnemyViewInstaller>(enemyView)
                      .AsSingle();
 
-            Container.BindFactory<Models.Mana.ManaSODefinition, ManaView, ManaView.Factory>()
+            Container.BindFactory<Mana, ManaView, ManaView.Factory>()
                      .FromComponentInNewPrefab(manaView)
                      .AsSingle();
 
