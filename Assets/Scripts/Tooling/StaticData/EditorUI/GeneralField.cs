@@ -174,7 +174,7 @@ namespace Tooling.StaticData.Data.EditorUI
         /// </summary>
         private PopupField<Type> CreateTypeField()
         {
-            var typeValues  = GetPossibleTypes(valueProvider);
+            var typeValues = GetPossibleTypes(valueProvider);
             if (GetValue() is not Type currentType)
             {
                 currentType = typeValues.FirstOrDefault();
@@ -261,7 +261,6 @@ namespace Tooling.StaticData.Data.EditorUI
                     listView.itemsSource[index] = GetDefaultValue(elementType);
                 }
 
-                listView.RefreshItems();
                 SetValueAndNotify(listView.itemsSource);
             };
             listView.itemsRemoved       += _ => SetValueAndNotify(listView.itemsSource);

@@ -12,7 +12,7 @@
         "$type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
         "Reference": {
           "Type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-          "InstanceName": "Poke"
+          "InstanceName": "Ignite"
         }
       }
     },
@@ -28,7 +28,7 @@
         "$type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
         "Reference": {
           "Type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-          "InstanceName": "Block"
+          "InstanceName": "Rock"
         }
       }
     },
@@ -44,7 +44,7 @@
         "$type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
         "Reference": {
           "Type": "Tooling.StaticData.Data.Card, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-          "InstanceName": "Bandage"
+          "InstanceName": "Drink"
         }
       }
     },

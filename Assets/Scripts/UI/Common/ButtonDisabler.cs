@@ -10,8 +10,8 @@ namespace UI.Common
     public class ButtonDisabler : MonoBehaviour
     {
         [SerializeField] private float disableTime = 0.25f;
-        [SerializeField] private bool waitForEvent;
-        
+        [SerializeField] private bool  waitForEvent;
+
         private Button button;
 
         private void Initialize()
@@ -29,13 +29,8 @@ namespace UI.Common
             button.interactable = false;
 
             await UniTask.WaitForSeconds(disableTime);
-            
-            button.interactable = true;
-        }
 
-        private void OnDestroy()
-        {
-            
+            button.interactable = true;
         }
     }
 }

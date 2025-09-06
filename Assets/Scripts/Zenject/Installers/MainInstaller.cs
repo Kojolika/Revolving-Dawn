@@ -7,6 +7,7 @@ using Serialization;
 using Systems.Managers;
 using Tooling.Logging;
 using Tooling.StaticData.Data;
+using UI.Common.DisplayElements;
 using UI.DisplayElements;
 using UnityEngine;
 using Views.Common;
@@ -17,6 +18,7 @@ namespace Zenject.Installers
     public class MainInstaller : MonoInstaller<MainInstaller>
     {
         [SerializeField] private NodeDisplayElement nodeDisplayElement;
+        [SerializeField] private PlayerClassView    playerClassView;
 
         public override void InstallBindings()
         {
@@ -32,14 +34,14 @@ namespace Zenject.Installers
         {
             // Get all manager types in the project
             var managerTypes = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(type
-                    => !type.IsAbstract
-                       && !type.IsInterface
-                       && typeof(IManager).IsAssignableFrom(type)
-                       && !typeof(IPartTimeManager).IsAssignableFrom(type))
-                .ToArray();
+                                        .GetAssemblies()
+                                        .SelectMany(assembly => assembly.GetTypes())
+                                        .Where(type
+                                                   => !type.IsAbstract
+                                                   && !type.IsInterface
+                                                   && typeof(IManager).IsAssignableFrom(type)
+                                                   && !typeof(IPartTimeManager).IsAssignableFrom(type))
+                                        .ToArray();
 
             foreach (var managerType in managerTypes)
             {
@@ -51,7 +53,10 @@ namespace Zenject.Installers
         private void InstallPrefabs()
         {
             Container.BindFactory<NodeDisplayElement.Data, NodeDisplayElement, NodeDisplayElement.Factory>()
-                .FromComponentInNewPrefab(nodeDisplayElement);
+                     .FromComponentInNewPrefab(nodeDisplayElement);
+
+            Container.Bind<PlayerClassView>()
+                     .FromInstance(playerClassView);
         }
 
         private void InstallMapObjects()
@@ -67,20 +72,23 @@ namespace Zenject.Installers
         private void InstallDependenciesForDeserializer()
         {
             Container.Bind<CustomContractResolver>()
-                .FromNew()
-                .AsSingle();
+                     .FromNew()
+                     .AsSingle();
         }
 
         private void InstallUIUtils()
         {
             Container.Bind<ViewListFactory>()
-                .AsSingle();
+                     .AsSingle();
+
+            Container.Bind<ViewFactory>()
+                     .AsSingle();
         }
 
         private void InstallDB()
         {
             Container.BindInterfacesAndSelfTo<DBInterface>()
-                .AsSingle();
+                     .AsSingle();
         }
     }
 }

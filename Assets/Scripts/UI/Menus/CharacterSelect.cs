@@ -7,6 +7,8 @@ using Tooling.Logging;
 using UI.Common;
 using Systems.Managers;
 using Tooling.StaticData.Data;
+using UnityEngine.Serialization;
+using Views.Common;
 
 namespace UI.Menus
 {
@@ -20,22 +22,24 @@ namespace UI.Menus
         [ResourcePath]
         public string ResourcePath => nameof(CharacterSelect);
 
-        [SerializeField] private ClassDisplayElement classDisplayElementPrefab;
-        [SerializeField] private Transform           classDisplayListRoot;
-        [SerializeField] private MyButton            playButton;
 
-        private List<ClassDisplayElement> classDisplayElements = new();
-        private PlayerClass               selectedClass;
-        private MenuManager               menuManager;
-        private PlayerDataManager         playerDataManager;
-        private MapSettings               mapSettings;
+        [SerializeField] private Transform classDisplayListRoot;
+        [SerializeField] private MyButton  playButton;
+
+        private List<PlayerClassView> classDisplayElements = new();
+        private PlayerClass           selectedClass;
+        private MenuManager           menuManager;
+        private PlayerDataManager     playerDataManager;
+        private MapSettings           mapSettings;
+        private ViewFactory           viewFactory;
 
         [Zenject.Inject]
-        private void Construct(MenuManager menuManager, PlayerDataManager playerDataManager, MapSettings mapSettings)
+        private void Construct(MenuManager menuManager, PlayerDataManager playerDataManager, MapSettings mapSettings, ViewFactory viewFactory)
         {
-            this.menuManager = menuManager;
+            this.menuManager       = menuManager;
             this.playerDataManager = playerDataManager;
-            this.mapSettings = mapSettings;
+            this.mapSettings       = mapSettings;
+            this.viewFactory       = viewFactory;
         }
 
         public override void Populate(Data data)
@@ -43,7 +47,7 @@ namespace UI.Menus
             classDisplayElements.Clear();
             foreach (var classDef in data.Classes)
             {
-                var newClassDisplayElement = Instantiate(classDisplayElementPrefab, classDisplayListRoot);
+                var newClassDisplayElement = viewFactory.Create<PlayerClassView, PlayerClass>(classDef);
                 classDisplayElements.Add(newClassDisplayElement);
                 newClassDisplayElement.Populate(classDef);
                 newClassDisplayElement.gameObject.SetActive(true);
