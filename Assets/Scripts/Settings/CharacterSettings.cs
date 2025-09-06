@@ -4,10 +4,13 @@ namespace Tooling.StaticData.Data
 {
     public class CharacterSettings : StaticData
     {
-        public int        HandSize;
-        public int        DrawAmount;
-        public int        UsableManaPerTurn;
-        public int        NumberOfManaRefreshedPerTurn;
-        public List<Mana> AllManaTypesAvailable;
+        public List<StatValue> InitialStatValues;
+        public List<Mana>      AllManaTypesAvailable;
+    }
+
+    public class StatValue
+    {
+        public Stat  Stat;
+        public float Value;
     }
 }

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
-using Fight;
 using Fight.Engine;
 using Fight.Events;
 using Tooling.Logging;
 using Tooling.StaticData.Data;
+using Zenject;
+using Context = Fight.Context;
 
 namespace Models.Cards
 {
@@ -35,7 +36,8 @@ namespace Models.Cards
         {
             if (index >= Model.TargetingOptions.Count || index < 0)
             {
-                MyLogger.Error($"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
+                MyLogger.Error(
+                    $"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
             }
 
             targetingLookup[index] = targets;
@@ -49,13 +51,15 @@ namespace Models.Cards
         {
             if (index >= Model.TargetingOptions.Count || index < 0)
             {
-                MyLogger.Error($"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
+                MyLogger.Error(
+                    $"Invalid index targeting index! Must be in range of the {Model.TargetingOptions}! index={index}");
                 return null;
             }
 
             if (!targetingLookup.TryGetValue(index, out var targets))
             {
-                MyLogger.Error($"Fatal error! Targeting look up does not contain targets for the index requested! index={index}");
+                MyLogger.Error(
+                    $"Fatal error! Targeting look up does not contain targets for the index requested! index={index}");
                 return null;
             }
 
@@ -69,5 +73,9 @@ namespace Models.Cards
         /// <param name="owner"> The combat participant playing the card </param>
         /// <returns> The list of battle events to add to the battle engine </returns>
         public abstract List<IBattleEvent> Play(Context fightContext, ICombatParticipant owner);
+
+        public class Factory : PlaceholderFactory<Card, CardLogic>
+        {
+        }
     }
 }

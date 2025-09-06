@@ -1,5 +1,6 @@
 ﻿using Models.Characters.Player;
 using Cysharp.Threading.Tasks;
+using Models.Characters;
 using Models.Fight;
 using Models.Map;
 using Tooling.Logging;
@@ -66,6 +67,15 @@ namespace Systems.Managers
             };
 
             await saveManager.Save(CurrentPlayerDefinition);
+        }
+        
+        /// <summary>
+        /// Adds the default internal buffs a player has at the start of a run
+        /// </summary>
+        private static void AddInitialBuffs(PlayerCharacter playerCharacter)
+        {
+            var drawHandSizeBuff = StaticDatabase.Instance.GetStaticDataInstance<Buff>("DrawHandSize");
+            playerCharacter.SetBuff(drawHandSizeBuff, 1);
         }
 
         public async UniTask AbandonRun()

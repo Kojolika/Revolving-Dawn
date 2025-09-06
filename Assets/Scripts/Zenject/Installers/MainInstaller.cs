@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Data.DB;
+using Models.Cards;
 using Models.Map;
 using Serialization;
 using Systems.Managers;
@@ -24,6 +25,7 @@ namespace Zenject.Installers
         {
             InstallManagers();
             InstallPrefabs();
+            InstallCards();
             InstallMapObjects();
             InstallDependenciesForDeserializer();
             InstallUIUtils();
@@ -56,6 +58,11 @@ namespace Zenject.Installers
 
             Container.Bind<PlayerClassView>()
                      .FromInstance(playerClassView);
+        }
+
+        private void InstallCards()
+        {
+            Container.BindFactory<Card, CardLogic, CardLogic.Factory>();
         }
 
         private void InstallMapObjects()

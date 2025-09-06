@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Common.Util;
 using Fight.Engine;
 using Models.Cards;
 using Models.Fight;
@@ -8,32 +10,32 @@ using Tooling.StaticData.Data;
 namespace Models.Characters
 {
     [System.Serializable]
-    public class PlayerCharacter : IInventory, ICardDeckParticipant
+    public class PlayerCharacter : ICardDeckParticipant
     {
-        public PlayerClass Class     { get; private set; }
-        public List<IItem> Inventory { get; private set; }
-        public ulong       Gold      { get; private set; }
-
-        // TODO: Convert to stats?
-        public int HandSize          { get; private set; }
-        public int DrawAmount        { get; private set; }
-        public int UsableManaPerTurn { get; private set; }
+        public PlayerClass Class { get; private set; }
 
         [JsonConstructor]
         public PlayerCharacter()
         {
         }
 
+        /// <summary>
+        /// Used to create characters for a new run.
+        /// </summary>
+        /// <param name="playerClass"></param>
+        /// <param name="characterSettings"></param>
         public PlayerCharacter(PlayerClass playerClass, CharacterSettings characterSettings)
         {
-            Class             = playerClass;
-            Name              = playerClass.Name;
-            HandSize          = characterSettings.HandSize;
-            DrawAmount        = characterSettings.DrawAmount;
-            UsableManaPerTurn = characterSettings.UsableManaPerTurn;
-            
-            // TODO: Set initial buffs
-            //Buffs             = new();
+            Class = playerClass;
+            Name  = playerClass.Name;
+            Team  = TeamType.Player;
+
+            var startingDeck = new List<CardLogic>();
+
+            foreach (var initialStat in characterSettings.InitialStatValues.OrEmptyIfNull())
+            {
+                SetStat(initialStat.Stat, initialStat.Value);
+            }
         }
 
         #region ICombatParticipant
@@ -41,39 +43,49 @@ namespace Models.Characters
         public string   Name { get; }
         public TeamType Team { get; }
 
-        public bool HasStat(Stat stat)
-        {
-            throw new System.NotImplementedException();
-        }
+        private Dictionary<Stat, float> stats = new();
+        private Dictionary<Buff, int>   buffs = new();
 
         public float? GetStat(Stat stat)
         {
-            throw new System.NotImplementedException();
+            return stats.TryGetValue(stat, out var value) ? value : null;
         }
 
         public void SetStat(Stat stat, float value)
         {
-            throw new System.NotImplementedException();
+            stats[stat] = value;
         }
 
         public int GetBuff(Buff buff)
         {
-            throw new System.NotImplementedException();
+            return buffs.GetValueOrDefault(buff, 0);
         }
 
         public void SetBuff(Buff buff, int value)
         {
-            throw new System.NotImplementedException();
+            buffs[buff] = value;
         }
 
         public List<(int stackSize, Buff)> GetBuffs()
         {
-            throw new System.NotImplementedException();
+            var result = new List<(int stackSize, Buff buff)>();
+            foreach (var buff in buffs)
+            {
+                result.Add((buff.Value, buff.Key));
+            }
+
+            return result;
         }
 
         public List<(float amount, Stat)> GetStats()
         {
-            throw new System.NotImplementedException();
+            var result = new List<(float amount, Stat stat)>();
+            foreach (var stat in stats)
+            {
+                result.Add((stat.Value, stat.Key));
+            }
+
+            return result;
         }
 
         #endregion
@@ -81,10 +93,10 @@ namespace Models.Characters
         #region ICardDeckParticipant
 
         public List<CardLogic> Deck    { get; }
-        public List<CardLogic> Draw    { get; }
-        public List<CardLogic> Hand    { get; }
-        public List<CardLogic> Discard { get; }
-        public List<CardLogic> Lost    { get; }
+        public List<CardLogic> Draw    { get; } = new();
+        public List<CardLogic> Hand    { get; } = new();
+        public List<CardLogic> Discard { get; } = new();
+        public List<CardLogic> Lost    { get; } = new();
 
         #endregion
     }

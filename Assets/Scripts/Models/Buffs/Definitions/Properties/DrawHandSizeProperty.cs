@@ -7,8 +7,6 @@ namespace Models.Buffs
 {
     /// <summary>
     /// Draws the hand size for a character.
-    ///
-    /// TODO: Add this buff to characters at the start of combat
     /// </summary>
     public class DrawHandSizeProperty : IAfterEventT<TurnStartedEvent>
     {
@@ -16,19 +14,24 @@ namespace Models.Buffs
 
         public int OnAfterExecute(Context fightContext, TurnStartedEvent battleEvent, Buff buff, int currentStackSize)
         {
-            if (battleEvent.Target is ICardDeckParticipant cardDeckParticipant)
+            if (battleEvent.Target is not ICardDeckParticipant cardDeckParticipant)
             {
-                var drawAmountStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>(DrawAmountKey);
-                int drawAmount     = (int)cardDeckParticipant.GetStat(drawAmountStat);
-
-                var drawEvents = new IBattleEvent[drawAmount];
-                for (int i = 0; i < drawAmount; i++)
-                {
-                    drawEvents[i] = new DrawCardEvent(cardDeckParticipant);
-                }
-
-                fightContext.BattleEngine.AddEvents(drawEvents);
+                return currentStackSize;
             }
+
+            var drawAmountStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>(DrawAmountKey);
+            if (cardDeckParticipant.GetStat(drawAmountStat) is not { } drawAmount)
+            {
+                return currentStackSize;
+            }
+            
+            var drawEvents = new IBattleEvent[(int)drawAmount];
+            for (int i = 0; i < drawAmount; i++)
+            {
+                drawEvents[i] = new DrawCardEvent(cardDeckParticipant);
+            }
+
+            fightContext.BattleEngine.AddEvents(drawEvents);
 
             return currentStackSize;
         }
