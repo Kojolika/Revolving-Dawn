@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
+using Tooling.Logging;
 using UnityEngine;
 using Tooling.StaticData.Data;
 using Zenject;
@@ -65,6 +66,7 @@ namespace Models.Map
 
         public NodeEventLogic Create(Data data)
         {
+            MyLogger.Info($"Creating NodeEventLogic, data: {data}");
             NodeEvent nodeEvent = null;
 
             if (data.CurrentNode == data.FirstNode)
@@ -90,14 +92,16 @@ namespace Models.Map
             }
 
             Debug.Assert(nodeEvent != null, "Created a new node event but node event is null!");
-
-            var newNodeEvent = instantiator.Instantiate(nodeEvent.Logic.GetType(),
-                                                        new object[]
-                                                        {
-                                                            data.MapSettings,
-                                                            data.CurrentNode,
-                                                            data.MaxNodeLevelForMap
-                                                        }) as NodeEventLogic;
+            MyLogger.Info($"Logic type: {nodeEvent.Logic}");
+            var newNodeEvent = instantiator.Instantiate(
+                nodeEvent.Logic,
+                new object[]
+                {
+                    nodeEvent,
+                    data.MapSettings,
+                    data.CurrentNode,
+                    data.MaxNodeLevelForMap
+                }) as NodeEventLogic;
 
             Debug.Assert(newNodeEvent != null, "Created a new node event but node event is null!");
 

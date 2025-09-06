@@ -23,7 +23,6 @@ namespace Views.Common
         public TView Create<TView, TData>(TData param) where TView : IView<TData>
         {
             TView prefab = diContainer.Resolve<TView>();
-            MyLogger.Info($"Prefab: {prefab}, go: {prefab?.gameObject}");
             GameObject go   = diContainer.InstantiatePrefab(prefab.gameObject);
             TView      view = go.GetComponent<TView>();
             view.Populate(param);

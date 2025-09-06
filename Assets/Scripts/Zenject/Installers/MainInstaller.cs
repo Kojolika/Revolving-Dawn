@@ -36,11 +36,10 @@ namespace Zenject.Installers
             var managerTypes = AppDomain.CurrentDomain
                                         .GetAssemblies()
                                         .SelectMany(assembly => assembly.GetTypes())
-                                        .Where(type
-                                                   => !type.IsAbstract
-                                                   && !type.IsInterface
-                                                   && typeof(IManager).IsAssignableFrom(type)
-                                                   && !typeof(IPartTimeManager).IsAssignableFrom(type))
+                                        .Where(type => !type.IsAbstract
+                                                    && !type.IsInterface
+                                                    && typeof(IManager).IsAssignableFrom(type)
+                                                    && !typeof(IPartTimeManager).IsAssignableFrom(type))
                                         .ToArray();
 
             foreach (var managerType in managerTypes)
@@ -63,7 +62,6 @@ namespace Zenject.Installers
         {
             Container.BindFactory<NodeEventFactory.Data, NodeEventLogic, NodeEventLogic.Factory>()
                      .FromFactory<NodeEventFactory>();
-
 
             Container.BindFactory<MapSettings, MapDefinition, MapDefinition.Factory>()
                      .FromFactory<MapFactory>();
