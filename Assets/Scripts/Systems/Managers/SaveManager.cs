@@ -6,11 +6,9 @@ using Models.Fight;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serialization;
-using Systems.Managers;
 using Tooling.Logging;
 using Zenject;
 using File = System.IO.File;
-using System.Drawing;
 using UnityEditor;
 
 namespace Systems.Managers
@@ -60,6 +58,12 @@ namespace Systems.Managers
 
         public async UniTask Save(PlayerDefinition playerDefinition)
         {
+            if (playerDefinition == null)
+            {
+                MyLogger.Error("Trying to save a null player definition!");
+                return;
+            }
+
             MyLogger.Info($"Saving file at {PlayerSaveFilePath}");
             if (!Directory.Exists(SavePath))
             {
@@ -81,11 +85,6 @@ namespace Systems.Managers
 
             json.WriteTo(writer);
             MyLogger.Info("Saved successfully.");
-        }
-
-        public async UniTask DeleteCurrentRun()
-        {
-            
         }
 
         public async UniTask SaveFight(FightDefinition fightDefinition, PlayerCharacter playerCharacter)

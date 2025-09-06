@@ -70,8 +70,14 @@ namespace Systems.Managers
 
         public async UniTask AbandonRun()
         {
-            CurrentPlayerDefinition.CurrentRun = null;
+            MyLogger.Info("Deleting run...");
+            if (CurrentPlayerDefinition != null)
+            {
+                CurrentPlayerDefinition.CurrentRun = null;
+            }
+
             await saveManager.Save(CurrentPlayerDefinition);
+            MyLogger.Info("Run deleted");
         }
     }
 }

@@ -41,7 +41,7 @@ namespace UI.Menus
         {
         }
 
-        private async void StartNewGameOrLoadCurrent()
+        private void StartNewGameOrLoadCurrent()
         {
             // If continuing load current fight or load current map
             // otherwise open character selection
@@ -55,7 +55,7 @@ namespace UI.Menus
             }
             else if (currentRun.CurrentFight != null)
             {
-                await mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
+                _ = mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
             }
             else if (currentRun.CurrentMap != null)
             {
