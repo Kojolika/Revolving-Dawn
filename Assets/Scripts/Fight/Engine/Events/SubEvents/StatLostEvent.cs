@@ -16,13 +16,13 @@ namespace Fight.Events.SubEvents
 
         public override void Execute(Context fightContext)
         {
-            if (!Target.HasStat(Stat))
+            float? currentStat = Target.GetStat(Stat);
+            if (currentStat == null)
             {
                 return;
             }
-
-            float currentStat = Target.GetStat(Stat);
-            Target.SetStat(Stat, currentStat - Amount);
+            
+            Target.SetStat(Stat, currentStat.Value - Amount);
         }
 
         public override void Undo()

@@ -25,7 +25,8 @@ namespace Fight
         {
             if (!participant.Hand.Remove(cardLogic))
             {
-                MyLogger.Error($"Cannot discard card {cardLogic.Model.Name} because its not in the participant {participant.Name}'s hand!");
+                MyLogger.Error(
+                    $"Cannot discard card {cardLogic.Model.Name} because its not in the participant {participant.Name}'s hand!");
                 return;
             }
 
@@ -171,12 +172,13 @@ namespace Fight
 
         public static void AddStat(ICombatParticipant target, Stat stat, float amount)
         {
-            float currentAmount = target.GetStat(stat);
+            float currentAmount = target.GetStat(stat) ?? 0f;
 
             // We have a naming convention where a stat name can be prefixed with Max to allow max stats on characters on an individual basis
             // This allows flexibility
-            float max = StaticDatabase.Instance.GetStaticDataInstance<Stat>($"Max{stat.Name}") is { } maxStat && target.HasStat(maxStat)
-                ? target.GetStat(maxStat)
+            float max = GetMaxStat(stat.Name) is { } maxStat &&
+                        target.GetStat(maxStat) is { } maxStatAmount
+                ? maxStatAmount
                 : float.NegativeInfinity;
 
             float newAmount = MathF.Max(currentAmount + amount, max);
@@ -193,10 +195,27 @@ namespace Fight
             target.SetStat(healthStat, health);
         }
 
+        public static float? GetHealth(ICombatParticipant target)
+        {
+            var healthStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>(HealthKey);
+            return target.GetStat(healthStat);
+        }
+
         public static void SetMaxHealth(ICombatParticipant target, float health)
         {
-            var healthStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>($"Max{HealthKey}");
-            target.SetStat(healthStat, health);
+            var maxHealthStat = GetMaxStat(HealthKey);
+            target.SetStat(maxHealthStat, health);
+        }
+
+        public static float? GetMaxHealth(ICombatParticipant target)
+        {
+            var maxHealthStat = GetMaxStat(HealthKey);
+            return target.GetStat(maxHealthStat);
+        }
+
+        public static Stat GetMaxStat(string statKey)
+        {
+            return StaticDatabase.Instance.GetStaticDataInstance<Stat>($"Max{statKey}");
         }
     }
 }

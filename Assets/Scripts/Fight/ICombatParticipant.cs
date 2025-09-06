@@ -19,16 +19,12 @@ namespace Fight.Engine
         /// The team this participant is on
         /// </summary>
         TeamType Team { get; }
-
-        /// <summary>
-        /// Returns whether this participant has this stat
-        /// </summary>
-        bool HasStat(Stat stat);
         
         /// <summary>
-        /// Gets the stat value of a stat type for this participant
+        /// Gets the stat value of a stat type for this participant.
+        /// Returns null if this participant doesn't have this type of stat.
         /// </summary>
-        float GetStat(Stat stat);
+        float? GetStat(Stat stat);
 
         /// <summary>
         /// Sets the stat value of a stat type for this participant

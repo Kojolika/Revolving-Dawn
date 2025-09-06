@@ -46,7 +46,7 @@ namespace Models.Characters
             throw new System.NotImplementedException();
         }
 
-        public float GetStat(Stat stat)
+        public float? GetStat(Stat stat)
         {
             throw new System.NotImplementedException();
         }

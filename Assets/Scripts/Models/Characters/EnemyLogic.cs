@@ -27,12 +27,7 @@ namespace Models.Characters
         public string   Name { get; }
         public TeamType Team { get; }
 
-        public bool HasStat(Stat stat)
-        {
-            throw new NotImplementedException();
-        }
-
-        public float GetStat(Stat stat)
+        public float? GetStat(Stat stat)
         {
             throw new NotImplementedException();
         }
