@@ -11,10 +11,10 @@ namespace Models.Map
 {
     public class MapFactory : IFactory<MapSettings, MapDefinition>
     {
-        private NodeEventFactory nodeEventFactory;
+        private NodeEventLogic.Factory nodeEventFactory;
 
         [Inject]
-        void Construct(NodeEventFactory nodeEventFactory)
+        void Construct(NodeEventLogic.Factory nodeEventFactory)
         {
             this.nodeEventFactory = nodeEventFactory;
         }
@@ -30,10 +30,10 @@ namespace Models.Map
 
             return new MapDefinition()
             {
-                Nodes = nodes,
+                Nodes       = nodes,
                 CurrentNode = nodes?[0],
-                XDimension = mapSettings.XDimension,
-                YDimension = mapSettings.YDimension
+                XDimension  = mapSettings.XDimension,
+                YDimension  = mapSettings.YDimension
             };
         }
 
@@ -43,25 +43,25 @@ namespace Models.Map
             NodeDefinition lastNode)
             GenerateNodePositions(MapSettings mapSettings, System.Random randomNumGenerator)
         {
-            var nodes = new List<NodeDefinition>();
-            var nodeLookup = new Dictionary<NodeDefinition.Coordinate, NodeDefinition>();
-            var numNodes = mapSettings.NumberOfNodes;
-            var xDimension = mapSettings.XDimension;
-            var yDimension = mapSettings.YDimension;
-            var edgePadding = mapSettings.EdgePadding;
+            var nodes         = new List<NodeDefinition>();
+            var nodeLookup    = new Dictionary<NodeDefinition.Coordinate, NodeDefinition>();
+            var numNodes      = mapSettings.NumberOfNodes;
+            var xDimension    = mapSettings.XDimension;
+            var yDimension    = mapSettings.YDimension;
+            var edgePadding   = mapSettings.EdgePadding;
             var regionPadding = mapSettings.RegionPadding;
 
-            var adjustedYDimension = yDimension - (edgePadding * 4);
-            var adjustedXDimension = xDimension - (edgePadding * 2);
-            var area = adjustedXDimension * adjustedYDimension;
-            var regionArea = area / numNodes;
-            int sqrtRegionArea = (int)Math.Sqrt(regionArea);
-            (int x, int y) regionDimensions = (sqrtRegionArea, sqrtRegionArea);
-            (int x, int y) numberOfRegions = (adjustedXDimension / regionDimensions.x, adjustedYDimension / regionDimensions.y);
+            var            adjustedYDimension = yDimension - (edgePadding * 4);
+            var            adjustedXDimension = xDimension - (edgePadding * 2);
+            var            area               = adjustedXDimension * adjustedYDimension;
+            var            regionArea         = area / numNodes;
+            int            sqrtRegionArea     = (int)Math.Sqrt(regionArea);
+            (int x, int y) regionDimensions   = (sqrtRegionArea, sqrtRegionArea);
+            (int x, int y) numberOfRegions    = (adjustedXDimension / regionDimensions.x, adjustedYDimension / regionDimensions.y);
 
 
             NodeDefinition firstNode = default;
-            NodeDefinition lastNode = default;
+            NodeDefinition lastNode  = default;
             for (int i = 0; i < numNodes; i++)
             {
                 int xOffset = i % numberOfRegions.x * regionDimensions.x;
@@ -72,7 +72,8 @@ namespace Models.Map
                     : i == numNodes - 1
                         ? new(xDimension / 2, yDimension - edgePadding)
                         : new(Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.x - (regionPadding / 2) - 1), 1) + xOffset + edgePadding,
-                            Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.y - (regionPadding / 2) - 1), 1) + yOffset + (edgePadding * 2));
+                              Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.y - (regionPadding / 2) - 1), 1) + yOffset +
+                              (edgePadding * 2));
 
                 NodeDefinition newNode = new()
                 {
@@ -83,6 +84,7 @@ namespace Models.Map
                 {
                     firstNode = newNode;
                 }
+
                 if (i == numNodes - 1)
                 {
                     lastNode = newNode;
@@ -96,13 +98,13 @@ namespace Models.Map
         }
 
         private List<NodeDefinition> CreatePaths(
-            MapSettings mapSettings,
-            List<NodeDefinition> nodes,
+            MapSettings                                           mapSettings,
+            List<NodeDefinition>                                  nodes,
             Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup,
-            NodeDefinition firstNode,
-            NodeDefinition lastNode)
+            NodeDefinition                                        firstNode,
+            NodeDefinition                                        lastNode)
         {
-            var numPaths = mapSettings.NumberOfPaths;
+            var numPaths     = mapSettings.NumberOfPaths;
             var visitedEdges = new HashSet<(NodeDefinition, NodeDefinition)>();
             for (int i = 0; i < numPaths; i++)
             {
@@ -110,10 +112,11 @@ namespace Models.Map
                 while (node != lastNode)
                 {
                     var closestNode = nodes
-                        .Where(n => !visitedEdges.Contains((node, n)) && n.Coord.y > node.Coord.y)
-                        // order by nearest nodes
-                        .OrderBy(n => NodeDefinition.Coordinate.Distance(n.Coord, node.Coord) + (mapSettings.XDimension + mapSettings.YDimension) * (0.01 * n.NumberOfEdges))
-                        .FirstOrDefault();
+                                     .Where(n => !visitedEdges.Contains((node, n)) && n.Coord.y > node.Coord.y)
+                                      // order by nearest nodes
+                                     .OrderBy(n => NodeDefinition.Coordinate.Distance(n.Coord, node.Coord) +
+                                                   (mapSettings.XDimension + mapSettings.YDimension) * (0.01 * n.NumberOfEdges))
+                                     .FirstOrDefault();
 
                     if (closestNode == null)
                     {
@@ -151,12 +154,12 @@ namespace Models.Map
             bool filter(NodeDefinition node) => node == lastNode || !node.NextNodes.IsNullOrEmpty();
 
             nodes = nodes
-                .Where(filter)
-                .ToList();
+                   .Where(filter)
+                   .ToList();
 
             nodeLookup = nodeLookup
-                .Where(kvp => filter(kvp.Value))
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                        .Where(kvp => filter(kvp.Value))
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
 
             // Remove nextNodes that were filtered out from above
@@ -165,15 +168,15 @@ namespace Models.Map
                 if (!node.NextNodes.IsNullOrEmpty())
                 {
                     node.NextNodes = node.NextNodes
-                        .Where(coord => nodeLookup.ContainsKey(coord))
-                        .ToList();
+                                         .Where(coord => nodeLookup.ContainsKey(coord))
+                                         .ToList();
                 }
 
                 if (!node.PreviousNodes.IsNullOrEmpty())
                 {
                     node.PreviousNodes = node.PreviousNodes
-                        .Where(coord => nodeLookup.ContainsKey(coord))
-                        .ToList();
+                                             .Where(coord => nodeLookup.ContainsKey(coord))
+                                             .ToList();
                 }
             }
 
@@ -181,9 +184,9 @@ namespace Models.Map
         }
 
         private (List<NodeDefinition>, int) AssignLevelsToNodes(
-            List<NodeDefinition> nodes,
+            List<NodeDefinition>                                  nodes,
             Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup,
-            NodeDefinition firstNode)
+            NodeDefinition                                        firstNode)
         {
             // We use dijkstra's shortest path algorithm with the distance as levels
             var unvisitedNodes = new HashSet<NodeDefinition.Coordinate>(nodeLookup.Keys);
@@ -223,17 +226,17 @@ namespace Models.Map
         }
 
         private List<NodeDefinition> AssignEventsToNodes(
-            MapSettings mapSettings,
-            System.Random randomNumGenerator,
+            MapSettings          mapSettings,
+            System.Random        randomNumGenerator,
             List<NodeDefinition> nodes,
-            NodeDefinition firstNode,
-            NodeDefinition lastNode,
-            int maxNodeLevelForMap)
+            NodeDefinition       firstNode,
+            NodeDefinition       lastNode,
+            int                  maxNodeLevelForMap)
         {
-            var eventWeights = mapSettings.EventSettings;
-            var numEventWeights = eventWeights.Count;
-            float totalWeights = eventWeights.Sum(evt => evt.Weight);
-            float[] cumulativeSums = new float[numEventWeights];
+            var     eventWeights    = mapSettings.EventSettings;
+            var     numEventWeights = eventWeights.Count;
+            float   totalWeights    = eventWeights.Sum(evt => evt.Weight);
+            float[] cumulativeSums  = new float[numEventWeights];
 
             for (int i = 0; i < numEventWeights; i++)
             {
@@ -259,6 +262,7 @@ namespace Models.Map
 
                 node.EventLogic = nodeEventFactory.Create(nodeFactoryData);
             }
+
             return nodes;
         }
     }

@@ -1,3 +1,4 @@
+using Tooling.Logging;
 using UnityEngine;
 using Zenject;
 
@@ -21,9 +22,10 @@ namespace Views.Common
 
         public TView Create<TView, TData>(TData param) where TView : IView<TData>
         {
-            TView      prefab = diContainer.Resolve<TView>();
-            GameObject go     = diContainer.InstantiatePrefab(prefab.gameObject);
-            TView      view   = go.GetComponent<TView>();
+            TView prefab = diContainer.Resolve<TView>();
+            MyLogger.Info($"Prefab: {prefab}, go: {prefab?.gameObject}");
+            GameObject go   = diContainer.InstantiatePrefab(prefab.gameObject);
+            TView      view = go.GetComponent<TView>();
             view.Populate(param);
             return view;
         }

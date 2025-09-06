@@ -48,9 +48,9 @@ namespace UI.Menus
             foreach (var classDef in data.Classes)
             {
                 var newClassDisplayElement = viewFactory.Create<PlayerClassView, PlayerClass>(classDef);
+                newClassDisplayElement.transform.SetParent(classDisplayListRoot, false);
                 classDisplayElements.Add(newClassDisplayElement);
                 newClassDisplayElement.Populate(classDef);
-                newClassDisplayElement.gameObject.SetActive(true);
 
                 newClassDisplayElement.SelectButton.ClearEventListeners();
                 newClassDisplayElement.SelectButton.Pressed += () =>
@@ -70,7 +70,7 @@ namespace UI.Menus
             MyLogger.Info("Generating map...");
             await playerDataManager.StartNewRun(selectedClass);
             _ = menuManager.Open<MapView, MapView.Data>(
-                new MapView.Data()
+                new MapView.Data
                 {
                     MapDefinition = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentMap
                 }

@@ -80,6 +80,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeDisplayElement: {fileID: 3974622806234329420, guid: f2fe41afaeb685746a0f0677e546ef2c, type: 3}
+  playerClassView: {fileID: 251839633268690287, guid: 62e9b818b503f6f4da0e3920196df5b7, type: 3}
 --- !u!114 &-1237509036281305479
 MonoBehaviour:
   m_ObjectHideFlags: 0

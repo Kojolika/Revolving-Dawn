@@ -7,7 +7,7 @@ namespace Systems.Managers
         // TODO: TRANSLATE
         public string Translate(LocKey key, params object[] args)
         {
-            return string.Format(key.EnglishValue, args);
+            return string.Format(key?.EnglishValue ?? string.Empty, args);
         }
     }
 }
