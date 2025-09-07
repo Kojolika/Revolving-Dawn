@@ -62,7 +62,8 @@ namespace Zenject.Installers
 
         private void InstallCards()
         {
-            Container.BindFactory<Card, CardLogic, CardLogic.Factory>();
+            Container.BindFactory<Card, CardLogic, CardLogic.Factory>()
+                     .FromFactory<CardLogic.CustomFactory>();
         }
 
         private void InstallMapObjects()

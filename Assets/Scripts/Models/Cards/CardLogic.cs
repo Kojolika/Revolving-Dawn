@@ -77,5 +77,27 @@ namespace Models.Cards
         public class Factory : PlaceholderFactory<Card, CardLogic>
         {
         }
+
+        public class CustomFactory : IFactory<Card, CardLogic>
+        {
+            private readonly DiContainer diContainer;
+
+            public CustomFactory(DiContainer diContainer)
+            {
+                this.diContainer = diContainer;
+            }
+
+            public CardLogic Create(Card card)
+            {
+                var cardLogicType = card.CardLogic;
+                if (cardLogicType == null || cardLogicType.IsAbstract)
+                {
+                    MyLogger.Error($"Couldn't create card, {nameof(card.CardLogic)} is null or abstract! cardLogic={card.CardLogic}");
+                    return null;
+                }
+
+                return diContainer.Instantiate(card.CardLogic, extraArgs: new object[] {card}) as CardLogic;
+            }
+        }
     }
 }

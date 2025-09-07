@@ -1,5 +1,6 @@
 ﻿using Models.Characters.Player;
 using Cysharp.Threading.Tasks;
+using Models.Cards;
 using Models.Characters;
 using Models.Fight;
 using Models.Map;
@@ -16,14 +17,21 @@ namespace Systems.Managers
         private MapSettings           mapSettings;
         private CharacterSettings     characterSettings;
         private MapDefinition.Factory mapFactory;
+        private CardLogic.Factory     cardFactory; // TODO:
 
         [Zenject.Inject]
-        async void Construct(SaveManager saveManager, MapSettings mapSettings, CharacterSettings characterSettings, MapDefinition.Factory mapFactory)
+        private async UniTask Construct(
+            SaveManager           saveManager,
+            MapSettings           mapSettings,
+            CharacterSettings     characterSettings,
+            MapDefinition.Factory mapFactory,
+            CardLogic.Factory     cardFactory)
         {
             this.saveManager       = saveManager;
             this.mapSettings       = mapSettings;
             this.characterSettings = characterSettings;
             this.mapFactory        = mapFactory;
+            this.cardFactory       = cardFactory;
 
             CurrentPlayerDefinition = await saveManager.TryLoadSavedData();
 
@@ -63,12 +71,12 @@ namespace Systems.Managers
             {
                 Name            = "Test",
                 CurrentMap      = newMap,
-                PlayerCharacter = new(playerClass, characterSettings)
+                PlayerCharacter = new(playerClass, characterSettings, cardFactory)
             };
 
             await saveManager.Save(CurrentPlayerDefinition);
         }
-        
+
         /// <summary>
         /// Adds the default internal buffs a player has at the start of a run
         /// </summary>

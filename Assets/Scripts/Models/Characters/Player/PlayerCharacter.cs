@@ -14,6 +14,8 @@ namespace Models.Characters
     {
         public PlayerClass Class { get; private set; }
 
+        private readonly CardLogic.Factory cardFactory;
+
         [JsonConstructor]
         public PlayerCharacter()
         {
@@ -22,15 +24,21 @@ namespace Models.Characters
         /// <summary>
         /// Used to create characters for a new run.
         /// </summary>
-        /// <param name="playerClass"></param>
-        /// <param name="characterSettings"></param>
-        public PlayerCharacter(PlayerClass playerClass, CharacterSettings characterSettings)
+        public PlayerCharacter(
+            PlayerClass       playerClass,
+            CharacterSettings characterSettings,
+            CardLogic.Factory cardFactory)
         {
-            Class = playerClass;
-            Name  = playerClass.Name;
-            Team  = TeamType.Player;
+            Class            = playerClass;
+            Name             = playerClass.Name;
+            Team             = TeamType.Player;
+            this.cardFactory = cardFactory;
 
-            var startingDeck = new List<CardLogic>();
+            Deck = new();
+            foreach (var card in playerClass.StartingDeck)
+            {
+                Deck.Add(cardFactory.Create(card));
+            }
 
             foreach (var initialStat in characterSettings.InitialStatValues.OrEmptyIfNull())
             {
