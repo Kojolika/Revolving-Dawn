@@ -37,7 +37,7 @@ namespace Views
             buffAmount.SetText(amount.ToString());
         }
 
-        public class Factory : PlaceholderFactory<Buff, BuffElement>
+        public class Factory : PlaceholderFactory<Buff, ICombatParticipant, BuffElement>
         {
         }
 

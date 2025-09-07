@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Data.DB;
+using Fight.Engine;
 using Models.Cards;
 using Models.Map;
 using Serialization;
@@ -11,6 +12,7 @@ using Tooling.StaticData.Data;
 using UI.Common.DisplayElements;
 using UI.DisplayElements;
 using UnityEngine;
+using Views;
 using Views.Common;
 
 
@@ -25,6 +27,7 @@ namespace Zenject.Installers
         {
             InstallManagers();
             InstallPrefabs();
+            InstallUIElements();
             InstallCards();
             InstallMapObjects();
             InstallDependenciesForDeserializer();
@@ -64,6 +67,12 @@ namespace Zenject.Installers
         {
             Container.BindFactory<Card, CardLogic, CardLogic.Factory>()
                      .FromFactory<CardLogic.CustomFactory>();
+        }
+
+        private void InstallUIElements()
+        {
+            Container.BindFactory<Buff, ICombatParticipant, BuffElement, BuffElement.Factory>()
+                     .FromFactory<BuffElement.CustomFactory>();
         }
 
         private void InstallMapObjects()

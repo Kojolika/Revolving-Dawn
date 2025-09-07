@@ -49,7 +49,7 @@ namespace Views
 
         private void AddBuffElement(Buff buff)
         {
-            var newBuffElement = buffElementFactory.Create(buff);
+            var newBuffElement = buffElementFactory.Create(buff, target);
             newBuffElement.transform.SetParent(transform, false);
             buffLookup[buff] = newBuffElement;
         }
