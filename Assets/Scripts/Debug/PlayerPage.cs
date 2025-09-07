@@ -15,6 +15,7 @@ namespace Koj.Debug
         private void Construct(PlayerDataManager playerDataManager)
         {
             this.playerDataManager = playerDataManager;
+            AddLabelWithValue("Id", playerDataManager.CurrentPlayerDefinition.Id.ToString());
         }
 
         public void ResetSave()

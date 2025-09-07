@@ -100,12 +100,11 @@ namespace UI.Common
 
         public void ClearEventListeners()
         {
-            // Remove all event listeners, creating a new delegate effectively
-            // clear the list of event listeners
-            Pressed = delegate { };
-            Released = delegate { };
-            Entered = delegate { };
-            Exited = delegate { };
+            // Remove all event listeners
+            Pressed  = null;
+            Released = null;
+            Entered  = null;
+            Exited   = null;
         }
 
         private void OnDestroy() => ClearEventListeners();

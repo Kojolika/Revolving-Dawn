@@ -10,5 +10,10 @@ namespace Models.Characters.Player
         public PlayerCharacter PlayerCharacter;
         public MapDefinition   CurrentMap;
         public FightDefinition CurrentFight;
+
+        /// <summary>
+        /// The seed used to generate random effects.
+        /// </summary>
+        public int Seed;
     }
 }

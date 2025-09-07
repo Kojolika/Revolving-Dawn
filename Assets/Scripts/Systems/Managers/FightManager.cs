@@ -1,6 +1,4 @@
-using Systems.Managers;
 using Fight;
-using Views;
 using Fight.Events;
 using Cysharp.Threading.Tasks;
 using Fight.Animations;
@@ -14,10 +12,11 @@ namespace Systems.Managers
         private readonly BattleEngine          battleEngine;
         private readonly BattleAnimationEngine battleAnimationEngine;
 
-        public FightManager(PlayerDataManager     playerDataManager,
-                            MySceneManager        mySceneManager,
-                            BattleEngine          battleEngine,
-                            BattleAnimationEngine battleAnimationEngine)
+        public FightManager(
+            PlayerDataManager     playerDataManager,
+            MySceneManager        mySceneManager,
+            BattleEngine          battleEngine,
+            BattleAnimationEngine battleAnimationEngine)
         {
             this.playerDataManager     = playerDataManager;
             this.mySceneManager        = mySceneManager;

@@ -1,4 +1,5 @@
-﻿using Models.Characters.Player;
+﻿using System;
+using Models.Characters.Player;
 using Cysharp.Threading.Tasks;
 using Models.Cards;
 using Models.Characters;
@@ -13,11 +14,14 @@ namespace Systems.Managers
     {
         public PlayerDefinition CurrentPlayerDefinition { get; private set; }
 
+        public RunDefinition CurrentRun  => CurrentPlayerDefinition?.CurrentRun;
+        public int           CurrentSeed => CurrentRun?.Seed ?? 0;
+
         private SaveManager           saveManager;
         private MapSettings           mapSettings;
         private CharacterSettings     characterSettings;
         private MapDefinition.Factory mapFactory;
-        private CardLogic.Factory     cardFactory; // TODO:
+        private CardLogic.Factory     cardFactory;
 
         [Zenject.Inject]
         private async UniTask Construct(
@@ -71,7 +75,8 @@ namespace Systems.Managers
             {
                 Name            = "Test",
                 CurrentMap      = newMap,
-                PlayerCharacter = new(playerClass, characterSettings, cardFactory)
+                PlayerCharacter = new(playerClass, characterSettings, cardFactory),
+                Seed            = Guid.NewGuid().GetHashCode()
             };
 
             await saveManager.Save(CurrentPlayerDefinition);

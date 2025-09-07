@@ -9,6 +9,7 @@ using TMPro;
 using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 using Utils.Extensions;
 using Zenject;
 
@@ -34,6 +35,7 @@ namespace Koj.Debug
 
         private DebugTab    tabPrefab;
         private DiContainer diContainer;
+        private GameObject  genericPage;
 
         private readonly Dictionary<string, Dictionary<string, Page>> folders = new();
 
@@ -65,6 +67,17 @@ namespace Koj.Debug
 
         private async void Start()
         {
+            var pagePrefab = await Addressables.LoadAssetAsync<GameObject>(Page.DefaultPageAddressableKey);
+            if (pagePrefab == null)
+            {
+                MyLogger.Error("Could not add page! Could not find prefab from key! " +
+                               "addressableKey={Page.DefaultPageAddressableKey}");
+                return;
+            }
+
+            genericPage = Instantiate(pagePrefab);
+            genericPage.SetActive(false);
+
             AddFolder(HomePage, folders);
             await RegisterPages();
             OpenAtPath(HomePage);
@@ -73,6 +86,7 @@ namespace Koj.Debug
         private async UniTask RegisterPages()
         {
             await AddPage("/Player", PlayerPage.Address, folders);
+            await AddPage("/CurrentRun", CurrentRunPage.Address, folders);
         }
 
         public void OpenAtPath(string path)
@@ -125,10 +139,11 @@ namespace Koj.Debug
             folderContent.gameObject.SetActive(true);
             pageContent.gameObject.SetActive(false);
 
-            var pagesInFolder = folders[folderName].OrderBy(p => p).ToList();
+            var pagesInFolder = folders[folderName].OrderBy(p => p.Key).ToList();
             foreach (var (pageName, _) in pagesInFolder)
             {
-                var tab = diContainer.InstantiatePrefabForComponent<DebugTab>(tabPrefab, parentTransform: folderContent);
+                var tab = diContainer.InstantiatePrefabForComponent<DebugTab>(tabPrefab,
+                    parentTransform: folderContent);
                 if (tab == null)
                 {
                     MyLogger.Error($"Tab prefab has no {nameof(DebugTab)} component! page={pageName}");
@@ -170,7 +185,10 @@ namespace Koj.Debug
             OnPathOpened?.Invoke(currentFullPath);
         }
 
-        private static async UniTask AddPage(string path, string addressableKey, Dictionary<string, Dictionary<string, Page>> folders)
+        private static async UniTask AddPage(
+            string                                       path,
+            string                                       addressableKey,
+            Dictionary<string, Dictionary<string, Page>> folders)
         {
             // internally we use an extension to track whether something is page or a directory
             path += PageExtension;
@@ -196,21 +214,24 @@ namespace Koj.Debug
 
             if (pages.ContainsKey(pageName))
             {
-                MyLogger.Error($"Cannot add duplicate page! pageName={pageName}, debugPath={path}, addressableKey={addressableKey}");
+                MyLogger.Error("Cannot add duplicate page! " +
+                               $"pageName={pageName}, debugPath={path}, addressableKey={addressableKey}");
                 return;
             }
 
             var pagePrefab = await Addressables.LoadAssetAsync<GameObject>(addressableKey);
             if (pagePrefab == null)
             {
-                MyLogger.Error($"Could not add page! Could not find prefab from key! debugPath={path}, addressableKey={addressableKey}");
+                MyLogger.Error("Could not add page! Could not find prefab from key! " +
+                               $"debugPath={path}, addressableKey={addressableKey}");
                 return;
             }
 
             var page = pagePrefab.GetComponent<Page>();
             if (page == null)
             {
-                MyLogger.Error($"Could not add page! Page does not have Page component! debugPath={path}, addressableKey={addressableKey}");
+                MyLogger.Error("Could not add page! Page does not have Page component!" +
+                               $" debugPath={path}, addressableKey={addressableKey}");
                 Addressables.Release(addressableKey);
                 return;
             }
@@ -282,8 +303,43 @@ namespace Koj.Debug
             return true;
         }
 
-        public abstract class Page : MonoBehaviour
+        public class Page : MonoBehaviour
         {
+            public const string DefaultPageAddressableKey = "Assets/Prefabs/Debug/DefaultDebugPage.prefab";
+
+            protected void AddLabel(string label)
+            {
+                var labelGo = new GameObject();
+                labelGo.transform.SetParent(transform);
+                var labelTMP = labelGo.AddComponent<TextMeshProUGUI>();
+                labelTMP.autoSizeTextContainer = true;
+                labelTMP.enableAutoSizing      = true;
+                labelTMP.text                  = $"{label}";
+            }
+
+            protected void AddLabelWithValue(string label, string value, Color valueColor = default)
+            {
+                var labelParent = new GameObject();
+                labelParent.transform.SetParent(transform);
+                var horizontalLayoutGroup = labelParent.AddComponent<HorizontalLayoutGroup>();
+                horizontalLayoutGroup.childAlignment    = TextAnchor.MiddleCenter;
+                horizontalLayoutGroup.childControlWidth = true;
+                horizontalLayoutGroup.spacing           = 20f;
+
+                var labelComponent = new GameObject();
+                labelComponent.transform.SetParent(labelParent.transform);
+                var labelTMP = labelComponent.AddComponent<TextMeshProUGUI>();
+                labelTMP.autoSizeTextContainer = true;
+                labelTMP.enableAutoSizing      = true;
+                labelTMP.text                  = $"{label}:";
+
+                var valueGo = new GameObject();
+                valueGo.transform.SetParent(labelParent.transform);
+                var valueTMP = valueGo.AddComponent<TextMeshProUGUI>();
+                valueTMP.autoSizeTextContainer = true;
+                valueTMP.enableAutoSizing      = true;
+                valueTMP.text                  = $"<color=#{ColorUtility.ToHtmlStringRGB(valueColor)}>{value}</color>";
+            }
         }
     }
 }

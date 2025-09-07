@@ -92,7 +92,6 @@ namespace Models.Map
             }
 
             Debug.Assert(nodeEvent != null, "Created a new node event but node event is null!");
-            MyLogger.Info($"Logic type: {nodeEvent.Logic}");
             var newNodeEvent = instantiator.Instantiate(
                 nodeEvent.Logic,
                 new object[]
