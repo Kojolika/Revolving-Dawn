@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5590047449542085688}
   - component: {fileID: 5822307504476388924}
   m_Layer: 5
-  m_Name: Page
+  m_Name: MenuContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -722,6 +722,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 2846478399537608379}
+  menuContent: {fileID: 1629131072255694589}
   content: {fileID: 3059068371624188163}
   pageContent: {fileID: 8093286615140651041}
   folderContent: {fileID: 2355001909091878578}

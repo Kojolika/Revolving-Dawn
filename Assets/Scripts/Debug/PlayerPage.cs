@@ -5,7 +5,7 @@ using Zenject;
 #if !PRODUCTION || ENABLE_DEBUG_MENU
 namespace Koj.Debug
 {
-    public class PlayerPage : DebugMenu.Page
+    public class PlayerPage : Page
     {
         public const string Address = "Assets/Prefabs/Debug/PlayerDebugMenu.prefab";
 
@@ -15,7 +15,7 @@ namespace Koj.Debug
         private void Construct(PlayerDataManager playerDataManager)
         {
             this.playerDataManager = playerDataManager;
-            AddLabelWithValue("Id", playerDataManager.CurrentPlayerDefinition.Id.ToString());
+            AddLabelWithValue("Id", () => playerDataManager.CurrentPlayerDefinition.Id.ToString());
         }
 
         public void ResetSave()

@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Koj.Debug
 {
-    public class CurrentRunPage : DebugMenu.Page
+    public class CurrentRunPage : Page
     {
         public const string            Address = "Assets/Prefabs/Debug/CurrentRunPage.prefab";
         private      PlayerDataManager playerDataManager;
@@ -24,17 +24,16 @@ namespace Koj.Debug
                 return;
             }
 
-            AddLabelWithValue("Seed", playerDataManager.CurrentSeed.ToString());
-            AddLabelWithValue("Run Name", playerDataManager.CurrentRun.Name);
-            AddLabelWithValue("Player Name", playerDataManager.CurrentRun.PlayerCharacter?.Name);
-            AddLabelWithValue("Player Class", playerDataManager.CurrentRun.PlayerCharacter?.Class.Name);
+            AddLabelWithValue("Seed", () => playerDataManager.CurrentSeed.ToString());
+            AddLabelWithValue("Run Name", () => playerDataManager.CurrentRun.Name);
+            AddLabelWithValue("Player Name", () => playerDataManager.CurrentRun.PlayerCharacter?.Name);
+            AddLabelWithValue("Player Class", () => playerDataManager.CurrentRun.PlayerCharacter?.Class.Name);
 
-            AddLabelWithValue("Map Name", playerDataManager.CurrentRun.CurrentMap?.Name);
-            AddLabelWithValue("Map X", playerDataManager.CurrentRun.CurrentMap?.XDimension.ToString());
-            AddLabelWithValue("Map Y", playerDataManager.CurrentRun.CurrentMap?.YDimension.ToString());
-            AddLabelWithValue("Level", playerDataManager.CurrentRun.CurrentMap?.CurrentNode.Level.ToString());
-            AddLabelWithValue("Current Node Type",
-                playerDataManager.CurrentRun.CurrentMap?.CurrentNode.EventLogic.Model.Name);
+            AddLabelWithValue("Map Name", () => playerDataManager.CurrentRun.CurrentMap?.Name);
+            AddLabelWithValue("Map X", () => playerDataManager.CurrentRun.CurrentMap?.XDimension.ToString());
+            AddLabelWithValue("Map Y", () => playerDataManager.CurrentRun.CurrentMap?.YDimension.ToString());
+            AddLabelWithValue("Level", () => playerDataManager.CurrentRun.CurrentMap?.CurrentNode.Level.ToString());
+            AddLabelWithValue("Current Node Type", () => playerDataManager.CurrentRun.CurrentMap?.CurrentNode.EventLogic.Model.Name);
         }
     }
 }

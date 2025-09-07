@@ -5,11 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Cysharp.Threading.Tasks;
-using TMPro;
 using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.UI;
 using Utils.Extensions;
 using Zenject;
 
@@ -29,6 +27,7 @@ namespace Koj.Debug
         public event Action<string> OnPathOpened;
 
         [SerializeField] private Canvas        canvas;
+        [SerializeField] private GameObject    menuContent;
         [SerializeField] private RectTransform content;
         [SerializeField] private RectTransform pageContent;
         [SerializeField] private RectTransform folderContent;
@@ -61,23 +60,13 @@ namespace Koj.Debug
 
         private void ToggleOpen()
         {
-            isOpen         = !isOpen;
+            isOpen = !isOpen;
+            menuContent.SetActive(isOpen);
             canvas.enabled = isOpen;
         }
 
         private async void Start()
         {
-            var pagePrefab = await Addressables.LoadAssetAsync<GameObject>(Page.DefaultPageAddressableKey);
-            if (pagePrefab == null)
-            {
-                MyLogger.Error("Could not add page! Could not find prefab from key! " +
-                               "addressableKey={Page.DefaultPageAddressableKey}");
-                return;
-            }
-
-            genericPage = Instantiate(pagePrefab);
-            genericPage.SetActive(false);
-
             AddFolder(HomePage, folders);
             await RegisterPages();
             OpenAtPath(HomePage);
@@ -301,45 +290,6 @@ namespace Koj.Debug
                 : path;
 
             return true;
-        }
-
-        public class Page : MonoBehaviour
-        {
-            public const string DefaultPageAddressableKey = "Assets/Prefabs/Debug/DefaultDebugPage.prefab";
-
-            protected void AddLabel(string label)
-            {
-                var labelGo = new GameObject();
-                labelGo.transform.SetParent(transform);
-                var labelTMP = labelGo.AddComponent<TextMeshProUGUI>();
-                labelTMP.autoSizeTextContainer = true;
-                labelTMP.enableAutoSizing      = true;
-                labelTMP.text                  = $"{label}";
-            }
-
-            protected void AddLabelWithValue(string label, string value, Color valueColor = default)
-            {
-                var labelParent = new GameObject();
-                labelParent.transform.SetParent(transform);
-                var horizontalLayoutGroup = labelParent.AddComponent<HorizontalLayoutGroup>();
-                horizontalLayoutGroup.childAlignment    = TextAnchor.MiddleCenter;
-                horizontalLayoutGroup.childControlWidth = true;
-                horizontalLayoutGroup.spacing           = 20f;
-
-                var labelComponent = new GameObject();
-                labelComponent.transform.SetParent(labelParent.transform);
-                var labelTMP = labelComponent.AddComponent<TextMeshProUGUI>();
-                labelTMP.autoSizeTextContainer = true;
-                labelTMP.enableAutoSizing      = true;
-                labelTMP.text                  = $"{label}:";
-
-                var valueGo = new GameObject();
-                valueGo.transform.SetParent(labelParent.transform);
-                var valueTMP = valueGo.AddComponent<TextMeshProUGUI>();
-                valueTMP.autoSizeTextContainer = true;
-                valueTMP.enableAutoSizing      = true;
-                valueTMP.text                  = $"<color=#{ColorUtility.ToHtmlStringRGB(valueColor)}>{value}</color>";
-            }
         }
     }
 }
