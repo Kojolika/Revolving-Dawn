@@ -254,6 +254,7 @@ MonoBehaviour:
   borderRenderer: {fileID: 6607583890933167551}
   healthFillRenderer: {fileID: 4000840512813737353}
   healthAmountText: {fileID: 3815793341152141564}
+  viewParent: {fileID: 3750074914481278181}
 --- !u!1 &8079274986201175334
 GameObject:
   m_ObjectHideFlags: 0
