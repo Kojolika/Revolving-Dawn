@@ -77,8 +77,8 @@ namespace Tooling.Logging
 
         private static string FormatLog(string message, string filePath)
         {
-            var fileName = GetFileNameFromFilePath(filePath);
-            var uniqueColor = Options.GetFilenameColor(fileName);
+            var fileName          = GetFileNameFromFilePath(filePath);
+            var uniqueColor       = Options.GetFilenameColor(fileName);
             var currentStackFrame = stackTrace.GetFrame(0);
             var logMessage = $"<b><color={uniqueColor}><size=25>@</size></color>" +
                              $"<color={Options.FilenameColor}> [{fileName}]</color></b>" +
@@ -124,7 +124,7 @@ namespace Tooling.Logging
         private static class Options
         {
             internal const string NameSpaceColor = "white";
-            internal const string FilenameColor = "#1fa734ff";
+            internal const string FilenameColor  = "#1fa734ff";
 
             internal static string GetFilenameColor(string fileName)
                 => $"#{Convert.ToString(fileName.GetHashCode(), 16)}";

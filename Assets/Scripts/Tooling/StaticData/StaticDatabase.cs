@@ -56,7 +56,7 @@ namespace Tooling.StaticData.Data
             {
                 new AssetReferenceConverter(),
                 new ColorConverter(),
-                new StaticDataConverter(),
+                new StaticDataConverter()
             },
             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
             TypeNameHandling      = TypeNameHandling.Auto,

@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serialization;
 using Tooling.Logging;
+using Tooling.StaticData.Data;
 using Zenject;
 using File = System.IO.File;
 using UnityEditor;
@@ -43,10 +44,14 @@ namespace Systems.Managers
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 TypeNameHandling           = TypeNameHandling.Auto,
                 Formatting                 = Formatting.Indented,
-                ReferenceLoopHandling      = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling      = ReferenceLoopHandling.Ignore,
+                Converters =
+                {
+                    new AssetReferenceConverter(),
+                    new ColorConverter(),
+                    new StaticDataConverter()
+                }
             };
-            jsonSerializer.Converters.Add(new AssetReferenceConverter());
-            jsonSerializer.Converters.Add(new Serialization.ColorConverter());
 
             if (customContractResolver != null)
             {
