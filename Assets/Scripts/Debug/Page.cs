@@ -10,8 +10,7 @@ namespace Koj.Debug
 {
     public abstract class Page : MonoBehaviour
     {
-        // TODO: cache value color too
-        private readonly List<(TextMeshProUGUI component, Func<string> valueGetter)> updateableLabels = new();
+        private readonly List<LabelData> updateableLabels = new();
 
         protected void AddLabel(string label)
         {
@@ -59,18 +58,34 @@ namespace Koj.Debug
             var valueTMP = valueGo.AddComponent<TextMeshProUGUI>();
             valueTMP.autoSizeTextContainer = true;
             valueTMP.enableAutoSizing      = true;
-            valueTMP.text                  = $"<color=#{ColorUtility.ToHtmlStringRGB(valueColor)}>{valueGetter.Invoke()}</color>";
+            valueTMP.text                  = GetLabelText(valueGetter, valueColor);
 
-            updateableLabels.Add((valueTMP, valueGetter));
+            updateableLabels.Add(new LabelData
+            {
+                Component   = valueTMP,
+                ValueGetter = valueGetter,
+                ValueColor  = valueColor
+            });
+        }
+
+        private static string GetLabelText(Func<string> valueGetter, Color valueColor)
+        {
+            return $"<color=#{ColorUtility.ToHtmlStringRGB(valueColor)}>{valueGetter.Invoke()}</color>";
         }
 
         private void OnEnable()
         {
             foreach (var label in updateableLabels)
             {
-                MyLogger.Info($"On enable, setting {label.component} to {label.valueGetter.Invoke()}");
-                label.component.text = label.valueGetter.Invoke();
+                label.Component.text = GetLabelText(label.ValueGetter, label.ValueColor);
             }
+        }
+
+        private class LabelData
+        {
+            public TextMeshProUGUI Component;
+            public Func<string>    ValueGetter;
+            public Color           ValueColor;
         }
     }
 }
