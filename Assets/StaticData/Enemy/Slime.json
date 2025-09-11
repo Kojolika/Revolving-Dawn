@@ -1,5 +1,16 @@
 {
   "Image": "5ff4328c22e7278409f5165d5e4f8aaa",
   "PossibleMoves": null,
-  "Stats": null
+  "Stats": [
+    {
+      "Stat": {
+        "$type": "Tooling.StaticData.Data.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Reference": {
+          "Type": "Tooling.StaticData.Data.Stat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "InstanceName": "MaxHealth"
+        }
+      },
+      "Amount": 11.0
+    }
+  ]
 }

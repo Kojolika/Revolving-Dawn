@@ -71,12 +71,12 @@
         }
       },
       "MinSpawnRange": 0.0,
-      "MaxSpawnRange": 0.0,
-      "EnemyDifficultyRating": 0
+      "MaxSpawnRange": 1.0,
+      "EnemyDifficultyRating": 1
     }
   ],
   "EliteSpawnSettings": null,
   "BossSpawnSettings": null,
-  "EnemyDifficultyMultiplier": 0.0,
-  "EnemyHealthMultiplier": 0.0
+  "EnemyDifficultyMultiplier": 1.0,
+  "EnemyHealthMultiplier": 1.0
 }
