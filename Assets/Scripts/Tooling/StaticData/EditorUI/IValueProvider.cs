@@ -1,6 +1,6 @@
 using System;
 using System.Reflection;
-using Tooling.StaticData.Data.EditorUI;
+using Tooling.StaticData.EditorUI;
 
 namespace Tooling.StaticData.Data
 {

@@ -1,4 +1,4 @@
-namespace Tooling.StaticData.Data.EditorUI
+namespace Tooling.StaticData.EditorUI
 {
     public static class Styles
     {

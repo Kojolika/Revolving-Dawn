@@ -1,4 +1,4 @@
-using Tooling.StaticData.Data.EditorUI;
+using Tooling.StaticData.EditorUI;
 using Utils.Extensions;
 
 namespace Tooling.StaticData.Data.Bytecode

@@ -6,13 +6,14 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using Tooling.Logging;
+using Tooling.StaticData.Data;
 using Tooling.StaticData.Data.Bytecode;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 using Type = System.Type;
 using ByteValueType = Tooling.StaticData.Data.Bytecode.Type;
 
-namespace Tooling.StaticData.Data.EditorUI
+namespace Tooling.StaticData.EditorUI
 {
     [UsedImplicitly]
     public class StatementStaticDataDrawer : CustomStaticDataDrawer<Statement>
@@ -121,8 +122,8 @@ namespace Tooling.StaticData.Data.EditorUI
                 Add(nameField);
 
                 var availableTypes = new List<string>();
-                var enumTypes = Enum.GetValues(typeof(Bytecode.Type))
-                                    .Cast<Bytecode.Type>()
+                var enumTypes = Enum.GetValues(typeof(ByteValueType))
+                                    .Cast<ByteValueType>()
                                     .Select(type => type.ToString())
                                     .ToList();
                 availableTypes.AddRange(enumTypes);
@@ -157,7 +158,7 @@ namespace Tooling.StaticData.Data.EditorUI
                     popupFieldFormatting,
                     popupFieldFormatting)
                 {
-                    value = value.Type != Bytecode.Type.Object || value.ObjectType == null
+                    value = value.Type != ByteValueType.Object || value.ObjectType == null
                         ? value.Type.ToString()
                         : popupFieldFormatting(value.ObjectType.FullName)
                 };
@@ -166,7 +167,7 @@ namespace Tooling.StaticData.Data.EditorUI
                 RefreshVariableTypeView(
                     value,
                     objectTypeContainer,
-                    value.Type != Bytecode.Type.Object || value.ObjectType == null
+                    value.Type != ByteValueType.Object || value.ObjectType == null
                         ? value.Type.ToString()
                         : value.ObjectType.FullName,
                     enumTypes,
@@ -189,7 +190,7 @@ namespace Tooling.StaticData.Data.EditorUI
 
                 if (enumTypes.Contains(selectedType))
                 {
-                    variable.Type = (Bytecode.Type)Enum.Parse(typeof(Bytecode.Type), selectedType);
+                    variable.Type = (ByteValueType)Enum.Parse(typeof(ByteValueType), selectedType);
                 }
                 else if (objectTypes.Contains(selectedType))
                 {
@@ -202,7 +203,7 @@ namespace Tooling.StaticData.Data.EditorUI
                         return;
                     }
 
-                    variable.Type       = Bytecode.Type.Object;
+                    variable.Type       = ByteValueType.Object;
                     variable.ObjectType = newType;
                     var objectTypeTextField = new TextField("Object Type")
                     {
@@ -256,7 +257,7 @@ namespace Tooling.StaticData.Data.EditorUI
                     case ReadVariableModel readVariableModel:
                     {
                         // Provides a default selection that we won't save if no variable is selected
-                        var nullVariable     = new Variable { Name = "(none)", Type = Bytecode.Type.Null };
+                        var nullVariable     = new Variable { Name = "(none)", Type = ByteValueType.Null };
                         var definedVariables = new List<Variable> { nullVariable };
 
                         if (!statement.Inputs.IsNullOrEmpty())
@@ -285,8 +286,8 @@ namespace Tooling.StaticData.Data.EditorUI
                             {
                                 var variable = definedVariables[i];
                                 string variableNamePrefix =
-                                    $"{variable.Name} ({(variable.Type == Bytecode.Type.Object && variable.ObjectType != null ? variable.ObjectType.Name : variable.Name)}) ";
-                                if (variable.Type == Bytecode.Type.Object && variable.ObjectType != null)
+                                    $"{variable.Name} ({(variable.Type == ByteValueType.Object && variable.ObjectType != null ? variable.ObjectType.Name : variable.Name)}) ";
+                                if (variable.Type == ByteValueType.Object && variable.ObjectType != null)
                                 {
                                     var fieldVariables = variable.ObjectType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                                                                  .Where(p => p.GetCustomAttribute<ByteProperty>() != null)
@@ -424,7 +425,7 @@ namespace Tooling.StaticData.Data.EditorUI
                     };
                     valueTypeField.RegisterValueChangedCallback(evt =>
                     {
-                        var newType = (Bytecode.Type)evt.newValue;
+                        var newType = (ByteValueType)evt.newValue;
                         value.Type = newType;
                         if (value.Source == Source.Manual)
                         {
@@ -509,18 +510,18 @@ namespace Tooling.StaticData.Data.EditorUI
                 }
 
                 // TODO: On save, set all other values to their default values
-                public void RefreshView(Bytecode.Type type)
+                public void RefreshView(ByteValueType type)
                 {
                     Clear();
                     switch (type)
                     {
-                        case Bytecode.Type.Null:
-                        case Bytecode.Type.Bool:
-                        case Bytecode.Type.String:
-                        case Bytecode.Type.Int:
-                        case Bytecode.Type.Long:
-                        case Bytecode.Type.Float:
-                        case Bytecode.Type.Double:
+                        case ByteValueType.Null:
+                        case ByteValueType.Bool:
+                        case ByteValueType.String:
+                        case ByteValueType.Int:
+                        case ByteValueType.Long:
+                        case ByteValueType.Float:
+                        case ByteValueType.Double:
                         {
                             var validationLabel = new Label();
                             var valueTextField  = new TextField("Value");
@@ -572,7 +573,7 @@ namespace Tooling.StaticData.Data.EditorUI
                             break;
                         }
 
-                        case Bytecode.Type.List:
+                        case ByteValueType.List:
                         {
                             value.List ??= new ListValueModel();
 
@@ -616,7 +617,7 @@ namespace Tooling.StaticData.Data.EditorUI
                             valueTypeField.RegisterValueChangedCallback(evt =>
                             {
                                 var oldValue = value.Clone();
-                                value.List.Type = (Bytecode.Type)evt.newValue;
+                                value.List.Type = (ByteValueType)evt.newValue;
                                 listField.Rebuild();
                                 SendEvent(ChangeEvent<ValueModel>.GetPooled(oldValue, value));
                             });
@@ -626,7 +627,7 @@ namespace Tooling.StaticData.Data.EditorUI
                             break;
                         }
 
-                        case Bytecode.Type.Object:
+                        case ByteValueType.Object:
                         {
                             Add(new Label("TODO: What do we want to display for an Object"));
                             break;

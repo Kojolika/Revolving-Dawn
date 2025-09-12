@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Serialization;
@@ -37,6 +38,7 @@ namespace Tooling.StaticData.Data
 
         private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
 
+        private bool              hasStaticDataInstanceBeenBuilt;
         public event Action       StaticDataInstancesBuilt;
         public event Action<Type> InstancesUpdated;
 
@@ -83,6 +85,7 @@ namespace Tooling.StaticData.Data
 
         public void BuildDictionaryFromJson()
         {
+            hasStaticDataInstanceBeenBuilt = false;
             Clear();
 
             var staticDataTypes = typeof(StaticData).Assembly.GetTypes()
@@ -128,6 +131,7 @@ namespace Tooling.StaticData.Data
                 staticDataDictionary.Add(type, instanceDictionary);
             }
 
+            hasStaticDataInstanceBeenBuilt = true;
             InjectReferences();
         }
 
@@ -136,13 +140,27 @@ namespace Tooling.StaticData.Data
         /// after every <see cref="StaticData"/> is deserialized.
         /// </summary>
         public void QueueReferenceForInject(
-            Type   staticDataType,
-            string instanceName,
-            object obj,
-            string propertyName,
-            int    arrayIndex = -1)
+            Type       referenceType,
+            string     instanceName,
+            object     objectWithReference,
+            string     propertyName,
+            MemberType memberType,
+            int        arrayIndex = -1)
         {
-            queuedInjections.Add(new StaticDataReferenceHandle(staticDataType, instanceName, obj, propertyName, arrayIndex));
+            if (hasStaticDataInstanceBeenBuilt)
+            {
+                InjectReference(
+                    referenceType,
+                    instanceName,
+                    objectWithReference,
+                    propertyName,
+                    memberType,
+                    arrayIndex);
+            }
+            else
+            {
+                queuedInjections.Add(new StaticDataReferenceHandle(referenceType, instanceName, objectWithReference, propertyName, memberType, arrayIndex));
+            }
         }
 
         /// <summary>
@@ -154,31 +172,103 @@ namespace Tooling.StaticData.Data
         {
             foreach (var referenceHandle in queuedInjections)
             {
-                var staticDataType  = referenceHandle.ObjectWithReference.GetType();
-                var staticDataField = Utils.GetField(staticDataType, referenceHandle.PropertyName);
+                InjectReference(
+                    referenceHandle.ReferenceType,
+                    referenceHandle.InstanceName,
+                    referenceHandle.ObjectWithReference,
+                    referenceHandle.PropertyName,
+                    referenceHandle.MemberType,
+                    referenceHandle.ArrayIndex);
+            }
 
+            queuedInjections.Clear();
+        }
+
+        private void InjectReference(
+            Type       referenceType,
+            string     instanceName,
+            object     objectWithReference,
+            string     propertyName,
+            MemberType memberType,
+            int        arrayIndex = -1)
+        {
+            var          objType            = objectWithReference.GetType();
+            FieldInfo    staticDataField    = null;
+            PropertyInfo staticDataProperty = null;
+            
+            // TODO: CONVERT to 2 separate functions for field and property
+            if (memberType == MemberType.Field)
+            {
+                staticDataField = Utils.GetField(objType, propertyName);
                 if (staticDataField == null)
                 {
-                    MyLogger.Error($"Could not find field {referenceHandle.PropertyName} " +
-                                   $"on Static Data of type {staticDataType}");
+                    MyLogger.Error($"Could not find field {propertyName} " +
+                                   $"on Static Data of type {objType}");
 
-                    continue;
+                    return;
                 }
 
-                if (referenceHandle.ArrayIndex < 0)
+                if (staticDataField.FieldType != referenceType)
                 {
-                    staticDataField.SetValue(
-                        referenceHandle.ObjectWithReference,
-                        GetStaticDataInstance(referenceHandle.Type, referenceHandle.InstanceName)
-                    );
+                    MyLogger.Error("Field that is requesting to be filled in is not equal to the type that's referenced! " +
+                                   $"referenceType={referenceType}, fieldType={staticDataField.FieldType}, objectWithReference={objType}, propertyName={propertyName}");
+                    return;
+                }
+            }
+
+            if (memberType == MemberType.Property)
+            {
+                staticDataProperty = objType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (staticDataProperty == null)
+                {
+                    MyLogger.Error($"Could not find property {propertyName} " +
+                                   $"on Static Data of type {objType}");
+
+                    return;
+                }
+
+                if (staticDataProperty.PropertyType != referenceType)
+                {
+                    MyLogger.Error("Property that is requesting to be filled in is not equal to the type that's referenced! " +
+                                   $"referenceType={referenceType}, propertyType={staticDataProperty.PropertyType}, objectWithReference={objType}, propertyName={propertyName}");
+                    return;
+                }
+            }
+
+            StaticData referencedInstance = GetStaticDataInstance(referenceType, instanceName);
+            if (referencedInstance == null)
+            {
+                MyLogger.Error($"Trying to find {referenceType} with name {instanceName}," +
+                               $" but does not exist in the StaticDatabase. Requesting type={objectWithReference}");
+                return;
+            }
+
+            if (arrayIndex < 0)
+            {
+                if (memberType == MemberType.Field)
+                {
+                    staticDataField!.SetValue(objectWithReference, referencedInstance);
                 }
                 else
                 {
-                    var list = (IList)(staticDataField.GetValue(referenceHandle.ObjectWithReference)
+                    staticDataProperty!.SetValue(objectWithReference, referencedInstance);
+                }
+            }
+            else
+            {
+                if (memberType == MemberType.Field)
+                {
+                    var list = (IList)(staticDataField!.GetValue(objectWithReference)
                                     ?? Activator.CreateInstance(staticDataField.FieldType));
-                    list[referenceHandle.ArrayIndex] = GetStaticDataInstance(referenceHandle.Type, referenceHandle.InstanceName);
-
-                    staticDataField.SetValue(referenceHandle.ObjectWithReference, list);
+                    list[arrayIndex] = referencedInstance;
+                    staticDataField.SetValue(objectWithReference, list);
+                }
+                else
+                {
+                    var list = (IList)(staticDataProperty.GetValue(objectWithReference)
+                                    ?? Activator.CreateInstance(staticDataProperty.PropertyType));
+                    list[arrayIndex] = referencedInstance;
+                    staticDataProperty!.SetValue(objectWithReference, list);
                 }
             }
         }
@@ -188,10 +278,10 @@ namespace Tooling.StaticData.Data
             /// <summary>
             /// The type of static data being referenced.
             /// </summary>
-            public readonly Type Type;
+            public readonly Type ReferenceType;
 
             /// <summary>
-            /// The instance name of the <see cref="Type"/> being referenced.
+            /// The instance name of the <see cref="ReferenceType"/> being referenced.
             /// </summary>
             public readonly string InstanceName;
 
@@ -206,23 +296,43 @@ namespace Tooling.StaticData.Data
             public readonly string PropertyName;
 
             /// <summary>
+            /// Specifies whether the propertyName refers to a field or a property.
+            /// </summary>
+            public readonly MemberType MemberType;
+
+            /// <summary>
             /// If the property is an array, this will be set to a value > -1.
             /// </summary>
             public readonly int ArrayIndex;
 
             public StaticDataReferenceHandle(
-                Type   type,
-                string instanceName,
-                object objectWithReference,
-                string propertyName,
-                int    arrayIndex = -1)
+                Type       referenceType,
+                string     instanceName,
+                object     objectWithReference,
+                string     propertyName,
+                MemberType memberMemberType,
+                int        arrayIndex = -1)
             {
-                Type                = type;
+                ReferenceType       = referenceType;
                 InstanceName        = instanceName;
                 ObjectWithReference = objectWithReference;
                 PropertyName        = propertyName;
+                MemberType          = memberMemberType;
                 ArrayIndex          = arrayIndex;
             }
+        }
+
+        public enum MemberType
+        {
+            /// <summary>
+            /// This value is from a field
+            /// </summary>
+            Field,
+
+            /// <summary>
+            /// This value is from a property
+            /// </summary>
+            Property
         }
 
         public void ValidateStaticData()

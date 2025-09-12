@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.Data.EditorUI
+namespace Tooling.StaticData.EditorUI
 {
     public class NotifyValueChangedGroup<T> : VisualElement, INotifyValueChanged<T>
     {

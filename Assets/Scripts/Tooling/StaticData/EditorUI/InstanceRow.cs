@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Common.Util;
+using Tooling.StaticData.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Extensions;
+using StaticDatabase = Tooling.StaticData.Data.StaticDatabase;
 
-namespace Tooling.StaticData.Data.EditorUI
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// Displays a single row of a static data instance
@@ -21,9 +23,9 @@ namespace Tooling.StaticData.Data.EditorUI
 
         public const float EditButtonWidth = 32;
 
-        private StaticData instance;
+        private Data.StaticData instance;
 
-        private Dictionary<StaticData, List<string>> validationErrors;
+        private Dictionary<Data.StaticData, List<string>> validationErrors;
 
         public InstanceRow(Type staticDataType, bool allowEditing)
         {
@@ -55,7 +57,7 @@ namespace Tooling.StaticData.Data.EditorUI
             RefreshView();
         }
 
-        public void BindItem(StaticData instance)
+        public void BindItem(Data.StaticData instance)
         {
             this.instance = instance;
             RefreshView();
@@ -84,7 +86,7 @@ namespace Tooling.StaticData.Data.EditorUI
                 : defaultColor;
         }
 
-        private static bool HasValidationErrors(StaticData instance, Dictionary<StaticData, List<string>> validationErrors)
+        private static bool HasValidationErrors(Data.StaticData instance, Dictionary<Data.StaticData, List<string>> validationErrors)
         {
             return validationErrors != null
                 && instance != null
@@ -99,21 +101,21 @@ namespace Tooling.StaticData.Data.EditorUI
         /// <returns></returns>
         public static IEnumerable<FieldInfo> GetOrderedFields(Type staticDataType)
         {
-            var fields = Utils.GetFields(staticDataType);
-            Utils.SortFields(fields, staticDataType);
+            var fields = Data.Utils.GetFields(staticDataType);
+            Data.Utils.SortFields(fields, staticDataType);
             return fields;
         }
 
-        private string GetLabelForField(FieldInfo fieldInfo, StaticData instance)
+        private string GetLabelForField(FieldInfo fieldInfo, Data.StaticData instance)
         {
             if (instance == null)
             {
                 return "null";
             }
 
-            if (typeof(StaticData).IsAssignableFrom(fieldInfo.FieldType))
+            if (typeof(Data.StaticData).IsAssignableFrom(fieldInfo.FieldType))
             {
-                return (fieldInfo.GetValue(instance) as StaticData)?.Name;
+                return (fieldInfo.GetValue(instance) as Data.StaticData)?.Name;
             }
 
             if (typeof(IEnumerable).IsAssignableFrom(fieldInfo.FieldType))
@@ -124,7 +126,7 @@ namespace Tooling.StaticData.Data.EditorUI
             return $"{fieldInfo.GetValue(instance)}";
         }
 
-        private static ButtonIcon CreateEditButton(StaticData instance, Type staticDataType)
+        private static ButtonIcon CreateEditButton(Data.StaticData instance, Type staticDataType)
         {
             return new ButtonIcon(() => EditorWindow.InstanceEditorWindow.Open(instance, staticDataType), IconPaths.Edit);
         }

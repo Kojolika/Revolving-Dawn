@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using Tooling.StaticData.Data;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.Data
+namespace Tooling.StaticData.EditorUI
 {
     public class TypesView : VisualElement
     {
         public readonly ListView ListView;
-        private List<System.Type> staticDataTypes => StaticDatabase.Instance.GetAllStaticDataTypes();
-        private Dictionary<System.Type, Dictionary<StaticData, List<string>>> validationErrors;
+
+        private List<Type> staticDataTypes => StaticDatabase.Instance.GetAllStaticDataTypes();
+
+        private Dictionary<Type, Dictionary<Data.StaticData, List<string>>> validationErrors;
 
         public TypesView()
         {
@@ -28,8 +31,8 @@ namespace Tooling.StaticData.Data
 
                     ((TypeView)item).BindItem(staticDataTypes[index], numValidationErrors);
                 },
-                unbindItem = (item, _) => ((TypeView)item).UnBindItem(),
-                itemsSource = staticDataTypes,
+                unbindItem                    = (item, _) => ((TypeView)item).UnBindItem(),
+                itemsSource                   = staticDataTypes,
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All
             };
 

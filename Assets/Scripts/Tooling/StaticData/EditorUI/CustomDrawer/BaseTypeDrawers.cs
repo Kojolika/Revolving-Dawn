@@ -1,9 +1,10 @@
 using JetBrains.Annotations;
+using Tooling.StaticData.Data;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace Tooling.StaticData.Data.EditorUI
+namespace Tooling.StaticData.EditorUI
 {
     public abstract class BaseTypeDrawer<TType, TField> : GeneralFieldDrawer<TType>
         where TField : BaseField<TType>, new()

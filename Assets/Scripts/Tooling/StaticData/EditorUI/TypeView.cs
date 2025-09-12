@@ -1,8 +1,7 @@
-using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.Data
+namespace Tooling.StaticData.EditorUI
 {
     public class TypeView : VisualElement
     {
@@ -42,7 +41,7 @@ namespace Tooling.StaticData.Data
 
         public void UnBindItem()
         {
-            typeLabel.text = string.Empty;
+            typeLabel.text            = string.Empty;
             validationErrorLabel.text = string.Empty;
         }
     }

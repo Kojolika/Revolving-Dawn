@@ -21,22 +21,22 @@ namespace Zenject.Installers
 {
     public class FightInstaller : MonoInstaller<FightInstaller>
     {
-        [SerializeField] LevelView                            levelView;
-        [SerializeField] CardView                             cardView;
-        [SerializeField] PlayerView                           playerView;
-        [SerializeField] EnemyView                            enemyView;
-        [SerializeField] HealthView                           healthViewPrefab;
-        [SerializeField] PlayerHandView                       playerHandView;
-        [SerializeField] ManaPoolView                         manaPoolView;
-        [SerializeField] ManaView                             manaView;
-        [SerializeField] FightOverlay                         fightOverlayPrefab;
-        [SerializeField] InputActionAsset                     playerHandInput;
-        [SerializeField] PlayerHandViewSettings               playerHandInputSettings;
-        [SerializeField] TargetingArrowView                   targetingArrowView;
-        [SerializeField] GameLoop.AddressableAssetLabelLoader addressableAssetLabelLoader;
-        [SerializeField] WorldUI                              worldUIPrefab;
-        [SerializeField] BuffsView                            buffsViewPrefab;
-        [SerializeField] BuffElement                          buffElementPrefab;
+        [SerializeField] private LevelView                            levelView;
+        [SerializeField] private CardView                             cardView;
+        [SerializeField] private PlayerView                           playerView;
+        [SerializeField] private EnemyView                            enemyView;
+        [SerializeField] private HealthView                           healthViewPrefab;
+        [SerializeField] private PlayerHandView                       playerHandView;
+        [SerializeField] private ManaPoolView                         manaPoolView;
+        [SerializeField] private ManaView                             manaView;
+        [SerializeField] private FightOverlay                         fightOverlayPrefab;
+        [SerializeField] private InputActionAsset                     playerHandInput;
+        [SerializeField] private PlayerHandViewSettings               playerHandInputSettings;
+        [SerializeField] private TargetingArrowView                   targetingArrowView;
+        [SerializeField] private GameLoop.AddressableAssetLabelLoader addressableAssetLabelLoader;
+        [SerializeField] private WorldUI                              worldUIPrefab;
+        [SerializeField] private BuffsView                            buffsViewPrefab;
+        [SerializeField] private BuffElement                          buffElementPrefab;
 
 
         public override void InstallBindings()
@@ -125,13 +125,11 @@ namespace Zenject.Installers
                      .AsSingle();
 
             Container.Bind<Team>()
-                      /*.WithId(Team.PlayerTeamName)*/
                      .FromResolveGetter<PlayerDataManager>(
                           playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.PlayerTeam)
                      .AsCached();
 
             Container.Bind<Team>()
-                      /*.WithId(Team.EnemyTeamName)*/
                      .FromResolveGetter<PlayerDataManager>(
                           playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam)
                      .AsCached();

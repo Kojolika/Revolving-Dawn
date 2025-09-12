@@ -1,13 +1,14 @@
 using System;
+using Tooling.StaticData.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Tooling.StaticData.Data
+namespace Tooling.StaticData.EditorUI
 {
     public class ValidatorErrorView : VisualElement
     {
-        private readonly Type       selectedType;
-        private          StaticData instance;
+        private readonly Type            selectedType;
+        private          Data.StaticData instance;
 
         public ValidatorErrorView(Type selectedType)
         {
@@ -21,7 +22,7 @@ namespace Tooling.StaticData.Data
             StaticDatabase.Instance.ValidationCompleted -= RefreshValidationView;
         }
 
-        public void OnStaticDataSelected(StaticData staticData)
+        public void OnStaticDataSelected(Data.StaticData staticData)
         {
             instance = staticData;
             RefreshValidationView();

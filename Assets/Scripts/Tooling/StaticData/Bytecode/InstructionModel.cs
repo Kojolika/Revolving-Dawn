@@ -1,4 +1,4 @@
-using Tooling.StaticData.Data.EditorUI;
+using Tooling.StaticData.EditorUI;
 
 namespace Tooling.StaticData.Data
 {

@@ -1,5 +1,5 @@
 {
-  "DefaultDowngrades": [
+  "LowestDowngrades": [
     {
       "Mana": {
         "$type": "Tooling.StaticData.Data.Mana, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",

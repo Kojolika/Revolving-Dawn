@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Tooling.StaticData.Data.EditorUI;
+using Tooling.StaticData.EditorUI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Extensions;

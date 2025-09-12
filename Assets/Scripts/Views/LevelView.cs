@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Models.Characters;
 using Systems.Managers;
+using Tooling.Logging;
 using UnityEngine;
 
 namespace Views
@@ -12,14 +13,15 @@ namespace Views
         [SerializeField] private Transform       playerSpawn;
         [SerializeField] private Transform       charactersParent;
 
-        public Dictionary<EnemyLogic, EnemyView>            EnemyLookup  { get; private set; }
+        public Dictionary<EnemyLogic, EnemyView>       EnemyLookup  { get; private set; }
         public Dictionary<PlayerCharacter, PlayerView> PlayerLookup { get; private set; }
 
 
         [Zenject.Inject]
-        private void Construct(PlayerDataManager  playerDataManager,
-                               PlayerView.Factory playerViewFactory,
-                               EnemyView.Factory  enemyViewFactory)
+        private void Construct(
+            PlayerDataManager  playerDataManager,
+            PlayerView.Factory playerViewFactory,
+            EnemyView.Factory  enemyViewFactory)
         {
             EnemyLookup = new();
             var enemiesForLevel = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam.Members
@@ -28,7 +30,9 @@ namespace Views
             for (int i = 0; i < enemiesForLevel.Count; i++)
             {
                 var enemy        = enemiesForLevel[i];
+                MyLogger.Info($"Enemy for level: {enemy}, custom fac: {enemyViewFactory}");
                 var newEnemyView = enemyViewFactory.Create(enemy);
+                MyLogger.Info($"Enemyview: {newEnemyView}");
                 EnemyLookup.Add(enemy, newEnemyView);
                 newEnemyView.transform.SetParent(charactersParent);
                 newEnemyView.transform.position = enemySpawns[i].transform.position;

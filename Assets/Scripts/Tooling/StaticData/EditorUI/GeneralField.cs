@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Common.Util;
 using Tooling.Logging;
+using Tooling.StaticData.Data;
 using Tooling.StaticData.Data.Validation;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -12,9 +13,10 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 using Utils.Extensions;
+using IValueProvider = Tooling.StaticData.Data.IValueProvider;
 using Object = UnityEngine.Object;
 
-namespace Tooling.StaticData.Data.EditorUI
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// A property field that supports multiple types.
@@ -78,7 +80,7 @@ namespace Tooling.StaticData.Data.EditorUI
             if (options.IsArrayElement && valueProvider is ListValueProvider listValueProvider)
             {
                 var rowElement = new VisualElement();
-                Utils.AddLabel(rowElement, $"[{listValueProvider.ArrayIndex}]", null);
+                Data.Utils.AddLabel(rowElement, $"[{listValueProvider.ArrayIndex}]", null);
                 rowElement.Add(DrawEditorForType(Type));
 
                 rowElement.AddToClassList(Styles.ListViewContainer);
@@ -114,7 +116,7 @@ namespace Tooling.StaticData.Data.EditorUI
             {
                 editorForFieldType = CreateListField(type);
             }
-            else if (!options.EnumerateStaticDataProperties && typeof(StaticData).IsAssignableFrom(type))
+            else if (!options.EnumerateStaticDataProperties && typeof(Data.StaticData).IsAssignableFrom(type))
             {
                 editorForFieldType = CreateStaticDataField(type);
             }
@@ -251,7 +253,7 @@ namespace Tooling.StaticData.Data.EditorUI
                 showAddRemoveFooter           = true,
                 showBoundCollectionSize       = false,
                 horizontalScrollingEnabled    = true,
-                tooltip                       = Utils.GetTooltip(valueProvider)
+                tooltip                       = Data.Utils.GetTooltip(valueProvider)
             };
 
             listView.itemsAdded += indices =>
@@ -306,10 +308,10 @@ namespace Tooling.StaticData.Data.EditorUI
             var root = new VisualElement();
             root.AddToClassList(Styles.StaticDataSelectorContainer);
 
-            var selectedStaticData = GetValue() as StaticData;
+            var selectedStaticData = GetValue() as Data.StaticData;
 
-            Utils.AddLabel(root, valueProvider.ValueName, Utils.GetTooltip(valueProvider));
-            Utils.AddLabel(root, selectedStaticData?.Name ?? StaticDataNullLabel, null);
+            Data.Utils.AddLabel(root, valueProvider.ValueName, Data.Utils.GetTooltip(valueProvider));
+            Data.Utils.AddLabel(root, selectedStaticData?.Name ?? StaticDataNullLabel, null);
 
             var editButton = new ButtonIcon(
                 clickEvent: () =>
@@ -359,16 +361,16 @@ namespace Tooling.StaticData.Data.EditorUI
             var root = new VisualElement();
             root.AddToClassList(Styles.AlignStart);
 
-            var fields = Utils.GetFields(type);
-            Utils.SortFields(fields, type);
+            var fields = Data.Utils.GetFields(type);
+            Data.Utils.SortFields(fields, type);
 
             foreach (var field in fields)
             {
                 var generalField = new GeneralField(field.FieldType, new FieldValueProvider(field, currentObj));
                 generalField.RegisterValueChangedCallback(evt => { SendEvent(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue)); });
 
-                if (Utils.GetFields(field.FieldType).Count > 1
-                 && !typeof(StaticData).IsAssignableFrom(field.FieldType)) // Hacky - out static data has a custom editor where we don't want a foldout
+                if (Data.Utils.GetFields(field.FieldType).Count > 1
+                 && !typeof(Data.StaticData).IsAssignableFrom(field.FieldType)) // Hacky - out static data has a custom editor where we don't want a foldout
                 {
                     var foldout = new Foldout();
                     foldout.Add(generalField);
@@ -453,7 +455,7 @@ namespace Tooling.StaticData.Data.EditorUI
                 // We don't need this for unity engine objects or static data since we can select instances with the general field
                 var shouldCreateNewInstance = (GetValue() == null || selectedType != previousSelectedType)
                                            && (selectedType.IsValueType || selectedType.GetConstructor(Type.EmptyTypes) != null)
-                                           && (!typeof(StaticData).IsAssignableFrom(typeToDisplay)
+                                           && (!typeof(Data.StaticData).IsAssignableFrom(typeToDisplay)
                                             || options.EnumerateStaticDataProperties)
                                            && !typeof(Object).IsAssignableFrom(typeToDisplay);
 
@@ -476,7 +478,7 @@ namespace Tooling.StaticData.Data.EditorUI
             var root = new VisualElement();
             root.AddToClassList(Styles.FlexRow);
 
-            Utils.AddLabel(root, valueProvider.ValueName, Utils.GetTooltip(valueProvider));
+            Data.Utils.AddLabel(root, valueProvider.ValueName, Data.Utils.GetTooltip(valueProvider));
 
             var isGenericAssetReference = false;
             var assetReferenceType      = type;

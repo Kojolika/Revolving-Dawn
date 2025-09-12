@@ -7,13 +7,20 @@ using Zenject;
 
 namespace Models.Map
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public abstract class NodeEventLogic
     {
+        [JsonProperty]
         public readonly NodeEvent Model;
 
         public NodeEventLogic(NodeEvent model, MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
         {
             this.Model = model;
+        }
+
+        [JsonConstructor]
+        protected NodeEventLogic()
+        {
         }
 
         public abstract UniTask StartEvent();
@@ -66,9 +73,7 @@ namespace Models.Map
 
         public NodeEventLogic Create(Data data)
         {
-            MyLogger.Info($"Creating NodeEventLogic, data: {data}");
             NodeEvent nodeEvent = null;
-
             if (data.CurrentNode == data.FirstNode)
             {
                 nodeEvent = data.MapSettings.FinalNodeEvent;

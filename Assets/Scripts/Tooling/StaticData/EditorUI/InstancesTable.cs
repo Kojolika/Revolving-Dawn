@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Tooling.Logging;
+using Tooling.StaticData.Data;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.Data.EditorUI
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// Displays a list of static data instances as rows in a table
@@ -14,13 +13,13 @@ namespace Tooling.StaticData.Data.EditorUI
     {
         private ListView listView;
 
-        private readonly bool               allowEditing;
-        private readonly Action<StaticData> onSelectionChanged;
-        private readonly Type               selectedType;
+        private readonly bool                    allowEditing;
+        private readonly Action<Data.StaticData> onSelectionChanged;
+        private readonly Type                    selectedType;
 
         private const float RowPadding = 4f;
 
-        public InstancesTable(Type selectedType, bool allowEditing, Action<StaticData> onSelectionChanged)
+        public InstancesTable(Type selectedType, bool allowEditing, Action<Data.StaticData> onSelectionChanged)
         {
             this.selectedType       = selectedType;
             this.allowEditing       = allowEditing;
@@ -79,7 +78,7 @@ namespace Tooling.StaticData.Data.EditorUI
                 foreach (var index in ints)
                 {
                     // Item is added as null, create a new instance of that type and set the name to a unique name
-                    instances[index] = Activator.CreateInstance(selectedType) as StaticData;
+                    instances[index] = Activator.CreateInstance(selectedType) as Data.StaticData;
                     string newInstanceName = StaticDatabase.Instance.GetStaticDataInstance(selectedType, $"{selectedType.Name}_{index}") == null
                         ? $"{selectedType.Name}_{index}"
                         : $"{selectedType.Name}_{index}(1)";
@@ -92,7 +91,7 @@ namespace Tooling.StaticData.Data.EditorUI
 
             // listview already removes the element, just update our StaticData dict
             listView.itemsRemoved     += _ => StaticDatabase.Instance.UpdateInstancesForType(selectedType, instances);
-            listView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.FirstOrDefault() as StaticData);
+            listView.selectionChanged += selectedObjects => onSelectionChanged?.Invoke(selectedObjects.FirstOrDefault() as Data.StaticData);
 
             Add(CreateInstanceHeader(selectedType));
             Add(listView);
@@ -172,11 +171,11 @@ namespace Tooling.StaticData.Data.EditorUI
         /// </summary>
         public class Selector : UnityEditor.EditorWindow
         {
-            private bool               isInitialized;
-            private Type               staticDataType;
-            private Action<StaticData> onSelectionChanged;
+            private bool                    isInitialized;
+            private Type                    staticDataType;
+            private Action<Data.StaticData> onSelectionChanged;
 
-            public static Selector Open(Type staticDataType, Action<StaticData> onSelectionChanged)
+            public static Selector Open(Type staticDataType, Action<Data.StaticData> onSelectionChanged)
             {
                 var instanceSelector = GetWindow<Selector>();
                 instanceSelector.staticDataType     = staticDataType;

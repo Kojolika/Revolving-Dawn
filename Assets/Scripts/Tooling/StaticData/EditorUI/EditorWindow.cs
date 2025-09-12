@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using Tooling.Logging;
+using Tooling.StaticData.Data;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.UIElements;
@@ -10,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.Data.EditorUI
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// Designed to be a CMS system where we manage our static data.
@@ -203,19 +204,19 @@ namespace Tooling.StaticData.Data.EditorUI
 
         public class InstanceEditorWindow : UnityEditor.EditorWindow
         {
-            private          Type         selectedType;
-            private          StaticData   editingObj;
-            private          EditorWindow openedEditorWindow;
-            private          bool         isInitialized;
-            private          string       nameOnOpening;
-            private readonly List<Action> disposeActions = new();
+            private          Type            selectedType;
+            private          Data.StaticData editingObj;
+            private          EditorWindow    openedEditorWindow;
+            private          bool            isInitialized;
+            private          string          nameOnOpening;
+            private readonly List<Action>    disposeActions = new();
 
-            public static void Open(StaticData editingObj, Type selectedType)
+            public static void Open(Data.StaticData editingObj, Type selectedType)
             {
                 GetWindow<InstanceEditorWindow>().Initialize(editingObj, selectedType);
             }
 
-            private void Initialize(StaticData editingObj, Type selectedType)
+            private void Initialize(Data.StaticData editingObj, Type selectedType)
             {
                 Dispose();
                 rootVisualElement.Clear();
@@ -257,7 +258,7 @@ namespace Tooling.StaticData.Data.EditorUI
                 {
                     var generalField = new GeneralField(
                         selectedType,
-                        new ValueProvider<StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name),
+                        new ValueProvider<Data.StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name),
                         new GeneralField.Options { EnumerateStaticDataProperties = true });
 
                     generalField.RegisterValueChangedCallback(_ => hasUnsavedChanges = true);
@@ -329,7 +330,7 @@ namespace Tooling.StaticData.Data.EditorUI
                 base.SaveChanges();
             }
 
-            private static bool HasNameChanged(string nameOnOpening, StaticData editingObj)
+            private static bool HasNameChanged(string nameOnOpening, Data.StaticData editingObj)
             {
                 return editingObj.Name != nameOnOpening;
             }

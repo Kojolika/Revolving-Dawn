@@ -33,7 +33,5 @@ namespace Tooling.StaticData.Data
             Type         = type;
             InstanceName = instanceName;
         }
-
-        public bool IsReferenceValid() => Type != null && !string.IsNullOrEmpty(InstanceName);
     }
 }

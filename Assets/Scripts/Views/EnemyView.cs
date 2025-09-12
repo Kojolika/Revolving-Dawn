@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Fight.Engine;
 using Models.Characters;
 using Systems.Managers;
+using Tooling.Logging;
 using UnityEngine;
 using Zenject;
 
@@ -59,6 +60,7 @@ namespace Views
             this.enemyMoveView = enemyMoveView;
             this.buffsView     = buffsView;
 
+            MyLogger.Info($"Addresabe manager: {addressablesManager}, enemy logic: {enemyLogic}, enemy model: {enemyLogic.Model}");
             _ = addressablesManager.LoadGenericAsset(
                 enemyLogic.Model.Image,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,

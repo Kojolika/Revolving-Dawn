@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -47,24 +46,24 @@ namespace Serialization
             return objectContract;
         }
 
-        private void FindStaticDataReferences(object obj, StreamingContext context)
+        private static void FindStaticDataReferences(object obj, StreamingContext context)
         {
             RecursivelyResolveStaticDataReferences(obj);
         }
 
-        private static void RecursivelyResolveStaticDataReferences(object obj, int arrayIndex = -1)
+        private static void RecursivelyResolveStaticDataReferences(object obj)
         {
             var objType = obj.GetType();
             foreach (var field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                if (IsStaticDataField(obj, field, out var staticDataReference, arrayIndex)
-                 && (staticDataReference?.IsReferenceValid() ?? false))
+                if (IsStaticDataField(field.GetValue(obj), out var staticDataReference))
                 {
                     StaticDatabase.Instance.QueueReferenceForInject(
                         staticDataReference.Type,
                         staticDataReference.InstanceName,
                         obj,
-                        field.Name
+                        field.Name,
+                        StaticDatabase.MemberType.Field
                     );
                 }
                 else if (typeof(IList).IsAssignableFrom(field.FieldType))
@@ -77,56 +76,77 @@ namespace Serialization
 
                     for (int i = 0; i < fieldList.Count; i++)
                     {
-                        if (IsStaticDataField(obj, field, out var staticDataRef, i)
-                         && staticDataRef.IsReferenceValid())
+                        if (IsStaticDataField(fieldList[i], out var staticDataRef))
                         {
                             StaticDatabase.Instance.QueueReferenceForInject(
                                 staticDataRef.Type,
                                 staticDataRef.InstanceName,
                                 obj,
                                 field.Name,
+                                StaticDatabase.MemberType.Field,
                                 i
                             );
                         }
                         else
                         {
-                            RecursivelyResolveStaticDataReferences(fieldList[i], i);
+                            RecursivelyResolveStaticDataReferences(fieldList[i]);
                         }
                     }
                 }
             }
 
-            return;
-
-            bool IsStaticDataField(object objToCheck, FieldInfo field, out StaticDataReference staticDataReference, int index = -1)
+            foreach (var prop in objType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                var isListField = index > -1;
-
-                StaticData staticData;
-                staticDataReference = null;
-                if (isListField && field.GetValue(objToCheck) is IList list)
+                if (IsStaticDataField(prop.GetValue(obj), out var staticDataReference))
                 {
-                    if (index > list.Count - 1)
+                    StaticDatabase.Instance.QueueReferenceForInject(
+                        staticDataReference.Type,
+                        staticDataReference.InstanceName,
+                        obj,
+                        prop.Name,
+                        StaticDatabase.MemberType.Property
+                    );
+                }
+                else if (typeof(IList).IsAssignableFrom(prop.PropertyType))
+                {
+                    var propList = (IList)prop.GetValue(obj);
+                    if (propList == null)
                     {
-                        MyLogger.Error($"Index passed into field is greater than the list size! fieldName={field.Name}, index={index}, count={list.Count}");
-                        return false;
+                        continue;
                     }
 
-                    staticData = list[index] as StaticData;
+                    for (int i = 0; i < propList.Count; i++)
+                    {
+                        if (IsStaticDataField(propList[i], out var staticDataRef))
+                        {
+                            StaticDatabase.Instance.QueueReferenceForInject(
+                                staticDataRef.Type,
+                                staticDataRef.InstanceName,
+                                obj,
+                                prop.Name,
+                                StaticDatabase.MemberType.Property,
+                                i
+                            );
+                        }
+                        else
+                        {
+                            RecursivelyResolveStaticDataReferences(propList[i]);
+                        }
+                    }
                 }
-                else
-                {
-                    staticData = field.GetValue(objToCheck) as StaticData;
-                }
-
-                if (staticData?.Reference == null)
-                {
-                    return false;
-                }
-
-                staticDataReference = staticData.Reference;
-                return true;
             }
+        }
+
+        private static bool IsStaticDataField(object obj, out StaticDataReference staticDataReference)
+        {
+            if (obj is not StaticData staticData)
+            {
+                staticDataReference = null;
+                return false;
+            }
+
+            staticDataReference = staticData.Reference;
+            return staticDataReference.IsReferenceValid();
         }
     }
 }

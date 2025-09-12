@@ -1,4 +1,4 @@
-namespace Tooling.StaticData.Data
+namespace Tooling.StaticData.EditorUI
 {
     /// <summary>
     /// Paths to icons used in our static data editor.
