@@ -21,7 +21,7 @@ namespace UI.DisplayElements
         private Data data;
 
         [Inject]
-        void Construct(AddressablesManager addressablesManager, PlayerDataManager playerDataManager, Data data)
+        private void Construct(AddressablesManager addressablesManager, PlayerDataManager playerDataManager, Data data)
         {
             this.addressablesManager = addressablesManager;
             this.playerDataManager = playerDataManager;
@@ -38,12 +38,11 @@ namespace UI.DisplayElements
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>
             {
-                data.Definition.EventLogic.StartEvent();
                 button.interactable = false;
                 _ = playerDataManager.UpdateMapNode(data.Definition);
             });
 
-            _ = addressablesManager.LoadGenericAsset(data.Definition.EventLogic.Model.Icon,
+            _ = addressablesManager.LoadGenericAsset(data.Definition.Event.Icon,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset => image.sprite = asset
             );

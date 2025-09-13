@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Common.Util;
+using Models.Characters;
+using Models.Map;
 using Newtonsoft.Json.Serialization;
 using Tooling.Logging;
 using Tooling.StaticData.Data;
+using Tooling.StaticData.Data.Bytecode;
 using Zenject;
 using Type = System.Type;
 
@@ -54,6 +58,15 @@ namespace Serialization
         private static void RecursivelyResolveStaticDataReferences(object obj)
         {
             var objType = obj.GetType();
+            if (obj is EnemyEventLogic enemyEventLogic)
+            {
+                MyLogger.Info($"enemy event logic found, enemy length: {enemyEventLogic.enemies?.Count}");
+                foreach (var enemy in enemyEventLogic.enemies.OrEmptyIfNull())
+                {
+                    MyLogger.Info($"is null: {enemy == null}, enemy: {enemy?.Name}, model: {enemy?.Model?.Name}, enemy team: {enemy?.Team} select move strat: {enemy?.SelectMoveStrategy?.GetType()}");
+                }
+            }
+
             foreach (var field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (IsStaticDataField(field.GetValue(obj), out var staticDataReference))
@@ -97,6 +110,11 @@ namespace Serialization
 
             foreach (var prop in objType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
+                if (objType == typeof(EnemyLogic) && typeof(StaticData).IsAssignableFrom(prop.PropertyType))
+                {
+                    // MyLogger.Info($"Prop name: {prop.Name}, is null? {prop.GetValue(obj) == null}");
+                }
+
                 if (IsStaticDataField(prop.GetValue(obj), out var staticDataReference))
                 {
                     StaticDatabase.Instance.QueueReferenceForInject(

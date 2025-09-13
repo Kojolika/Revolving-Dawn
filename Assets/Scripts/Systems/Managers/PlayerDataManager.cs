@@ -57,6 +57,7 @@ namespace Systems.Managers
         public async UniTask UpdateMapNode(NodeDefinition currentNode)
         {
             CurrentPlayerDefinition.CurrentRun.CurrentMap.CurrentNode = currentNode;
+            // TODO: Instantiate event logic?
 
             await saveManager.Save(CurrentPlayerDefinition);
         }
@@ -70,13 +71,14 @@ namespace Systems.Managers
 
         public async UniTask StartNewRun(PlayerClass playerClass)
         {
-            var newMap = mapFactory.Create(mapSettings);
+            int seed   = Guid.NewGuid().GetHashCode();
+            var newMap = mapFactory.Create(mapSettings, seed);
             CurrentPlayerDefinition.CurrentRun = new RunDefinition()
             {
                 Name            = "Test",
                 CurrentMap      = newMap,
-                PlayerCharacter = new(playerClass, characterSettings, cardFactory),
-                Seed            = Guid.NewGuid().GetHashCode()
+                PlayerCharacter = new PlayerCharacter(playerClass, characterSettings, cardFactory),
+                Seed            = seed
             };
 
             await saveManager.Save(CurrentPlayerDefinition);

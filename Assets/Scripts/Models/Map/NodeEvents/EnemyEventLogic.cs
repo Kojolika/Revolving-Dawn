@@ -20,8 +20,7 @@ namespace Models.Map
     [JsonObject(MemberSerialization.OptIn)]
     public class EnemyEventLogic : NodeEventLogic
     {
-        [JsonProperty]
-        public readonly List<EnemyLogic> enemies = new();
+        [JsonProperty] public readonly List<EnemyLogic> enemies = new();
 
         private readonly PlayerDataManager playerDataManager;
         private readonly MySceneManager    mySceneManager;
@@ -32,13 +31,12 @@ namespace Models.Map
         }
 
         public EnemyEventLogic(
-            NodeEvent         model,
             MapSettings       mapSettings,
             NodeDefinition    node,
             int               maxNodeLevelForMap,
             PlayerDataManager playerDataManager,
             MySceneManager    mySceneManager)
-            : base(model, mapSettings, node, maxNodeLevelForMap)
+            : base(mapSettings, node)
         {
             this.playerDataManager = playerDataManager;
             this.mySceneManager    = mySceneManager;
@@ -47,8 +45,8 @@ namespace Models.Map
 
             var difficultyForLevel = Mathf.Ceil(mapSettings.EnemyDifficultyMultiplier * node.Level);
             var randomizedPossibleEnemies = mapSettings.EnemySpawnSettings
-                                                       .Where(setting => Mathf.FloorToInt(setting.MinSpawnRange * maxNodeLevelForMap) <= node.Level
-                                                                      && Mathf.FloorToInt(setting.MaxSpawnRange * maxNodeLevelForMap) >= node.Level)
+                                                       .Where(setting => Mathf.FloorToInt(setting.MinSpawnRange * mapSettings.NumberOfLevels) <= node.Level
+                                                                      && Mathf.FloorToInt(setting.MaxSpawnRange * mapSettings.NumberOfLevels) >= node.Level)
                                                        .Where(setting => setting.EnemyDifficultyRating <= difficultyForLevel)
                                                        .OrderBy(_ => rng.Next())
                                                        .ToList();

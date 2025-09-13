@@ -12,7 +12,7 @@ namespace Models.Map
         public int                  XDimension;
         public int                  YDimension;
 
-        public class Factory : PlaceholderFactory<MapSettings, MapDefinition>
+        public class Factory : PlaceholderFactory<MapSettings, int, MapDefinition>
         {
         }
     }

@@ -1,5 +1,5 @@
 {
-  "NumberOfNodes": 30,
+  "NumberOfLevels": 30,
   "NumberOfPaths": 3,
   "XDimension": 500,
   "YDimension": 1000,

@@ -6,8 +6,8 @@ namespace Models.Map
     [System.Serializable]
     public class CampfireEventLogic : NodeEventLogic
     {
-        public CampfireEventLogic(NodeEvent model, MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
-            : base(model, mapSettings, node, maxNodeLevelForMap)
+        public CampfireEventLogic(MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
+            : base(mapSettings, node)
         {
         }
 

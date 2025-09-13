@@ -53,7 +53,7 @@ namespace Tooling.StaticData.EditorUI
 
         private void CheckForValidationErrors()
         {
-            StaticDatabase.Instance.validationErrors.TryGetValue(staticDataType, out validationErrors);
+            StaticDatabase.Instance.ValidationErrors.TryGetValue(staticDataType, out validationErrors);
             RefreshView();
         }
 

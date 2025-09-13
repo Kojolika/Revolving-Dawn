@@ -5,8 +5,8 @@ namespace Models.Map
 {
     public class ShopEventLogic : NodeEventLogic
     {
-        public ShopEventLogic(NodeEvent model, MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
-            : base(model, mapSettings, node, maxNodeLevelForMap)
+        public ShopEventLogic(MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
+            : base(mapSettings, node)
         {
         }
 
