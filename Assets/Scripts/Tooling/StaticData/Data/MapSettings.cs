@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Tooling.StaticData.Data.Validation;
 using UnityEngine;
 
 // ReSharper disable UnassignedField.Global
@@ -10,20 +11,23 @@ namespace Tooling.StaticData.Data
         [Tooltip("The number of levels to generate on a map. Each level can have multiple nodes.")]
         public int NumberOfLevels;
 
+        [Tooltip("Range of nodes that can be on a level")]
+        [Required]
+        public Range NodesPerLevel;
+
         [Tooltip("The number of paths to create from the start node to the end node (boss)")]
         public int NumberOfPaths;
 
-        [Tooltip("The width of the map")] public int XDimension;
-
-        [Tooltip("The height of the map")] public int YDimension;
-
         [Tooltip("The event for which the first node on the map will be.")]
+        [Required]
         public NodeEvent FirstNodeEvent;
 
         [Tooltip("The event for which the last node on the map will be.")]
+        [Required]
         public NodeEvent FinalNodeEvent;
 
         [Tooltip("Event types, and their weights of appearing on the map.")]
+        [Required]
         public List<EventSettings> EventSettings;
 
         [Tooltip("Type of possible enemies.")] public List<EnemySpawnSettings> EnemySpawnSettings;
@@ -44,6 +48,12 @@ namespace Tooling.StaticData.Data
     {
         public float     Weight;
         public NodeEvent NodeEvent;
+    }
+
+    public class Range
+    {
+        public int Min;
+        public int Max;
     }
 
     public class EnemySpawnSettings

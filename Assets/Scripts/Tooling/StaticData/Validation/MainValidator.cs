@@ -66,10 +66,10 @@ namespace Tooling.StaticData.Data.Validation
             out List<string> errorMessages,
             List<IValidator> validators = null)
         {
-            var fieldAttributesTuple = Utils.GetFields(type)
-                                            .Select(field => (field, attributes: field.GetCustomAttributes(true)
-                                                                                      .Where(attribute => attribute is IValidator)))
-                                            .ToList();
+            var fieldAttributesTuple = EditorUI.Utils.GetFields(type)
+                                               .Select(field => (field, attributes: field.GetCustomAttributes(true)
+                                                                                         .Where(attribute => attribute is IValidator)))
+                                               .ToList();
 
             // use to display the progress on the progress bar
             var attributeCount = fieldAttributesTuple

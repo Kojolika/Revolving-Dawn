@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Tooling.StaticData.EditorUI;
+using Tooling.StaticData.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.Data
+namespace Tooling.StaticData.EditorUI
 {
     public static class Utils
     {
@@ -55,12 +55,12 @@ namespace Tooling.StaticData.Data
         /// </summary>
         public static void SortFields(List<FieldInfo> fields, Type type)
         {
-            if (!typeof(StaticData).IsAssignableFrom(type) || fields.Count <= 1)
+            if (!typeof(Data.StaticData).IsAssignableFrom(type) || fields.Count <= 1)
             {
                 return;
             }
 
-            var nameField = fields.First(field => field.Name == nameof(StaticData.Name));
+            var nameField = fields.First(field => field.Name == nameof(Data.StaticData.Name));
             var nameIndex = fields.IndexOf(nameField);
             for (int i = fields.Count - 1; i > 0; i--)
             {

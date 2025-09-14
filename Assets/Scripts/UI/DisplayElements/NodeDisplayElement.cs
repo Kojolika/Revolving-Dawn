@@ -11,21 +11,23 @@ namespace UI.DisplayElements
 {
     public class NodeDisplayElement : MonoBehaviour
     {
-        [SerializeField] private Label label;
+        [SerializeField] private Label  label;
         [SerializeField] private Button button;
-        [SerializeField] private Image image;
-        [SerializeField] private Image playerIndicator;
+        [SerializeField] private Image  image;
+        [SerializeField] private Image  playerIndicator;
 
         private AddressablesManager addressablesManager;
-        private PlayerDataManager playerDataManager;
-        private Data data;
+        private PlayerDataManager   playerDataManager;
+        private Data                data;
+
+        public NodeDefinition Model => data?.Definition;
 
         [Inject]
         private void Construct(AddressablesManager addressablesManager, PlayerDataManager playerDataManager, Data data)
         {
             this.addressablesManager = addressablesManager;
-            this.playerDataManager = playerDataManager;
-            this.data = data;
+            this.playerDataManager   = playerDataManager;
+            this.data                = data;
         }
 
         private void Start()
@@ -39,16 +41,21 @@ namespace UI.DisplayElements
             button.onClick.AddListener(() =>
             {
                 button.interactable = false;
+
                 _ = playerDataManager.UpdateMapNode(data.Definition);
             });
 
-            _ = addressablesManager.LoadGenericAsset(data.Definition.Event.Icon,
+            _ = addressablesManager.LoadGenericAsset(
+                data.Definition.Event.Icon,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset => image.sprite = asset
             );
         }
 
-        public class Factory : PlaceholderFactory<Data, NodeDisplayElement> { }
+        public class Factory : PlaceholderFactory<Data, NodeDisplayElement>
+        {
+        }
+
         public class Data
         {
             public NodeDefinition Definition;

@@ -29,7 +29,7 @@ namespace Tooling.StaticData.Data
             {
                 writer.WriteStartObject();
 
-                var fields = Utils.GetFields(staticDataType);
+                var fields = EditorUI.Utils.GetFields(staticDataType);
                 foreach (var field in fields)
                 {
                     // we custom serialize references below

@@ -3,16 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Common.Util;
 using Tooling.Logging;
 using Tooling.StaticData.Data;
 using Tooling.StaticData.Data.Validation;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
-using Utils.Extensions;
 using IValueProvider = Tooling.StaticData.Data.IValueProvider;
 using Object = UnityEngine.Object;
 
@@ -80,7 +77,7 @@ namespace Tooling.StaticData.EditorUI
             if (options.IsArrayElement && valueProvider is ListValueProvider listValueProvider)
             {
                 var rowElement = new VisualElement();
-                Data.Utils.AddLabel(rowElement, $"[{listValueProvider.ArrayIndex}]", null);
+                Utils.AddLabel(rowElement, $"[{listValueProvider.ArrayIndex}]", null);
                 rowElement.Add(DrawEditorForType(Type));
 
                 rowElement.AddToClassList(Styles.ListViewContainer);
@@ -140,6 +137,8 @@ namespace Tooling.StaticData.EditorUI
             {
                 editorForFieldType = RecursiveDrawElements(type);
             }
+
+            editorForFieldType.tooltip = valueProvider.ToolTip;
 
             return editorForFieldType;
         }
@@ -239,7 +238,7 @@ namespace Tooling.StaticData.EditorUI
                 itemsSource = itemsSource,
                 makeItem = () => new GeneralField(
                     elementType,
-                    new ListValueProvider(itemsSource.Count - 1, itemsSource),
+                    new ListValueProvider(itemsSource.Count - 1, itemsSource, valueProvider.ToolTip),
                     new Options { IsArrayElement = true }),
                 bindItem                      = BindItem,
                 unbindItem                    = UnbindItem,
@@ -253,7 +252,7 @@ namespace Tooling.StaticData.EditorUI
                 showAddRemoveFooter           = true,
                 showBoundCollectionSize       = false,
                 horizontalScrollingEnabled    = true,
-                tooltip                       = Data.Utils.GetTooltip(valueProvider)
+                tooltip                       = Utils.GetTooltip(valueProvider)
             };
 
             listView.itemsAdded += indices =>
@@ -310,8 +309,8 @@ namespace Tooling.StaticData.EditorUI
 
             var selectedStaticData = GetValue() as Data.StaticData;
 
-            Data.Utils.AddLabel(root, valueProvider.ValueName, Data.Utils.GetTooltip(valueProvider));
-            Data.Utils.AddLabel(root, selectedStaticData?.Name ?? StaticDataNullLabel, null);
+            Utils.AddLabel(root, valueProvider.ValueName, Utils.GetTooltip(valueProvider));
+            Utils.AddLabel(root, selectedStaticData?.Name ?? StaticDataNullLabel, null);
 
             var editButton = new ButtonIcon(
                 clickEvent: () =>
@@ -361,18 +360,18 @@ namespace Tooling.StaticData.EditorUI
             var root = new VisualElement();
             root.AddToClassList(Styles.AlignStart);
 
-            var fields = Data.Utils.GetFields(type);
-            Data.Utils.SortFields(fields, type);
+            var fields = Utils.GetFields(type);
+            Utils.SortFields(fields, type);
 
             foreach (var field in fields)
             {
                 var generalField = new GeneralField(field.FieldType, new FieldValueProvider(field, currentObj));
                 generalField.RegisterValueChangedCallback(evt => { SendEvent(ChangeEvent<object>.GetPooled(evt.previousValue, evt.newValue)); });
 
-                if (Data.Utils.GetFields(field.FieldType).Count > 1
+                if (Utils.GetFields(field.FieldType).Count > 1
                  && !typeof(Data.StaticData).IsAssignableFrom(field.FieldType)) // Hacky - out static data has a custom editor where we don't want a foldout
                 {
-                    var foldout = new Foldout();
+                    var foldout = new Foldout { text = field.Name };
                     foldout.Add(generalField);
                     root.Add(foldout);
                 }
@@ -478,7 +477,7 @@ namespace Tooling.StaticData.EditorUI
             var root = new VisualElement();
             root.AddToClassList(Styles.FlexRow);
 
-            Data.Utils.AddLabel(root, valueProvider.ValueName, Data.Utils.GetTooltip(valueProvider));
+            Utils.AddLabel(root, valueProvider.ValueName, Utils.GetTooltip(valueProvider));
 
             var isGenericAssetReference = false;
             var assetReferenceType      = type;
@@ -563,11 +562,13 @@ namespace Tooling.StaticData.EditorUI
             public int ArrayIndex { get; set; }
 
             public string ValueName => string.Empty;
+            public string ToolTip   { get; }
 
-            public ListValueProvider(int arrayIndex, IList list)
+            public ListValueProvider(int arrayIndex, IList list, string toolTip)
             {
                 this.list  = list;
                 ArrayIndex = arrayIndex;
+                ToolTip    = toolTip;
             }
 
             public void SetValue(object value)

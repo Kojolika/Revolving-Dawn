@@ -30,8 +30,6 @@ namespace Koj.Debug
             AddLabelWithValue("Player Class", () => playerDataManager.CurrentRun.PlayerCharacter?.Class.Name);
 
             AddLabelWithValue("Map Name", () => playerDataManager.CurrentRun.CurrentMap?.Name);
-            AddLabelWithValue("Map X", () => playerDataManager.CurrentRun.CurrentMap?.XDimension.ToString());
-            AddLabelWithValue("Map Y", () => playerDataManager.CurrentRun.CurrentMap?.YDimension.ToString());
             AddLabelWithValue("Level", () => playerDataManager.CurrentRun.CurrentMap?.CurrentNode.Level.ToString());
             AddLabelWithValue("Current Node Type", () => playerDataManager.CurrentRun.CurrentMap?.CurrentNode.Event.Name);
         }

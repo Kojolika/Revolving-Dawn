@@ -259,7 +259,7 @@ namespace Tooling.StaticData.Data
             int    arrayIndex = -1)
         {
             var       objType         = objectWithReference.GetType();
-            FieldInfo staticDataField = Utils.GetField(objType, propertyName);
+            FieldInfo staticDataField = EditorUI.Utils.GetField(objType, propertyName);
             if (staticDataField == null)
             {
                 MyLogger.Error($"Could not find field {propertyName} " +

@@ -1,8 +1,6 @@
-using UnityEngine;
 using Tooling.Logging;
 using System.Linq;
 using System.Collections.Generic;
-using System;
 using Tooling.StaticData.Data;
 using Utils.Extensions;
 using Zenject;
@@ -11,87 +9,92 @@ namespace Models.Map
 {
     public class MapFactory : IFactory<MapSettings, int, MapDefinition>
     {
+        // Dimensions just used to generate coordinates... not showable to the player
+        public const int XDimension = 500;
+        public const int YDimension = 1000;
+
         public MapDefinition Create(MapSettings mapSettings, int seed)
         {
             var randomNumGenerator = new System.Random(seed);
 
             var (nodes, nodeLookup, firstNode, lastNode) = GenerateNodePositions(mapSettings, randomNumGenerator);
-            var nodesWithEdges  = CreatePaths(mapSettings, nodes, nodeLookup, firstNode, lastNode);
-            var nodesWithLevels = AssignLevelsToNodes(nodesWithEdges, nodeLookup, firstNode);
-            nodes = AssignEventsToNodes(mapSettings, randomNumGenerator, nodesWithLevels, firstNode, lastNode);
+            var nodesWithEdges = CreatePaths(mapSettings, nodes, nodeLookup, firstNode, lastNode);
+            nodes = AssignEventsToNodes(mapSettings, randomNumGenerator, nodesWithEdges, firstNode, lastNode);
 
             return new MapDefinition
             {
+                Name        = mapSettings.Name,
+                MapSettings = mapSettings,
+                Seed        = seed,
                 Nodes       = nodes,
-                CurrentNode = nodes?[0],
-                XDimension  = mapSettings.XDimension,
-                YDimension  = mapSettings.YDimension
+                CurrentNode = nodes[0]
             };
         }
 
         private static (List<NodeDefinition> nodes,
-            Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup,
+            Dictionary<Coordinate, NodeDefinition> nodeLookup,
             NodeDefinition firstnode,
             NodeDefinition lastNode)
             GenerateNodePositions(MapSettings mapSettings, System.Random randomNumGenerator)
         {
             var nodes      = new List<NodeDefinition>();
-            var nodeLookup = new Dictionary<NodeDefinition.Coordinate, NodeDefinition>();
+            var nodeLookup = new Dictionary<Coordinate, NodeDefinition>();
             var numLevels  = mapSettings.NumberOfLevels;
-            var xDimension = mapSettings.XDimension;
-            var yDimension = mapSettings.YDimension;
-
-            var            area             = xDimension * yDimension;
-            var            levelArea        = yDimension / numLevels;
-            var            regionArea       = area / numLevels;
-            int            sqrtRegionArea   = (int)Math.Sqrt(regionArea);
-            (int x, int y) regionDimensions = (sqrtRegionArea, sqrtRegionArea);
-            (int x, int y) numberOfRegions  = (xDimension / regionDimensions.x, yDimension / regionDimensions.y);
-
+            var levelArea  = YDimension / numLevels;
 
             NodeDefinition firstNode = null;
             NodeDefinition lastNode  = null;
-            for (int i = 0; i < numLevels; i++)
+            for (int y = 0; y < numLevels; y++)
             {
-                int xOffset = i % numberOfRegions.x * regionDimensions.x;
-                int yOffset = (int)((float)i / numberOfRegions.x) * regionDimensions.y;
-
-                bool isFirstNode = i == 0;
-                bool isLastNode  = i == numLevels - 1;
-
-                var                       node = new NodeDefinition();
-                NodeDefinition.Coordinate coordinate;
-                if (isFirstNode)
+                // The first and last levels will only have 1 node
+                // These nodes will positioned in the center
+                if (y == 0)
                 {
-                    coordinate = new NodeDefinition.Coordinate(xDimension / 2, 0);
+                    var node = new NodeDefinition { Level = y };
+                    var coordinate = new Coordinate(x: XDimension / 2,
+                                                    y: 0);
+                    node.Coord = coordinate;
                     firstNode  = node;
+                    nodes.Add(node);
+                    nodeLookup.Add(coordinate, node);
                 }
-                else if (isLastNode)
+                else if (y == numLevels - 1)
                 {
-                    coordinate = new NodeDefinition.Coordinate(xDimension / 2, yDimension);
+                    var node = new NodeDefinition { Level = y };
+                    var coordinate = new Coordinate(x: XDimension / 2,
+                                                    y: YDimension);
+                    node.Coord = coordinate;
                     lastNode   = node;
+                    nodes.Add(node);
+                    nodeLookup.Add(coordinate, node);
                 }
                 else
                 {
-                    coordinate = new NodeDefinition.Coordinate(
-                        x: Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.x - (regionPadding / 2) - 1), 1) + xOffset + edgePadding,
-                        y: Mathf.Max(randomNumGenerator.Next(regionPadding / 2, regionDimensions.y - (regionPadding / 2) - 1), 1) + yOffset + edgePadding * 2);
-                }
+                    int numNodesOnLevel = randomNumGenerator.Next(mapSettings.NodesPerLevel.Min, mapSettings.NodesPerLevel.Max + 1);
+                    int nodeArea        = XDimension / numNodesOnLevel;
+                    for (int x = 0; x < numNodesOnLevel; x++)
+                    {
+                        var node = new NodeDefinition { Level = y };
+                        var coordinate = new Coordinate(
+                            x: randomNumGenerator.Next(x * nodeArea, (x + 1) * nodeArea),
+                            y: randomNumGenerator.Next(y * levelArea, (y + 1) * levelArea));
 
-                node.Coord = coordinate;
-                nodes.Add(node);
-                nodeLookup.Add(coordinate, node);
+                        node.Coord = coordinate;
+                        nodes.Add(node);
+                        nodeLookup.Add(coordinate, node);
+                    }
+                }
             }
 
             return (nodes, nodeLookup, firstNode, lastNode);
         }
 
         private static List<NodeDefinition> CreatePaths(
-            MapSettings                                           mapSettings,
-            List<NodeDefinition>                                  nodes,
-            Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup,
-            NodeDefinition                                        firstNode,
-            NodeDefinition                                        lastNode)
+            MapSettings                            mapSettings,
+            List<NodeDefinition>                   nodes,
+            Dictionary<Coordinate, NodeDefinition> nodeLookup,
+            NodeDefinition                         firstNode,
+            NodeDefinition                         lastNode)
         {
             var numPaths     = mapSettings.NumberOfPaths;
             var visitedEdges = new HashSet<(NodeDefinition, NodeDefinition)>();
@@ -100,16 +103,14 @@ namespace Models.Map
                 var node = firstNode;
                 while (node != lastNode)
                 {
-                    var closestNode = nodes
-                                     .Where(n => !visitedEdges.Contains((node, n)) && n.Coord.y > node.Coord.y)
-                                      // order by nearest nodes
-                                     .OrderBy(n => NodeDefinition.Coordinate.Distance(n.Coord, node.Coord) +
-                                                   (mapSettings.XDimension + mapSettings.YDimension) * (0.01 * n.NumberOfEdges))
-                                     .FirstOrDefault();
+                    var closestNode = nodes.Where(n => !visitedEdges.Contains((node, n)) && n.Level == node.Level + 1)
+                                            // order by nearest nodes
+                                           .OrderBy(n => Coordinate.Distance(n.Coord, node.Coord) + n.NumberOfEdges)
+                                           .FirstOrDefault();
 
+                    // No more paths available... return early
                     if (closestNode == null)
                     {
-                        MyLogger.Error($"Error during map creation: Couldn't find a valid node to continue the path generation! Node : {node.Coord}");
                         break;
                     }
 
@@ -117,7 +118,7 @@ namespace Models.Map
 
                     if (node.NextNodes.IsNullOrEmpty())
                     {
-                        node.NextNodes = new List<NodeDefinition.Coordinate>() { closestNodeCoordinates };
+                        node.NextNodes = new List<Coordinate> { closestNodeCoordinates };
                     }
                     else
                     {
@@ -127,7 +128,7 @@ namespace Models.Map
                     var connectedNode = nodeLookup[closestNodeCoordinates];
                     if (connectedNode.PreviousNodes.IsNullOrEmpty())
                     {
-                        connectedNode.PreviousNodes = new List<NodeDefinition.Coordinate>() { node.Coord };
+                        connectedNode.PreviousNodes = new List<Coordinate>() { node.Coord };
                     }
                     else
                     {
@@ -168,49 +169,8 @@ namespace Models.Map
 
             return nodes;
 
-            // filter nodes that dont have any connections
+            // filter nodes that don't have any connections
             bool HasNextPaths(NodeDefinition node) => node == lastNode || !node.NextNodes.IsNullOrEmpty();
-        }
-
-        private static List<NodeDefinition> AssignLevelsToNodes(
-            List<NodeDefinition>                                  nodes,
-            Dictionary<NodeDefinition.Coordinate, NodeDefinition> nodeLookup,
-            NodeDefinition                                        firstNode)
-        {
-            // We use dijkstra's shortest path algorithm with the distance as levels
-            var unvisitedNodes = new HashSet<NodeDefinition.Coordinate>(nodeLookup.Keys);
-
-            firstNode.Level = 0;
-            int max = firstNode.Level;
-            while (unvisitedNodes.Count > 0)
-            {
-                var lowestDistanceUnvisited = unvisitedNodes.OrderBy(coord => nodeLookup[coord].Level).First();
-                var currentNode             = nodeLookup[lowestDistanceUnvisited];
-                unvisitedNodes.Remove(currentNode.Coord);
-
-                if (!currentNode.NextNodes.IsNullOrEmpty())
-                {
-                    foreach (var nodeCoordinate in currentNode.NextNodes)
-                    {
-                        var nextNode = nodeLookup[nodeCoordinate];
-
-                        // Each edge will have a distance of 1, that way players can traverse the map
-                        // one level after another
-                        var distanceToNode = currentNode.Level + 1;
-                        if (distanceToNode < nextNode.Level)
-                        {
-                            if (max < distanceToNode)
-                            {
-                                max = distanceToNode;
-                            }
-
-                            nextNode.Level = distanceToNode;
-                        }
-                    }
-                }
-            }
-
-            return nodes;
         }
 
         private static List<NodeDefinition> AssignEventsToNodes(
