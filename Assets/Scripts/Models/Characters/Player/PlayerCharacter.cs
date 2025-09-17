@@ -9,15 +9,15 @@ using Tooling.StaticData.Data;
 
 namespace Models.Characters
 {
-    [System.Serializable]
     public class PlayerCharacter : ICardDeckParticipant
     {
+        [JsonProperty]
         public PlayerClass Class { get; private set; }
 
         private readonly CardLogic.Factory cardFactory;
 
         [JsonConstructor]
-        public PlayerCharacter()
+        private PlayerCharacter()
         {
         }
 

@@ -188,18 +188,61 @@ namespace Tooling.StaticData.Data
             Type       referenceType,
             string     instanceName,
             object     objectWithReference,
-            string     propertyName,
+            string     memberName,
             MemberType memberType,
             int        arrayIndex = -1)
         {
             switch (memberType)
             {
                 case MemberType.Field:
-                    InjectField(referenceType, instanceName, objectWithReference, propertyName, arrayIndex);
+                    InjectField(referenceType, instanceName, objectWithReference, memberName, arrayIndex);
                     break;
                 case MemberType.Property:
-                    InjectProperty(referenceType, instanceName, objectWithReference, propertyName, arrayIndex);
+                    InjectProperty(referenceType, instanceName, objectWithReference, memberName, arrayIndex);
                     break;
+            }
+        }
+
+        private void InjectField(
+            Type   referenceType,
+            string instanceName,
+            object objectWithReference,
+            string fieldName,
+            int    arrayIndex = -1)
+        {
+            var       objType         = objectWithReference.GetType();
+            FieldInfo staticDataField = EditorUI.Utils.GetField(objType, fieldName);
+            if (staticDataField == null)
+            {
+                MyLogger.Error($"Could not find field {fieldName} of type {objType}");
+                return;
+            }
+
+            if (!typeof(IList).IsAssignableFrom(staticDataField.FieldType) && staticDataField.FieldType != referenceType)
+            {
+                MyLogger.Error("Field that is requesting to be filled in is not equal to the type that's referenced! " +
+                               $"referenceType={referenceType}, fieldType={staticDataField.FieldType}, objectWithReference={objType}, propertyName={fieldName}");
+                return;
+            }
+
+            StaticData referencedInstance = GetStaticDataInstance(referenceType, instanceName);
+            if (referencedInstance == null)
+            {
+                MyLogger.Error($"Trying to find {referenceType} with name {instanceName}," +
+                               $" but does not exist in the StaticDatabase. Requesting type={objectWithReference}");
+                return;
+            }
+
+            if (arrayIndex < 0)
+            {
+                staticDataField!.SetValue(objectWithReference, referencedInstance);
+            }
+            else
+            {
+                var list = (IList)(staticDataField!.GetValue(objectWithReference)
+                                ?? Activator.CreateInstance(staticDataField.FieldType));
+                list[arrayIndex] = referencedInstance;
+                staticDataField.SetValue(objectWithReference, list);
             }
         }
 
@@ -215,12 +258,11 @@ namespace Tooling.StaticData.Data
             PropertyInfo staticDataProperty = objType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if (staticDataProperty == null)
             {
-                MyLogger.Error($"Could not find property {propertyName} " +
-                               $"on Static Data of type {objType}");
+                MyLogger.Error($"Could not find property {propertyName} on Static Data of type {objType}");
 
                 return;
             }
-            
+
             // Property could be a list of the type we have
             if (!typeof(IList).IsAssignableFrom(staticDataProperty.PropertyType) && staticDataProperty.PropertyType != referenceType)
             {
@@ -248,51 +290,6 @@ namespace Tooling.StaticData.Data
                                 ?? Activator.CreateInstance(staticDataProperty.PropertyType));
                 list[arrayIndex] = referencedInstance;
                 staticDataProperty.SetValue(objectWithReference, list);
-            }
-        }
-
-        private void InjectField(
-            Type   referenceType,
-            string instanceName,
-            object objectWithReference,
-            string propertyName,
-            int    arrayIndex = -1)
-        {
-            var       objType         = objectWithReference.GetType();
-            FieldInfo staticDataField = EditorUI.Utils.GetField(objType, propertyName);
-            if (staticDataField == null)
-            {
-                MyLogger.Error($"Could not find field {propertyName} " +
-                               $"on Static Data of type {objType}");
-
-                return;
-            }
-
-            if (!typeof(IList).IsAssignableFrom(staticDataField.FieldType) && staticDataField.FieldType != referenceType)
-            {
-                MyLogger.Error("Field that is requesting to be filled in is not equal to the type that's referenced! " +
-                               $"referenceType={referenceType}, fieldType={staticDataField.FieldType}, objectWithReference={objType}, propertyName={propertyName}");
-                return;
-            }
-
-            StaticData referencedInstance = GetStaticDataInstance(referenceType, instanceName);
-            if (referencedInstance == null)
-            {
-                MyLogger.Error($"Trying to find {referenceType} with name {instanceName}," +
-                               $" but does not exist in the StaticDatabase. Requesting type={objectWithReference}");
-                return;
-            }
-
-            if (arrayIndex < 0)
-            {
-                staticDataField!.SetValue(objectWithReference, referencedInstance);
-            }
-            else
-            {
-                var list = (IList)(staticDataField!.GetValue(objectWithReference)
-                                ?? Activator.CreateInstance(staticDataField.FieldType));
-                list[arrayIndex] = referencedInstance;
-                staticDataField.SetValue(objectWithReference, list);
             }
         }
 

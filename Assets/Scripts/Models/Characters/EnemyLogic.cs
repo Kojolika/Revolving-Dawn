@@ -7,13 +7,21 @@ using Tooling.StaticData.Data;
 
 namespace Models.Characters
 {
-    [System.Serializable]
     public class EnemyLogic : IMoveParticipant
     {
-        public string              Name               { get; }
-        public TeamType            Team               { get; }
-        public Enemy               Model              { get; private set; }
-        public EnemyMove           NextMove           { get; private set; }
+        [JsonProperty]
+        public string Name { get; }
+
+        [JsonProperty]
+        public TeamType Team { get; }
+
+        [JsonProperty]
+        public Enemy Model { get; private set; }
+
+        [JsonProperty]
+        public EnemyMove NextMove { get; private set; }
+
+        [JsonProperty]
         public ISelectMoveStrategy SelectMoveStrategy { get; private set; }
 
         [JsonConstructor]
@@ -33,7 +41,6 @@ namespace Models.Characters
         {
             NextMove = SelectMoveStrategy.SelectMove(Model);
         }
-
 
         private readonly Dictionary<Stat, float> stats = new();
         private readonly Dictionary<Buff, int>   buffs = new();

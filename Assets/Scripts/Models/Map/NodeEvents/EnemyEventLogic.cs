@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Util;
@@ -8,7 +7,6 @@ using Fight.Engine;
 using Models.Characters;
 using Models.Characters.Enemies.Strategies;
 using Models.Fight;
-using Newtonsoft.Json;
 using Systems.Managers;
 using Tooling.Logging;
 using Tooling.StaticData.Data;
@@ -16,24 +14,16 @@ using UnityEngine;
 
 namespace Models.Map
 {
-    [Serializable]
-    [JsonObject(MemberSerialization.OptIn)]
     public class EnemyEventLogic : NodeEventLogic
     {
-        [JsonProperty] public readonly List<EnemyLogic> enemies = new();
+        private readonly List<EnemyLogic> enemies = new();
 
         private readonly PlayerDataManager playerDataManager;
         private readonly MySceneManager    mySceneManager;
 
-        [JsonConstructor]
-        private EnemyEventLogic()
-        {
-        }
-
         public EnemyEventLogic(
             MapSettings       mapSettings,
             NodeDefinition    node,
-            int               maxNodeLevelForMap,
             PlayerDataManager playerDataManager,
             MySceneManager    mySceneManager)
             : base(mapSettings, node)
@@ -81,9 +71,12 @@ namespace Models.Map
         {
             await playerDataManager.SaveFight(new FightDefinition
             {
-                EnemyTeam = new Team(enemies.Select(enemy => enemy as ICombatParticipant).ToList(), TeamType.Enemy),
-                PlayerTeam = new Team(new() { playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter },
-                                      TeamType.Player)
+                EnemyTeam = new Team(
+                    members: enemies.Select(enemy => enemy as ICombatParticipant).ToList(),
+                    TeamType.Enemy),
+                PlayerTeam = new Team(
+                    members: new List<ICombatParticipant> { playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter },
+                    TeamType.Player)
             });
             await mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
         }

@@ -17,25 +17,28 @@ namespace Systems.Managers
         public RunDefinition CurrentRun  => CurrentPlayerDefinition?.CurrentRun;
         public int           CurrentSeed => CurrentRun?.Seed ?? 0;
 
-        private SaveManager           saveManager;
-        private MapSettings           mapSettings;
-        private CharacterSettings     characterSettings;
-        private MapDefinition.Factory mapFactory;
-        private CardLogic.Factory     cardFactory;
+        private SaveManager            saveManager;
+        private MapSettings            mapSettings;
+        private CharacterSettings      characterSettings;
+        private MapDefinition.Factory  mapFactory;
+        private CardLogic.Factory      cardFactory;
+        private NodeEventLogic.Factory nodeEventLogicFactory;
 
         [Zenject.Inject]
         private async UniTask Construct(
-            SaveManager           saveManager,
-            MapSettings           mapSettings,
-            CharacterSettings     characterSettings,
-            MapDefinition.Factory mapFactory,
-            CardLogic.Factory     cardFactory)
+            SaveManager            saveManager,
+            MapSettings            mapSettings,
+            CharacterSettings      characterSettings,
+            MapDefinition.Factory  mapFactory,
+            CardLogic.Factory      cardFactory,
+            NodeEventLogic.Factory nodeEventLogicFactory)
         {
-            this.saveManager       = saveManager;
-            this.mapSettings       = mapSettings;
-            this.characterSettings = characterSettings;
-            this.mapFactory        = mapFactory;
-            this.cardFactory       = cardFactory;
+            this.saveManager           = saveManager;
+            this.mapSettings           = mapSettings;
+            this.characterSettings     = characterSettings;
+            this.mapFactory            = mapFactory;
+            this.cardFactory           = cardFactory;
+            this.nodeEventLogicFactory = nodeEventLogicFactory;
 
             CurrentPlayerDefinition = await saveManager.TryLoadSavedData();
 
@@ -57,9 +60,11 @@ namespace Systems.Managers
         public async UniTask UpdateMapNode(NodeDefinition currentNode)
         {
             CurrentPlayerDefinition.CurrentRun.CurrentMap.CurrentNode = currentNode;
-            // TODO: Instantiate event logic?
-
             await saveManager.Save(CurrentPlayerDefinition);
+
+            // TODO: Optimize, doing multiple saves in different functions...
+            var nodeEventLogic = nodeEventLogicFactory.Create(mapSettings, currentNode);
+            await nodeEventLogic.StartEvent();
         }
 
         public async UniTask SaveFight(FightDefinition fightDefinition)

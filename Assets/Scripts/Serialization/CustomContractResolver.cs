@@ -47,6 +47,7 @@ namespace Serialization
 
             objectContract.OnDeserializedCallbacks.Add(FindStaticDataReferences);
 
+
             return objectContract;
         }
 
@@ -58,15 +59,6 @@ namespace Serialization
         private static void RecursivelyResolveStaticDataReferences(object obj)
         {
             var objType = obj.GetType();
-            if (obj is EnemyEventLogic enemyEventLogic)
-            {
-                MyLogger.Info($"enemy event logic found, enemy length: {enemyEventLogic.enemies?.Count}");
-                foreach (var enemy in enemyEventLogic.enemies.OrEmptyIfNull())
-                {
-                    MyLogger.Info($"is null: {enemy == null}, enemy: {enemy?.Name}, model: {enemy?.Model?.Name}, enemy team: {enemy?.Team} select move strat: {enemy?.SelectMoveStrategy?.GetType()}");
-                }
-            }
-
             foreach (var field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (IsStaticDataField(field.GetValue(obj), out var staticDataReference))
@@ -159,7 +151,7 @@ namespace Serialization
         {
             if (obj is not StaticData staticData)
             {
-                staticDataReference = null;
+                staticDataReference = default;
                 return false;
             }
 

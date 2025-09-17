@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Fight.Engine;
 
@@ -11,7 +10,6 @@ namespace Models.Fight
         Enemy
     }
 
-    [Serializable]
     public class Team
     {
         public readonly TeamType                 Type;
