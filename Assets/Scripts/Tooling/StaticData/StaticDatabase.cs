@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Serialization;
@@ -214,6 +215,12 @@ namespace Tooling.StaticData.Data
             FieldInfo staticDataField = EditorUI.Utils.GetField(objType, fieldName);
             if (staticDataField == null)
             {
+                // If we match a property backing field, don't log error since we check properties in InjectProperty
+                if (Regex.Match(fieldName, "<.+>k__BackingField").Success)
+                {
+                    return;
+                }
+
                 MyLogger.Error($"Could not find field {fieldName} of type {objType}");
                 return;
             }
