@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Models.Characters;
 using Systems.Managers;
+using Tooling.StaticData.Data;
 using UnityEngine;
 
 namespace Views
@@ -9,29 +10,25 @@ namespace Views
     {
         [SerializeField] SpriteRenderer spriteRenderer;
 
-        private Enemy enemy;
+        private EnemyLogic               enemyLogic;
         private AddressablesManager addressablesManager;
 
         [Zenject.Inject]
-        private void Construct(Enemy enemy, AddressablesManager addressablesManager)
+        private void Construct(EnemyLogic enemyLogic, AddressablesManager addressablesManager)
         {
-            this.enemy = enemy;
+            this.enemyLogic               = enemyLogic;
             this.addressablesManager = addressablesManager;
 
-            enemy.CurrentMoveUpdated += UpdateSprite;
+            // TODO: Add battle event animation and subscribe to when that triggers
         }
 
         private void UpdateSprite(EnemyMove enemyMove)
         {
-            _ = addressablesManager.LoadGenericAsset(enemyMove.MoveIntentSprite,
+            _ = addressablesManager.LoadGenericAsset(
+                enemyMove.MoveIntentSprite,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,
                 asset => spriteRenderer.sprite = asset
             );
-        }
-
-        private void OnDestroy()
-        {
-            enemy.CurrentMoveUpdated -= UpdateSprite;
         }
     }
 }

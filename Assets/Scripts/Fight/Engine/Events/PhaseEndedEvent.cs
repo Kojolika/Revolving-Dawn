@@ -6,13 +6,16 @@ namespace Fight.Events
 {
     public class PhaseEndedEvent : BattleEvent<Team>
     {
-        private readonly PlayerDataManager playerDataManager;
-
-        public PhaseEndedEvent(Team target,
-            PlayerDataManager playerDataManager,
-            bool isCharacterAction = false) : base(target, isCharacterAction)
+        public PhaseEndedEvent(Team target) : base(target)
         {
-            this.playerDataManager = playerDataManager;
+        }
+
+        public override void Execute(Context fightContext)
+        {
+            foreach (var member in Target.Members)
+            {
+                fightContext.BattleEngine.AddEvent(new TurnEndedEvent(member));
+            }
         }
 
         public override void Undo()
@@ -20,14 +23,6 @@ namespace Fight.Events
             throw new System.NotImplementedException();
         }
 
-        public override string Log() => $"{Target.Name} teams turn ended!";
-
-        public override void Execute(Team target, BattleEngine battleEngine)
-        {
-            foreach (var member in target.Members)
-            {
-                battleEngine.AddEvent(new TurnEndedEvent(member));
-            }
-        }
+        public override string Log() => $"{Target.Type} teams turn ended!";
     }
 }

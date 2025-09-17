@@ -1,24 +1,29 @@
 using UnityEngine;
 using System.Collections;
-using Models.Mana;
+using Tooling.StaticData.Data;
 using Zenject;
 
-namespace Mana
+namespace Views
 {
     public class ManaView : MonoBehaviour
     {
-        [SerializeField] ManaSODefinition manaScriptableObject;
+        [SerializeField]
+        private Mana manaScriptableObject;
+
         public ManaType type;
-        bool rotating = true;
+        bool            rotating = true;
+
         void Start()
         {
             PopulateFromData();
             StartCoroutine(RotateSelf());
         }
+
         public void ResetScale()
         {
             this.transform.localScale = ManaConfiguration.DEFAULT_SCALE;
         }
+
         IEnumerator RotateSelf()
         {
             while (rotating)
@@ -27,16 +32,16 @@ namespace Mana
                 yield return null;
             }
         }
+
         void PopulateFromData()
         {
             //type = manaScriptableObject.type;
-            this.transform.localScale = ManaConfiguration.DEFAULT_SCALE;
+            this.transform.localScale                        = ManaConfiguration.DEFAULT_SCALE;
             this.GetComponent<MeshRenderer>().sharedMaterial = ManaConfiguration.GetManaColor(type);
         }
 
-        public class Factory : PlaceholderFactory<ManaSODefinition, ManaView>
+        public class Factory : PlaceholderFactory<Mana, ManaView>
         {
-
         }
     }
 
@@ -52,13 +57,14 @@ namespace Mana
 
     public static class ManaConfiguration
     {
-        public static Vector3 DEFAULT_SCALE => new Vector3(.4f, .4f, .4f);
-        static Material red = null;
-        static Material blue = null;
-        static Material green = null;
-        static Material white = null;
-        static Material gold = null;
-        static Material black = null;
+        public static Vector3  DEFAULT_SCALE => new Vector3(.4f, .4f, .4f);
+        static        Material red   = null;
+        static        Material blue  = null;
+        static        Material green = null;
+        static        Material white = null;
+        static        Material gold  = null;
+        static        Material black = null;
+
         public static Material GetManaColor(ManaType manaType)
         {
             switch (manaType)
@@ -106,6 +112,7 @@ namespace Mana
                     }
                     else return black;
             }
+
             return Resources.Load<Material>("Mana_Red");
         }
     }

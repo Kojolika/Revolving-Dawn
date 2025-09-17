@@ -99,7 +99,7 @@ namespace Data.Utils.Editor
                 }
                 catch (Exception e)
                 {
-                    MyLogger.LogError($"Error creating instance of {type.Name}: {e.Message}");
+                    MyLogger.Error($"Error creating instance of {type.Name}: {e.Message}");
                 }
             }
 

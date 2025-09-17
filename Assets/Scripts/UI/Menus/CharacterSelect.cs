@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UI.Menus.Common;
 using Utils.Attributes;
 using UnityEngine;
@@ -6,8 +7,9 @@ using UI.Common.DisplayElements;
 using Tooling.Logging;
 using UI.Common;
 using Systems.Managers;
-using Settings;
-using Models.Player;
+using Tooling.StaticData.Data;
+using UnityEngine.Serialization;
+using Views.Common;
 
 namespace UI.Menus
 {
@@ -15,39 +17,34 @@ namespace UI.Menus
     {
         public class Data
         {
-            public List<PlayerClassSODefinition> Classes;
+            public List<PlayerClass> Classes;
         }
 
-        [ResourcePath]
-        public string ResourcePath => nameof(CharacterSelect);
+        [ResourcePath] public string ResourcePath => nameof(CharacterSelect);
 
-        [SerializeField] ClassDisplayElement classDisplayElementPrefab;
-        [SerializeField] Transform classDisplayListRoot;
-        [SerializeField] MyButton playButton;
+        [SerializeField] private Transform classDisplayListRoot;
+        [SerializeField] private MyButton  playButton;
 
-        List<ClassDisplayElement> classDisplayElements = new();
-        PlayerClassSODefinition selectedClass;
-        MenuManager menuManager;
-        PlayerDataManager playerDataManager;
-        MapSettings mapSettings;
+        private PlayerClass       selectedClass;
+        private MenuManager       menuManager;
+        private PlayerDataManager playerDataManager;
+        private ViewFactory       viewFactory;
 
         [Zenject.Inject]
-        void Construct(MenuManager menuManager, PlayerDataManager playerDataManager, MapSettings mapSettings)
+        private void Construct(MenuManager menuManager, PlayerDataManager playerDataManager, ViewFactory viewFactory)
         {
-            this.menuManager = menuManager;
+            this.menuManager       = menuManager;
             this.playerDataManager = playerDataManager;
-            this.mapSettings = mapSettings;
+            this.viewFactory       = viewFactory;
         }
 
         public override void Populate(Data data)
         {
-            classDisplayElements.Clear();
             foreach (var classDef in data.Classes)
             {
-                var newClassDisplayElement = Instantiate(classDisplayElementPrefab, classDisplayListRoot);
-                classDisplayElements.Add(newClassDisplayElement);
+                var newClassDisplayElement = viewFactory.Create<PlayerClassView, PlayerClass>(classDef);
+                newClassDisplayElement.transform.SetParent(classDisplayListRoot, false);
                 newClassDisplayElement.Populate(classDef);
-                newClassDisplayElement.gameObject.SetActive(true);
 
                 newClassDisplayElement.SelectButton.ClearEventListeners();
                 newClassDisplayElement.SelectButton.Pressed += () =>
@@ -59,15 +56,15 @@ namespace UI.Menus
 
             playButton.gameObject.SetActive(false);
             playButton.ClearEventListeners();
-            playButton.Pressed += SaveSelectionAndGenerateRun;
+            playButton.Pressed += () => _ = SaveSelectionAndGenerateRun();
         }
 
-        async void SaveSelectionAndGenerateRun()
+        private async UniTask SaveSelectionAndGenerateRun()
         {
-            MyLogger.Log("Generating map...");
+            MyLogger.Info("Generating map...");
             await playerDataManager.StartNewRun(selectedClass);
-            _ = menuManager.Open<MapView, MapView.Data>(
-                new MapView.Data()
+            await menuManager.Open<MapView, MapView.Data>(
+                new MapView.Data
                 {
                     MapDefinition = playerDataManager.CurrentPlayerDefinition.CurrentRun.CurrentMap
                 }

@@ -1,33 +1,30 @@
-using Controllers;
-using Views;
-using Zenject;
+using Fight.Engine;
+using Models.Cards;
+
 
 namespace Fight.Events
 {
-    public class DiscardCardEvent : BattleEvent<CardView>
+    public class DiscardCardEvent : BattleEvent<ICardDeckParticipant>
     {
-        private readonly PlayerHandController playerHandController;
-        public DiscardCardEvent(
-            CardView target,
-            PlayerHandController playerHandController,
-            bool isCharacterAction = false)
-            : base(target, isCharacterAction)
+        public readonly CardLogic CardLogic;
+
+        public DiscardCardEvent(ICardDeckParticipant target, CardLogic cardLogic) : base(target)
         {
-            this.playerHandController = playerHandController;
+            CardLogic = cardLogic;
         }
 
-        public override void Execute(CardView target, BattleEngine battleEngine)
+        public override void Execute(Context fightContext)
         {
-            playerHandController.DiscardCard(target.Model);
+            Target.DiscardCard(CardLogic);
         }
-
-        public override string Log() => $"Player discarded {Target.Model.Name}";
 
         public override void Undo()
         {
-            throw new System.NotImplementedException();
         }
 
-        public class Factory : PlaceholderFactory<CardView, DiscardCardEvent> { }
+        public override string Log()
+        {
+            return $"{Target.Name} discard card {CardLogic.Model.Name}";
+        }
     }
 }

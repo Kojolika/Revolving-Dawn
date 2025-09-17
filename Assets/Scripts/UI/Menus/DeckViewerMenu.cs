@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using Cards;
 using TMPro;
 using UI.Menus.Common;
 using Utils.Attributes;

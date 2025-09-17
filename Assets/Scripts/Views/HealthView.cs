@@ -1,74 +1,86 @@
-using System.Runtime.InteropServices;
+using System.Globalization;
 using Fight;
-using Models;
-using Models.Characters;
-using Systems;
+using Fight.Engine;
 using TMPro;
-using Tooling.Logging;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using UnityEngine.UI;
-using Utils;
 using Zenject;
 
 namespace Views
 {
     public class HealthView : MonoBehaviour
     {
-        [SerializeField] SpriteRenderer borderRenderer;
-        [SerializeField] SpriteRenderer healthFillRenderer;
-        [SerializeField] TextMeshPro healthAmountText;
+        [SerializeField] private SpriteRenderer borderRenderer;
+        [SerializeField] private SpriteRenderer healthFillRenderer;
+        [SerializeField] private TextMeshPro    healthAmountText;
+        [SerializeField] private Transform      viewParent;
 
-        private Health health;
         private BattleEngine battleEngine;
 
         [Inject]
-        private void Construct(Character character, BattleEngine battleEngine)
+        private void Construct(ICombatParticipant combatParticipant, BattleEngine battleEngine)
         {
-            this.health = character.Health;
+            // TODO: Health stat
+            //this.health = combatParticipant.Health;
             this.battleEngine = battleEngine;
 
-            UpdateHealthDisplay();
-            health.HealthUpdated += OnHealthUpdated;
+            UpdateHealthDisplay(FightUtils.GetHealth(combatParticipant), FightUtils.GetMaxHealth(combatParticipant));
         }
-
-        public void PreviewCardEffects(CardModel cardModel)
-        {
-
-        }
-
-        private void OnHealthUpdated(ulong amount) => UpdateHealthDisplay();
 
         /// <summary>
         /// This changes the scale of the healthBar with the assumption the initial scale is 1.
         /// </summary>
-        private void UpdateHealthDisplay()
+        private void UpdateHealthDisplay(float? health, float? maxHealth)
         {
-            float healthPercent = (float)health.CurrentHealth / health.MaxHealth;
-            healthAmountText.SetText($"{health.CurrentHealth}/{health.MaxHealth}");
+            bool hasHealth     = health.HasValue;
+            bool hasMaxHealth  = maxHealth.HasValue;
+            bool showHealthBar = hasHealth || hasMaxHealth;
+            
+            viewParent.gameObject.SetActive(showHealthBar);
+            if (!showHealthBar)
+            {
+                return;
+            }
+
+            float  healthPercent;
+            string healthBarText;
+            if (hasHealth && !hasMaxHealth)
+            {
+                // Participant with no max hp should show full health bar
+                healthPercent = 1f;
+                healthBarText = health.ToString();
+            }
+            else if (!hasHealth && hasMaxHealth)
+            {
+                // Participant with max health but no health should be dead...
+                healthPercent = 0;
+                healthBarText = 0f.ToString(CultureInfo.CurrentCulture);
+            }
+            else
+            {
+                // Otherwise show normal percentage
+                healthPercent = health.Value / maxHealth.Value;
+                healthBarText = $"{health.Value}/{maxHealth.Value}";
+            }
+
+            healthAmountText.SetText(healthBarText);
 
             // We need to convert the bounds size from world to local space since 
             // we are moving the fill of the healthBar in local space
             var boundsSizeBefore = transform.InverseTransformVector(healthFillRenderer.bounds.size).x;
-            var scaleBefore = healthFillRenderer.transform.localScale;
+            var scaleBefore      = healthFillRenderer.transform.localScale;
             healthFillRenderer.transform.localScale = new Vector3(
                 healthPercent,
                 scaleBefore.y,
                 scaleBefore.z
             );
 
-            var boundsAfter = transform.InverseTransformVector(healthFillRenderer.bounds.size).x;
+            var boundsAfter    = transform.InverseTransformVector(healthFillRenderer.bounds.size).x;
             var positionBefore = healthFillRenderer.transform.localPosition;
             healthFillRenderer.transform.localPosition = new Vector3(
                 positionBefore.x - (boundsSizeBefore - boundsAfter) / 2f,
                 positionBefore.y,
                 positionBefore.z
             );
-        }
-
-        private void OnDestroy()
-        {
-            health.HealthUpdated -= OnHealthUpdated;
         }
     }
 }

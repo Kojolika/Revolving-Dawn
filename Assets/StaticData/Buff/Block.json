@@ -1,0 +1,12 @@
+{
+  "IsStackable": true,
+  "MaxStackSize": 0,
+  "IsInternal": false,
+  "Icon": "96717bb03f74be54490a7eb298976144",
+  "OnBefore": [
+    {
+      "$type": "Models.Buffs.BlockProperty, Assembly-CSharp"
+    }
+  ],
+  "OnAfter": null
+}

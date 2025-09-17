@@ -1,4 +1,4 @@
-using Settings;
+using Tooling.StaticData.Data;
 using UnityEngine.InputSystem;
 using Views;
 

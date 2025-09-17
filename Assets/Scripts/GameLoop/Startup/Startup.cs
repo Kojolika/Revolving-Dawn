@@ -1,23 +1,26 @@
 ﻿using Cysharp.Threading.Tasks;
+using Koj.Debug;
 using Systems.Managers;
-using Systems.Managers.Base;
 using Tooling.Logging;
 using UI.Menus;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Zenject;
 
 namespace GameLoop.Startup
 {
     public class Startup : MonoBehaviour
     {
         private MySceneManager sceneManager;
-        private MenuManager menuManager;
+        private MenuManager    menuManager;
+        private DiContainer    diContainer;
 
-        [Zenject.Inject]
-        void Construct(MySceneManager sceneManager, MenuManager menuManager)
+        [Inject]
+        private void Construct(MySceneManager sceneManager, MenuManager menuManager, DiContainer diContainer)
         {
             this.sceneManager = sceneManager;
-            this.menuManager = menuManager;
+            this.menuManager  = menuManager;
+            this.diContainer  = diContainer;
         }
 
         private void Awake()
@@ -27,15 +30,37 @@ namespace GameLoop.Startup
 
         private async UniTask DoStartup()
         {
-            MyLogger.Log("Waiting for the dependency injection object graph is constructed...");
-            await UniTask.WaitWhile(() => sceneManager == null && menuManager == null);
+            await Addressables.InitializeAsync();
 
-            await UniTask.WaitForSeconds(2);
+            MyLogger.Info("Waiting for the dependency injection object graph is constructed...");
+            await UniTask.WaitWhile(() => sceneManager == null && menuManager == null && diContainer == null);
 
-            MyLogger.Log("Loading Main Menu...");
+            await SetupDebug(diContainer);
+
+            MyLogger.Info("Loading Main Menu...");
             await sceneManager.LoadScene(MySceneManager.SceneIndex.MainMenu);
 
             _ = await menuManager.Open<MainMenu, Data.Null>(null);
+        }
+
+
+        private static async UniTask SetupDebug(DiContainer diContainer)
+        {
+#if !PRODUCTION || ENABLE_DEBUG_MENU
+            var            installerPrefab    = await Addressables.LoadAssetAsync<GameObject>(DebugInstaller.AddressableKey);
+            DebugInstaller installerComponent = null;
+            if (installerPrefab == null || !installerPrefab.TryGetComponent(out installerComponent))
+            {
+                MyLogger.Error($"Failed to load debug installer! installerPrefab={installerPrefab}, installerComponent={installerComponent}");
+                return;
+            }
+
+            var installer = Instantiate(installerPrefab).GetComponent<DebugInstaller>();
+            installer.SetContainer(diContainer);
+            installer.InstallBindings();
+#else
+            return UniTask.CompletedTask;
+#endif
         }
     }
 }

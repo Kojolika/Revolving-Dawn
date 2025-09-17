@@ -2,7 +2,7 @@ using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Settings
+namespace Tooling.StaticData.Data
 {
     [CreateAssetMenu(fileName = "New " + nameof(PlayerHandViewSettings), menuName = "RevolvingDawn/Settings/" + nameof(PlayerHandViewSettings))]
     public class PlayerHandViewSettings : ScriptableObject

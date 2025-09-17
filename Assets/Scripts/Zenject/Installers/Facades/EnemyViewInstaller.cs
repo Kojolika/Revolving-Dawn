@@ -1,3 +1,4 @@
+using Fight.Engine;
 using Models.Characters;
 using UnityEngine;
 using Views;
@@ -8,26 +9,26 @@ namespace Zenject.Installers.Facades
     {
         [SerializeField] EnemyView enemyView;
 
-        private Enemy enemy;
+        private EnemyLogic enemyLogic;
 
         [Inject]
-        private void Construct(Enemy enemy)
+        private void Construct(EnemyLogic enemyLogic)
         {
-            this.enemy = enemy;
+            this.enemyLogic = enemyLogic;
         }
 
         public override void InstallBindings()
         {
-            Container.BindFactory<Enemy, EnemyView, EnemyView.Factory>()
+            Container.BindFactory<EnemyLogic, EnemyView, EnemyView.Factory>()
                 .FromComponentInNewPrefab(enemyView)
                 .AsSingle();
 
-            Container.Bind<Enemy>()
-                .FromInstance(enemy)
+            Container.Bind<EnemyLogic>()
+                .FromInstance(enemyLogic)
                 .AsSingle();
 
-            Container.Bind<Character>()
-                .FromInstance(enemy)
+            Container.Bind<ICombatParticipant>()
+                .FromInstance(enemyLogic)
                 .AsSingle();
 
             Container.BindInterfacesAndSelfTo<EnemyView>()

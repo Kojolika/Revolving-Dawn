@@ -1,28 +1,31 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using Settings;
+using Tooling.StaticData.Data;
 using Zenject;
 
 namespace Models.Map
 {
-    [System.Serializable]
     public class MapDefinition
     {
-        [JsonProperty("map_name")]
         public string Name;
 
-        [JsonProperty("map_nodes")]
-        public List<NodeDefinition> Nodes;
-        
-        [JsonProperty("current_node")]
+        /// <summary>
+        /// The seed used to create this map.
+        /// </summary>
+        public int Seed;
+
+        /// <summary>
+        /// The settings used to create this map.
+        /// </summary>
+        public MapSettings MapSettings;
+
+        // We don't need to serialize this data, we can generate it again at runtime with a seed
+        [JsonIgnore] public List<NodeDefinition> Nodes;
+
         public NodeDefinition CurrentNode;
 
-        [JsonProperty("x_dimension")]
-        public int XDimension;
-
-        [JsonProperty("y_dimension")]
-        public int YDimension;
-
-        public class Factory : PlaceholderFactory<MapSettings, MapDefinition> { }
+        public class Factory : PlaceholderFactory<MapSettings, int, MapDefinition>
+        {
+        }
     }
 }

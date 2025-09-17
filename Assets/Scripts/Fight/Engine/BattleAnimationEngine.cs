@@ -30,7 +30,7 @@ namespace Fight.Animations
         {
             if (IsRunning)
             {
-                MyLogger.LogWarning($"Requested run on {this} but {this} is already running.");
+                MyLogger.Warning($"Requested run on {this} but {this} is already running.");
                 return;
             }
 

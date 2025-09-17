@@ -1,3 +1,4 @@
+using Fight.Engine;
 using Models.Characters;
 using Views;
 
@@ -21,13 +22,15 @@ namespace Zenject.Installers.Facades
                 .FromComponentInNewPrefab(playerView)
                 .AsSingle();
 
-            Container.Bind<PlayerCharacter>()
+            Container.BindInterfacesAndSelfTo<PlayerCharacter>()
                 .FromInstance(playerCharacter)
                 .AsSingle();
 
-            Container.Bind<Character>()
+            /*
+            Container.Bind<ICombatParticipant>()
                 .FromInstance(playerCharacter)
                 .AsSingle();
+                */
 
             Container.BindInterfacesAndSelfTo<PlayerView>()
                 .FromInstance(playerView)

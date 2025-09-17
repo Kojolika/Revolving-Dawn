@@ -1,17 +1,17 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using Systems.Managers.Base;
+﻿using Cysharp.Threading.Tasks;
 using Tooling.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Systems.Managers
 {
-    [CreateAssetMenu(menuName = "RevolvingDawn/Systems/Managers/" + nameof(MySceneManager), fileName = nameof(MySceneManager))]
+    [CreateAssetMenu(
+        menuName = "RevolvingDawn/Systems/Managers/" + nameof(MySceneManager),
+        fileName = nameof(MySceneManager))]
     public class MySceneManager : AbstractSOManager
     {
-        private Canvas loadingCanvas;
-        private Animator defaultLoadingAnim;
+        private Canvas      loadingCanvas;
+        private Animator    defaultLoadingAnim;
         private MenuManager menuManager;
 
         public bool IsLoading { get; private set; } = false;
@@ -21,17 +21,17 @@ namespace Systems.Managers
         /// </summary>
         public enum SceneIndex
         {
-            Startup = 0,
+            Startup  = 0,
             MainMenu = 1,
-            Fight = 2,
+            Fight    = 2,
         }
 
         [Zenject.Inject]
         void Construct(Canvas loadingCanvas, Animator defaultLoadingAnim, MenuManager menuManager)
         {
-            this.loadingCanvas = loadingCanvas;
+            this.loadingCanvas      = loadingCanvas;
             this.defaultLoadingAnim = defaultLoadingAnim;
-            this.menuManager = menuManager;
+            this.menuManager        = menuManager;
 
             DontDestroyOnLoad(loadingCanvas);
 
@@ -43,9 +43,9 @@ namespace Systems.Managers
         {
             loadingCanvas.gameObject.SetActive(true);
             IsLoading = true;
-            _ = menuManager.CloseAll();
+            await menuManager.CloseAll();
 
-            MyLogger.Log("Loading scene " + index);
+            MyLogger.Info("Loading scene " + index);
 
             await SceneManager.LoadSceneAsync((int)index);
 

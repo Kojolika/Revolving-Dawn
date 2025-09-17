@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Tooling.Logging;
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 namespace Utils

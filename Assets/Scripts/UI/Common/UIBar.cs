@@ -16,7 +16,7 @@ namespace UI.Common
         {
             if (fill == null)
             {
-                MyLogger.LogError("Bar fill is null!");
+                MyLogger.Error("Bar fill is null!");
             }
         }
 

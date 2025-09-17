@@ -1,0 +1,13 @@
+{
+  "Art": "083b62d404bf9bd47bed1e084f79134d",
+  "Manas": null,
+  "PlayerClass": null,
+  "Upgrade": null,
+  "Downgrade": null,
+  "Description": null,
+  "IsLostOnPlay": true,
+  "TargetingOptions": [
+    5
+  ],
+  "CardLogic": "Models.Cards.Refresh, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+}

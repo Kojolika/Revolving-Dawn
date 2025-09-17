@@ -1,0 +1,59 @@
+using System;
+using Tooling.StaticData.Data;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+namespace Tooling.StaticData.EditorUI
+{
+    public class ValidatorErrorView : VisualElement
+    {
+        private readonly Type            selectedType;
+        private          Data.StaticData instance;
+
+        public ValidatorErrorView(Type selectedType)
+        {
+            this.selectedType = selectedType;
+
+            StaticDatabase.Instance.ValidationCompleted += RefreshValidationView;
+        }
+
+        ~ValidatorErrorView()
+        {
+            StaticDatabase.Instance.ValidationCompleted -= RefreshValidationView;
+        }
+
+        public void OnStaticDataSelected(Data.StaticData staticData)
+        {
+            instance = staticData;
+            RefreshValidationView();
+        }
+
+        private void RefreshValidationView()
+        {
+            Clear();
+
+            if (instance == null)
+            {
+                return;
+            }
+
+            if (!StaticDatabase.Instance.ValidationErrors.TryGetValue(selectedType, out var errorDict)
+             || !errorDict.TryGetValue(instance, out var errors))
+            {
+                return;
+            }
+
+            foreach (var error in errors)
+            {
+                Add(new Label(error)
+                {
+                    style =
+                    {
+                        color      = Color.red,
+                        whiteSpace = WhiteSpace.Normal
+                    }
+                });
+            }
+        }
+    }
+}

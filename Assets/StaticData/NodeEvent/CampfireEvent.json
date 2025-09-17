@@ -1,0 +1,4 @@
+{
+  "Icon": "bff0b98fa576ffd418785c1f4eab6cd1",
+  "Logic": "Models.Map.CampfireEventLogic, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+}

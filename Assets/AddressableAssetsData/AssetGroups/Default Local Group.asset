@@ -69,22 +69,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cb928e790e6382a4cbc364a9596de11f
-    m_Address: player_class_warrior
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 800bb8b75bced384981baaac7271f2b8
-    m_Address: card_block
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b7d98dba89d65734ea3a2d2ad08fbe68
-    m_Address: card_punch
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4024798ef8e3da84f96ea6b0774e6ebb
     m_Address: card_art_block
     m_ReadOnly: 0
@@ -94,42 +78,6 @@ MonoBehaviour:
     m_Address: card_art_punch
     m_ReadOnly: 0
     m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d0451e7e856f014469c51cbe25b209d0
-    m_Address: mana_green
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cf92ef4110406784cb00b29170e2560c
-    m_Address: mana_red
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fc30a61ee75aac346922ceb5affbc23a
-    m_Address: mana_white
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dd2ec971384a2b742b328932315cfb03
-    m_Address: mana_gold
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: db0d8289709d075419d8283e0629229b
-    m_Address: mana_blue
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 587b78225009f0943b437218d9d071bc
-    m_Address: mana_black
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 205954ae161227c418555d528d4ef5be
     m_Address: node_event_enemy
@@ -191,12 +139,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 97608a3c0220d3c418750a48d3ed8f83
-    m_Address: player_class_time_keeper
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - core
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d64d33cd3d35f84b846fd22e87ff5fa
     m_Address: card_mana_socket
     m_ReadOnly: 0
@@ -214,16 +156,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 199ea291b8dc10749814c60df5e5232a
     m_Address: card_border_warrior
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 372c951ab5bb37048bc2c0c4073af1a3
-    m_Address: card_rewind
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c533e310efb320143aaa4dd16504edb8
-    m_Address: card_watch_slap
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -250,6 +182,26 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b5723c89021ffa54087eeed7c7c4f776
     m_Address: DiscardCardEventAnimation
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d05fb482a1c33014690747c2df9f8605
+    m_Address: Assets/Prefabs/Debug/DebugTab.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7421f5dc9612a7944b443208866e5353
+    m_Address: Assets/Sprites/Cards/Warrior_Cripple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0a470adfe8c51f4aa3394db8a01309e
+    m_Address: Assets/Prefabs/Debug/DefaultDebugPage.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1c92ec08fc83f54294e1fdb6a7f990a
+    m_Address: Assets/Prefabs/Debug/CurrentRunPage.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data.DB;
+using Fight.Engine;
+using Models.Cards;
 using Models.Map;
 using Serialization;
-using Settings;
-using Systems.Managers.Base;
+using Systems.Managers;
 using Tooling.Logging;
+using Tooling.StaticData.Data;
+using UI.Common.DisplayElements;
 using UI.DisplayElements;
 using UnityEngine;
+using Views;
 using Views.Common;
 
 
@@ -16,32 +21,35 @@ namespace Zenject.Installers
     public class MainInstaller : MonoInstaller<MainInstaller>
     {
         [SerializeField] private NodeDisplayElement nodeDisplayElement;
+        [SerializeField] private PlayerClassView    playerClassView;
 
         public override void InstallBindings()
         {
             InstallManagers();
             InstallPrefabs();
+            InstallUIElements();
+            InstallCards();
             InstallMapObjects();
             InstallDependenciesForDeserializer();
             InstallUIUtils();
+            //InstallDB();
         }
 
         private void InstallManagers()
         {
             // Get all manager types in the project
             var managerTypes = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(type
-                    => !type.IsAbstract
-                       && !type.IsInterface
-                       && typeof(IManager).IsAssignableFrom(type)
-                       && !typeof(IPartTimeManager).IsAssignableFrom(type))
-                .ToArray();
+                                        .GetAssemblies()
+                                        .SelectMany(assembly => assembly.GetTypes())
+                                        .Where(type => !type.IsAbstract
+                                                    && !type.IsInterface
+                                                    && typeof(IManager).IsAssignableFrom(type)
+                                                    && !typeof(IPartTimeManager).IsAssignableFrom(type))
+                                        .ToArray();
 
             foreach (var managerType in managerTypes)
             {
-                MyLogger.Log($"Creating manager {managerType.Name}...");
+                MyLogger.Info($"Creating manager {managerType.Name}...");
                 Container.BindInterfacesAndSelfTo(managerType).AsSingle();
             }
         }
@@ -49,29 +57,53 @@ namespace Zenject.Installers
         private void InstallPrefabs()
         {
             Container.BindFactory<NodeDisplayElement.Data, NodeDisplayElement, NodeDisplayElement.Factory>()
-                .FromComponentInNewPrefab(nodeDisplayElement);
+                     .FromComponentInNewPrefab(nodeDisplayElement);
+
+            Container.Bind<PlayerClassView>()
+                     .FromInstance(playerClassView);
+        }
+
+        private void InstallCards()
+        {
+            Container.BindFactory<Card, CardLogic, CardLogic.Factory>()
+                     .FromFactory<CardLogic.CustomFactory>();
+        }
+
+        private void InstallUIElements()
+        {
+            Container.BindFactory<Buff, ICombatParticipant, BuffElement, BuffElement.Factory>()
+                     .FromFactory<BuffElement.CustomFactory>();
         }
 
         private void InstallMapObjects()
         {
-            Container.BindFactory<NodeEventFactory.Data, NodeEvent, NodeEvent.Factory>()
-                .FromFactory<NodeEventFactory>();
+            Container.BindFactory<MapSettings, int, MapDefinition, MapDefinition.Factory>()
+                     .FromFactory<MapFactory>();
 
-            Container.BindFactory<MapSettings, MapDefinition, MapDefinition.Factory>()
-                .FromFactory<MapFactory>();
+            Container.BindFactory<MapSettings, NodeDefinition, NodeEventLogic, NodeEventLogic.Factory>()
+                     .FromFactory<NodeEventLogicFactory>();
         }
 
         private void InstallDependenciesForDeserializer()
         {
-            Container.Bind<ZenjectDependenciesContractResolver>()
-                .FromNew()
-                .AsSingle();
+            Container.Bind<CustomContractResolver>()
+                     .FromNew()
+                     .AsSingle();
         }
 
         private void InstallUIUtils()
         {
             Container.Bind<ViewListFactory>()
-                .AsSingle();
+                     .AsSingle();
+
+            Container.Bind<ViewFactory>()
+                     .AsSingle();
+        }
+
+        private void InstallDB()
+        {
+            Container.BindInterfacesAndSelfTo<DBInterface>()
+                     .AsSingle();
         }
     }
 }

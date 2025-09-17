@@ -1,53 +1,111 @@
 using System.Collections.Generic;
 using System.Linq;
-using Models.Buffs;
-using Models.Player;
+using Common.Util;
+using Fight.Engine;
+using Models.Cards;
+using Models.Fight;
 using Newtonsoft.Json;
-using Settings;
-using UnityEngine.AddressableAssets;
+using Tooling.StaticData.Data;
 
 namespace Models.Characters
 {
-    [System.Serializable]
-    public class PlayerCharacter : Character, IInventory
+    public class PlayerCharacter : ICardDeckParticipant
     {
-        [JsonProperty("class")]
-        public PlayerClassModel Class { get; private set; }
+        [JsonProperty]
+        public PlayerClass Class { get; private set; }
 
-        [JsonProperty("decks")]
-        public Player.Decks Decks { get; private set; }
-
-        [JsonProperty("inventory")]
-        public List<IItem> Inventory { get; private set; }
-
-        [JsonProperty("gold")]
-        public ulong Gold { get; private set; }
-
-        [JsonProperty("hand_size")]
-        public int HandSize { get; private set; }
-
-        [JsonProperty("draw_amount")]
-        public int DrawAmount { get; private set; }
-
-        [JsonProperty("mana_per_turn")]
-        public int UsableManaPerTurn { get; private set; }
+        private readonly CardLogic.Factory cardFactory;
 
         [JsonConstructor]
-        public PlayerCharacter()
+        private PlayerCharacter()
         {
-
         }
 
-        public PlayerCharacter(PlayerClassSODefinition playerClassDefinition, CharacterSettings characterSettings)
+        /// <summary>
+        /// Used to create characters for a new run.
+        /// </summary>
+        public PlayerCharacter(
+            PlayerClass       playerClass,
+            CharacterSettings characterSettings,
+            CardLogic.Factory cardFactory)
         {
-            Class = playerClassDefinition.Representation;
-            Name = playerClassDefinition.name;
-            Decks = new Player.Decks(playerClassDefinition.StartingDeck.Select(cardSO => cardSO.Representation).ToList());
-            Health = new(playerClassDefinition.HealthDefinition.MaxHealth, playerClassDefinition.HealthDefinition.MaxHealth);
-            HandSize = characterSettings.HandSize;
-            DrawAmount = characterSettings.DrawAmount;
-            UsableManaPerTurn = characterSettings.UsableManaPerTurn;
-            Buffs = new();
+            Class            = playerClass;
+            Name             = playerClass.Name;
+            Team             = TeamType.Player;
+            this.cardFactory = cardFactory;
+
+            Deck = new();
+            foreach (var card in playerClass.StartingDeck)
+            {
+                Deck.Add(cardFactory.Create(card));
+            }
+
+            foreach (var initialStat in characterSettings.InitialStatValues.OrEmptyIfNull())
+            {
+                SetStat(initialStat.Stat, initialStat.Value);
+            }
         }
+
+        #region ICombatParticipant
+
+        public string   Name { get; }
+        public TeamType Team { get; }
+
+        private Dictionary<Stat, float> stats = new();
+        private Dictionary<Buff, int>   buffs = new();
+
+        public float? GetStat(Stat stat)
+        {
+            return stats.TryGetValue(stat, out var value) ? value : null;
+        }
+
+        public void SetStat(Stat stat, float value)
+        {
+            stats[stat] = value;
+        }
+
+        public int GetBuff(Buff buff)
+        {
+            return buffs.GetValueOrDefault(buff, 0);
+        }
+
+        public void SetBuff(Buff buff, int value)
+        {
+            buffs[buff] = value;
+        }
+
+        public List<(int stackSize, Buff)> GetBuffs()
+        {
+            var result = new List<(int stackSize, Buff buff)>();
+            foreach (var buff in buffs)
+            {
+                result.Add((buff.Value, buff.Key));
+            }
+
+            return result;
+        }
+
+        public List<(float amount, Stat)> GetStats()
+        {
+            var result = new List<(float amount, Stat stat)>();
+            foreach (var stat in stats)
+            {
+                result.Add((stat.Value, stat.Key));
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region ICardDeckParticipant
+
+        public List<CardLogic> Deck    { get; }
+        public List<CardLogic> Draw    { get; } = new();
+        public List<CardLogic> Hand    { get; } = new();
+        public List<CardLogic> Discard { get; } = new();
+        public List<CardLogic> Lost    { get; } = new();
+
+        #endregion
     }
 }

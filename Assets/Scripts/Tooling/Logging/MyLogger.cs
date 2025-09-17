@@ -1,59 +1,88 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json.Serialization;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace Tooling.Logging
 {
-    public static class MyLogger
+    public class MyLogger : ILogger, ITraceWriter
     {
         private static readonly StackTrace stackTrace = new StackTrace(true);
 
-        public static void Log(string message, [CallerFilePath] string filePath = "")
-            => Debug.Log(
+        public void Log(LogLevel level, string message, [CallerFilePath] string filePath = "", params object[] args)
+        {
+            switch (level)
+            {
+                case LogLevel.Info:
+                    Info(message, filePath);
+                    break;
+                case LogLevel.Warning:
+                    Warning(message, filePath);
+                    break;
+                case LogLevel.Error:
+                    Error(message, filePath);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
+            }
+        }
+
+        public static void Info(string message, [CallerFilePath] string filePath = "")
+        {
+            Debug.Log(
                 FormatLog(message, filePath)
             );
+        }
 
-        public static void Log(string message, GameObject context, [CallerFilePath] string filePath = "")
-            => Debug.Log(
+        public static void Info(string message, GameObject context, [CallerFilePath] string filePath = "")
+        {
+            Debug.Log(
                 FormatLog(message, filePath),
                 context
             );
+        }
 
-        public static void LogWarning(string message, [CallerFilePath] string filePath = "")
-            => Debug.LogWarning(
+        public static void Warning(string message, [CallerFilePath] string filePath = "")
+        {
+            Debug.LogWarning(
                 FormatLog(message, filePath)
             );
+        }
 
-        public static void LogWarning(string message, GameObject context, [CallerFilePath] string filePath = "")
-            => Debug.LogWarning(
+        public static void Warning(string message, GameObject context, [CallerFilePath] string filePath = "")
+        {
+            Debug.LogWarning(
                 FormatLog(message, filePath),
                 context
             );
+        }
 
-        public static void LogError(string message, [CallerFilePath] string filePath = "")
-            => Debug.LogError(
+        public static void Error(string message, [CallerFilePath] string filePath = "")
+        {
+            Debug.LogError(
                 FormatLog(message, filePath)
             );
+        }
 
-        public static void LogError(string message, GameObject context, [CallerFilePath] string filePath = "")
-            => Debug.LogError(
+        public static void Error(string message, GameObject context, [CallerFilePath] string filePath = "")
+        {
+            Debug.LogError(
                 FormatLog(message, filePath),
                 context
             );
-
+        }
 
         private static string FormatLog(string message, string filePath)
         {
-            var fileName = GetFileNameFromFilePath(filePath);
-            var uniqueColor = Options.GetFilenameColor(fileName);
+            var fileName          = GetFileNameFromFilePath(filePath);
+            var uniqueColor       = Options.GetFilenameColor(fileName);
             var currentStackFrame = stackTrace.GetFrame(0);
             var logMessage = $"<b><color={uniqueColor}><size=25>@</size></color>" +
                              $"<color={Options.FilenameColor}> [{fileName}]</color></b>" +
-                             $"{message}";
+                             $" {message}";
 
             if (currentStackFrame.GetMethod() is MethodInfo methodInfo)
             {
@@ -95,10 +124,49 @@ namespace Tooling.Logging
         private static class Options
         {
             internal const string NameSpaceColor = "white";
-            internal const string FilenameColor = "#1fa734ff";
+            internal const string FilenameColor  = "#1fa734ff";
 
             internal static string GetFilenameColor(string fileName)
                 => $"#{Convert.ToString(fileName.GetHashCode(), 16)}";
         }
+
+        #region ITraceWriter
+
+        public void Trace(TraceLevel level, string message, Exception ex)
+        {
+            switch (level)
+            {
+                case TraceLevel.Error:
+                    Error(message);
+                    break;
+                case TraceLevel.Info:
+                    Info(message);
+                    break;
+                case TraceLevel.Verbose:
+                    Info(message);
+                    break;
+                case TraceLevel.Warning:
+                    Warning(message);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
+            }
+        }
+
+        public TraceLevel LevelFilter => TraceLevel.Verbose;
+
+        #endregion
+    }
+
+    public interface ILogger
+    {
+        public void Log(LogLevel level, string message, [CallerFilePath] string filePath = "", params object[] args);
+    }
+
+    public enum LogLevel
+    {
+        Info,
+        Warning,
+        Error
     }
 }

@@ -4,19 +4,18 @@ namespace Fight.Events
 {
     public class PhaseStartedEvent : BattleEvent<Team>
     {
-        public PhaseStartedEvent(Team target, bool isCharacterAction = false) : base(target, isCharacterAction)
+        public PhaseStartedEvent(Team target) : base(target)
+        {
+        }
+
+        public override void Execute(Context fightContext)
         {
         }
 
         public override void Undo()
         {
-            throw new System.NotImplementedException();
         }
 
-        public override string Log() => $"{Target.Name} teams turn ended!";
-
-        public override void Execute(Team target, BattleEngine battleEngine)
-        {
-        }
+        public override string Log() => $"{Target.Type} teams turn ended!";
     }
 }

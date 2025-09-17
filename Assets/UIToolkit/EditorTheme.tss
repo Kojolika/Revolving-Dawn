@@ -1,0 +1,7 @@
+
+@import url("Styles/ResetDefaults.uss");
+@import url("Styles/StaticData/StaticDataStyles.uss");
+
+
+
+VisualElement {}

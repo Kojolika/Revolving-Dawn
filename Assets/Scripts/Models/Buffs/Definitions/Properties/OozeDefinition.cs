@@ -1,30 +1,24 @@
-using Controllers;
+using Fight;
+using Fight.Engine;
 using Fight.Events;
-using Models.Characters;
+using Tooling.StaticData.Data;
 
 namespace Models.Buffs
 {
     [System.Serializable]
-    public class OozeProperty : ITriggerableBuffAfter<TurnStartedEvent>
+    public class OozeProperty : IBeforeEventT<TurnStartedEvent>
     {
-        private readonly PlayerHandController playerHandController;
-
-        public OozeProperty(PlayerHandController playerHandController)
+        public int OnBeforeExecute(Context fightContext, TurnStartedEvent battleEvent, Buff buff, int currentStackSize)
         {
-            this.playerHandController = playerHandController;
-        }
-
-        public ulong OnAfterTrigger(TurnStartedEvent triggeredByEvent, Buff buff)
-        {
-            if (triggeredByEvent.Target is PlayerCharacter playerCharacter)
+            if (battleEvent.Target is ICardDeckParticipant cardDeckParticipant)
             {
-                var rng = new System.Random();
-                var randomNum = rng.Next(0, playerCharacter.Decks.Hand.Count - 1);
-                var randomCard = playerCharacter.Decks.Hand[randomNum];
-                playerHandController.DowngradeCard(ref randomCard);
+                var rng        = new System.Random();
+                var randomNum  = rng.Next(0, cardDeckParticipant.Hand.Count - 1);
+                var randomCard = cardDeckParticipant.Hand[randomNum];
+                FightUtils.DowngradeCard(ref randomCard);
             }
 
-            return buff.StackSize - 1;
+            return currentStackSize - 1;
         }
     }
 }

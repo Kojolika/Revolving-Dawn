@@ -2,13 +2,34 @@ using System;
 using Tooling.Logging;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Utils.Editor
 {
-    [CustomPropertyDrawer(typeof(Settings.NumberSettings<>))]
+    [CustomPropertyDrawer(typeof(NumberSettings<>))]
     public class NumberSettingsDrawer : PropertyDrawer
     {
+        [Serializable]
+        public struct NumberSettings<T> where T : struct
+        {
+            public enum TypeOfNumberSetting
+            {
+                Number,
+                Min,
+                Max,
+            }
+
+            [SerializeField]
+            private TypeOfNumberSetting settingsType;
+
+            [SerializeField]
+            private T value;
+
+            public readonly TypeOfNumberSetting SettingsType => settingsType;
+            public readonly T                   Value        => value;
+        }
+
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
             var root = new VisualElement();

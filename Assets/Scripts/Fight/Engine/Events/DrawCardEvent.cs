@@ -1,25 +1,22 @@
-using Controllers;
-using Models;
-using Models.Characters;
+using Fight.Engine;
+using Models.Cards;
 
 namespace Fight.Events
 {
-    public class DrawCardEvent : BattleEventTargetingIBuffable<PlayerCharacter>
+    public class DrawCardEvent : BattleEvent<ICardDeckParticipant>
     {
-        private readonly PlayerHandController playerHandController;
-        public CardModel CardDrawn { get; private set; }
+        public CardLogic cardLogicDrawn { get; private set; }
 
-        public DrawCardEvent(PlayerCharacter target, PlayerHandController playerHandController, bool isCharacterAction = false) : base(target, isCharacterAction)
+        public DrawCardEvent(ICardDeckParticipant target) : base(target)
         {
-            this.playerHandController = playerHandController;
-        }
-
-        public override void Execute(PlayerCharacter target, BattleEngine battleEngine)
-        {
-            CardDrawn = playerHandController.DrawCard();
         }
 
         public override string Log() => $"{Target.Name} drew a card!";
+
+        public override void Execute(Context fightContext)
+        {
+            cardLogicDrawn = Target.DrawCard();
+        }
 
         public override void Undo()
         {

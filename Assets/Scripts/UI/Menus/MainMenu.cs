@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using Data;
-using Models.Player;
+﻿using Data;
 using Systems.Managers;
+using Tooling.StaticData.Data;
 using UI.Common;
 using UI.Menus.Common;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utils.Attributes;
 
 namespace UI.Menus
 {
-    public class MainMenu : Menu<Data.Null>
+    public class MainMenu : Menu<Null>
     {
         [ResourcePath] public static string ResourcePath => nameof(MainMenu);
 
@@ -19,35 +17,29 @@ namespace UI.Menus
         [SerializeField] private MyButton quitButton;
 
         private PlayerDataManager playerDataManager;
-        private MySceneManager mySceneManager;
-        private MenuManager menuManager;
-        private List<PlayerClassSODefinition> playerClassDefinitions;
+        private MySceneManager    mySceneManager;
+        private MenuManager       menuManager;
 
         [Zenject.Inject]
-        async void Construct(
-            PlayerDataManager playerDataManager,
-            MySceneManager mySceneManager,
-            MenuManager menuManager,
-            StaticDataReference<PlayerClassSODefinition> playerClassReferences)
+        private void Construct(PlayerDataManager playerDataManager, MySceneManager mySceneManager, MenuManager menuManager)
         {
             this.playerDataManager = playerDataManager;
-            this.mySceneManager = mySceneManager;
-            this.menuManager = menuManager;
-            playerClassDefinitions = await playerClassReferences.LoadAssetsAsync();
+            this.mySceneManager    = mySceneManager;
+            this.menuManager       = menuManager;
         }
 
         private void Awake()
         {
-            playButton.Pressed += StartNewGameOrLoadCurrent;
+            playButton.Pressed     += StartNewGameOrLoadCurrent;
             settingsButton.Pressed += OpenSettings;
-            quitButton.Pressed += QuitGame;
+            quitButton.Pressed     += QuitGame;
         }
 
         public override void Populate(Null data)
         {
         }
 
-        async void StartNewGameOrLoadCurrent()
+        private void StartNewGameOrLoadCurrent()
         {
             // If continuing load current fight or load current map
             // otherwise open character selection
@@ -56,12 +48,12 @@ namespace UI.Menus
             if (currentRun == null)
             {
                 _ = menuManager.Open<CharacterSelect, CharacterSelect.Data>(
-                    new CharacterSelect.Data() { Classes = playerClassDefinitions }
+                    new CharacterSelect.Data { Classes = StaticDatabase.Instance.GetInstancesForType<PlayerClass>() }
                 );
             }
             else if (currentRun.CurrentFight != null)
             {
-                await mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
+                _ = mySceneManager.LoadScene(MySceneManager.SceneIndex.Fight);
             }
             else if (currentRun.CurrentMap != null)
             {

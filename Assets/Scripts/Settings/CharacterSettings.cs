@@ -1,23 +1,16 @@
 using System.Collections.Generic;
-using Models.Mana;
-using UnityEngine;
 
-namespace Settings
+namespace Tooling.StaticData.Data
 {
-    [CreateAssetMenu(fileName = "New " + nameof(CharacterSettings), menuName = "RevolvingDawn/Settings/" + nameof(CharacterSettings))]
-    public class CharacterSettings : ScriptableObject
+    public class CharacterSettings : StaticData
     {
-        [SerializeField] private int handSize;
-        [SerializeField] private int drawAmount;
-        [SerializeField] private int usableManaPerTurn;
-        [SerializeField] private int numberOfManaRefreshedPerTurn;
-        [SerializeField] private List<ManaSODefinition> allManaTypesAvailable = new();
-        
+        public List<StatValue> InitialStatValues;
+        public List<Mana>      AllManaTypesAvailable;
+    }
 
-        public int HandSize => handSize;
-        public int DrawAmount => drawAmount;
-        public int UsableManaPerTurn => usableManaPerTurn;
-        public int NumberOfManaRefreshedPerTurn => numberOfManaRefreshedPerTurn;
-        public List<ManaSODefinition> AllManaTypesAvailable => allManaTypesAvailable;
+    public class StatValue
+    {
+        public Stat  Stat;
+        public float Value;
     }
 }
