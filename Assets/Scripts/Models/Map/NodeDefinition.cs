@@ -1,63 +1,86 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Tooling.StaticData.Data;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Models.Map
 {
-    [Serializable]
     public class NodeDefinition
     {
         public Coordinate       Coord;
+        public NodeEvent        Event;
         public NodeEventLogic   EventLogic;
         public List<Coordinate> NextNodes;
         public List<Coordinate> PreviousNodes;
-        public int              Level = int.MaxValue;
+        public int              Level;
 
-        [JsonIgnore]
-        public int NumberOfEdges => NextNodes?.Count ?? 0 + PreviousNodes?.Count ?? 0;
+        [JsonIgnore] public int NumberOfEdges => NextNodes?.Count ?? 0 + PreviousNodes?.Count ?? 0;
+    }
 
+    [JsonObject(IsReference = false)]
+    public struct Coordinate : IEquatable<Coordinate>, IComparable<Coordinate>
+    {
+        public int X;
+        public int Y;
 
-        [Serializable, JsonObject(IsReference = false)]
-        public struct Coordinate : IEquatable<Coordinate>, IComparable<Coordinate>
+        public Coordinate(int x, int y)
         {
-            public int x;
-            public int y;
+            X = x;
+            Y = y;
+        }
 
-            public Coordinate(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-            }
+        public static float Distance(Coordinate c1, Coordinate c2)
+        {
+            return Mathf.Sqrt(Mathf.Pow(c1.X - c2.X, 2) + Mathf.Pow(c1.Y - c2.Y, 2));
+        }
 
-            public static float Distance(Coordinate c1, Coordinate c2) => Mathf.Sqrt(Mathf.Pow(c1.x - c2.x, 2) + Mathf.Pow(c1.y - c2.y, 2));
+        public static Coordinate operator +(Coordinate a, Coordinate b)
+        {
+            return new Coordinate(a.X + b.X, a.Y + b.Y);
+        }
 
-            public static Coordinate operator +(Coordinate a, Coordinate b) => new Coordinate(a.x + b.x, a.y + b.y);
+        public static Coordinate operator -(Coordinate a, Coordinate b)
+        {
+            return new Coordinate(a.X - b.X, a.Y - b.Y);
+        }
 
-            public static Coordinate operator -(Coordinate a, Coordinate b) => new Coordinate(a.x - b.x, a.y - b.y);
+        public static bool operator ==(Coordinate a, Coordinate b)
+        {
+            return a.Equals(b);
+        }
 
-            public static bool operator ==(Coordinate a, Coordinate b) => ReferenceEquals(a, b) || (!ReferenceEquals(a, null) && a.Equals(b));
+        public static bool operator !=(Coordinate a, Coordinate b)
+        {
+            return !(a == b);
+        }
 
-            public static bool operator !=(Coordinate a, Coordinate b) => !(a == b);
+        public bool Equals(Coordinate other)
+        {
+            return X == other.X && Y == other.Y;
+        }
 
-            public override bool Equals(object obj) => obj is Coordinate coordinate && Equals(coordinate);
+        public override bool Equals(object obj)
+        {
+            return obj is Coordinate coordinate && Equals(coordinate);
+        }
 
-            public override int GetHashCode() => (x, y).GetHashCode();
+        public override int GetHashCode()
+        {
+            return (x: X, y: Y).GetHashCode();
+        }
 
-            public override string ToString() => $"({x},{y})";
+        public override string ToString()
+        {
+            return $"({X},{Y})";
+        }
 
-            public bool Equals(Coordinate other)
-                => !ReferenceEquals(other, null)
-                && x == other.x
-                && y == other.y;
-
-            public int CompareTo(Coordinate other)
-            {
-                var subtractedCoord = other - this;
-                var combinedValue   = subtractedCoord.x + subtractedCoord.y;
-                return combinedValue;
-            }
+        public int CompareTo(Coordinate other)
+        {
+            var subtractedCoord = other - this;
+            var combinedValue   = subtractedCoord.X + subtractedCoord.Y;
+            return combinedValue;
         }
     }
 }

@@ -5,8 +5,8 @@ namespace Models.Map
 {
     public class EliteEnemyEventLogic : NodeEventLogic
     {
-        public EliteEnemyEventLogic(NodeEvent model, MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
-            : base(model, mapSettings, node, maxNodeLevelForMap)
+        public EliteEnemyEventLogic(MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
+            : base(mapSettings, node)
         {
         }
 

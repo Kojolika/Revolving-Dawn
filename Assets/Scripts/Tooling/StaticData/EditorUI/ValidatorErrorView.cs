@@ -37,7 +37,7 @@ namespace Tooling.StaticData.EditorUI
                 return;
             }
 
-            if (!StaticDatabase.Instance.validationErrors.TryGetValue(selectedType, out var errorDict)
+            if (!StaticDatabase.Instance.ValidationErrors.TryGetValue(selectedType, out var errorDict)
              || !errorDict.TryGetValue(instance, out var errors))
             {
                 return;

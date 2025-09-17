@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Tooling.StaticData.EditorUI;
+using UnityEngine;
 
 namespace Tooling.StaticData.Data
 {
@@ -14,6 +15,11 @@ namespace Tooling.StaticData.Data
         /// The name of the value, this is used to draw labels.
         /// </summary>
         string ValueName { get; }
+
+        /// <summary>
+        /// Tooltip for the value.
+        /// </summary>
+        string ToolTip { get; }
 
         /// <summary>
         /// Sets the value.
@@ -34,12 +40,14 @@ namespace Tooling.StaticData.Data
         private readonly Func<T>   getValueFunc;
         private readonly Action<T> setValueFunc;
         public           string    ValueName { get; }
+        public           string    ToolTip   { get; }
 
-        public ValueProvider(Func<T> getValueFunc, Action<T> setValueFunc, string valueName)
+        public ValueProvider(Func<T> getValueFunc, Action<T> setValueFunc, string valueName, string toolTip)
         {
             this.getValueFunc = getValueFunc;
             this.setValueFunc = setValueFunc;
             ValueName         = valueName;
+            ToolTip           = toolTip;
         }
 
         public void SetValue(object value)
@@ -62,6 +70,7 @@ namespace Tooling.StaticData.Data
         private readonly object    objectWithField;
 
         public string ValueName => FieldInfo?.Name ?? string.Empty;
+        public string ToolTip   => FieldInfo?.GetCustomAttribute<TooltipAttribute>()?.tooltip;
 
         public FieldValueProvider(FieldInfo fieldInfo, object objectWithField)
         {

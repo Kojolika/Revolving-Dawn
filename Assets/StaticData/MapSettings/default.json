@@ -1,10 +1,10 @@
 {
-  "NumberOfNodes": 30,
-  "NumberOfPaths": 3,
-  "XDimension": 500,
-  "YDimension": 1000,
-  "EdgePadding": 20,
-  "RegionPadding": 20,
+  "NumberOfLevels": 20,
+  "NodesPerLevel": {
+    "Min": 4,
+    "Max": 7
+  },
+  "NumberOfPaths": 4,
   "FirstNodeEvent": {
     "$type": "Tooling.StaticData.Data.NodeEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "Reference": {

@@ -5,8 +5,8 @@ namespace Models.Map
 {
     public class EncounterEventLogic : NodeEventLogic
     {
-        public EncounterEventLogic(NodeEvent model, MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
-            : base(model, mapSettings, node, maxNodeLevelForMap)
+        public EncounterEventLogic(MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
+            : base(mapSettings, node)
         {
         }
 

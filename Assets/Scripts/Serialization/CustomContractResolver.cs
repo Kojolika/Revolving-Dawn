@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Common.Util;
+using Models.Characters;
+using Models.Map;
 using Newtonsoft.Json.Serialization;
 using Tooling.Logging;
 using Tooling.StaticData.Data;
+using Tooling.StaticData.Data.Bytecode;
 using Zenject;
 using Type = System.Type;
 
@@ -42,6 +46,7 @@ namespace Serialization
             }
 
             objectContract.OnDeserializedCallbacks.Add(FindStaticDataReferences);
+
 
             return objectContract;
         }
@@ -97,6 +102,11 @@ namespace Serialization
 
             foreach (var prop in objType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
+                if (objType == typeof(EnemyLogic) && typeof(StaticData).IsAssignableFrom(prop.PropertyType))
+                {
+                    // MyLogger.Info($"Prop name: {prop.Name}, is null? {prop.GetValue(obj) == null}");
+                }
+
                 if (IsStaticDataField(prop.GetValue(obj), out var staticDataReference))
                 {
                     StaticDatabase.Instance.QueueReferenceForInject(
@@ -141,7 +151,7 @@ namespace Serialization
         {
             if (obj is not StaticData staticData)
             {
-                staticDataReference = null;
+                staticDataReference = default;
                 return false;
             }
 

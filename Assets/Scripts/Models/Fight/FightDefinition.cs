@@ -8,7 +8,6 @@ namespace Models.Fight
     public class FightDefinition
     {
         public Team PlayerTeam;
-
         public Team EnemyTeam;
     }
 }

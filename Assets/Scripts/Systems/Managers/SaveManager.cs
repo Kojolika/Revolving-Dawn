@@ -11,6 +11,7 @@ using Tooling.StaticData.Data;
 using Zenject;
 using File = System.IO.File;
 using UnityEditor;
+using UnityEngine;
 
 namespace Systems.Managers
 {
@@ -24,6 +25,16 @@ namespace Systems.Managers
         private const  string PlayerDataJsonObjectName = "player";
 
         private JsonSerializer jsonSerializer;
+
+        public static bool IsSavingEnabled
+        {
+#if !PRODUCTION || ENABLE_DEBUG_MENU
+            get => PlayerPrefs.GetInt("IsSavingEnabled") == 1;
+            set => PlayerPrefs.SetInt("IsSavingEnabled", value ? 1 : 0);
+#else
+            get => true;
+#endif
+        }
 
         [MenuItem("KoJy/Open Player Saves Folder")]
         public static void OpenSaveFolder()
@@ -63,6 +74,12 @@ namespace Systems.Managers
 
         public async UniTask Save(PlayerDefinition playerDefinition)
         {
+            if (!IsSavingEnabled)
+            {
+                MyLogger.Info("Saving disabled returning...");
+                return;
+            }
+
             if (playerDefinition == null)
             {
                 MyLogger.Error("Trying to save a null player definition!");
@@ -94,6 +111,12 @@ namespace Systems.Managers
 
         public async UniTask SaveFight(FightDefinition fightDefinition, PlayerCharacter playerCharacter)
         {
+            if (!IsSavingEnabled)
+            {
+                MyLogger.Info("Saving disabled returning...");
+                return;
+            }
+
             if (!File.Exists(PlayerSaveFilePath))
             {
                 throw new System.Exception($"Trying to save a fight without save file created already!");

@@ -53,7 +53,7 @@ namespace Tooling.StaticData.EditorUI
 
         private void CheckForValidationErrors()
         {
-            StaticDatabase.Instance.validationErrors.TryGetValue(staticDataType, out validationErrors);
+            StaticDatabase.Instance.ValidationErrors.TryGetValue(staticDataType, out validationErrors);
             RefreshView();
         }
 
@@ -101,8 +101,8 @@ namespace Tooling.StaticData.EditorUI
         /// <returns></returns>
         public static IEnumerable<FieldInfo> GetOrderedFields(Type staticDataType)
         {
-            var fields = Data.Utils.GetFields(staticDataType);
-            Data.Utils.SortFields(fields, staticDataType);
+            var fields = Utils.GetFields(staticDataType);
+            Utils.SortFields(fields, staticDataType);
             return fields;
         }
 

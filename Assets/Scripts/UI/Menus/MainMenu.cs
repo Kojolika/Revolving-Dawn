@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using Data;
+﻿using Data;
 using Systems.Managers;
 using Tooling.StaticData.Data;
 using UI.Common;
 using UI.Menus.Common;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utils.Attributes;
 
 namespace UI.Menus
 {
-    public class MainMenu : Menu<Data.Null>
+    public class MainMenu : Menu<Null>
     {
         [ResourcePath] public static string ResourcePath => nameof(MainMenu);
 

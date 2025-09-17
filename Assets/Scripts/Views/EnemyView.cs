@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using Fight.Engine;
 using Models.Characters;
 using Systems.Managers;
-using Tooling.Logging;
 using UnityEngine;
 using Zenject;
 
@@ -12,16 +11,12 @@ namespace Views
     {
         [SerializeField] SpriteRenderer spriteRenderer;
 
-        private HealthView    healthView;
-        private EnemyMoveView enemyMoveView;
-        private BuffsView     buffsView;
-
-        public EnemyLogic enemyLogicModel { get; private set; }
+        private EnemyLogic enemyLogic;
 
         #region ICharacterView
 
         public SpriteRenderer     SpriteRenderer => spriteRenderer;
-        public ICombatParticipant Model          => enemyLogicModel;
+        public ICombatParticipant Model          => enemyLogic;
         public Collider           Collider       { get; private set; }
         public Renderer           Renderer       => spriteRenderer;
 
@@ -55,12 +50,8 @@ namespace Views
             BuffsView           buffsView,
             AddressablesManager addressablesManager)
         {
-            enemyLogicModel    = enemyLogic;
-            this.healthView    = healthView;
-            this.enemyMoveView = enemyMoveView;
-            this.buffsView     = buffsView;
+            this.enemyLogic = enemyLogic;
 
-            MyLogger.Info($"Addresabe manager: {addressablesManager}, enemy logic: {enemyLogic}, enemy model: {enemyLogic.Model}");
             _ = addressablesManager.LoadGenericAsset(
                 enemyLogic.Model.Image,
                 () => this.GetCancellationTokenOnDestroy().IsCancellationRequested,

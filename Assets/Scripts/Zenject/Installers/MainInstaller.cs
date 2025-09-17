@@ -77,11 +77,11 @@ namespace Zenject.Installers
 
         private void InstallMapObjects()
         {
-            Container.BindFactory<NodeEventFactory.Data, NodeEventLogic, NodeEventLogic.Factory>()
-                     .FromFactory<NodeEventFactory>();
-
-            Container.BindFactory<MapSettings, MapDefinition, MapDefinition.Factory>()
+            Container.BindFactory<MapSettings, int, MapDefinition, MapDefinition.Factory>()
                      .FromFactory<MapFactory>();
+
+            Container.BindFactory<MapSettings, NodeDefinition, NodeEventLogic, NodeEventLogic.Factory>()
+                     .FromFactory<NodeEventLogicFactory>();
         }
 
         private void InstallDependenciesForDeserializer()

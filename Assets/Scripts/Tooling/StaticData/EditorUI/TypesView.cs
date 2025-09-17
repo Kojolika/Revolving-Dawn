@@ -38,7 +38,7 @@ namespace Tooling.StaticData.EditorUI
 
             StaticDatabase.Instance.ValidationCompleted += ValidationCompleted;
 
-            validationErrors = StaticDatabase.Instance.validationErrors;
+            validationErrors = StaticDatabase.Instance.ValidationErrors;
 
             Add(ListView);
         }
@@ -50,7 +50,7 @@ namespace Tooling.StaticData.EditorUI
 
         private void ValidationCompleted()
         {
-            validationErrors = StaticDatabase.Instance.validationErrors;
+            validationErrors = StaticDatabase.Instance.ValidationErrors;
             ListView.RefreshItems();
         }
     }

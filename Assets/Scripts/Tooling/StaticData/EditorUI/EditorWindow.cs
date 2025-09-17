@@ -258,7 +258,7 @@ namespace Tooling.StaticData.EditorUI
                 {
                     var generalField = new GeneralField(
                         selectedType,
-                        new ValueProvider<Data.StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name),
+                        new ValueProvider<Data.StaticData>(() => editingObj, staticData => editingObj = staticData, editingObj?.Name, toolTip: null),
                         new GeneralField.Options { EnumerateStaticDataProperties = true });
 
                     generalField.RegisterValueChangedCallback(_ => hasUnsavedChanges = true);

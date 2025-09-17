@@ -5,8 +5,8 @@ namespace Models.Map
 {
     public class BossEventLogic : NodeEventLogic
     {
-        public BossEventLogic(NodeEvent model, MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
-            : base(model, mapSettings, node, maxNodeLevelForMap)
+        public BossEventLogic(MapSettings mapSettings, NodeDefinition node, int maxNodeLevelForMap)
+            : base(mapSettings, node)
         {
         }
 

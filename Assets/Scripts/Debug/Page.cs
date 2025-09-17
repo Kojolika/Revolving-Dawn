@@ -12,9 +12,34 @@ namespace Koj.Debug
     {
         private readonly List<LabelData> updateableLabels = new();
 
+        protected void AddButton(Func<string> labelGetter, Action action)
+        {
+            var buttonGo = new GameObject("Button");
+            buttonGo.transform.SetParent(transform);
+            var contentSizeFitter = buttonGo.AddComponent<ContentSizeFitter>();
+            contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            var labelGo = new GameObject("Label");
+            labelGo.transform.SetParent(buttonGo.transform);
+            var labelTMP = labelGo.AddComponent<TextMeshProUGUI>();
+            labelTMP.autoSizeTextContainer = true;
+            labelTMP.enableAutoSizing      = true;
+            labelTMP.text                  = $"{labelGetter?.Invoke()}";
+
+            var button = buttonGo.AddComponent<Button>();
+            button.onClick.AddListener(() =>
+            {
+                action?.Invoke();
+                labelTMP.text = $"{labelGetter?.Invoke()}";
+            });
+
+
+            updateableLabels.Add(new LabelData { Component = labelTMP, ValueGetter = labelGetter });
+        }
+
         protected void AddLabel(string label)
         {
-            var labelGo = new GameObject();
+            var labelGo = new GameObject("Label");
             labelGo.transform.SetParent(transform);
             var contentSizeFitter = labelGo.AddComponent<ContentSizeFitter>();
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
@@ -33,7 +58,7 @@ namespace Koj.Debug
         /// <param name="valueColor"> Color to display the value </param>
         protected void AddLabelWithValue(string label, Func<string> valueGetter, Color valueColor = default)
         {
-            var labelParent = new GameObject();
+            var labelParent = new GameObject("LabelParent");
             labelParent.transform.SetParent(transform);
             var horizontalLayoutGroup = labelParent.AddComponent<HorizontalLayoutGroup>();
             horizontalLayoutGroup.childAlignment    = TextAnchor.MiddleCenter;
@@ -42,7 +67,7 @@ namespace Koj.Debug
             var contentSizeFitter = labelParent.AddComponent<ContentSizeFitter>();
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            var labelGo = new GameObject();
+            var labelGo = new GameObject("Label");
             labelGo.transform.SetParent(labelParent.transform);
             contentSizeFitter               = labelGo.AddComponent<ContentSizeFitter>();
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
@@ -51,7 +76,7 @@ namespace Koj.Debug
             labelTMP.enableAutoSizing      = true;
             labelTMP.text                  = $"{label}:";
 
-            var valueGo = new GameObject();
+            var valueGo = new GameObject("Value");
             valueGo.transform.SetParent(labelParent.transform);
             contentSizeFitter               = valueGo.AddComponent<ContentSizeFitter>();
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;

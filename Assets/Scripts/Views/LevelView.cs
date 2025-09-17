@@ -30,9 +30,7 @@ namespace Views
             for (int i = 0; i < enemiesForLevel.Count; i++)
             {
                 var enemy        = enemiesForLevel[i];
-                MyLogger.Info($"Enemy for level: {enemy}, custom fac: {enemyViewFactory}");
                 var newEnemyView = enemyViewFactory.Create(enemy);
-                MyLogger.Info($"Enemyview: {newEnemyView}");
                 EnemyLookup.Add(enemy, newEnemyView);
                 newEnemyView.transform.SetParent(charactersParent);
                 newEnemyView.transform.position = enemySpawns[i].transform.position;
