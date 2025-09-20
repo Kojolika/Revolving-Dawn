@@ -61,30 +61,8 @@ namespace Models.Characters
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            MyLogger.Info("on deserialized, PlayerCharacter callback");
             stats = serializedStats.ToDictionary(tuple => tuple.stat, kvp => kvp.amount);
             buffs = serializedBuffs.ToDictionary(tuple => tuple.buff, kvp => kvp.amount);
-
-            /*int i = -1;
-            foreach (var stat in stats)
-            {
-                i++;
-                if (stat.Key?.Reference.IsReferenceValid() != true)
-                {
-                    MyLogger.Error("Unable to inject static data reference for stat!");
-                    continue;
-                }
-
-                MyLogger.Info($"Stat ref: {stat.Key.Reference.Type}:{stat.Key.Reference.InstanceName}");
-
-                StaticDatabase.Instance.QueueReferenceForInject(
-                    stat.Key.Reference.Type,
-                    stat.Key.Reference.InstanceName,
-                    stats,
-                    "key",
-                    StaticDatabase.MemberType.Field,
-                    i);
-            }*/
         }
 
         [OnSerialized]
