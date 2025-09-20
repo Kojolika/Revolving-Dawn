@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text;
 using Common.Util;
 using Models.Characters;
 using Models.Map;
@@ -58,6 +59,11 @@ namespace Serialization
 
         private static void RecursivelyResolveStaticDataReferences(object obj)
         {
+            if (obj == null)
+            {
+                return;
+            }
+
             var objType = obj.GetType();
             foreach (var field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
@@ -71,17 +77,19 @@ namespace Serialization
                         StaticDatabase.MemberType.Field
                     );
                 }
-                else if (typeof(IList).IsAssignableFrom(field.FieldType))
+                else if (typeof(IEnumerable).IsAssignableFrom(field.FieldType)
+                      && field.FieldType != typeof(string)) // Optimization; a static data reference will never be inside a string
                 {
-                    var fieldList = (IList)field.GetValue(obj);
-                    if (fieldList == null)
+                    var enumeration = (IEnumerable)field.GetValue(obj);
+                    if (enumeration == null)
                     {
                         continue;
                     }
 
-                    for (int i = 0; i < fieldList.Count; i++)
+                    int i = 0;
+                    foreach (var item in enumeration)
                     {
-                        if (IsStaticDataField(fieldList[i], out var staticDataRef))
+                        if (IsStaticDataField(item, out var staticDataRef))
                         {
                             StaticDatabase.Instance.QueueReferenceForInject(
                                 staticDataRef.Type,
@@ -94,17 +102,20 @@ namespace Serialization
                         }
                         else
                         {
-                            RecursivelyResolveStaticDataReferences(fieldList[i]);
+                            RecursivelyResolveStaticDataReferences(item);
                         }
+
+                        i++;
                     }
                 }
             }
 
             foreach (var prop in objType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                if (objType == typeof(EnemyLogic) && typeof(StaticData).IsAssignableFrom(prop.PropertyType))
+                // Prevents TargetParameterCountException, we don't care to check a indexed properties
+                if (prop.GetIndexParameters().Length > 0)
                 {
-                    // MyLogger.Info($"Prop name: {prop.Name}, is null? {prop.GetValue(obj) == null}");
+                    return;
                 }
 
                 if (IsStaticDataField(prop.GetValue(obj), out var staticDataReference))
@@ -117,17 +128,18 @@ namespace Serialization
                         StaticDatabase.MemberType.Property
                     );
                 }
-                else if (typeof(IList).IsAssignableFrom(prop.PropertyType))
+                else if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && prop.PropertyType != typeof(string))
                 {
-                    var propList = (IList)prop.GetValue(obj);
-                    if (propList == null)
+                    var enumeration = (IEnumerable)prop.GetValue(obj);
+                    if (enumeration == null)
                     {
                         continue;
                     }
 
-                    for (int i = 0; i < propList.Count; i++)
+                    int i = 0;
+                    foreach (var item in enumeration)
                     {
-                        if (IsStaticDataField(propList[i], out var staticDataRef))
+                        if (IsStaticDataField(item, out var staticDataRef))
                         {
                             StaticDatabase.Instance.QueueReferenceForInject(
                                 staticDataRef.Type,
@@ -140,8 +152,10 @@ namespace Serialization
                         }
                         else
                         {
-                            RecursivelyResolveStaticDataReferences(propList[i]);
+                            RecursivelyResolveStaticDataReferences(item);
                         }
+
+                        i++;
                     }
                 }
             }

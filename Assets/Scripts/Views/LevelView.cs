@@ -42,6 +42,11 @@ namespace Views
             PlayerLookup.Add(playerCharacter, playerView);
             playerView.transform.SetParent(charactersParent);
             playerView.transform.position = playerSpawn.position;
+
+            foreach (var (amount, stat) in playerCharacter.GetStats())
+            {
+                MyLogger.Info($"Player {playerCharacter.Name} has {amount} stat {stat.Name}");
+            }
         }
     }
 }

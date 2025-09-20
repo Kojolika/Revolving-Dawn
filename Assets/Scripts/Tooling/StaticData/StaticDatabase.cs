@@ -244,12 +244,21 @@ namespace Tooling.StaticData.Data
             {
                 staticDataField!.SetValue(objectWithReference, referencedInstance);
             }
-            else
+            else if (typeof(IList).IsAssignableFrom(staticDataField.FieldType))
             {
                 var list = (IList)(staticDataField!.GetValue(objectWithReference)
                                 ?? Activator.CreateInstance(staticDataField.FieldType));
                 list[arrayIndex] = referencedInstance;
                 staticDataField.SetValue(objectWithReference, list);
+            }
+            else if (typeof(IEnumerable).IsAssignableFrom(staticDataField.FieldType))
+            {
+                var enumerable = (IEnumerable)(staticDataField!.GetValue(objectWithReference)
+                                            ?? Activator.CreateInstance(staticDataField.FieldType));
+
+                var list = enumerable.Cast<object>().ToList();
+                list[arrayIndex] = referencedInstance;
+                staticDataField.SetValue(objectWithReference, (IEnumerable)list);
             }
         }
 
@@ -267,6 +276,12 @@ namespace Tooling.StaticData.Data
             {
                 MyLogger.Error($"Could not find property {propertyName} on Static Data of type {objType}");
 
+                return;
+            }
+
+            // No set method for this property, then return... since we can't set it
+            if (staticDataProperty.GetSetMethod() == null)
+            {
                 return;
             }
 
@@ -291,12 +306,21 @@ namespace Tooling.StaticData.Data
             {
                 staticDataProperty.SetValue(objectWithReference, referencedInstance);
             }
-            else
+            else if (typeof(IList).IsAssignableFrom(staticDataProperty.PropertyType))
             {
                 var list = (IList)(staticDataProperty.GetValue(objectWithReference)
                                 ?? Activator.CreateInstance(staticDataProperty.PropertyType));
                 list[arrayIndex] = referencedInstance;
                 staticDataProperty.SetValue(objectWithReference, list);
+            }
+            else if (typeof(IEnumerable).IsAssignableFrom(staticDataProperty.PropertyType))
+            {
+                var enumerable = (IEnumerable)(staticDataProperty!.GetValue(objectWithReference)
+                                            ?? Activator.CreateInstance(staticDataProperty.PropertyType));
+
+                var list = enumerable.Cast<object>().ToList();
+                list[arrayIndex] = referencedInstance;
+                staticDataProperty.SetValue(objectWithReference, (IEnumerable)list);
             }
         }
 

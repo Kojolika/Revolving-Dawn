@@ -17,7 +17,7 @@ namespace Systems.Managers
 {
     public class SaveManager : IManager
     {
-        private static string SavePath => $"{UnityEngine.Application.persistentDataPath}/saves";
+        private static string SavePath => $"{Application.persistentDataPath}/saves";
         private const  string SaveFormat = ".json";
         private static string RunsSavePath => $"{SavePath}/runs";
         private const  string PlayerDataFileName = "player_data";

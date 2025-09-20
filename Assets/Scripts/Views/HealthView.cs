@@ -2,6 +2,7 @@ using System.Globalization;
 using Fight;
 using Fight.Engine;
 using TMPro;
+using Tooling.Logging;
 using UnityEngine;
 using Zenject;
 
@@ -34,7 +35,7 @@ namespace Views
             bool hasHealth     = health.HasValue;
             bool hasMaxHealth  = maxHealth.HasValue;
             bool showHealthBar = hasHealth || hasMaxHealth;
-            
+
             viewParent.gameObject.SetActive(showHealthBar);
             if (!showHealthBar)
             {

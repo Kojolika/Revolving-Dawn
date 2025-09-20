@@ -1,4 +1,3 @@
-using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -51,24 +50,25 @@ namespace Tooling.StaticData.Data
 
         [Space(20)]
         [SerializeField] private AssetReferenceT<Material> enemyOutlineMaterial;
+
         [SerializeField] private AssetReferenceT<Material> friendlyOutlineMaterial;
         [SerializeField] private AssetReferenceT<Material> defaultSpriteMaterial;
 
-        public float CardHandRotationModifier => cardHandRotationModifier;
-        public float PositionOnScreenWhereTargetingStarts => positionOnScreenWhereTargetingStarts;
-        public int NumberOfArrowPiecesForTargetingArrow => numberOfArrowPiecesForTargetingArrow;
-        public float CardDrawMoveSpeed => cardDrawMoveSpeed;
-        public float CardDrawRotateSpeed => cardDrawRotateSpeed;
-        public PrimeTween.Ease CardDrawMoveFunction => cardDrawMoveFunction;
-        public float CardHoverMoveSpeedInHand => cardHoverMoveSpeedInHand;
-        public float CardHoverRotateSpeedInHand => cardHoverRotateSpeedInHand;
-        public PrimeTween.Ease CardHoverMoveFunction => cardHoverMoveFunction;
-        public float CardHoverScaleFactor => cardHoverScaleFactor;
-        public float ScaleAnimationDuration => scaleAnimationDuration;
-        public float CardPlayAnimationDuration => cardPlayAnimationDuration;
-        public PrimeTween.Ease CardPlayEaseFunction => cardPlayEaseFunction;
-        public AssetReferenceT<Material> EnemyOutlineMaterial => enemyOutlineMaterial;
-        public AssetReferenceT<Material> FriendlyOutlineMaterial => friendlyOutlineMaterial;
-        public AssetReferenceT<Material> DefaultSpriteMaterial => defaultSpriteMaterial;
+        public float                     CardHandRotationModifier             => cardHandRotationModifier;
+        public float                     PositionOnScreenWhereTargetingStarts => positionOnScreenWhereTargetingStarts;
+        public int                       NumberOfArrowPiecesForTargetingArrow => numberOfArrowPiecesForTargetingArrow;
+        public float                     CardDrawMoveSpeed                    => cardDrawMoveSpeed;
+        public float                     CardDrawRotateSpeed                  => cardDrawRotateSpeed;
+        public PrimeTween.Ease           CardDrawMoveFunction                 => cardDrawMoveFunction;
+        public float                     CardHoverMoveSpeedInHand             => cardHoverMoveSpeedInHand;
+        public float                     CardHoverRotateSpeedInHand           => cardHoverRotateSpeedInHand;
+        public PrimeTween.Ease           CardHoverMoveFunction                => cardHoverMoveFunction;
+        public float                     CardHoverScaleFactor                 => cardHoverScaleFactor;
+        public float                     ScaleAnimationDuration               => scaleAnimationDuration;
+        public float                     CardPlayAnimationDuration            => cardPlayAnimationDuration;
+        public PrimeTween.Ease           CardPlayEaseFunction                 => cardPlayEaseFunction;
+        public AssetReferenceT<Material> EnemyOutlineMaterial                 => enemyOutlineMaterial;
+        public AssetReferenceT<Material> FriendlyOutlineMaterial              => friendlyOutlineMaterial;
+        public AssetReferenceT<Material> DefaultSpriteMaterial                => defaultSpriteMaterial;
     }
 }

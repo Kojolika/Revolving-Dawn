@@ -60,13 +60,13 @@ namespace UI.Menus
                 newNode.gameObject.SetActive(true);
 
                 // we can position like this due to the anchoring of the nodeDisplayElementRoot
-                float   normalizedXPosition = Computations.Normalize(node.Coord.X, 0, MapFactory.XDimension, mapContainer.rect.xMin, mapContainer.rect.xMax);
-                float   normalizedYPosition = Computations.Normalize(node.Coord.Y, 0, MapFactory.YDimension, mapContainer.rect.yMin, mapContainer.rect.yMax);
+                float   normalizedXPosition = Computations.Normalize(node.Coordinate.X, 0, MapFactory.XDimension, mapContainer.rect.xMin, mapContainer.rect.xMax);
+                float   normalizedYPosition = Computations.Normalize(node.Coordinate.Y, 0, MapFactory.YDimension, mapContainer.rect.yMin, mapContainer.rect.yMax);
                 Vector2 nodePosition        = new Vector2(normalizedXPosition, normalizedYPosition);
 
                 (newNode.transform as RectTransform)!.anchoredPosition = nodePosition;
 
-                nodeElementsLookup.Add(node.Coord, newNode);
+                nodeElementsLookup.Add(node.Coordinate, newNode);
             }
 
             foreach (var (coordinate, nodeDisplayElement) in nodeElementsLookup)

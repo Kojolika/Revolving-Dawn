@@ -53,7 +53,7 @@ namespace Models.Map
                     var node = new NodeDefinition { Level = y };
                     var coordinate = new Coordinate(x: XDimension / 2,
                                                     y: 0);
-                    node.Coord = coordinate;
+                    node.Coordinate = coordinate;
                     firstNode  = node;
                     nodes.Add(node);
                     nodeLookup.Add(coordinate, node);
@@ -63,7 +63,7 @@ namespace Models.Map
                     var node = new NodeDefinition { Level = y };
                     var coordinate = new Coordinate(x: XDimension / 2,
                                                     y: YDimension);
-                    node.Coord = coordinate;
+                    node.Coordinate = coordinate;
                     lastNode   = node;
                     nodes.Add(node);
                     nodeLookup.Add(coordinate, node);
@@ -79,7 +79,7 @@ namespace Models.Map
                             x: randomNumGenerator.Next(x * nodeArea, (x + 1) * nodeArea),
                             y: randomNumGenerator.Next(y * levelArea, (y + 1) * levelArea));
 
-                        node.Coord = coordinate;
+                        node.Coordinate = coordinate;
                         nodes.Add(node);
                         nodeLookup.Add(coordinate, node);
                     }
@@ -105,7 +105,7 @@ namespace Models.Map
                 {
                     var closestNode = nodes.Where(n => !visitedEdges.Contains((node, n)) && n.Level == node.Level + 1)
                                             // order by nearest nodes
-                                           .OrderBy(n => Coordinate.Distance(n.Coord, node.Coord) + n.NumberOfEdges)
+                                           .OrderBy(n => Coordinate.Distance(n.Coordinate, node.Coordinate) + n.NumberOfEdges)
                                            .FirstOrDefault();
 
                     // No more paths available... return early
@@ -114,7 +114,7 @@ namespace Models.Map
                         break;
                     }
 
-                    var closestNodeCoordinates = closestNode.Coord;
+                    var closestNodeCoordinates = closestNode.Coordinate;
 
                     if (node.NextNodes.IsNullOrEmpty())
                     {
@@ -128,11 +128,11 @@ namespace Models.Map
                     var connectedNode = nodeLookup[closestNodeCoordinates];
                     if (connectedNode.PreviousNodes.IsNullOrEmpty())
                     {
-                        connectedNode.PreviousNodes = new List<Coordinate>() { node.Coord };
+                        connectedNode.PreviousNodes = new List<Coordinate>() { node.Coordinate };
                     }
                     else
                     {
-                        connectedNode.PreviousNodes.Add(node.Coord);
+                        connectedNode.PreviousNodes.Add(node.Coordinate);
                     }
 
                     visitedEdges.Add((node, closestNode));

@@ -7,7 +7,7 @@ namespace Tooling.StaticData.Data
         public List<StatValue> InitialStatValues;
         public List<Mana>      AllManaTypesAvailable;
     }
-
+    
     public class StatValue
     {
         public Stat  Stat;

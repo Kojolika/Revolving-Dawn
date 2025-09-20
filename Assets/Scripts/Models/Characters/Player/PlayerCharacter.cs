@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Common.Util;
 using Fight.Engine;
+using JetBrains.Annotations;
 using Models.Cards;
 using Models.Fight;
 using Newtonsoft.Json;
+using Tooling.Logging;
 using Tooling.StaticData.Data;
 
 namespace Models.Characters
@@ -15,11 +18,6 @@ namespace Models.Characters
         public PlayerClass Class { get; private set; }
 
         private readonly CardLogic.Factory cardFactory;
-
-        [JsonConstructor]
-        private PlayerCharacter()
-        {
-        }
 
         /// <summary>
         /// Used to create characters for a new run.
@@ -42,17 +40,75 @@ namespace Models.Characters
 
             foreach (var initialStat in characterSettings.InitialStatValues.OrEmptyIfNull())
             {
+                MyLogger.Info($"Setting player character initial stat {initialStat.Stat.Name} to {initialStat.Value}");
                 SetStat(initialStat.Stat, initialStat.Value);
             }
         }
 
+        #region Serialization
+
+        [JsonConstructor]
+        private PlayerCharacter()
+        {
+        }
+
+        [JsonProperty]
+        private List<(Stat stat, float amount)> serializedStats;
+
+        [JsonProperty]
+        private List<(Buff buff, int amount)> serializedBuffs;
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            MyLogger.Info("on deserialized, PlayerCharacter callback");
+            stats = serializedStats.ToDictionary(tuple => tuple.stat, kvp => kvp.amount);
+            buffs = serializedBuffs.ToDictionary(tuple => tuple.buff, kvp => kvp.amount);
+
+            /*int i = -1;
+            foreach (var stat in stats)
+            {
+                i++;
+                if (stat.Key?.Reference.IsReferenceValid() != true)
+                {
+                    MyLogger.Error("Unable to inject static data reference for stat!");
+                    continue;
+                }
+
+                MyLogger.Info($"Stat ref: {stat.Key.Reference.Type}:{stat.Key.Reference.InstanceName}");
+
+                StaticDatabase.Instance.QueueReferenceForInject(
+                    stat.Key.Reference.Type,
+                    stat.Key.Reference.InstanceName,
+                    stats,
+                    "key",
+                    StaticDatabase.MemberType.Field,
+                    i);
+            }*/
+        }
+
+        [OnSerialized]
+        private void OnSerialized(StreamingContext context)
+        {
+            serializedStats = stats.Select(kvp => (kvp.Key, kvp.Value)).ToList();
+            serializedBuffs = buffs.Select(kvp => (kvp.Key, kvp.Value)).ToList();
+        }
+
+        #endregion
+
         #region ICombatParticipant
 
-        public string   Name { get; }
+        [JsonProperty]
+        public string Name { get; }
+
+        [JsonProperty]
         public TeamType Team { get; }
 
+        [JsonIgnore]
         private Dictionary<Stat, float> stats = new();
-        private Dictionary<Buff, int>   buffs = new();
+
+        [JsonIgnore]
+        private Dictionary<Buff, int> buffs = new();
 
         public float? GetStat(Stat stat)
         {

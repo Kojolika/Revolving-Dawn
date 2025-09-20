@@ -2,8 +2,9 @@ using System;
 using System.Reflection;
 using Newtonsoft.Json;
 using Tooling.Logging;
+using Tooling.StaticData.Data;
 
-namespace Tooling.StaticData.Data
+namespace Serialization
 {
     /// <summary>
     /// The purpose is to only serialize each static data once and then reference that static data
@@ -29,7 +30,7 @@ namespace Tooling.StaticData.Data
             {
                 writer.WriteStartObject();
 
-                var fields = EditorUI.Utils.GetFields(staticDataType);
+                var fields = Tooling.StaticData.EditorUI.Utils.GetFields(staticDataType);
                 foreach (var field in fields)
                 {
                     // we custom serialize references below

@@ -32,8 +32,8 @@ namespace UI.DisplayElements
 
         private void Start()
         {
-            button.interactable = data.CurrentPlayerNode.NextNodes?.Contains(data.Definition.Coord) ?? false;
-            bool isPlayerHere = data.Definition.Coord == data.CurrentPlayerNode.Coord;
+            button.interactable = data.CurrentPlayerNode.NextNodes?.Contains(data.Definition.Coordinate) ?? false;
+            bool isPlayerHere = data.Definition.Coordinate == data.CurrentPlayerNode.Coordinate;
             label.SetText(isPlayerHere ? "H" : data.Definition.Level.ToString());
             playerIndicator.gameObject.SetActive(isPlayerHere);
 
