@@ -8,9 +8,9 @@ public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInsta
     public override void InstallBindings()
     {
         Container.BindInstances(
-            StaticDatabase.Instance.GetStaticDataInstance<MapSettings>("default"),
-            StaticDatabase.Instance.GetStaticDataInstance<DowngradeCardSettings>("default"),
-            StaticDatabase.Instance.GetStaticDataInstance<CharacterSettings>("default")
+            StaticDatabase.Instance.GetInstance<MapSettings>("default"),
+            StaticDatabase.Instance.GetInstance<DowngradeCardSettings>("default"),
+            StaticDatabase.Instance.GetInstance<CharacterSettings>("default")
         );
     }
 }

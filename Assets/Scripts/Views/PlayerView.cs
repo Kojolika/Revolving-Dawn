@@ -2,6 +2,8 @@ using Cysharp.Threading.Tasks;
 using Fight.Engine;
 using Models.Characters;
 using Systems.Managers;
+using Tooling.Logging;
+using Tooling.StaticData.Data;
 using UnityEngine;
 using Zenject;
 
@@ -60,15 +62,6 @@ namespace Views
                 }
             );
         }
-
-        #region IChangeMaterial
-
-        public void SetMaterial(Material material)
-        {
-            spriteRenderer.material = material;
-        }
-
-        #endregion
 
         public class Factory : PlaceholderFactory<PlayerCharacter, PlayerView>
         {

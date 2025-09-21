@@ -17,7 +17,7 @@ namespace Fight
 
         public static IBattleEvent DealDamage(ICombatParticipant source, ICombatParticipant target, float damage)
         {
-            var healthStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>(HealthKey);
+            var healthStat = StaticDatabase.Instance.GetInstance<Stat>(HealthKey);
             return new StatLostEvent(target, source, healthStat, damage);
         }
 
@@ -191,13 +191,13 @@ namespace Fight
 
         public static void SetHealth(ICombatParticipant target, float health)
         {
-            var healthStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>(HealthKey);
+            var healthStat = StaticDatabase.Instance.GetInstance<Stat>(HealthKey);
             target.SetStat(healthStat, health);
         }
 
         public static float? GetHealth(ICombatParticipant target)
         {
-            var healthStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>(HealthKey);
+            var healthStat = StaticDatabase.Instance.GetInstance<Stat>(HealthKey);
             return target.GetStat(healthStat);
         }
 
@@ -215,7 +215,7 @@ namespace Fight
 
         public static Stat GetMaxStat(string statKey)
         {
-            return StaticDatabase.Instance.GetStaticDataInstance<Stat>($"Max{statKey}");
+            return StaticDatabase.Instance.GetInstance<Stat>($"Max{statKey}");
         }
     }
 }

@@ -79,7 +79,7 @@ namespace Tooling.StaticData.EditorUI
                 {
                     // Item is added as null, create a new instance of that type and set the name to a unique name
                     instances[index] = Activator.CreateInstance(selectedType) as Data.StaticData;
-                    string newInstanceName = StaticDatabase.Instance.GetStaticDataInstance(selectedType, $"{selectedType.Name}_{index}") == null
+                    string newInstanceName = StaticDatabase.Instance.GetInstance(selectedType, $"{selectedType.Name}_{index}") == null
                         ? $"{selectedType.Name}_{index}"
                         : $"{selectedType.Name}_{index}(1)";
 

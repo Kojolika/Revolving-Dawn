@@ -19,7 +19,7 @@ namespace Models.Buffs
                 return currentStackSize;
             }
 
-            var drawAmountStat = StaticDatabase.Instance.GetStaticDataInstance<Stat>(DrawAmountKey);
+            var drawAmountStat = StaticDatabase.Instance.GetInstance<Stat>(DrawAmountKey);
             if (cardDeckParticipant.GetStat(drawAmountStat) is not { } drawAmount)
             {
                 return currentStackSize;

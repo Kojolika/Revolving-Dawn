@@ -3,11 +3,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Common.Util;
 using Fight.Engine;
-using JetBrains.Annotations;
 using Models.Cards;
 using Models.Fight;
 using Newtonsoft.Json;
-using Tooling.Logging;
 using Tooling.StaticData.Data;
 
 namespace Models.Characters
@@ -40,7 +38,6 @@ namespace Models.Characters
 
             foreach (var initialStat in characterSettings.InitialStatValues.OrEmptyIfNull())
             {
-                MyLogger.Info($"Setting player character initial stat {initialStat.Stat.Name} to {initialStat.Value}");
                 SetStat(initialStat.Stat, initialStat.Value);
             }
         }
@@ -77,10 +74,10 @@ namespace Models.Characters
         #region ICombatParticipant
 
         [JsonProperty]
-        public string Name { get; }
+        public string Name { get; private set; }
 
         [JsonProperty]
-        public TeamType Team { get; }
+        public TeamType Team { get; private set; }
 
         [JsonIgnore]
         private Dictionary<Stat, float> stats = new();

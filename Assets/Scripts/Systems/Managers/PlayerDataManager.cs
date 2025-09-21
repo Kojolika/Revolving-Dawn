@@ -94,7 +94,7 @@ namespace Systems.Managers
         /// </summary>
         private static void AddInitialBuffs(PlayerCharacter playerCharacter)
         {
-            var drawHandSizeBuff = StaticDatabase.Instance.GetStaticDataInstance<Buff>("DrawHandSize");
+            var drawHandSizeBuff = StaticDatabase.Instance.GetInstance<Buff>("DrawHandSize");
             playerCharacter.SetBuff(drawHandSizeBuff, 1);
         }
 

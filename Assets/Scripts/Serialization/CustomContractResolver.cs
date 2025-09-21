@@ -112,7 +112,7 @@ namespace Serialization
 
             foreach (var prop in objType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                // Prevents TargetParameterCountException, we don't care to check a indexed properties
+                // Prevents TargetParameterCountException, we don't care to check indexed properties
                 if (prop.GetIndexParameters().Length > 0)
                 {
                     return;

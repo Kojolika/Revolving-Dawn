@@ -39,7 +39,8 @@ namespace Tooling.StaticData.Data
 
         private readonly Dictionary<Type, Dictionary<string, StaticData>> staticDataDictionary = new();
 
-        private bool              hasStaticDataInstanceBeenBuilt;
+        public bool HasStaticDataInstanceBeenBuilt { get; private set; }
+
         public event Action       StaticDataInstancesBuilt;
         public event Action<Type> InstancesUpdated;
 
@@ -86,7 +87,7 @@ namespace Tooling.StaticData.Data
 
         public void BuildDictionaryFromJson()
         {
-            hasStaticDataInstanceBeenBuilt = false;
+            HasStaticDataInstanceBeenBuilt = false;
             Clear();
 
             var staticDataTypes = typeof(StaticData).Assembly.GetTypes()
@@ -132,7 +133,7 @@ namespace Tooling.StaticData.Data
                 staticDataDictionary.Add(type, instanceDictionary);
             }
 
-            hasStaticDataInstanceBeenBuilt = true;
+            HasStaticDataInstanceBeenBuilt = true;
             InjectReferences();
         }
 
@@ -148,7 +149,7 @@ namespace Tooling.StaticData.Data
             MemberType memberType,
             int        arrayIndex = -1)
         {
-            if (hasStaticDataInstanceBeenBuilt)
+            if (HasStaticDataInstanceBeenBuilt)
             {
                 InjectReference(
                     referenceType,
@@ -232,7 +233,7 @@ namespace Tooling.StaticData.Data
                 return;
             }
 
-            StaticData referencedInstance = GetStaticDataInstance(referenceType, instanceName);
+            StaticData referencedInstance = GetInstance(referenceType, instanceName);
             if (referencedInstance == null)
             {
                 MyLogger.Error($"Trying to find {referenceType} with name {instanceName}," +
@@ -275,12 +276,11 @@ namespace Tooling.StaticData.Data
             if (staticDataProperty == null)
             {
                 MyLogger.Error($"Could not find property {propertyName} on Static Data of type {objType}");
-
                 return;
             }
 
             // No set method for this property, then return... since we can't set it
-            if (staticDataProperty.GetSetMethod() == null)
+            if (staticDataProperty.GetSetMethod(true) == null)
             {
                 return;
             }
@@ -294,7 +294,7 @@ namespace Tooling.StaticData.Data
             }
 
 
-            StaticData referencedInstance = GetStaticDataInstance(referenceType, instanceName);
+            StaticData referencedInstance = GetInstance(referenceType, instanceName);
             if (referencedInstance == null)
             {
                 MyLogger.Error($"Trying to find {referenceType} with name {instanceName}," +
@@ -414,7 +414,7 @@ namespace Tooling.StaticData.Data
             InstancesUpdated?.Invoke(type);
         }
 
-        public StaticData GetStaticDataInstance(Type type, string instanceName)
+        public StaticData GetInstance(Type type, string instanceName)
         {
             if (staticDataDictionary.TryGetValue(type, out var instanceDictionary)
              && instanceDictionary.TryGetValue(instanceName, out var dataInstance))
@@ -425,7 +425,7 @@ namespace Tooling.StaticData.Data
             return null;
         }
 
-        public T GetStaticDataInstance<T>(string instanceName) where T : StaticData
+        public T GetInstance<T>(string instanceName) where T : StaticData
         {
             if (staticDataDictionary.TryGetValue(typeof(T), out var instanceDictionary)
              && instanceDictionary.TryGetValue(instanceName, out var dataInstance))
