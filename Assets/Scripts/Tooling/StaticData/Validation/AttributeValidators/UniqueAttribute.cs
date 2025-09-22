@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Tooling.StaticData.Data.Validation
+namespace Tooling.StaticData.Validation
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class UniqueAttribute : Attribute, IValidator
     {
         public List<string> errorMessages { get; private set; }
 
-        public bool Validate(System.Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(System.Type type, Data.StaticData obj, FieldInfo fieldInfo, List<Data.StaticData> allObjects)
         {
             var fieldDict = new Dictionary<System.Type, HashSet<object>>();
             var thisFieldValue = fieldInfo.GetValue(obj);

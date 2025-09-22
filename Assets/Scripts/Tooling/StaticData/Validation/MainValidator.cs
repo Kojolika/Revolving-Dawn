@@ -5,7 +5,7 @@ using Tooling.Logging;
 using UnityEditor;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.Data.Validation
+namespace Tooling.StaticData.Validation
 {
     public class MainValidator
     {
@@ -16,7 +16,7 @@ namespace Tooling.StaticData.Data.Validation
             this.validators = validators;
         }
 
-        public Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects)
+        public Dictionary<Type, Dictionary<Data.StaticData, List<string>>> ValidateObjects(List<Data.StaticData> objects)
         {
             return ValidateObjects(objects, validators);
         }
@@ -27,9 +27,9 @@ namespace Tooling.StaticData.Data.Validation
         /// <param name="objects">List of objects to validate</param>
         /// <param name="validators">List of custom validators</param>
         /// <returns>A dictionary mapping the type to the list of errors for that type.</returns>
-        private static Dictionary<Type, Dictionary<StaticData, List<string>>> ValidateObjects(List<StaticData> objects, List<IValidator> validators)
+        private static Dictionary<Type, Dictionary<Data.StaticData, List<string>>> ValidateObjects(List<Data.StaticData> objects, List<IValidator> validators)
         {
-            var errorDict   = new Dictionary<Type, Dictionary<StaticData, List<string>>>();
+            var errorDict   = new Dictionary<Type, Dictionary<Data.StaticData, List<string>>>();
             var objectCount = objects.Count;
             for (int i = 0; i < objectCount; i++)
             {
@@ -49,7 +49,7 @@ namespace Tooling.StaticData.Data.Validation
                 }
                 else
                 {
-                    errorDict.Add(objType, new Dictionary<StaticData, List<string>>());
+                    errorDict.Add(objType, new Dictionary<Data.StaticData, List<string>>());
                     errorDict[objType].Add(obj, errors);
                 }
             }
@@ -60,11 +60,11 @@ namespace Tooling.StaticData.Data.Validation
         }
 
         private static bool IsValid(
-            Type             type,
-            StaticData       obj,
-            List<StaticData> objects,
-            out List<string> errorMessages,
-            List<IValidator> validators = null)
+            Type                  type,
+            Data.StaticData       obj,
+            List<Data.StaticData> objects,
+            out List<string>      errorMessages,
+            List<IValidator>      validators = null)
         {
             var fieldAttributesTuple = EditorUI.Utils.GetFields(type)
                                                .Select(field => (field, attributes: field.GetCustomAttributes(true)

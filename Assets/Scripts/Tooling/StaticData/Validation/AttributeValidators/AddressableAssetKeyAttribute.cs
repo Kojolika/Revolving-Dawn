@@ -5,13 +5,13 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Utils.Extensions;
 
-namespace Tooling.StaticData.Data.Validation
+namespace Tooling.StaticData.Validation
 {
     public class AddressableAssetKeyAttribute : Attribute, IValidator
     {
         public List<string> errorMessages { get; } = new();
 
-        public bool Validate(System.Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(System.Type type, Data.StaticData obj, FieldInfo fieldInfo, List<Data.StaticData> allObjects)
         {
             var fieldValue = fieldInfo.GetValue(obj);
             switch (fieldValue)

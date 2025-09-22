@@ -29,7 +29,12 @@ namespace Views
 
             for (int i = 0; i < enemiesForLevel.Count; i++)
             {
-                var enemy        = enemiesForLevel[i];
+                var enemy = enemiesForLevel[i];
+                foreach (var (amount, stat) in enemy.GetStats())
+                {
+                    MyLogger.Info($"Enemy {enemy.Name} has {amount} of {stat.Name}");
+                }
+
                 var newEnemyView = enemyViewFactory.Create(enemy);
                 EnemyLookup.Add(enemy, newEnemyView);
                 newEnemyView.transform.SetParent(charactersParent);

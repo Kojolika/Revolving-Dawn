@@ -1,5 +1,3 @@
-using Tooling.StaticData.Data;
-
 namespace Tooling.StaticData.Data
 {
     public static class Extensions

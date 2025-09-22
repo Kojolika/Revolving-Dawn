@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Tooling.StaticData.Data.Validation
+namespace Tooling.StaticData.Validation
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class ListSizeValidatorAttribute : Attribute, IValidator
@@ -24,7 +24,7 @@ namespace Tooling.StaticData.Data.Validation
                 : maxCount;
         }
 
-        public bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(Type type, Data.StaticData obj, FieldInfo fieldInfo, List<Data.StaticData> allObjects)
         {
             var list     = fieldInfo.GetValue(obj) as IList;
             int listSize = list?.Count ?? 0;

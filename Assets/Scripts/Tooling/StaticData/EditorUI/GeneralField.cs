@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Tooling.Logging;
 using Tooling.StaticData.Data;
-using Tooling.StaticData.Data.Validation;
+using Tooling.StaticData.Validation;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.AddressableAssets;

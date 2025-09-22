@@ -9,7 +9,7 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Serialization;
 using Tooling.Logging;
-using Tooling.StaticData.Data.Validation;
+using Tooling.StaticData.Validation;
 using UnityEditor;
 using UnityEngine;
 using Utils.Extensions;

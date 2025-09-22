@@ -1,6 +1,6 @@
 using System;
 using Models.Map;
-using Tooling.StaticData.Data.Validation;
+using Tooling.StaticData.Validation;
 using UnityEngine.AddressableAssets;
 
 namespace Tooling.StaticData.Data

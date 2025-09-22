@@ -1,6 +1,6 @@
 using System;
 using Newtonsoft.Json;
-using Tooling.StaticData.Data.Validation;
+using Tooling.StaticData.Validation;
 
 namespace Tooling.StaticData.Data
 {

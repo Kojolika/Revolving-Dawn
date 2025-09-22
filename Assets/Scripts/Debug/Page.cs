@@ -10,12 +10,14 @@ namespace Koj.Debug
 {
     public abstract class Page : MonoBehaviour
     {
+        [SerializeField] private RectTransform content;
+
         private readonly List<LabelData> updateableLabels = new();
 
         protected void AddButton(Func<string> labelGetter, Action action)
         {
             var buttonGo = new GameObject("Button");
-            buttonGo.transform.SetParent(transform);
+            buttonGo.transform.SetParent(content);
             var contentSizeFitter = buttonGo.AddComponent<ContentSizeFitter>();
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
@@ -40,7 +42,7 @@ namespace Koj.Debug
         protected void AddLabel(string label)
         {
             var labelGo = new GameObject("Label");
-            labelGo.transform.SetParent(transform);
+            labelGo.transform.SetParent(content);
             var contentSizeFitter = labelGo.AddComponent<ContentSizeFitter>();
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
             var labelTMP = labelGo.AddComponent<TextMeshProUGUI>();
@@ -59,9 +61,9 @@ namespace Koj.Debug
         protected void AddLabelWithValue(string label, Func<string> valueGetter, Color valueColor = default)
         {
             var labelParent = new GameObject("LabelParent");
-            labelParent.transform.SetParent(transform);
+            labelParent.transform.SetParent(content);
             var horizontalLayoutGroup = labelParent.AddComponent<HorizontalLayoutGroup>();
-            horizontalLayoutGroup.childAlignment    = TextAnchor.MiddleCenter;
+            horizontalLayoutGroup.childAlignment    = TextAnchor.MiddleLeft;
             horizontalLayoutGroup.childControlWidth = true;
             horizontalLayoutGroup.spacing           = 20f;
             var contentSizeFitter = labelParent.AddComponent<ContentSizeFitter>();

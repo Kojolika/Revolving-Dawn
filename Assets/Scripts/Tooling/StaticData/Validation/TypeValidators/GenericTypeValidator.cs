@@ -1,22 +1,21 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Tooling.Logging;
 
-namespace Tooling.StaticData.Data.Validation
+
+namespace Tooling.StaticData.Validation
 {
-    public abstract class TypeValidator<T> : IValidator where T : class
+    public abstract class GenericTypeValidator<T> : IValidator where T : class
     {
         public abstract List<string> errorMessages { get; }
 
-        public bool Validate(System.Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(System.Type type, Data.StaticData obj, FieldInfo fieldInfo, List<Data.StaticData> allObjects)
 
         {
             var fieldValue = fieldInfo.GetValue(obj) as T;
             return Validate(fieldValue, allObjects);
         }
 
-        protected abstract bool Validate(T value, List<StaticData> allObjects);
+        protected abstract bool Validate(T value, List<Data.StaticData> allObjects);
 
         public bool CanValidate(System.Type type)
         {

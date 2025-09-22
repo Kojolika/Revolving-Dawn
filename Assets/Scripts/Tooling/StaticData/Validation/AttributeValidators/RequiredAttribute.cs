@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Tooling.StaticData.Data.Validation
+namespace Tooling.StaticData.Validation
 {
     /// <summary>
     /// NOTE: Only works on static data fields, NOT fields of fields on static data
@@ -24,7 +24,7 @@ namespace Tooling.StaticData.Data.Validation
             this.allowDefaultValues = allowDefaultValues;
         }
 
-        public bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(Type type, Data.StaticData obj, FieldInfo fieldInfo, List<Data.StaticData> allObjects)
         {
             if (fieldInfo.FieldType.IsClass && fieldInfo.GetValue(obj) == null)
             {

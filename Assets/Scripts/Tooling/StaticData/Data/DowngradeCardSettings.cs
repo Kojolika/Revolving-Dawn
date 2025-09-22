@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Tooling.StaticData.Data.Validation;
+using Tooling.StaticData.Validation;
 using UnityEngine;
 
 namespace Tooling.StaticData.Data

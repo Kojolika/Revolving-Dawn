@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Tooling.StaticData.Data.Validation
+namespace Tooling.StaticData.Validation
 {
     /// <summary>
     /// Add this to a field to ensure that it's condition is valid
@@ -19,7 +19,7 @@ namespace Tooling.StaticData.Data.Validation
             TargetType = targetType;
         }
 
-        public bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects)
+        public bool Validate(Type type, Data.StaticData obj, FieldInfo fieldInfo, List<Data.StaticData> allObjects)
         {
             var typeToCheck = fieldInfo.GetValue(obj) as Type;
             if (typeToCheck == null)

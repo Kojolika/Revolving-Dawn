@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Models.Cards;
-using Tooling.StaticData.Data.Validation;
+using Tooling.StaticData.Validation;
 using UnityEngine.AddressableAssets;
 
 namespace Tooling.StaticData.Data

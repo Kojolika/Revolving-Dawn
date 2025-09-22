@@ -4,13 +4,13 @@ using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine.AddressableAssets;
 
-namespace Tooling.StaticData.Data.Validation
+namespace Tooling.StaticData.Validation
 {
-    public class AssetReferenceValidator : TypeValidator<AssetReference>
+    public class AssetReferenceValidator : GenericTypeValidator<AssetReference>
     {
         public override List<string> errorMessages { get; } = new();
 
-        protected override bool Validate(AssetReference value, List<StaticData> allObjects)
+        protected override bool Validate(AssetReference value, List<Data.StaticData> allObjects)
         {
             errorMessages.Clear();
 

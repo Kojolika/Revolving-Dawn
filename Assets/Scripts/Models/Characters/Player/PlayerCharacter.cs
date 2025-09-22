@@ -15,8 +15,6 @@ namespace Models.Characters
         [JsonProperty]
         public PlayerClass Class { get; private set; }
 
-        private readonly CardLogic.Factory cardFactory;
-
         /// <summary>
         /// Used to create characters for a new run.
         /// </summary>
@@ -25,10 +23,9 @@ namespace Models.Characters
             CharacterSettings characterSettings,
             CardLogic.Factory cardFactory)
         {
-            Class            = playerClass;
-            Name             = playerClass.Name;
-            Team             = TeamType.Player;
-            this.cardFactory = cardFactory;
+            Class = playerClass;
+            Name  = playerClass.Name;
+            Team  = TeamType.Player;
 
             Deck = new();
             foreach (var card in playerClass.StartingDeck)
@@ -62,7 +59,7 @@ namespace Models.Characters
             buffs = serializedBuffs.ToDictionary(tuple => tuple.buff, kvp => kvp.amount);
         }
 
-        [OnSerialized]
+        [OnSerializing]
         private void OnSerialized(StreamingContext context)
         {
             serializedStats = stats.Select(kvp => (kvp.Key, kvp.Value)).ToList();

@@ -20,10 +20,9 @@ namespace Views
         [Inject]
         private void Construct(ICombatParticipant combatParticipant, BattleEngine battleEngine)
         {
-            // TODO: Health stat
-            //this.health = combatParticipant.Health;
             this.battleEngine = battleEngine;
-
+            
+            MyLogger.Info($"combat participant for healthview: {combatParticipant?.Name}");
             UpdateHealthDisplay(FightUtils.GetHealth(combatParticipant), FightUtils.GetMaxHealth(combatParticipant));
         }
 

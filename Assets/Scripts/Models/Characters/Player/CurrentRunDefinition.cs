@@ -3,7 +3,6 @@ using Models.Fight;
 
 namespace Models.Characters.Player
 {
-    [System.Serializable]
     public class RunDefinition
     {
         public string          Name;

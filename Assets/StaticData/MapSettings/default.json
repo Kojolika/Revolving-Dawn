@@ -77,6 +77,6 @@
   ],
   "EliteSpawnSettings": null,
   "BossSpawnSettings": null,
-  "EnemyDifficultyMultiplier": 1.0,
-  "EnemyHealthMultiplier": 1.0
+  "EnemyDifficultyMultiplier": 5.0,
+  "EnemyHealthMultiplier": 5.0
 }

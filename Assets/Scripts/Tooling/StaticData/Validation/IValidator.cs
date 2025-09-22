@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Tooling.StaticData.Data.Validation
+namespace Tooling.StaticData.Validation
 {
     public interface IValidator
     {
@@ -19,7 +19,7 @@ namespace Tooling.StaticData.Data.Validation
         /// <param name="fieldInfo">The FieldInfo for this field</param>
         /// <param name="allObjects">All static data objects including <see cref="obj"/></param>
         /// <returns>True if valid.</returns>
-        bool Validate(Type type, StaticData obj, FieldInfo fieldInfo, List<StaticData> allObjects);
+        bool Validate(Type type, Data.StaticData obj, FieldInfo fieldInfo, List<Data.StaticData> allObjects);
 
         bool CanValidate(Type type);
     }

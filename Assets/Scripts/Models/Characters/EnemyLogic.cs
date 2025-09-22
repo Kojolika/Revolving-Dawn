@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using Controllers.Strategies;
 using Fight.Engine;
 using Models.Fight;
@@ -10,10 +12,10 @@ namespace Models.Characters
     public class EnemyLogic : IMoveParticipant
     {
         [JsonProperty]
-        public string Name { get; }
+        public string Name { get; private set; }
 
         [JsonProperty]
-        public TeamType Team { get; }
+        public TeamType Team { get; private set; }
 
         [JsonProperty]
         public Enemy Model { get; private set; }
@@ -23,11 +25,6 @@ namespace Models.Characters
 
         [JsonProperty]
         public ISelectMoveStrategy SelectMoveStrategy { get; private set; }
-
-        [JsonConstructor]
-        private EnemyLogic()
-        {
-        }
 
         public EnemyLogic(Enemy enemy, ISelectMoveStrategy selectMoveStrategy)
         {
@@ -42,8 +39,40 @@ namespace Models.Characters
             NextMove = SelectMoveStrategy.SelectMove(Model);
         }
 
-        private readonly Dictionary<Stat, float> stats = new();
-        private readonly Dictionary<Buff, int>   buffs = new();
+        #region Serialization
+
+        [JsonConstructor]
+        private EnemyLogic()
+        {
+        }
+
+        [JsonProperty]
+        private List<(Stat stat, float amount)> serializedStats;
+
+        [JsonProperty]
+        private List<(Buff buff, int amount)> serializedBuffs;
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            stats = serializedStats.ToDictionary(tuple => tuple.stat, kvp => kvp.amount);
+            buffs = serializedBuffs.ToDictionary(tuple => tuple.buff, kvp => kvp.amount);
+        }
+
+        [OnSerializing]
+        private void OnSerialized(StreamingContext context)
+        {
+            serializedStats = stats.Select(kvp => (kvp.Key, kvp.Value)).ToList();
+            serializedBuffs = buffs.Select(kvp => (kvp.Key, kvp.Value)).ToList();
+        }
+
+        #endregion
+
+        [JsonIgnore]
+        private Dictionary<Stat, float> stats = new();
+
+        [JsonIgnore]
+        private Dictionary<Buff, int> buffs = new();
 
         public float? GetStat(Stat stat)
         {
