@@ -7,7 +7,7 @@
   "OnBefore": null,
   "OnAfter": [
     {
-      "$type": "Models.Buffs.DrawHandSizeProperty, Assembly-CSharp"
+      "$type": "Models.Buffs.CreateDecksProperty, Assembly-CSharp"
     }
   ]
 }

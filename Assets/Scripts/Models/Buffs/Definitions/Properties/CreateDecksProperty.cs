@@ -15,10 +15,7 @@ namespace Models.Buffs
                 MyLogger.Warning("Create decks property added to a participant that has no cards!");
                 return 0;
             }
-
-            MyLogger.Info($"Deck size: {deckParticipant.Deck.Count}");
             deckParticipant.Draw.AddRange(deckParticipant.Deck);
-            MyLogger.Info($"Draw size: {deckParticipant.Draw.Count}");
 
             return currentStackSize;
         }

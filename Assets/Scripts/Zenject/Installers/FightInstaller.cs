@@ -50,6 +50,10 @@ namespace Zenject.Installers
                      .FromNew()
                      .AsSingle();
 
+            Container.Bind<Fight.Context>()
+                     .FromNew()
+                     .AsSingle();
+
             Container.Bind<BattleAnimationEngine>()
                      .FromNew()
                      .AsSingle();
@@ -105,33 +109,27 @@ namespace Zenject.Installers
         private void InstallCurrentFightData()
         {
             Container.Bind<RunDefinition>()
-                     .FromResolveGetter<PlayerDataManager>(
-                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun)
+                     .FromResolveGetter<PlayerDataManager>(playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun)
                      .AsSingle();
 
             Container.Bind<PlayerCharacter>()
-                     .FromResolveGetter<PlayerDataManager>(
-                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.PlayerCharacter)
+                     .FromResolveGetter<PlayerDataManager>(playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.PlayerCharacter)
                      .AsSingle();
 
             Container.Bind<MapDefinition>()
-                     .FromResolveGetter<PlayerDataManager>(
-                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentMap)
+                     .FromResolveGetter<PlayerDataManager>(playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentMap)
                      .AsSingle();
 
             Container.Bind<FightDefinition>()
-                     .FromResolveGetter<PlayerDataManager>(
-                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight)
+                     .FromResolveGetter<PlayerDataManager>(playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight)
                      .AsSingle();
 
             Container.Bind<Team>()
-                     .FromResolveGetter<PlayerDataManager>(
-                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.PlayerTeam)
+                     .FromResolveGetter<PlayerDataManager>(playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.PlayerTeam)
                      .AsCached();
 
             Container.Bind<Team>()
-                     .FromResolveGetter<PlayerDataManager>(
-                          playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam)
+                     .FromResolveGetter<PlayerDataManager>(playerDataManger => playerDataManger.CurrentPlayerDefinition.CurrentRun.CurrentFight.EnemyTeam)
                      .AsCached();
         }
 

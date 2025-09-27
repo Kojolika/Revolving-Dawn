@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Fight.Engine;
+using Systems.Managers;
 using Views;
 using Zenject;
 
@@ -8,17 +9,32 @@ namespace Fight
 {
     public class Context
     {
+        [Inject] // Need to inject to avoid a circular dependency
         public BattleEngine BattleEngine { get; private set; }
 
-        public Context(BattleEngine battleEngine)
+        private readonly PlayerDataManager        playerDataManager;
+        private readonly List<ICombatParticipant> participants = new();
+
+        public Context(PlayerDataManager playerDataManager)
         {
-            BattleEngine = battleEngine;
+            this.playerDataManager = playerDataManager;
+
+            var currentFight = playerDataManager.CurrentRun.CurrentFight;
+            foreach (var participant in currentFight.PlayerTeam.Members)
+            {
+                participants.Add(participant);
+            }
+
+            foreach (var participant in currentFight.EnemyTeam.Members)
+            {
+                participants.Add(participant);
+            }
         }
 
         /// <returns> Every combat participant in the current fight </returns>
         public List<ICombatParticipant> GetAllCombatParticipants()
         {
-            return new List<ICombatParticipant>();
+            return participants;
         }
 
         /// <param name="playerId"> The player doing the targeting </param>

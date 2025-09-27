@@ -1,3 +1,4 @@
+using System;
 using Fight;
 using Fight.Engine;
 using Fight.Events;
@@ -7,6 +8,8 @@ namespace Models.Buffs
 {
     public interface IBeforeEvent
     {
+        public Type EventType { get; }
+
         /// <summary>
         /// Performs any logic that occurs RIGHT before the battleEvent.
         /// </summary>
@@ -16,6 +19,8 @@ namespace Models.Buffs
 
     public interface IBeforeEventT<in TEvent> : IBeforeEvent where TEvent : IBattleEvent
     {
+        Type IBeforeEvent.EventType => typeof(TEvent);
+
         /// <summary>
         /// Casts the event if it's the correct type, otherwise does nothing.
         /// </summary>
@@ -36,6 +41,8 @@ namespace Models.Buffs
 
     public interface IAfterEvent
     {
+        public Type EventType { get; }
+
         /// <summary>
         /// Performs any logic that occurs RIGHT after the battleEvent.
         /// </summary>
@@ -45,6 +52,8 @@ namespace Models.Buffs
 
     public interface IAfterEventT<in TEvent> : IAfterEvent where TEvent : IBattleEvent
     {
+        Type IAfterEvent.EventType => typeof(TEvent);
+
         /// <summary>
         /// Casts the event if it's the correct type, otherwise does nothing.
         /// </summary>

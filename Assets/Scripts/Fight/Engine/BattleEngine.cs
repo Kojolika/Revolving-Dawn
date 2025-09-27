@@ -7,6 +7,7 @@ using Fight.Events;
 using Tooling.Logging;
 using UnityEngine;
 using Utils.Extensions;
+using Zenject;
 
 namespace Fight
 {
@@ -19,13 +20,7 @@ namespace Fight
 
         private int eventIndex;
 
-        // TODO: Get combat particiapnts in the context class
-        private readonly Context fightContext;
-
-        public BattleEngine()
-        {
-            fightContext = new Context(this);
-        }
+        [Inject] private readonly Context fightContext;
 
         public void Run()
         {
@@ -101,7 +96,10 @@ namespace Fight
                 {
                     foreach (var onBefore in buff.OnBefore.OrEmptyIfNull())
                     {
-                        ResolveEvent(new BuffTriggeredEvent(participant, battleEvent, onBeforeEvent: onBefore, onAfterEvent: null, buff, stackSize));
+                        if (onBefore.EventType == battleEvent.GetType())
+                        {
+                            ResolveEvent(new BuffTriggeredEvent(participant, battleEvent, onBeforeEvent: onBefore, onAfterEvent: null, buff, stackSize));
+                        }
                     }
                 }
             }
@@ -115,7 +113,10 @@ namespace Fight
                 {
                     foreach (var onAfter in buff.OnAfter.OrEmptyIfNull())
                     {
-                        ResolveEvent(new BuffTriggeredEvent(participant, battleEvent, onBeforeEvent: null, onAfterEvent: onAfter, buff, stackSize));
+                        if (onAfter.EventType == battleEvent.GetType())
+                        {
+                            ResolveEvent(new BuffTriggeredEvent(participant, battleEvent, onBeforeEvent: null, onAfterEvent: onAfter, buff, stackSize));
+                        }
                     }
                 }
             }
