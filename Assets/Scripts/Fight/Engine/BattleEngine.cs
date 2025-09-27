@@ -19,6 +19,7 @@ namespace Fight
 
         private int eventIndex;
 
+        // TODO: Get combat particiapnts in the context class
         private readonly Context fightContext;
 
         public BattleEngine()
