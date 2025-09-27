@@ -8,7 +8,7 @@ namespace Models.Buffs
     [System.Serializable]
     public class OozeProperty : IBeforeEventT<TurnStartedEvent>
     {
-        public int OnBeforeExecute(Context fightContext, TurnStartedEvent battleEvent, Buff buff, int currentStackSize)
+        public int OnBeforeExecute(ICombatParticipant buffee, Context fightContext, TurnStartedEvent battleEvent, Buff buff, int currentStackSize)
         {
             if (battleEvent.Target is ICardDeckParticipant cardDeckParticipant)
             {

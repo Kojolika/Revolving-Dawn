@@ -21,9 +21,7 @@ namespace Views
         private void Construct(ICombatParticipant combatParticipant, BattleEngine battleEngine)
         {
             this.battleEngine = battleEngine;
-            
-            MyLogger.Info($"combat participant for healthview: {combatParticipant?.Name}");
-            UpdateHealthDisplay(FightUtils.GetHealth(combatParticipant), FightUtils.GetMaxHealth(combatParticipant));
+            UpdateHealthDisplay(StatUtils.GetHealth(combatParticipant), StatUtils.GetMaxHealth(combatParticipant));
         }
 
         /// <summary>

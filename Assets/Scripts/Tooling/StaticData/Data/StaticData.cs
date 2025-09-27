@@ -11,6 +11,10 @@ namespace Tooling.StaticData.Data
         public string Name;
 
         public StaticDataReference Reference { get; set; }
+
+        public StaticData()
+        {
+        }
     }
 
     /// <summary>

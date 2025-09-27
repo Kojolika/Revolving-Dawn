@@ -1,4 +1,5 @@
 using Fight;
+using Fight.Engine;
 using Fight.Events;
 using Tooling.StaticData.Data;
 
@@ -10,7 +11,7 @@ namespace Models.Buffs
         /// Performs any logic that occurs RIGHT before the battleEvent.
         /// </summary>
         /// <returns> the stack size of the buff after this trigger </returns>
-        int OnBeforeExecute(Context fightContext, IBattleEvent battleEvent, Buff buff, int currentStackSize);
+        int OnBeforeExecute(ICombatParticipant buffee, Context fightContext, IBattleEvent battleEvent, Buff buff, int currentStackSize);
     }
 
     public interface IBeforeEventT<in TEvent> : IBeforeEvent where TEvent : IBattleEvent
@@ -18,11 +19,11 @@ namespace Models.Buffs
         /// <summary>
         /// Casts the event if it's the correct type, otherwise does nothing.
         /// </summary>
-        int IBeforeEvent.OnBeforeExecute(Context fightContext, IBattleEvent battleEvent, Buff buff, int currentStackSize)
+        int IBeforeEvent.OnBeforeExecute(ICombatParticipant buffee, Context fightContext, IBattleEvent battleEvent, Buff buff, int currentStackSize)
         {
             if (battleEvent is TEvent eventT)
             {
-                return OnBeforeExecute(fightContext, eventT, buff, currentStackSize);
+                return OnBeforeExecute(buffee, fightContext, eventT, buff, currentStackSize);
             }
 
             return currentStackSize;
@@ -30,7 +31,7 @@ namespace Models.Buffs
 
 
         /// <inheritdoc cref="IBeforeEvent.OnBeforeExecute"/>
-        int OnBeforeExecute(Context fightContext, TEvent battleEvent, Buff buff, int currentStackSize);
+        int OnBeforeExecute(ICombatParticipant buffee, Context fightContext, TEvent battleEvent, Buff buff, int currentStackSize);
     }
 
     public interface IAfterEvent
@@ -39,26 +40,25 @@ namespace Models.Buffs
         /// Performs any logic that occurs RIGHT after the battleEvent.
         /// </summary>
         /// <returns> the stack size of the buff after this trigger </returns>
-        int OnAfterExecute(Context fightContext, IBattleEvent battleEvent, Buff buff, int currentStackSize);
+        int OnAfterExecute(ICombatParticipant buffee, Context fightContext, IBattleEvent battleEvent, Buff buff, int currentStackSize);
     }
-
 
     public interface IAfterEventT<in TEvent> : IAfterEvent where TEvent : IBattleEvent
     {
         /// <summary>
         /// Casts the event if it's the correct type, otherwise does nothing.
         /// </summary>
-        int IAfterEvent.OnAfterExecute(Context fightContext, IBattleEvent battleEvent, Buff buff, int currentStackSize)
+        int IAfterEvent.OnAfterExecute(ICombatParticipant buffee, Context fightContext, IBattleEvent battleEvent, Buff buff, int currentStackSize)
         {
             if (battleEvent is TEvent eventT)
             {
-                return OnAfterExecute(fightContext, eventT, buff, currentStackSize);
+                return OnAfterExecute(buffee, fightContext, eventT, buff, currentStackSize);
             }
 
             return currentStackSize;
         }
 
         /// <inheritdoc cref="IAfterEvent.OnAfterExecute"/>
-        int OnAfterExecute(Context fightContext, TEvent battleEvent, Buff buff, int currentStackSize);
+        int OnAfterExecute(ICombatParticipant buffee, Context fightContext, TEvent battleEvent, Buff buff, int currentStackSize);
     }
 }

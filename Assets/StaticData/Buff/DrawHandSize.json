@@ -2,6 +2,7 @@
   "IsStackable": false,
   "MaxStackSize": 0,
   "IsInternal": true,
+  "IsLostAtEndOfCombat": false,
   "Icon": "96717bb03f74be54490a7eb298976144",
   "OnBefore": null,
   "OnAfter": [

@@ -47,21 +47,20 @@ namespace Models.Map
                 var enemyDifficultyRating = enemySetting.EnemyDifficultyRating;
                 if (currentDifficulty < difficultyForLevel && enemySetting.EnemyDifficultyRating <= difficultyForLevel)
                 {
-                    var healthStat = enemySetting.Enemy.Stats
-                                                 .OrEmptyIfNull()
-                                                 .FirstOrDefault(stat => stat.Stat.Name == FightUtils.HealthKey)
-                                                ?.Amount ?? 0;
-                    if (healthStat == 0)
+                    var maxHealth = StatUtils.GetMaxHealth(enemySetting.Enemy.Stats);
+                    if (maxHealth is null or 0)
                     {
-                        MyLogger.Warning($"Health stat for enemy :{enemySetting.Enemy.Name} is {healthStat}");
+                        MyLogger.Warning($"Health stat for enemy :{enemySetting.Enemy.Name} is {maxHealth}");
                     }
 
-                    var enemyHealth = mapSettings.EnemyHealthMultiplier * node.Level + healthStat;
-                    // TODO: change strategy based on map/difficulty settings
-                    var enemy = new EnemyLogic(enemySetting.Enemy, new SelectRandomStrategy());
-                    FightUtils.SetHealth(enemy, enemyHealth);
-                    enemies.Add(enemy);
+                    var enemyHealth = mapSettings.EnemyHealthMultiplier * node.Level + maxHealth;
+                    var enemy = new EnemyLogic(enemySetting.Enemy, new SelectRandomStrategy()); // TODO: change strategy based on map/difficulty settings
+                    var selectMoveBuff = StaticDatabase.Instance.GetInstance<Buff>("SelectMove");
 
+                    enemy.SetBuff(selectMoveBuff, 1);
+                    StatUtils.SetHealth(enemy, enemyHealth ?? 0);
+
+                    enemies.Add(enemy);
                     currentDifficulty += enemyDifficultyRating;
                 }
             }

@@ -12,8 +12,13 @@ namespace Models.Buffs
     {
         private const string DrawAmountKey = "DrawAmount";
 
-        public int OnAfterExecute(Context fightContext, TurnStartedEvent battleEvent, Buff buff, int currentStackSize)
+        public int OnAfterExecute(ICombatParticipant buffee, Context fightContext, TurnStartedEvent battleEvent, Buff buff, int currentStackSize)
         {
+            if (buffee != battleEvent.Target)
+            {
+                return currentStackSize;
+            }
+
             if (battleEvent.Target is not ICardDeckParticipant cardDeckParticipant)
             {
                 return currentStackSize;
@@ -24,7 +29,7 @@ namespace Models.Buffs
             {
                 return currentStackSize;
             }
-            
+
             var drawEvents = new IBattleEvent[(int)drawAmount];
             for (int i = 0; i < drawAmount; i++)
             {

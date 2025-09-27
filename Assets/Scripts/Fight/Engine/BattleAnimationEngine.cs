@@ -9,15 +9,16 @@ namespace Fight.Animations
     public class BattleAnimationEngine : IEventSubscriber<IBattleEvent>
     {
         public bool IsRunning { get; private set; }
-        private Queue<BattleEventAnimation> battleAnimationQueue;
-        private readonly BattleEngine battleEngine;
-        private readonly IBattleAnimation.Factory animationFactory;
+
+        private          Queue<BattleEventAnimation> battleAnimationQueue;
+        private readonly BattleEngine                battleEngine;
+        private readonly IBattleAnimation.Factory    animationFactory;
 
         public BattleAnimationEngine(BattleEngine battleEngine, IBattleAnimation.Factory animationFactory)
         {
-            this.battleEngine = battleEngine;
+            this.battleEngine     = battleEngine;
             this.animationFactory = animationFactory;
-            
+
             battleEngine.SubscribeToEvent<IBattleEvent>(this);
         }
 
@@ -35,7 +36,7 @@ namespace Fight.Animations
             }
 
             battleAnimationQueue = new();
-            IsRunning = true;
+            IsRunning            = true;
             EngineLoop();
         }
 
@@ -52,6 +53,12 @@ namespace Fight.Animations
                 if (battleAnimationQueue.Count > 0)
                 {
                     var first = battleAnimationQueue.Dequeue();
+                    if (first.Animation == null)
+                    {
+                        MyLogger.Warning($"No animation found for battle event {first.BattleEvent}");
+                        continue;
+                    }
+
                     if (first.Animation.ShouldWait)
                     {
                         await first.Animation.Play(first.BattleEvent);
@@ -76,21 +83,25 @@ namespace Fight.Animations
             {
                 return;
             }
-            
+
             Enqueue(new BattleEventAnimation(battleEvent, animationFactory.Create(battleEvent)));
         }
 
-        public void OnEvent(IBattleEvent eventData) => LoadAndEnqueueAnimation(eventData);
+        public void OnEvent(IBattleEvent eventData)
+        {
+            LoadAndEnqueueAnimation(eventData);
+        }
     }
 
     public class BattleEventAnimation
     {
-        public readonly IBattleEvent BattleEvent;
+        public readonly IBattleEvent     BattleEvent;
         public readonly IBattleAnimation Animation;
+
         public BattleEventAnimation(IBattleEvent battleEvent, IBattleAnimation animation)
         {
             BattleEvent = battleEvent;
-            Animation = animation;
+            Animation   = animation;
         }
     }
 }

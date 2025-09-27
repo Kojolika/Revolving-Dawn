@@ -56,7 +56,6 @@ namespace Views
             {
                 var newBuffElement = Instantiate(buffElementPrefab);
                 diContainer.Inject(newBuffElement, new object[] { buff, target });
-
                 return newBuffElement;
             }
         }

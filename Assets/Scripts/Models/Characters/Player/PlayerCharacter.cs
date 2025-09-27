@@ -37,6 +37,12 @@ namespace Models.Characters
             {
                 SetStat(initialStat.Stat, initialStat.Value);
             }
+
+            var createDecksBuff = StaticDatabase.Instance.GetInstance<Buff>("CreateDecks");
+            SetBuff(createDecksBuff, 1);
+
+            var drawHandBuff = StaticDatabase.Instance.GetInstance<Buff>("DrawHandSize");
+            SetBuff(drawHandBuff, 1);
         }
 
         #region Serialization

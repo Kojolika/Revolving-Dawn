@@ -32,6 +32,8 @@ namespace Systems.Managers
 
             battleEngine.Run();
             battleAnimationEngine.Run();
+
+
             if (battleEngine.BattleEventHistory.Count == 0)
             {
                 battleEngine.AddEvent(new BattleStartedEvent());

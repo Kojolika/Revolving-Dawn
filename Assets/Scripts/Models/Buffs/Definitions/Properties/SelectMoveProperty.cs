@@ -8,13 +8,13 @@ namespace Models.Buffs
     /// TODO: Add this buff to enemies at the start of combat
     public class SelectMoveProperty : IAfterEventT<TurnStartedEvent>
     {
-        public int OnAfterExecute(Context fightContext, TurnStartedEvent battleEvent, Buff buff, int currentStackSize)
+        public int OnAfterExecute(ICombatParticipant buffee, Context fightContext, TurnStartedEvent battleEvent, Buff buff, int currentStackSize)
         {
             if (battleEvent.Target is IMoveParticipant target)
             {
                 target.SelectMove();
             }
-            
+
             return currentStackSize;
         }
     }

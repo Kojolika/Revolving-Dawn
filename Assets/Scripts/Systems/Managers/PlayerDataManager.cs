@@ -78,6 +78,7 @@ namespace Systems.Managers
         {
             int seed   = Guid.NewGuid().GetHashCode();
             var newMap = mapFactory.Create(mapSettings, seed);
+
             CurrentPlayerDefinition.CurrentRun = new RunDefinition()
             {
                 Name            = "Test",

@@ -37,6 +37,13 @@ namespace Koj.Debug
             {
                 AddLabelWithValue($"Stat {stat.Name}", () => amount.ToString(CultureInfo.InvariantCulture));
             }
+            
+            
+            AddLabel("Buffs:");
+            foreach (var (amount, buff) in playerDataManager.CurrentPlayerDefinition.CurrentRun.PlayerCharacter.GetBuffs().OrEmptyIfNull())
+            {
+                AddLabelWithValue($"Buff {buff.Name}", () => amount.ToString(CultureInfo.InvariantCulture));
+            }
         }
 
         public void ResetSave()

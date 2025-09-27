@@ -56,8 +56,10 @@ namespace Views
             CardViewsLookup.Add(cardLogicModel, newCardView);
             orderedCardViews.Add(newCardView);
 
-            await CreateHandCurveAnimation(playerHandViewSettings.CardDrawMoveSpeed,
-                                           playerHandViewSettings.CardDrawRotateSpeed, playerHandViewSettings.CardDrawMoveFunction);
+            await CreateHandCurveAnimation(
+                cardSpeed: playerHandViewSettings.CardDrawMoveSpeed,
+                cardRotateSpeed: playerHandViewSettings.CardDrawRotateSpeed,
+                easeFunction: playerHandViewSettings.CardDrawMoveFunction);
         }
 
         public async UniTask PlayCardAnimation(CardLogic cardLogic)

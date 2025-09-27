@@ -17,15 +17,19 @@ namespace Fight
         private          List<IBattleEvent>                       battleEventQueue;
         private readonly Dictionary<Type, List<IEventSubscriber>> battleEventSubscribers = new();
 
-        int eventIndex = 0;
+        private int eventIndex;
 
-        // TODO: Set reference
-        private Context fightContext;
+        private readonly Context fightContext;
+
+        public BattleEngine()
+        {
+            fightContext = new Context(this);
+        }
 
         public void Run()
         {
             battleEventQueue = new List<IBattleEvent>();
-            eventIndex = 0;
+            eventIndex       = 0;
 
             _ = EngineLoop();
         }
@@ -77,47 +81,41 @@ namespace Fight
 
         private void ResolveEvent(IBattleEvent battleEvent)
         {
-            TriggerOnBeforeBuffEffects(battleEventQueue[eventIndex]);
-            battleEventQueue[eventIndex].Execute(fightContext);
-            TriggerOnAfterBuffEffects(battleEventQueue[eventIndex]);
+            TriggerOnBeforeBuffEffects(battleEvent);
+            battleEvent.Execute(fightContext);
+            TriggerOnAfterBuffEffects(battleEvent);
 
-            BattleEventHistory.Push(battleEventQueue[eventIndex]);
+            BattleEventHistory.Push(battleEvent);
 
-            DispatchEvent(battleEventQueue[eventIndex]);
+            DispatchEvent(battleEvent);
 
-            MyLogger.Info($"{battleEventQueue[eventIndex].GetType().Name}: {battleEventQueue[eventIndex].Log()}");
+            MyLogger.Info($"{battleEvent.GetType().Name}: {battleEvent.Log()}");
         }
 
         private void TriggerOnBeforeBuffEffects(IBattleEvent battleEvent)
         {
-            // If out event is targeted against combat participants, trigger their on before buffs
-            if (battleEvent is not IBattleEvent<ICombatParticipant> { Target: not null } combatParticipantTargetEvent)
+            foreach (var participant in fightContext.GetAllCombatParticipants())
             {
-                return;
-            }
-
-            foreach (var (stackSize, buff) in combatParticipantTargetEvent.Target.GetBuffs().OrEmptyIfNull())
-            {
-                foreach (var onBefore in buff.OnBefore.OrEmptyIfNull())
+                foreach (var (stackSize, buff) in participant.GetBuffs().OrEmptyIfNull())
                 {
-                    ResolveEvent(new BuffTriggeredEvent(combatParticipantTargetEvent, onBeforeEvent: onBefore, onAfterEvent: null, buff, stackSize));
+                    foreach (var onBefore in buff.OnBefore.OrEmptyIfNull())
+                    {
+                        ResolveEvent(new BuffTriggeredEvent(participant, battleEvent, onBeforeEvent: onBefore, onAfterEvent: null, buff, stackSize));
+                    }
                 }
             }
         }
 
         private void TriggerOnAfterBuffEffects(IBattleEvent battleEvent)
         {
-            // If out event is targeted against combat participants, trigger their on before buffs
-            if (battleEvent is not IBattleEvent<ICombatParticipant> { Target: not null } combatParticipantTargetEvent)
+            foreach (var participant in fightContext.GetAllCombatParticipants())
             {
-                return;
-            }
-
-            foreach (var (stackSize, buff) in combatParticipantTargetEvent.Target.GetBuffs().OrEmptyIfNull())
-            {
-                foreach (var onAfter in buff.OnAfter.OrEmptyIfNull())
+                foreach (var (stackSize, buff) in participant.GetBuffs().OrEmptyIfNull())
                 {
-                    ResolveEvent(new BuffTriggeredEvent(combatParticipantTargetEvent, onBeforeEvent: null, onAfterEvent: onAfter, buff, stackSize));
+                    foreach (var onAfter in buff.OnAfter.OrEmptyIfNull())
+                    {
+                        ResolveEvent(new BuffTriggeredEvent(participant, battleEvent, onBeforeEvent: null, onAfterEvent: onAfter, buff, stackSize));
+                    }
                 }
             }
         }

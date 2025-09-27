@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Models.Buffs;
+using Tooling.StaticData.Validation;
 using UnityEngine.AddressableAssets;
 
 namespace Tooling.StaticData.Data
@@ -24,9 +25,14 @@ namespace Tooling.StaticData.Data
         /// </summary>
         public bool IsInternal;
 
+        public bool IsLostAtEndOfCombat = true;
+
         public AssetReferenceSprite Icon;
 
+        [IsAssignableFrom(typeof(IBeforeEvent))]
         public List<IBeforeEvent> OnBefore;
-        public List<IAfterEvent>  OnAfter;
+
+        [IsAssignableFrom(typeof(IAfterEvent))]
+        public List<IAfterEvent> OnAfter;
     }
 }

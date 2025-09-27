@@ -28,6 +28,11 @@ namespace Views
             buffLookup = new();
             foreach (var (stackSize, buff) in characterBuffs)
             {
+                if (buff.IsInternal)
+                {
+                    continue;
+                }
+
                 AddBuffElement(buff);
             }
 

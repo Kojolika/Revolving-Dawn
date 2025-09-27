@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Controllers;
 using Fight.Engine;
 using Views;
+using Zenject;
 
 namespace Fight
 {
     public class Context
     {
-        // TODO: set ref in container
         public BattleEngine BattleEngine { get; private set; }
 
         public Context(BattleEngine battleEngine)

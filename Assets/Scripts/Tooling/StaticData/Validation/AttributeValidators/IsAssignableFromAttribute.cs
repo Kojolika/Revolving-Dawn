@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Tooling.Logging;
 
 namespace Tooling.StaticData.Validation
 {
@@ -21,21 +22,43 @@ namespace Tooling.StaticData.Validation
 
         public bool Validate(Type type, Data.StaticData obj, FieldInfo fieldInfo, List<Data.StaticData> allObjects)
         {
-            var typeToCheck = fieldInfo.GetValue(obj) as Type;
-            if (typeToCheck == null)
+            var fieldType = fieldInfo.GetValue(obj);
+            MyLogger.Info($"Type of field: {fieldType?.GetType()}");
+            if (fieldType is Type typeToCheck && typeToCheck.IsAssignableFrom(TargetType))
+            {
+                return true;
+            }
+
+            if (fieldType is IEnumerable<Type> typeList)
+            {
+                int errors = 0;
+                foreach (var t in typeList)
+                {
+                    if (!TargetType.IsAssignableFrom(t))
+                    {
+                        errors++;
+                    }
+                }
+
+                if (errors == 0)
+                {
+                    return true;
+                }
+
+                errorMessages.Add($"Field {fieldInfo.Name} has {errors} elements that are not a valid type. They should be assignable from {TargetType}.");
+                return false;
+            }
+
+            if (fieldType == null)
             {
                 errorMessages.Add("Type cannot be null!");
                 return false;
             }
-
-            var isValid = TargetType.IsAssignableFrom(typeToCheck);
-            if (!isValid)
+            else
             {
-                errorMessages.Add($"Type {typeToCheck} is not assignable to " + TargetType);
+                errorMessages.Add("Field is invalid type");
                 return false;
             }
-
-            return true;
         }
 
         public bool CanValidate(Type type)
