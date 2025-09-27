@@ -9,5 +9,6 @@
   "TargetingOptions": [
     0
   ],
-  "CardLogic": "Models.Cards.Drink, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+  "CardLogic": "Models.Cards.Drink, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "DynamicValues": null
 }

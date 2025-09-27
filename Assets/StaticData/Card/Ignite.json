@@ -9,5 +9,6 @@
   "TargetingOptions": [
     1
   ],
-  "CardLogic": "Models.Cards.Ignite, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+  "CardLogic": "Models.Cards.Ignite, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "DynamicValues": null
 }

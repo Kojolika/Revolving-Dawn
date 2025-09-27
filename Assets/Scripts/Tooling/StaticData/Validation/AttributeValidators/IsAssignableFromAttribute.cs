@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Tooling.Logging;
+using UnityEngine;
 
 namespace Tooling.StaticData.Validation
 {
@@ -23,8 +24,7 @@ namespace Tooling.StaticData.Validation
         public bool Validate(Type type, Data.StaticData obj, FieldInfo fieldInfo, List<Data.StaticData> allObjects)
         {
             var fieldType = fieldInfo.GetValue(obj);
-            MyLogger.Info($"Type of field: {fieldType?.GetType()}");
-            if (fieldType is Type typeToCheck && typeToCheck.IsAssignableFrom(TargetType))
+            if (fieldType is Type typeToCheck && TargetType.IsAssignableFrom(typeToCheck))
             {
                 return true;
             }

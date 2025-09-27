@@ -9,5 +9,6 @@
   "TargetingOptions": [
     5
   ],
-  "CardLogic": "Models.Cards.Refresh, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+  "CardLogic": "Models.Cards.Refresh, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "DynamicValues": null
 }

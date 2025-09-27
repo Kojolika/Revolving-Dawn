@@ -1,7 +1,13 @@
 {
   "Art": "43e72cc9bd51c4547bd8aeaa0d30abbb",
   "Manas": null,
-  "PlayerClass": null,
+  "PlayerClass": {
+    "$type": "Tooling.StaticData.Data.PlayerClass, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Reference": {
+      "Type": "Tooling.StaticData.Data.PlayerClass, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "InstanceName": "Warrior"
+    }
+  },
   "Upgrade": null,
   "Downgrade": null,
   "Description": null,
@@ -9,5 +15,11 @@
   "TargetingOptions": [
     1
   ],
-  "CardLogic": "Models.Cards.Warrior.Bash, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+  "CardLogic": "Models.Cards.Warrior.Bash, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "DynamicValues": [
+    {
+      "Name": "damage",
+      "Value": "6"
+    }
+  ]
 }

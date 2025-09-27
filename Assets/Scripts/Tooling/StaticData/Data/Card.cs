@@ -21,5 +21,13 @@ namespace Tooling.StaticData.Data
 
         [IsAssignableFrom(typeof(CardLogic))]
         public Type CardLogic;
+
+        public List<DynamicValues> DynamicValues;
+    }
+
+    public class DynamicValues
+    {
+        public string Name;
+        public string Value;
     }
 }

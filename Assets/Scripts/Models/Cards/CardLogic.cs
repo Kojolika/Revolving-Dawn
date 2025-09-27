@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Common.Util;
 using Fight.Engine;
 using Fight.Events;
 using Tooling.Logging;
@@ -26,6 +27,25 @@ namespace Models.Cards
         public CardLogic(Card model)
         {
             Model = model;
+        }
+
+        /// <summary>
+        /// Gets a float value defined on the <see cref="Model"/>'s <see cref="Card.DynamicValues"/> list
+        /// </summary>
+        /// <param name="name"> The name of the value in this lsit</param>
+        /// <returns> the float associated with the value </returns>
+        protected float GetFloat(string name)
+        {
+            foreach (var dynamicValue in Model.DynamicValues.OrEmptyIfNull())
+            {
+                if (dynamicValue.Name == name && float.TryParse(dynamicValue.Value, out float result))
+                {
+                    return result;
+                }
+            }
+
+            MyLogger.Error($"Could not find a float for {name} on {Model.Name}");
+            return 0;
         }
 
         /// <summary>
@@ -96,7 +116,7 @@ namespace Models.Cards
                     return null;
                 }
 
-                return diContainer.Instantiate(card.CardLogic, extraArgs: new object[] {card}) as CardLogic;
+                return diContainer.Instantiate(card.CardLogic, extraArgs: new object[] { card }) as CardLogic;
             }
         }
     }
